@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-    <title>JSP 兩種include 的差別</title>
+    <title>About Ken Yang</title>
     
     <meta name="author" content="Ken Yang">
 
@@ -13,14 +13,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <!-- Bootstrap styles -->
-    <link href="/assets/themes//bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/assets/themes/bootstrap-3/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <!-- Optional theme -->
-    <link href="/assets/themes//bootstrap/css/bootstrap-theme.min.css" rel="stylesheet">
+    <link href="/assets/themes/bootstrap-3/bootstrap/css/bootstrap-theme.min.css" rel="stylesheet">
     <!-- Sticky Footer -->
-    <link href="/assets/themes//bootstrap/css/bs-sticky-footer.css" rel="stylesheet">
+    <link href="/assets/themes/bootstrap-3/bootstrap/css/bs-sticky-footer.css" rel="stylesheet">
     
     <!-- Custom styles -->
-    <link href="/assets/themes//css/style.css?body=1" rel="stylesheet" type="text/css" media="all">
+    <link href="/assets/themes/bootstrap-3/css/style.css?body=1" rel="stylesheet" type="text/css" media="all">
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -69,7 +69,7 @@
     
       
       	
-      	<li><a href="/about">About Ken Yang</a></li>
+      	<li class="active"><a href="/about" class="active">About Ken Yang</a></li>
       	
       
     
@@ -224,70 +224,28 @@
       <div class="container">
         
 <div class="page-header">
-  <h1>JSP 兩種include 的差別 </h1>
+  <h1>About Ken Yang </h1>
 </div>
 
-<div class="row post-full">
+<div class="row">
   <div class="col-xs-12">
-    <div class="date">
-      <span>06 November 2010</span>
-    </div>
-    <div class="content">
-      在JSP中，<br /><br />include有分兩種<br /><br /><pre class="brush: xml">&lt;%@include file="/footer.jsp" %&gt;&lt;!-- 第一種 --&gt;<br /><br /><br />&lt;jsp:include page="/footer.jsp"&gt;&lt;/jsp:include&gt;&lt;!-- 第二種 --&gt;<br /><br /><br /><br /></pre><br /><br />第一種稱為<span class="Apple-style-span" style="color: red;">指令元素</span><br /><br />第二種稱為<span class="Apple-style-span" style="color: red;">動作元素</span><br /><br />差別在於<br /><br />第一種的include會在編譯時期（轉換成servlet）就將file include進來，<br /><br />而第二種在編譯時期並不會被編譯，是在client request時，才會動態的去載入在去編譯。<br /><br /><br />且第一種最後只會有一個.class檔案，<br /><br />因為他會在被轉換成servlet之前就把include的file融合至原本的內容中<br /><br />最後才轉換成servlet，故只有一個.class檔案<br /><br />而第二種就會有兩種。<br /><br /><br />總結<br /><br />第一種是在編譯時期就去include<br /><br />第二種是在run time時期去include（這個效能似乎較差一點點，但較靈活）<br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
-    </div>
+    <p><img src="http://www.gravatar.com/avatar/9c024826ef195093bfa56da94062ccaa.jpg?s=140&amp;r=g" alt="alt text" /></p>
 
-    
+<h2 id="skill-set">Skill Set</h2>
+<ul>
+  <li>Platform: Linux(Ubuntu)</li>
+  <li>Language: Java, ShellScript, Android, HTML, CSS, JavaScript, JSP/Servlet, Python, Perl</li>
+  <li>Database: MySQL, MongoDB</li>
+  <li>Dev-Tool: Docker, packer, vagrant, git</li>
+  <li>Cloud-Platform: GAE, AWS (EC2, S3, Beanstalk), Heroku</li>
+</ul>
 
-  
-    <ul class="tag_box inline">
-      <li><i class="glyphicon glyphicon-tags"></i></li>
-      
-      
+<h2 id="ref">Ref</h2>
 
-
-  
-     
-    	<li><a href="/tags.html#jsp-ref">jsp <span>4</span></a></li>
-    
-  
-
-
-
-    </ul>
-    
-  
-    <hr>
-    <ul class="pagination">
-    
-      <li class="prev"><a href="/2010/11/04/imac" title="非常不專業之iMAC開箱文">&laquo; Previous</a></li>
-    
-      <li><a href="/archive.html">Archive</a></li>
-    
-      <li class="next"><a href="/2010/11/06/apache" title="Apache 限制目錄瀏覽">Next &raquo;</a></li>
-    
-    </ul>
-    <hr>
-    
-
-
-  <div id="disqus_thread"></div>
-<script type="text/javascript">
-    
-    var disqus_developer = 1;
-    var disqus_shortname = 'jekyllbootstrap'; // required: replace example with your forum shortname
-    
-    /* * * DON'T EDIT BELOW THIS LINE * * */
-    (function() {
-        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-        dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
-        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-    })();
-</script>
-<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-<a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
-
-
-
+<ul>
+  <li><a href="https://www.facebook.com/kenyang.8" title="fb">Facebook</a></li>
+  <li><a href="http://www.linkedin.com/pub/ken-yang/65/b5b/a2" title="fb">LinkedIn</a></li>
+</ul>
 
   </div>
 </div>
@@ -315,7 +273,7 @@
     <!-- Latest compiled and minified JavaScript, requires jQuery 1.x (2.x not supported in IE8) -->
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-    <script src="/assets/themes//bootstrap/js/bootstrap.min.js"></script>
+    <script src="/assets/themes/bootstrap-3/bootstrap/js/bootstrap.min.js"></script>
   </body>
 </html>
 
