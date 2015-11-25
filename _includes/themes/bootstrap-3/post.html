@@ -66,9 +66,6 @@
     {% endif %}
     </ul>
     <hr>
-          {% if site.comments.isso and page.comments %}
-          <div id="isso-thread"></div>
-          <a href="http://posativ.org/isso/" id="isso-brlink">comments powered by <b>isso</b></a></div>
-          {% endif %}
+    {% include comment.html %}
   </div>
 </div>
