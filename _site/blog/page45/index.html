@@ -1,0 +1,296 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title></title>
+    
+    <meta name="author" content="Ken Yang">
+
+    <!-- Enable responsive viewport -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Bootstrap styles -->
+    <link href="/assets/themes/bootstrap-3/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Optional theme -->
+    <link href="/assets/themes/bootstrap-3/bootstrap/css/bootstrap-theme.min.css" rel="stylesheet">
+    <!-- Sticky Footer -->
+    <link href="/assets/themes/bootstrap-3/bootstrap/css/bs-sticky-footer.css" rel="stylesheet">
+    
+    <!-- Custom styles -->
+    <link href="/assets/themes/bootstrap-3/css/style.css?body=1" rel="stylesheet" type="text/css" media="all">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Fav and touch icons -->
+    <!-- Update these with your own images
+      <link rel="shortcut icon" href="images/favicon.ico">
+      <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+      <link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-72x72.png">
+      <link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png">
+    -->
+
+    <!-- atom & rss feed -->
+    <link href="/atom.xml" type="application/atom+xml" rel="alternate" title="Sitewide ATOM Feed">
+    <link href="/rss.xml" type="application/rss+xml" rel="alternate" title="Sitewide RSS Feed">
+
+  </head>
+
+  <body>
+    <div id="wrap">
+      <nav class="navbar navbar-default" role="navigation">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#jb-navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/">Ken Yang</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="jb-navbar-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+            
+
+
+  
+    
+      
+      	
+      	<li><a href="/archive">Archive</a></li>
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/categories">Categories</a></li>
+      	
+      
+    
+  
+    
+  
+    
+      
+      	
+      	<li><a href="/pages">Pages</a></li>
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/tags">Tags</a></li>
+      	
+      
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+
+
+
+          </ul>
+          <form class="navbar-form navbar-right" role="search">
+            <div class="form-group">
+              <input type="text" class="form-control" placeholder="Search">
+            </div>
+            <button type="submit" class="btn btn-default">Submit</button>
+          </form>
+        </div><!-- /.navbar-collapse -->
+      </nav>
+
+      <div class="container">
+        <!-- This loops through the paginated posts -->
+
+  <h1><a style="color: #F22430" href="/2010/09/02/android-asynctask-sample">android AsyncTask sample</a></h1>
+  <p class="author">
+    <span class="date">2010-09-02 09:24:00 +0800</span>
+  </p>
+  <div class="content">
+    android 的AsyncTask<br /><br />如果你可能要去download、request一個蠻龐大的網頁或者檔案時，<br /><br />如果是在主要的activity、widget或其他中去作，<br /><br />那麼想必你的activity、widget或其他的UI會像是被lock住!<br /><br />很LAG的感覺!<br /><br />那麼就使用AsyncTask吧!<br /><br />顧名思義，就是非同步排程(應該可以這樣翻)==<br /><br />AsyncTask的好處就是可以在background執行，<br /><br />並不影響前端的UI<br /><br />下面就是實作方法<br /><br />先去new一個class並繼承AsyncTask<br /><br /><pre class="brush: java">public class downloadTask extends AsyncTask&lt;String, Void , String&gt;{<br /> <br /> public static int iFileSize   = 0;<br /> public static double dReadSum   = 0;<br /> public static boolean bIsDownload = false;<br /> <br /> @Override<br /> protected void onProgressUpdate(Void... values) {<br />  <br />  //此method是在呼叫publishProgress()時的才會trigger到的<br />  //可以當配progressBar來使用，這裡不多作說明。<br />  <br />  super.onProgressUpdate(values);<br /><br /> }<br /><br /> <br /> @Override<br /> protected void onPreExecute() {<br />  //此method是在執行doInBackground以前，才會呼叫的<br />  super.onPreExecute();<br /> }<br /> <br /> @Override<br /> protected void onPostExecute(String result) {<br />  //此method是在doInBackground完成以後，才會呼叫的<br />  super.onPostExecute(result);<br />  if (iFileSize == dReadSum){<br />   Log.d("main","下載完成");<br />  }<br />  <br /> }<br /><br />  /*<br />  *注意!strUrlFile是一個array..代表著在呼叫此class時<br />  *可以帶入很多個參數(strUrlFile)，<br />  *如:new downloadTask().execute("http://www.xxx","http://www.xxx");<br />  */ <br /> protected String doInBackground(String... strUrlFile) {<br />     URL urlFileLocation = null;<br />   HttpURLConnection connFile = null;<br />   try {<br />    int iUrlCount = strUrlFile.length;<br />   for (int i =0 ; i &lt; iUrlCount ; i++){<br />    urlFileLocation  = new URL(strUrlFile[i]);   <br />    connFile    = (HttpURLConnection) urlFileLocation.openConnection();   <br />    connFile.setDoInput(true);<br />    <br />    InputStream is = connFile.getInputStream();<br />    iFileSize  = connFile.getContentLength();    //取得檔案大小<br />    <br />    byte[] buffer = new byte[1024];<br />    int len1 = 0;<br />    dReadSum  = 0;<br />    <br />    while ( (len1 = is.read(buffer)) != -1) {<br />     dReadSum += len1;<br />     publishProgress(dReadSum*100/iFileSize);<br />    }<br />   }<br />    <br />    <br />   } catch (Exception e) {<br />    Log.d("main","download---" + e.toString());<br />   }<br />   <br />        return "";<br />     }<br /><br />   <br /> }<br /></pre><br /><br /><br />呼叫此Class就只要一行:<br /><br /><pre class="brush: java"> new downloadTask().execute("http://www.xxx"); <br />/*<br />*注意，參數其實是可以很多個，如下<br />*new downloadTask().execute("http://www.xxx","http://www.xxx");<br />*這樣子此task就會去download兩次<br />*/<br /></pre><br /><br /><br /><br /><br /><br /><br /><br /><br />
+  </div>
+
+  <h1><a style="color: #F22430" href="/2010/09/01/android-parse-xml">android parse xml</a></h1>
+  <p class="author">
+    <span class="date">2010-09-01 07:02:00 +0800</span>
+  </p>
+  <div class="content">
+    android parse xml<br /><br />在anroid parse xml其實有蠻多方法的<br /><br />例如SAX(Simple API for XML)、DOM...<br /><br />大家都知道用SAX來parse會較省記憶體。<br /><br />但用SAX的麻煩就是必須自己去寫content handler...<br /><br />但如果您的XML檔並不大，且去讀取的次數沒有很頻繁，<br /><br />那麼還是建議您用DOM吧!較簡單!<br /><br />實作方法如下:<br /><br /><pre class="brush: java"> private static DocumentBuilder documentBuilder  = null;  <br /> private static Document document        = null;<br /> private static NodeList elements        = null;<br /> private static int iElementLength= 0;<br /><br /> @Override<br /> public void onStart(Intent intent, int startId) {<br />  super.onStart(intent, startId);<br />  try{<br />   <br />   URL urlUpdate = new URL("http://www.xxx.xxx/xxx.xml");<br />   documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();  <br />   document = documentBuilder.parse(urlUpdate.openStream());      <br />   document.getDocumentElement().normalize();  <br />   <br />   /*<br />   *其實簡單到我也不知該怎麼寫註解了，<br />   *先get到你要的tag吧，記得回傳型態是NodeList，<br />   *不要看我命名為elements，就以為他是Element<br />   */<br />   elements  = document.getElementsByTagName("update_images");<br />   iElementLength=elements.getLength();<br />   if (iElementLength ==0 )<br />    return;<br />    <br />   for (int i = 0; i &lt; iElementLength ; i++) {<br />    Element element = (Element) elements.item(i);<br />    Log.d("main",element.getAttribute("pic_name"));<br />   }<br />  }catch (Exception e) {<br />   Log.d("main",String.valueOf(e.toString()));<br />  }<br />   <br /> }<br /></pre><br /><br />大概就是這樣!<br /><br />
+  </div>
+
+  <h1><a style="color: #F22430" href="/2010/08/31/android-service-keep-alive-or-another">android service keep alive or another way??</a></h1>
+  <p class="author">
+    <span class="date">2010-08-31 04:26:00 +0800</span>
+  </p>
+  <div class="content">
+    android service crashed (restart)<br /><br />如果你有支APP有個SERVICE是可能每隔一段時間去做一次的!<br /><br />那麼我建議你改用AlarmManager。<br /><br />最近發現自己寫的某支APP裡面的service會被android os restart!<br /><br />大概知道是因為是background service的關係，<br /><br />想要讓一個service keep alive。<br /><br />當然有解決方法，在2.0以前的device，<br /><br />可以使用setForeground(true);<br /><br />但是2.0以上，這個method，失效了。<br /><br />改成startForeground(id, notification)。<br /><br />但我改用了AlarmManager<br /><br />原因當然有很多，像是其實啟動一個service，就是啟動一個process。<br /><br />想必就消耗掉一點memory...<br /><br />當然還有其他原因，大家可以去Google一下。<br /><br />實作方法如下:<br /><br /><pre class="brush: java">public void onUpdate(Context context, AppWidgetManager appWidgetManager,int[] appWidgetIds) {<br />   Intent intent = new Intent(context, receiverChange.class);  //放入你每隔一段時間要執行的class<br />   PendingIntent pendingIntent   = PendingIntent.getBroadcast(context, 0, intent, 0);<br />   AlarmManager alarmManager  = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);<br />   //接著就是set一個repeat，這裡是設定每隔一分鐘去執行<br />   alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,  System.currentTimeMillis() , (60*1000), pendingIntent);<br /> }<br /></pre><br /><br />然後您每隔一段時間要做的事情就寫在一個BroadcastReceiver裡面<br /><br /><pre class="brush: java">public class receiverChangePicture extends BroadcastReceiver {<br /> @Override<br /> public void onReceive(Context context, Intent intent) {<br />  Log.d("main","hi I receive message every minutes..");<br /> }<br /><br />}<br /></pre><br /><br /><br />這樣就完成了，但是注意此實作方法只限定於有週期性要執行的code才適用!!!!<br /><br />如果今天你是要偵測sd card的狀態，那麼建議你還是用service!(就如同我上篇文章所說的)<br /><br />以alarmManager來實作，只是節省一點成本罷了!<br /><br /><br /><br /><br /><br /><br /><br />
+  </div>
+
+
+<!-- Pagination links -->
+<div class="pagination">
+  
+    <a href="/blog/page44" class="previous">Previous</a>
+  
+  <span class="page_number ">Page: 45 of 53</span>
+  
+    <a href="/blog/page46" class="next">Next</a>
+  
+</div>
+
+      </div>
+
+    </div>
+
+    <div id="footer">
+      <div class="container">
+        <p>&copy; 2015 Ken Yang
+          with help from <a href="http://jekyllbootstrap.com" target="_blank" title="The Definitive Jekyll Blogging Framework">Jekyll Bootstrap</a>
+          and <a href="http://getbootstrap.com" target="_blank">Bootstrap</a>
+        </p>
+      </div>
+    </div>
+
+    
+
+
+
+
+
+    <!-- Latest compiled and minified JavaScript, requires jQuery 1.x (2.x not supported in IE8) -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="/assets/themes/bootstrap-3/bootstrap/js/bootstrap.min.js"></script>
+  </body>
+</html>
+

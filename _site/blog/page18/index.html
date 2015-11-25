@@ -1,0 +1,296 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title></title>
+    
+    <meta name="author" content="Ken Yang">
+
+    <!-- Enable responsive viewport -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Bootstrap styles -->
+    <link href="/assets/themes/bootstrap-3/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Optional theme -->
+    <link href="/assets/themes/bootstrap-3/bootstrap/css/bootstrap-theme.min.css" rel="stylesheet">
+    <!-- Sticky Footer -->
+    <link href="/assets/themes/bootstrap-3/bootstrap/css/bs-sticky-footer.css" rel="stylesheet">
+    
+    <!-- Custom styles -->
+    <link href="/assets/themes/bootstrap-3/css/style.css?body=1" rel="stylesheet" type="text/css" media="all">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Fav and touch icons -->
+    <!-- Update these with your own images
+      <link rel="shortcut icon" href="images/favicon.ico">
+      <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+      <link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-72x72.png">
+      <link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png">
+    -->
+
+    <!-- atom & rss feed -->
+    <link href="/atom.xml" type="application/atom+xml" rel="alternate" title="Sitewide ATOM Feed">
+    <link href="/rss.xml" type="application/rss+xml" rel="alternate" title="Sitewide RSS Feed">
+
+  </head>
+
+  <body>
+    <div id="wrap">
+      <nav class="navbar navbar-default" role="navigation">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#jb-navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/">Ken Yang</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="jb-navbar-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+            
+
+
+  
+    
+      
+      	
+      	<li><a href="/archive">Archive</a></li>
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/categories">Categories</a></li>
+      	
+      
+    
+  
+    
+  
+    
+      
+      	
+      	<li><a href="/pages">Pages</a></li>
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/tags">Tags</a></li>
+      	
+      
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+
+
+
+          </ul>
+          <form class="navbar-form navbar-right" role="search">
+            <div class="form-group">
+              <input type="text" class="form-control" placeholder="Search">
+            </div>
+            <button type="submit" class="btn btn-default">Submit</button>
+          </form>
+        </div><!-- /.navbar-collapse -->
+      </nav>
+
+      <div class="container">
+        <!-- This loops through the paginated posts -->
+
+  <h1><a style="color: #F22430" href="/2012/07/21/amazon-ec2-send-gmail">在Amazon EC2-  send gmail 問題</a></h1>
+  <p class="author">
+    <span class="date">2012-07-21 15:40:00 +0800</span>
+  </p>
+  <div class="content">
+    用Java寄MAIL不是這篇的重點，<br />反正主要是用JavaMail API就是了!<br />code 如下，就不多做說明：<br /><pre class="brush: java">            final String MAIL_HOST = "smtp.gmail.com";   // gmail的smtp<br />            final String GMAIL_ACCOUNT = "XXXXX@gmail.com";  //gmail account<br />            final String GMAIL_PASSWORD = "XXXXX";    // gmail pwd<br />            final String strRecipients = "xxx@gmail.com"; // 收件人<br />            final String strSender = "ejustmake@gmail.com";  // 寄件人名稱<br />            Security.addProvider(new com.sun.net.ssl.internal.ssl.Provider());<br /><br />            Properties props = new Properties();<br />            props.setProperty("mail.transport.protocol", "smtp");<br />            props.setProperty("mail.host", MAIL_HOST);<br />            props.put("mail.smtp.auth", "true");<br />            props.put("mail.smtp.port", "465");<br />            props.put("mail.smtp.socketFactory.port", "465");//smtp PORT 528好像也可以<br />            props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");<br />            props.put("mail.smtp.socketFactory.fallback", "false");<br />            props.setProperty("mail.smtp.quitwait", "false");<br />            <br />            <br />   // Authenticate的動作 <br />            Session session = Session.getDefaultInstance(props,<br />                    new javax.mail.Authenticator() {<br />                        protected PasswordAuthentication getPasswordAuthentication() {<br />                            String account = GMAIL_ACCOUNT;<br />                            String pass = GMAIL_PASSWORD;<br />                            return new PasswordAuthentication(account, pass);<br />                        }<br />            });<br />            <br /><br />            MimeMessage message = new MimeMessage(session);<br />            message.setstrSender(new InternetAddress(strSender));<br />            message.setSubject("Mail標題", "UTF-8");<br />            message.setContent(strBody, "text/html;charset=utf-8");//這裡用text/html就可以傳網頁的內容！<br /><br />            message.setstrRecipients(Message.RecipientType.TO, InternetAddress.parse(strRecipients));<br />            Transport.send(message);<br /><br /></pre><br /><br />然後這段code在任何一台host上，甚至local上都可以run，<br />但是打包成war搬上去ec2以後就出現AuthenticationFail問題.....<br />恩，主要問題是被Google擋住了！<br />因為我用的帳號平常是在台灣進行登入！<br />可是搬上去ec2以後...因為主機是在美國，<br />所以變成IP變成從美國登入...<br />會被擋住，但是GOOGLE會發一封MAIL給你，<br />內容如下圖，反正就是詢問這是不是你，如果是你，<br />就點下圖中的紅色框框，點了以後按照步驟做，<br />然後再用你的應用程式登入一次，就成功了！<br /><br /><br /><div class="separator" style="clear: both; text-align: center;"><a href="http://1.bp.blogspot.com/-EAIGVKFlLZ4/UApcPcfDdNI/AAAAAAAAAxY/QBBUCnqIQpk/s1600/Untitled.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="348" src="http://1.bp.blogspot.com/-EAIGVKFlLZ4/UApcPcfDdNI/AAAAAAAAAxY/QBBUCnqIQpk/s640/Untitled.png" width="640" /></a></div><br /><br /><br /><br /><br /><br />
+  </div>
+
+  <h1><a style="color: #F22430" href="/2012/04/09/eclipse-aws-plugin">Eclipse 安裝 AWS Plugin</a></h1>
+  <p class="author">
+    <span class="date">2012-04-09 00:03:00 +0800</span>
+  </p>
+  <div class="content">
+    Amazon有推出一套plugin for eclipse，<br />可以讓使用者在eclipse開發Java Application或者J2EE，<br />然後deploy上去<a href="http://aws.amazon.com/elasticbeanstalk/">AWS Elastic Beanstalk</a>!<br /><br /><br />當然你也可以自己在本機寫好，<br />然後用FTP將project上傳到你的EC2上面去!<br />利用這樣的方式去執行!<br />但這邊提供一個利用Eclipse Deploy上去的方法!<br /><br /><br />而<a href="http://aws.amazon.com/elasticbeanstalk/">AWS Elastic Beanstalk</a>是Amazon推出的PaaS平台!<br />開發者一樣不用去管Infrastructure!<br />但是當你Deploy上去，Amazon可是會自動幫你create一個EC2的唷!<br />所以還是要注意費用!<br />不過這個EC2的AMI是選用Amazon Linux AMI，這個AMI也是有Free Usage Tier的!<br />但還是要注意一下別超過配額!<br /><br />至於詳細的<a href="http://aws.amazon.com/elasticbeanstalk/">AWS Elastic Beanstalk</a>介紹可以去官網看!<br />或者等待我下一篇的介紹吧!<br /><br />這篇主要介紹如何安裝Plugin至Eclipse上!<br />這裡建議您使用<a href="http://www.eclipse.org/downloads/packages/eclipse-ide-java-ee-developers/indigosr2">Eclipse J2EE</a>的版本比較方便後面的開發!<br />當然你也可以使用Eclipse Classic 的版本，(我自己是使用Classic)<br />只是就要去安裝<a href="http://www.eclipse.org/webtools/">WTP</a>!<br /><a href="http://www.eclipse.org/webtools/">WTP</a>是一個plugin可以讓你在Eclipse Classic版本中開發Java Web(jsp, jsf..etc)!<br />這裡就不另作說明了!<br /><br />首先先開啟你的 Eclipse，<br />然後點選Help-&gt; Install New Software<br />如下圖!<br /><div class="separator" style="clear: both; text-align: center;"><a href="http://1.bp.blogspot.com/-wXc4vSgX09c/T4Gy4Ji5f3I/AAAAAAAAAoQ/u0Acnq9OzcU/s1600/1.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="http://1.bp.blogspot.com/-wXc4vSgX09c/T4Gy4Ji5f3I/AAAAAAAAAoQ/u0Acnq9OzcU/s1600/1.png" /></a></div><div class="separator" style="clear: both; text-align: center;"><br /></div><div class="separator" style="clear: both; text-align: left;">接著點選下圖中的Add，然後輸入AWS Plugin的位置!&nbsp;</div><div class="separator" style="clear: both; text-align: center;"><a href="http://3.bp.blogspot.com/-UaE0V39l554/T4Gy4uBPv5I/AAAAAAAAAoU/eI0qyIepiuc/s1600/2.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="376" src="http://3.bp.blogspot.com/-UaE0V39l554/T4Gy4uBPv5I/AAAAAAAAAoU/eI0qyIepiuc/s640/2.png" width="640" /></a></div><div class="separator" style="clear: both; text-align: center;"><br /></div><div class="separator" style="clear: both; text-align: center;"><br /></div>&nbsp;接著就勾選下圖中的AWS Toolkit for Eclipse，然後進行安裝!<br /><div class="separator" style="clear: both; text-align: center;"><a href="http://4.bp.blogspot.com/-40QC3p8asfw/T4Gy5RZ8i6I/AAAAAAAAAog/jRrWgBM811s/s1600/3.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="582" src="http://4.bp.blogspot.com/-40QC3p8asfw/T4Gy5RZ8i6I/AAAAAAAAAog/jRrWgBM811s/s640/3.png" width="640" /></a></div><div class="separator" style="clear: both; text-align: center;"><br /></div><div class="separator" style="clear: both; text-align: center;"><br /></div><div class="separator" style="clear: both; text-align: left;">安裝完成，會在Toolbar上看到Amazon的圖示!&nbsp;點選一下!&nbsp;</div><div class="separator" style="clear: both; text-align: left;">可以看到很多選項!</div><div class="separator" style="clear: both; text-align: left;">像是New AWS Java Project，</div><div class="separator" style="clear: both; text-align: left;">或者Show AWS Explorer View等等之類的!</div><div class="separator" style="clear: both; text-align: left;">但我們要先選擇Preferences，</div><div class="separator" style="clear: both; text-align: left;">要先設定一些資訊!</div><div class="separator" style="clear: both; text-align: center;"><a href="http://1.bp.blogspot.com/-2WRl0SM--AE/T4Gy6SMm3cI/AAAAAAAAAok/8AK7c_9x7hU/s1600/4.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="400" src="http://1.bp.blogspot.com/-2WRl0SM--AE/T4Gy6SMm3cI/AAAAAAAAAok/8AK7c_9x7hU/s400/4.png" width="357" /></a></div><div class="separator" style="clear: both; text-align: center;"><br /></div><div class="separator" style="clear: both; text-align: left;"><br /></div>&nbsp;首先我們要先建立一個Account，<br />在Account Name輸入你在AWS的帳號!<br />然後輸入你的Access Key Id以及Secret Access Key!<br />如果忘記的人可以來這<a href="https://aws-portal.amazon.com/gp/aws/securityCredentials?">https://aws-portal.amazon.com/gp/aws/securityCredentials?</a>看!<br />或者點選下圖中的"find your existing AWS security credentials."去找<br /><div class="separator" style="clear: both; text-align: center;"><a href="http://3.bp.blogspot.com/-2Nh2ITQpFeo/T4Gy7FwgmXI/AAAAAAAAAow/r-U7W2PI4A0/s1600/5.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="510" src="http://3.bp.blogspot.com/-2Nh2ITQpFeo/T4Gy7FwgmXI/AAAAAAAAAow/r-U7W2PI4A0/s640/5.png" width="640" /></a></div><br /><br /><br />設定完成以後，就可以跟你的AWS連結上了!<br />我們可以點選<span style="text-align: left;">Show AWS Explorer View來看看我們AWS上的設定!</span><br /><span style="text-align: left;">點選以後，會出現下圖! 你可以用來觀看AWS上的設定!</span><br /><div class="separator" style="clear: both; text-align: center;"><a href="http://2.bp.blogspot.com/-5ZjBoPCmE4Q/T4Gy8L53P3I/AAAAAAAAAo0/J4BBK7uH0qE/s1600/6.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="http://2.bp.blogspot.com/-5ZjBoPCmE4Q/T4Gy8L53P3I/AAAAAAAAAo0/J4BBK7uH0qE/s1600/6.png" /></a></div><div class="separator" style="clear: both; text-align: center;"><br /></div><div class="separator" style="clear: both; text-align: center;"><br /></div>&nbsp;這裡我們點選Amazon EC2-&gt;Instances<br />會出現下圖! 像我AWS上面擁有兩個Instance，所以就會出現兩個!<br />當然你也可以在此Dilaog中去stop或者start甚至是reboot這個instance!<br /><div class="separator" style="clear: both; text-align: center;"><a href="http://4.bp.blogspot.com/-pH-O8Xl0Xh0/T4Gy8-iuh4I/AAAAAAAAAo8/bZQxo1WM02c/s1600/7.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="http://4.bp.blogspot.com/-pH-O8Xl0Xh0/T4Gy8-iuh4I/AAAAAAAAAo8/bZQxo1WM02c/s1600/7.png" /></a></div><br /><br />完成上面的步驟就代表安裝成功了!<br />下一篇會說明如何Deploy一個Project上去<a href="http://aws.amazon.com/elasticbeanstalk/">AWS Elastic Beanstalk</a><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
+  </div>
+
+  <h1><a style="color: #F22430" href="/2012/04/08/amazon-simpledb-java">Amazon SimpleDB 操作 (Java)</a></h1>
+  <p class="author">
+    <span class="date">2012-04-08 18:05:00 +0800</span>
+  </p>
+  <div class="content">
+    <a href="http://aws.amazon.com/simpledb/">SimpleDB </a>是Amazon提供的一種NoSQL DATABASE!<br />詳細說明去官網看吧!<br /><br /><br />這篇主要會教大家如何<br />建立一張table，<br />新增資料<br />刪除資料<br />查詢資料<br /><br /><br />首先要先宣告一些必備的參數，<br /><pre class="brush: java">// 你的table name(在Relational Database叫做table，這裡叫做domain)<br />  final String DOMAIN_NAME = "member";<br />  <br />  // 取得憑證，這檔案預設在/src底下<br />  AWSCredentials credentials = new PropertiesCredentials(getClass().getClassLoader().getResourceAsStream("AwsCredentials.properties"));<br />  <br />  // 宣告一個SimpleDB<br />  AmazonSimpleDB sdb = new AmazonSimpleDBClient(credentials);<br />     <br /></pre><br />接著就建立一個table，<br /><pre class="brush: java">// 建立一個table(在Relational Database叫做table，這裡叫做domain)<br />  sdb.createDomain(new CreateDomainRequest(DOMAIN_NAME));<br /></pre><br /><br />在SimpleDB的新增分成兩種方式!<br />一種是一筆一筆的新增，<br />另一種是批次的新增!(一次新增多筆)<br />有玩過GAE的大概知道，其實GAE也是這樣!<br />多筆的話就是用一個list存放資料!<br /><br />在這邊先介紹一次新增多筆的!<br /><pre class="brush: java">// 先宣告一個List，List擺放的型態為ReplaceableItem，這型態意思是如果table裡面已經有一筆Ken的資料，那麼就取代掉那筆，不會多一筆<br />  List&lt;ReplaceableItem&gt; listAddData = new ArrayList&lt;ReplaceableItem&gt;();<br /><br /><br />  // 第一筆資料<br />  // 先new一個Item，Item Name是Ken，然後這個item有四個attribute!分別是Sex, Tel, Mail, Nickname<br />  listAddData.add(new ReplaceableItem("Ken").withAttributes(<br />       new ReplaceableAttribute("Sex", "boy", true),<br />       new ReplaceableAttribute("Tel", "09123456", true),<br />       new ReplaceableAttribute("Mail", "xxx@kenyang.net", true),<br />       new ReplaceableAttribute("Nickname", "KenYang", true)));<br /> <br />  // 第二筆<br />  listAddData.add(new ReplaceableItem("Sam").withAttributes(<br />       new ReplaceableAttribute("Sex", "boy", true),<br />       new ReplaceableAttribute("Tel", "09123456", true),<br />       new ReplaceableAttribute("Mail", "xxx@kenyang.net", true),<br />       new ReplaceableAttribute("Nickname", "SamYang", true)));<br /><br /><br />  // 接著就新增吧!記得要指定Domain name!<br />  sdb.batchPutAttributes(new BatchPutAttributesRequest(DOMAIN_NAME, listAddData));<br /><br /></pre><br /><br /><br />接著要介紹新增一筆的! 其實大同小異，只是要宣告一個PutAttributesRequest來擺放資料!<br />一個PutAttributeRequest就代表一筆資料!<br /><pre class="brush: java">PutAttributesRequest dataAttribute = new PutAttributesRequest().withDomainName(DOMAIN_NAME).withItemName("John"); <br />     <br />  dataAttribute.getAttributes().add(        <br />       new ReplaceableAttribute()<br />           .withName("Sex")<br />           .withValue("girl")<br />           .withReplace(true));<br />     <br />  dataAttribute.getAttributes().add(        <br />       new ReplaceableAttribute()<br />           .withName("Tel")<br />           .withValue("0987123")<br />           .withReplace(true));<br />  <br />  dataAttribute.getAttributes().add(        <br />       new ReplaceableAttribute()<br />           .withName("Mail")<br />           .withValue("xxx@gmail.com")<br />           .withReplace(true));<br />     <br />  dataAttribute.getAttributes().add(        <br />       new ReplaceableAttribute()<br />           .withName("Nickname")<br />           .withValue("JohnYang")<br />           .withReplace(true));     <br />     <br />  sdb.putAttributes(dataAttribute);     <br /><br /></pre><br /><br /><br />接下來要介紹刪除! 這邊是介紹一次刪除多筆的!<br />一樣是用一個List去存放要刪除的Item Name!<br />至於刪除單筆，也跟上述方法一樣! 這裡就不多作介紹!<br /><pre class="brush: java">List&lt;DeletableItem&gt; listDeleteData = new ArrayList&lt;DeletableItem&gt;();<br />  listDeleteData.add(new DeletableItem().withName("Ken"));<br />  listDeleteData.add(new DeletableItem().withName("Sam"));<br />  // 所以Ken和Sam這兩筆資料會被刪除<br />  sdb.batchDeleteAttributes(new BatchDeleteAttributesRequest(DOMAIN_NAME,listDeleteData));<br /><br /></pre><br /><br />最後要介紹查詢了!<br /><pre class="brush: java">// 注意，傳統的SQL指令，都是用單引號(')，但是這裡要用(`)<br />     String selectExpression = "select * from `" + DOMAIN_NAME + "` ";<br />     SelectRequest selectRequest = new SelectRequest(selectExpression);<br />     SelectResult sr = sdb.select(selectRequest);<br />  <br />     for (Item item : sr.getItems()) {<br />          response.getWriter().println(item.getName());<br />          response.getWriter().println(item.getAttributes().get(0).getValue());<br />     }<br /><br /></pre><br /><br /><br /><br /><br />
+  </div>
+
+
+<!-- Pagination links -->
+<div class="pagination">
+  
+    <a href="/blog/page17" class="previous">Previous</a>
+  
+  <span class="page_number ">Page: 18 of 53</span>
+  
+    <a href="/blog/page19" class="next">Next</a>
+  
+</div>
+
+      </div>
+
+    </div>
+
+    <div id="footer">
+      <div class="container">
+        <p>&copy; 2015 Ken Yang
+          with help from <a href="http://jekyllbootstrap.com" target="_blank" title="The Definitive Jekyll Blogging Framework">Jekyll Bootstrap</a>
+          and <a href="http://getbootstrap.com" target="_blank">Bootstrap</a>
+        </p>
+      </div>
+    </div>
+
+    
+
+
+
+
+
+    <!-- Latest compiled and minified JavaScript, requires jQuery 1.x (2.x not supported in IE8) -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="/assets/themes/bootstrap-3/bootstrap/js/bootstrap.min.js"></script>
+  </body>
+</html>
+

@@ -1,0 +1,296 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title></title>
+    
+    <meta name="author" content="Ken Yang">
+
+    <!-- Enable responsive viewport -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Bootstrap styles -->
+    <link href="/assets/themes/bootstrap-3/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Optional theme -->
+    <link href="/assets/themes/bootstrap-3/bootstrap/css/bootstrap-theme.min.css" rel="stylesheet">
+    <!-- Sticky Footer -->
+    <link href="/assets/themes/bootstrap-3/bootstrap/css/bs-sticky-footer.css" rel="stylesheet">
+    
+    <!-- Custom styles -->
+    <link href="/assets/themes/bootstrap-3/css/style.css?body=1" rel="stylesheet" type="text/css" media="all">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Fav and touch icons -->
+    <!-- Update these with your own images
+      <link rel="shortcut icon" href="images/favicon.ico">
+      <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+      <link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-72x72.png">
+      <link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png">
+    -->
+
+    <!-- atom & rss feed -->
+    <link href="/atom.xml" type="application/atom+xml" rel="alternate" title="Sitewide ATOM Feed">
+    <link href="/rss.xml" type="application/rss+xml" rel="alternate" title="Sitewide RSS Feed">
+
+  </head>
+
+  <body>
+    <div id="wrap">
+      <nav class="navbar navbar-default" role="navigation">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#jb-navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/">Ken Yang</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="jb-navbar-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+            
+
+
+  
+    
+      
+      	
+      	<li><a href="/archive">Archive</a></li>
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/categories">Categories</a></li>
+      	
+      
+    
+  
+    
+  
+    
+      
+      	
+      	<li><a href="/pages">Pages</a></li>
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/tags">Tags</a></li>
+      	
+      
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+
+
+
+          </ul>
+          <form class="navbar-form navbar-right" role="search">
+            <div class="form-group">
+              <input type="text" class="form-control" placeholder="Search">
+            </div>
+            <button type="submit" class="btn btn-default">Submit</button>
+          </form>
+        </div><!-- /.navbar-collapse -->
+      </nav>
+
+      <div class="container">
+        <!-- This loops through the paginated posts -->
+
+  <h1><a style="color: #F22430" href="/2011/07/06/install-android-plugin-for-eclipse">Install Android Plugin for Eclipse</a></h1>
+  <p class="author">
+    <span class="date">2011-07-06 03:15:00 +0800</span>
+  </p>
+  <div class="content">
+    這篇主要是在教導大家如何在Eclipse中，安裝開發Android程式的plugin，<div>其實這類型的文章在網路上很多，但會打這篇主要是為了今年資管營的學生們，</div><div>為了讓他們能夠快速地找到安裝教學，因此打這篇。</div><div><br /></div><div><br /></div><div>首先我們要先去下載</div><div><ol><li><a href="http://www.oracle.com/technetwork/java/javase/downloads/jdk-6u26-download-400750.html">JDK (請在下面選擇符合自己作業系統的版本)</a></li><li><a href="http://www.eclipse.org/downloads/packages/eclipse-classic-37/indigor">Eclipse Classic 3.7 (請在右邊選單選擇符合自己的版本)</a></li><li><a href="http://dl.google.com/android/android-sdk_r11-windows.zip">Android SDK</a></li></ol><div><br /></div></div><div>下載完成以後，請照著下面的步驟操作：</div><div><ol><li>安裝第一個下載的檔案JDK</li><li>將第二個下載的檔案Eclipse解壓縮出來到一個目錄，無須安裝，即可使用</li><li>將第三個檔案Android SDK解壓縮出來到一個目錄即可。</li><li>開啟Eclipse</li><li>看到上方的選單，請點選【Help】→點選【Install New Software】→點選【Add】→在Name地方輸入android，Location地方輸入http://dl-ssl.google.com/android/eclipse &nbsp;→點選下方按鈕【Next】進行安裝。</li><li>完成上步驟，應該會重新啟動Eclipse，應該會看到如圖中的紅色框框選項<a href="http://2.bp.blogspot.com/-pTvVhox-Nn8/ThNhoprnIQI/AAAAAAAAAWU/AZSYV5Kv_DY/s1600/3.PNG" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="66" src="http://2.bp.blogspot.com/-pTvVhox-Nn8/ThNhoprnIQI/AAAAAAAAAWU/AZSYV5Kv_DY/s320/3.PNG" width="320" /></a></li><li>此時再點選上方選單的【Window】→點選【Preferences】→點選【Android】→在右邊視窗的SDK Location選擇剛剛第三個檔案解壓縮的位置→點選【Apply】→點選【OK】</li><li>完成上步驟，再點選下圖中的紅色框框<a href="http://2.bp.blogspot.com/-pTvVhox-Nn8/ThNhoprnIQI/AAAAAAAAAWU/AZSYV5Kv_DY/s1600/3.PNG" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="66" src="http://2.bp.blogspot.com/-pTvVhox-Nn8/ThNhoprnIQI/AAAAAAAAAWU/AZSYV5Kv_DY/s320/3.PNG" width="320" /></a></li><li>點選【Available packages】→將兩個選項都打勾→點選【Install selected】→接著就一直按next或者finish即可。</li><li>按照上面9步驟即可完成安裝Android Plugin for Eclipse</li></ol><div><br /></div></div><div><br /></div><div><br /></div><div class="separator" style="clear: both; text-align: center;"></div>
+  </div>
+
+  <h1><a style="color: #F22430" href="/2011/07/03/using-eclipse-for-windows-to-connect-to">Using Eclipse for Windows to connect to Hadoop</a></h1>
+  <p class="author">
+    <span class="date">2011-07-03 21:30:00 +0800</span>
+  </p>
+  <div class="content">
+    先前已經在<a href="http://blog.kenyang.net/2011/06/how-to-install-hadoop-on-ubuntu-single.html">前一篇</a>，教導大家如何<a href="http://blog.kenyang.net/2011/06/how-to-install-hadoop-on-ubuntu-single.html">安裝hadoop</a>在ubuntu上面了，<br />這篇主要是在說明如何在windows的環境下，<br />使用eclipse去<b>連結</b>到ubuntu上的hadoop，<br />將會在下一篇教導大家如何撰寫一個Map/Reduce程式。<br /><br /><br />在我連結成功之前，在Google上找了不知道多少資料。<br />但沒有任何一篇是完完全全符合這個案例的!<br />大部分找到的案例都是，在Windows環境下安裝cygwin，<br />利用cygwin來模擬出unix環境，然後再unix中架設hadoop，<br /><br />問題是這樣的案例...根本沒有太大意義，因為是模擬，就只是單純玩玩而已，<br />所以才打這篇教學，如何在windows真的連結到一台實體的linux server上。<br /><br />我的本機基本環境如下：<br />Eclipse 3.6<br />Windows 7 64bits<br /><br />實體linux server環境如下：<br />ubuntu 10.10<br />hadoop 0.20.2<br /><br /><br /><span class="Apple-style-span" style="font-size: large;"><b>【步驟一】首先我們得去下載三個檔案，</b></span><br /><br /><ol><li>&nbsp;<a href="https://issues.apache.org/jira/secure/attachment/12460491/hadoop-eclipse-plugin-0.20.3-SNAPSHOT.jar">hadoop-eclipse-plugin-0.20.3-SNAPSHOT.jar</a>&nbsp;先下載這個jar檔，並放在eclipse資料夾底下的/plugin資料夾裡面，有人可能會發現，為什麼我們實體server上的hadoop版本是0.20.2，可是我們用的eclipse plugin版本卻是0.20.3，而不是用0.20.2，這是因為0.20.2有問題。（稍後會說明甚麼問題）</li><li><a href="http://www.cygwin.com/">cygwin</a>　第二個下載這個並且安裝起來，安裝過程很簡單，恕不贅述，但或許有人會納悶..為什麼要安裝這個? 這個不是模擬unix嗎? 我們不是要連結到實體的linux server上嗎? 如果懂MapReduce原理的人，可能就會稍微理解，大家可以去看由2位Google Fellow所提出的<a href="http://labs.google.com/papers/mapreduce-osdi04.pdf">paper</a>。簡單的說Reduce最後會將結果輸出到本機硬碟上，而這裡的本機是linux，所以會用到一些相關指令是windows沒有的，例如:chown，所以我們得利用<a href="http://www.cygwin.com/">cygwin</a>安裝好後裡面/bin資料夾的一些linux指令。</li><li><a href="http://labs.renren.com/apache-mirror/hadoop/core/hadoop-0.20.2/hadoop-0.20.2.tar.gz">hadoop 0.20.2</a>&nbsp;第三個下載hadoop，原因是再eclipse for windows中開發hadoop專案，會用到一些hadoop的jar檔案，並且解壓縮出來，在這篇，還不需要用到，在下一篇進行程式開發，將會用到!</li></ol><br /><br /><span class="Apple-style-span" style="font-size: large;"><b>【步驟二】設定環境變數</b></span><br />下載以及安裝完成以後，<br />請記得設定環境變數，<br />設定方式如下（不好意思，我的OS是英文版，請大家自行對照自己電腦）<br />在我的電腦上點選右鍵→點選內容，<br />會看到下圖(圖一)，請點選Change Setting，<br /><br /><table cellpadding="0" cellspacing="0" class="tr-caption-container" style="float: left; text-align: left;"><tbody><tr><td style="text-align: center;"><a href="http://3.bp.blogspot.com/-9ShbMycRvbE/ThBk69JEuSI/AAAAAAAAAVY/82hNym9ipiY/s1600/1.PNG" imageanchor="1" style="clear: left; margin-bottom: 1em; margin-left: auto; margin-right: auto;"><img border="0" height="183" src="http://3.bp.blogspot.com/-9ShbMycRvbE/ThBk69JEuSI/AAAAAAAAAVY/82hNym9ipiY/s400/1.PNG" width="400" /></a></td></tr><tr><td class="tr-caption" style="text-align: center;">圖一</td></tr></tbody></table><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />點選完後，會看到下圖（圖二），再點選Advanced，<br />點選以後再點選Environment Variables<br /><br /><table cellpadding="0" cellspacing="0" class="tr-caption-container" style="float: left; text-align: left;"><tbody><tr><td style="text-align: center;"><a href="http://4.bp.blogspot.com/-ZhTkYNhlITU/ThBk7DL-xGI/AAAAAAAAAVc/dMdvsjZMCgI/s1600/2.PNG" imageanchor="1" style="clear: left; margin-bottom: 1em; margin-left: auto; margin-right: auto;"><img border="0" height="400" src="http://4.bp.blogspot.com/-ZhTkYNhlITU/ThBk7DL-xGI/AAAAAAAAAVc/dMdvsjZMCgI/s400/2.PNG" width="362" /></a></td></tr><tr><td class="tr-caption" style="text-align: center;">圖二</td></tr></tbody></table><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />點選完成後，會看到下圖（圖三），請先找到Path這個系統變數，<br />並按下Edit按鈕。<br /><table cellpadding="0" cellspacing="0" class="tr-caption-container" style="float: left; margin-right: 1em; text-align: left;"><tbody><tr><td style="text-align: center;"><a href="http://2.bp.blogspot.com/-tQPDVBmS-qg/ThBk7snYgUI/AAAAAAAAAVg/bdMYffeg5T0/s1600/3.PNG" imageanchor="1" style="clear: left; margin-bottom: 1em; margin-left: auto; margin-right: auto;"><img border="0" height="400" src="http://2.bp.blogspot.com/-tQPDVBmS-qg/ThBk7snYgUI/AAAAAAAAAVg/bdMYffeg5T0/s400/3.PNG" width="370" /></a></td></tr><tr><td class="tr-caption" style="text-align: center;">圖三</td></tr></tbody></table><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />點選完以後，會看到下圖（圖四），<br />請在最後面增加";c:\cygwin\bin"，<br />不需要雙引號喔！增加完成以後按下OK，請先重開機!<br /><table cellpadding="0" cellspacing="0" class="tr-caption-container" style="float: left; text-align: left;"><tbody><tr><td style="text-align: center;"><a href="http://3.bp.blogspot.com/-U8Z1mxxbLq8/ThBk8ANAPbI/AAAAAAAAAVk/EvHGJFxRF1Q/s1600/4.PNG" imageanchor="1" style="clear: left; margin-bottom: 1em; margin-left: auto; margin-right: auto;"><img border="0" height="168" src="http://3.bp.blogspot.com/-U8Z1mxxbLq8/ThBk8ANAPbI/AAAAAAAAAVk/EvHGJFxRF1Q/s400/4.PNG" width="400" /></a></td></tr><tr><td class="tr-caption" style="text-align: center;">圖四</td></tr></tbody></table><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><b><span class="Apple-style-span" style="font-size: large;">【步驟三】設定Eclipse</span></b><br />設定完成以後，並且有把.jar檔放入eclipse/plugin以後，<br />請開啟Eclipse，<br />並點選Eclipse視窗中的右上角，如下圖(圖五)上方的框框，再點選other，<br /><table cellpadding="0" cellspacing="0" class="tr-caption-container" style="float: left; margin-right: 1em; text-align: left;"><tbody><tr><td style="text-align: center;"><a href="http://1.bp.blogspot.com/-tS4hDiqTA9s/ThBp_D58STI/AAAAAAAAAVo/EECA6iRvAs4/s1600/5.png" imageanchor="1" style="clear: left; margin-bottom: 1em; margin-left: auto; margin-right: auto;"><img border="0" src="http://1.bp.blogspot.com/-tS4hDiqTA9s/ThBp_D58STI/AAAAAAAAAVo/EECA6iRvAs4/s1600/5.png" /></a></td></tr><tr><td class="tr-caption" style="text-align: center;">圖五</td></tr></tbody></table><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />點選完以後，會看到下圖(圖六)<br />請選擇Map/Reduce，<br /><table cellpadding="0" cellspacing="0" class="tr-caption-container" style="float: left; margin-right: 1em; text-align: left;"><tbody><tr><td style="text-align: center;"><a href="http://1.bp.blogspot.com/-xVD-BpIrFyI/ThBp_rMi-AI/AAAAAAAAAVs/B1_HOzMg_mY/s1600/6.PNG" imageanchor="1" style="clear: left; margin-bottom: 1em; margin-left: auto; margin-right: auto;"><img border="0" height="320" src="http://1.bp.blogspot.com/-xVD-BpIrFyI/ThBp_rMi-AI/AAAAAAAAAVs/B1_HOzMg_mY/s320/6.PNG" width="262" /></a></td></tr><tr><td class="tr-caption" style="text-align: center;">圖六</td></tr></tbody></table><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><b><span class="Apple-style-span" style="font-size: large;">【步驟四】新增Map/Reduce Location</span></b><br /><br />點選完成會看到下圖(圖七)，<br />應該會有個Map/Reduce Locations的視窗，如左邊紅色框框，<br />此時請點選右邊紅色框框來新增一個Location<br /><table align="center" cellpadding="0" cellspacing="0" class="tr-caption-container" style="margin-left: auto; margin-right: auto; text-align: center;"><tbody><tr><td style="text-align: center;"><a href="http://4.bp.blogspot.com/-wXrmpAnShWA/ThBp_9CCzVI/AAAAAAAAAVw/azZU2RCNgws/s1600/7.PNG" imageanchor="1" style="margin-left: auto; margin-right: auto;"><img border="0" src="http://4.bp.blogspot.com/-wXrmpAnShWA/ThBp_9CCzVI/AAAAAAAAAVw/azZU2RCNgws/s1600/7.PNG" /></a></td></tr><tr><td class="tr-caption" style="text-align: center;">圖七</td></tr></tbody></table><br /><br /><br />點選完成會看到下圖(圖八)，<br />就根據你們自己的位置輸入相關資訊吧!<br />那個user name並無大礙，填寫完成以後按下Finish。<br /><table align="center" cellpadding="0" cellspacing="0" class="tr-caption-container" style="float: left; margin-right: 1em; text-align: left;"><tbody><tr><td style="text-align: center;"><a href="http://3.bp.blogspot.com/-ShVMxBNCeSw/ThBqAdQxdLI/AAAAAAAAAV0/Na7XiyPlaQA/s1600/8.PNG" imageanchor="1" style="margin-left: auto; margin-right: auto;"><img border="0" height="480" src="http://3.bp.blogspot.com/-ShVMxBNCeSw/ThBqAdQxdLI/AAAAAAAAAV0/Na7XiyPlaQA/s640/8.PNG" width="640" /></a></td></tr><tr><td class="tr-caption" style="text-align: center;">圖八</td></tr></tbody></table><br /><br /><br /><br />點選完成以後，會看到下圖(圖九)<br />會發現多了一個選項了，但是還沒完成喔，<br />我們在這個選項上點選右鍵，並點選Edit，<br /><br /><table align="center" cellpadding="0" cellspacing="0" class="tr-caption-container" style="float: left; margin-right: 1em; text-align: left;"><tbody><tr><td style="text-align: center;"><a href="http://2.bp.blogspot.com/-jRZOl52CGhA/ThBrZ_3eFZI/AAAAAAAAAWA/zqMcGX2iFQU/s1600/9.PNG" imageanchor="1" style="margin-left: auto; margin-right: auto;"><img border="0" height="80" src="http://2.bp.blogspot.com/-jRZOl52CGhA/ThBrZ_3eFZI/AAAAAAAAAWA/zqMcGX2iFQU/s640/9.PNG" width="640" /></a></td></tr><tr><td class="tr-caption" style="text-align: center;">圖九</td></tr></tbody></table><br /><br /><br /><br /><br /><br /><br /><br /><b><span class="Apple-style-span" style="font-size: large;">【步驟五】設定Map/Reduce Location的參數</span></b><br />再點選上圖，圖八中的Advanced Parameters，來修改一些參數，<br />有些人可能會問，為什麼不一開始就修改，因為有些參數，必須先建立好第一步，<br />然後再進行修改它才會出現。<br /><br />此時我們先找兩個參數，<br /><br />第一個是dfs.permissions.supergroup，請修改成你能對server上的hadoop進行存取的群組，我的server上群組是hadoop，所以我會在這欄修改成【hadoop】。<br />第二個是hadoop.job.ugi，跟上面一樣，但請修改成【hadoop,Tardis】。<br /><br /><br /><br />完成上面的步驟以後，<br />看到eclipse左邊的視窗，並點開DFS Locations，<br />會見到下圖(圖十)，會發現你已經連線成功了，如果你是根據我這篇的<a href="http://blog.kenyang.net/2011/06/how-to-install-hadoop-on-ubuntu-single.html">安裝教學</a>，你看到的資料夾名稱應該會是app，而不是appKen。<br />且不會看到user/hadoop/input這個資料夾，這個資料夾的功用是放置，程式將要讀取的資料。<br />將在下一篇，教導大家如何建立一個Map/Reduce專案。<br /><br /><table cellpadding="0" cellspacing="0" class="tr-caption-container" style="float: left; margin-right: 1em; text-align: left;"><tbody><tr><td style="text-align: center;"><a href="http://3.bp.blogspot.com/-4yR7A3a2A9k/ThBqA1XDszI/AAAAAAAAAV8/JTLbVjeR23Q/s1600/10.PNG" imageanchor="1" style="clear: left; margin-bottom: 1em; margin-left: auto; margin-right: auto;"><img border="0" src="http://3.bp.blogspot.com/-4yR7A3a2A9k/ThBqA1XDszI/AAAAAAAAAV8/JTLbVjeR23Q/s1600/10.PNG" /></a></td></tr><tr><td class="tr-caption" style="text-align: center;">圖十</td></tr></tbody></table><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />相關文章：<br /><br /><ul><li><a href="http://blog.kenyang.net/2011/06/how-to-install-hadoop-on-ubuntu-single.html">如何安裝Hadoop</a></li></ul><br /><br /><br /><br />
+  </div>
+
+  <h1><a style="color: #F22430" href="/2011/07/01/how-to-install-hadoop-on-ubuntu-single">How to install Hadoop on Ubuntu (single-node cluster)</a></h1>
+  <p class="author">
+    <span class="date">2011-07-01 00:29:00 +0800</span>
+  </p>
+  <div class="content">
+    這篇主要教導大家如何在ubuntu上架起single-node的hadoop。<br />會在其他篇教導大家如何架設multi-node。<br />因為架設multi-node的前提是先得架設single-node。<br />所以先教導大家如何架設。<br />至於如何執行一個MapReduce的project將在下一篇教導大家。<br /><br />我的環境如下：<br />ubuntu版本：10.10<br />hadoop：0.20.2<br /><br /><span class="Apple-style-span" style="font-size: large;"><br /></span><br /><b><span class="Apple-style-span" style="font-size: large;">【1】要架設hadoop起來的前提是必須安裝Sun的java-jdk</span></b><br />&nbsp; &nbsp; &nbsp;<b>【1.1】首先先增加Canonical Partner Repository到我們的repositories，語法如下：</b><br /><pre class="brush: java">sudo add-apt-repository "deb http://archive.canonical.com/ lucid partner"</pre>&nbsp; &nbsp; &nbsp;<b>【1.2】更新我們的source.list，語法如下：</b><br /><pre class="brush: java">sudo apt-get update</pre>&nbsp; &nbsp; &nbsp;<b>【1.3】安裝sun java sdk，語法如下：</b><br /><pre class="brush: java">sudo apt-get install sun-java6-jdk</pre>&nbsp; &nbsp; &nbsp;<b>【1.4】因為linux的jdk預設為open-jdk，所以語法如下：</b><br /><br /><br /><b><span class="Apple-style-span" style="font-size: large;">【2】建立一個Hadoop系統的專屬使用者</span></b><br /><pre class="brush: java">sudo addgroup hadoop<br />sudo adduser --ingroup hadoop hadoop<br /></pre><br /><br /><b><span class="Apple-style-span" style="font-size: large;">【3】設定SSH，因為hadoop利用ssh去管理node</span></b><br />&nbsp; &nbsp; &nbsp;<b>【3.1】首先先產生一個SSH key給hadoop user，語法如下：</b><br /><pre class="brush: java">su - hadoop<br />ssh-keygen -t rsa -P "" &nbsp;</pre>&nbsp; &nbsp; &nbsp;<b>【3.2】利用新產生的key去accees本機上的機器，語法如下：</b><br /><pre class="brush: java">su - hadoop<br />cat $HOME/.ssh/id_rsa.pub &gt;&gt; $HOME/.ssh/authorized_keys<br /></pre><br /><br /><b><span class="Apple-style-span" style="font-size: large;">【4】關閉IPv6</span></b><br />&nbsp; &nbsp; &nbsp;<b>【4.1】利用vim去開啟設定檔，語法如下：</b><br /><pre class="brush: java">vim /etc/sysctl.conf&nbsp;</pre>&nbsp; &nbsp; &nbsp;<b>【4.2】將檔案中的設定改</b><b>如下：</b><br /><pre class="brush: java">#disable ipv6<br />net.ipv6.conf.all.disable_ipv6 = 1<br />net.ipv6.conf.default.disable_ipv6 = 1<br />net.ipv6.conf.lo.disable_ipv6 = 1<br /></pre><br /><br /><br /><b>上面都是為了安裝Hadoop的先前作業</b><br /><b>下面是正式進行下載以及安裝Hadoop</b><br /><br /><br /><b><span class="Apple-style-span" style="font-size: large;">【5】下載Hadoop並且解壓縮</span></b><br /><pre class="brush: java">cd /usr/local<br />wget http://apache.ntu.edu.tw/hadoop/core/hadoop-0.20.2/hadoop-0.20.2.tar.gz<br />tar zxvf hadoop-0.20.2.tar.gz<br />sudo mv hadoop-0.20.2 hadoop<br />sudo chown -R hadoop:hadoop hadoop<br /></pre><br /><br /><b><span class="Apple-style-span" style="font-size: large;">【6】更新$HOME/.bashrc(注意!是以hadoop身分執行語法)</span></b><br />&nbsp; &nbsp; &nbsp;<b>【6.1】利用vim去開啟.bashrc，語法如下：</b><br /><pre class="brush: java">sudo vim $HOME/.bashrc&nbsp;</pre>&nbsp; &nbsp; &nbsp;<b>【6.2】將檔案中的設定更改成如下：</b><br /><pre class="brush: java"># Set Hadoop-related environment variables<br />export HADOOP_HOME=/usr/local/hadoop<br /><br /># Add Hadoop bin/ directory to PATH<br />export PATH=$PATH:$HADOOP_HOME/bin<br /></pre><br /><br /><b><span class="Apple-style-span" style="font-size: large;">【7】Hadoop的設定</span></b><br />&nbsp; &nbsp; &nbsp;<b>&nbsp;接著是一連串的Hadoop設定檔，設定檔的位置都位於/usr/local/hadoop/conf/底下，</b><br />&nbsp; &nbsp; &nbsp;<b>&nbsp;都是先利用vim去開啟設定檔案做編輯，故下面就省略vim的語法</b><br />&nbsp; &nbsp; &nbsp;<b>【7.1】hadoop-env.sh，語法如下：</b><br />&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp;把預設的JAVA_HOME位置更改掉<br /><pre class="brush: java"># The java implementation to use.  Required.<br />export JAVA_HOME=/usr/lib/jvm/java-6-sun&nbsp;</pre>&nbsp; &nbsp; &nbsp;<b>【7.2】core-site.xml，語法如下：</b><br />&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp;紀錄Hadoop將資料存在哪<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp;先建立一個Hadoop的暫存資料夾，並設定權限及擁有人<br /><pre class="brush: java">sudo mkdir /app/hadoop/tmp<br />sudo chown hadoop:hadoop /app/hadoop/tmp<br />sudo chmod 750 /app/hadoop/tmp&nbsp;</pre>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp;接著就是打開設定檔更改設定，注意!請填自己的ip，改成如下:<br /><pre class="brush: xml"><property><br />  <name>hadoop.tmp.dir</name><br />  <value>/app/hadoop/tmp</value><br />  <description>A base for other temporary directories.</description><br /></property><br /><br /><property><br />  <name>fs.default.name</name><br />  <value>hdfs://140.133.xxx.xxx:54310</value><br />  <description>The name of the default file system.  A URI whose<br />  scheme and authority determine the FileSystem implementation.  The<br />  uri's scheme determines the config property (fs.SCHEME.impl) naming<br />  the FileSystem implementation class.  The uri's authority is used to<br />  determine the host, port, etc. for a filesystem.</description><br /></property><br /></pre><br />&nbsp; &nbsp; &nbsp; <b>【7.3】mapred-site.xml，語法如下：</b><br />&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;打開設定檔更改設定，注意!請填自己的ip，改成如下:<br /><pre class="brush: xml"><property><br />  <name>mapred.job.tracker</name><br />  <value>140.133.xxx.xxx:54311</value><br />  <description>The host and port that the MapReduce job tracker runs<br />  at.  If "local", then jobs are run in-process as a single map<br />  and reduce task.<br />  </description><br /></property><br /></pre><br />&nbsp; &nbsp; &nbsp;<span class="Apple-style-span" style="font-weight: bold;">【7.4】hdfs-site.xml，語法如下：</span><br />&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp;打開設定檔更改設定，此檔案紀錄著檔案被複製的數量，改成如下:<br /><pre class="brush: xml"><property><br />  <name>dfs.replication</name><br />  <value>1</value><br />  <description>Default block replication.<br />  The actual number of replications can be specified when the file is created.<br />  The default is used if replication is not specified in create time.<br />  </description><br /></property><br /></pre><br /><br /><br /><b><span class="Apple-style-span" style="font-size: large;">【8】對我們的namenode格式化</span></b><br /><pre class="brush: xml">/usr/local/hadoop/bin/hadoop namenode -format<br /></pre><br />出來的output應該會如下：<br /><pre class="brush: xml">11/06/30 16:59:56 INFO namenode.NameNode: STARTUP_MSG:<br />/************************************************************<br />STARTUP_MSG: Starting NameNode<br />STARTUP_MSG:   host = ubuntu/140.133.xxx.xxx<br />STARTUP_MSG:   args = [-format]<br />STARTUP_MSG:   version = 0.20.2<br />STARTUP_MSG:   build = https://svn.apache.org/repos/asf/hadoop/common/branches/branch-0.20 -r 911707; compiled by 'chrisdo' on Fri Feb 19 08:07:34 UTC 2010<br />************************************************************/<br />10/05/08 16:59:56 INFO namenode.FSNamesystem: fsOwner=hadoop,hadoop<br />10/05/08 16:59:56 INFO namenode.FSNamesystem: supergroup=supergroup<br />10/05/08 16:59:56 INFO namenode.FSNamesystem: isPermissionEnabled=true<br />10/05/08 16:59:56 INFO common.Storage: Image file of size 96 saved in 0 seconds.<br />10/05/08 16:59:57 INFO common.Storage: Storage directory .../hadoop-hadoop/dfs/name has been successfully formatted.<br />10/05/08 16:59:57 INFO namenode.NameNode: SHUTDOWN_MSG:<br />/************************************************************<br />SHUTDOWN_MSG: Shutting down NameNode at ubuntu/140.133.xxx.xxx<br />************************************************************/<br /><br /></pre><br /><br /><br /><b><span class="Apple-style-span" style="font-size: large;">【9】啟動我們的single-node cluster</span></b><br /><pre class="brush: xml">/usr/local/hadoop/bin/start-all.sh<br /></pre><br /><br /><span class="Apple-style-span" style="color: #333333; font-family: arial, sans-serif; line-height: 24px;">這將會啟動機器上的Namenode, Datanode, Jobtracker and a Tasktracker!!</span><br />出來的output應該會如下：<br /><pre class="brush: java">starting namenode, logging to /usr/local/hadoop/bin/../logs/hadoop-hadoop-namenode-ubuntu.out<br />localhost: starting datanode, logging to /usr/local/hadoop/bin/../logs/hadoop-hadoop-datanode-ubuntu.out<br />localhost: starting secondarynamenode, logging to /usr/local/hadoop/bin/../logs/hadoop-hadoop-secondarynamenode-ubuntu.out<br />starting jobtracker, logging to /usr/local/hadoop/bin/../logs/hadoop-hadoop-jobtracker-ubuntu.out<br />localhost: starting tasktracker, logging to /usr/local/hadoop/bin/../logs/hadoop-hadoop-tasktracker-ubuntu.out<br /></pre><br /><br />如果要檢查是否有啟動成功，可以打入下列語法:<br /><pre class="brush: java">jps</pre><br />正確出來的output應該會如下：<br /><pre class="brush: java">2287 TaskTracker<br />2149 JobTracker<br />1938 DataNode<br />2085 SecondaryNameNode<br />2349 Jps<br />1788 NameNode<br /></pre><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><blockquote></blockquote>
+  </div>
+
+
+<!-- Pagination links -->
+<div class="pagination">
+  
+    <a href="/blog/page29" class="previous">Previous</a>
+  
+  <span class="page_number ">Page: 30 of 53</span>
+  
+    <a href="/blog/page31" class="next">Next</a>
+  
+</div>
+
+      </div>
+
+    </div>
+
+    <div id="footer">
+      <div class="container">
+        <p>&copy; 2015 Ken Yang
+          with help from <a href="http://jekyllbootstrap.com" target="_blank" title="The Definitive Jekyll Blogging Framework">Jekyll Bootstrap</a>
+          and <a href="http://getbootstrap.com" target="_blank">Bootstrap</a>
+        </p>
+      </div>
+    </div>
+
+    
+
+
+
+
+
+    <!-- Latest compiled and minified JavaScript, requires jQuery 1.x (2.x not supported in IE8) -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="/assets/themes/bootstrap-3/bootstrap/js/bootstrap.min.js"></script>
+  </body>
+</html>
+

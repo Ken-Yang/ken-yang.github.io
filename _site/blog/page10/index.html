@@ -1,0 +1,296 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title></title>
+    
+    <meta name="author" content="Ken Yang">
+
+    <!-- Enable responsive viewport -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Bootstrap styles -->
+    <link href="/assets/themes/bootstrap-3/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Optional theme -->
+    <link href="/assets/themes/bootstrap-3/bootstrap/css/bootstrap-theme.min.css" rel="stylesheet">
+    <!-- Sticky Footer -->
+    <link href="/assets/themes/bootstrap-3/bootstrap/css/bs-sticky-footer.css" rel="stylesheet">
+    
+    <!-- Custom styles -->
+    <link href="/assets/themes/bootstrap-3/css/style.css?body=1" rel="stylesheet" type="text/css" media="all">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Fav and touch icons -->
+    <!-- Update these with your own images
+      <link rel="shortcut icon" href="images/favicon.ico">
+      <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+      <link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-72x72.png">
+      <link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png">
+    -->
+
+    <!-- atom & rss feed -->
+    <link href="/atom.xml" type="application/atom+xml" rel="alternate" title="Sitewide ATOM Feed">
+    <link href="/rss.xml" type="application/rss+xml" rel="alternate" title="Sitewide RSS Feed">
+
+  </head>
+
+  <body>
+    <div id="wrap">
+      <nav class="navbar navbar-default" role="navigation">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#jb-navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/">Ken Yang</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="jb-navbar-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+            
+
+
+  
+    
+      
+      	
+      	<li><a href="/archive">Archive</a></li>
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/categories">Categories</a></li>
+      	
+      
+    
+  
+    
+  
+    
+      
+      	
+      	<li><a href="/pages">Pages</a></li>
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/tags">Tags</a></li>
+      	
+      
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+
+
+
+          </ul>
+          <form class="navbar-form navbar-right" role="search">
+            <div class="form-group">
+              <input type="text" class="form-control" placeholder="Search">
+            </div>
+            <button type="submit" class="btn btn-default">Submit</button>
+          </form>
+        </div><!-- /.navbar-collapse -->
+      </nav>
+
+      <div class="container">
+        <!-- This loops through the paginated posts -->
+
+  <h1><a style="color: #F22430" href="/2013/09/02/using-raspberry-pi-as-wireless-ap">Using Raspberry PI as Wireless AP</a></h1>
+  <p class="author">
+    <span class="date">2013-09-02 15:11:00 +0800</span>
+  </p>
+  <div class="content">
+    <br />Before we start, please make sure your system requirements.<br /><br /><b>What's do you need?</b><br /><ol><li>A Raspberry PI</li><li>A boot SD card with default Raspberry PI image iso (Raspbian "wheezy")</li><li>A USB WiFi device which support "Access Point" mode and the driver is rtl8192cu</li></ol><br /><br /><b>1. Install the necessary packages </b><br /><pre class="brush: java">sudo apt-get install hostapd bridge-utils<br /></pre><br /><b>2. Configure </b><br /><pre class="brush: java">sudo vim /etc/default/hostapd<br /></pre>Add the following line to the bottom of the file.<br /><pre class="brush: java">DAEMON_CONF="/etc/hostapd/hostapd.conf"<br /></pre><br /><br />Modified the config file<br /><pre class="brush: java">sudo vim /etc/hostapd/hostapd.conf<br /></pre>Add the following lines to the file. <br />You can change the "ssid", "wpa_passphrase".<br />Most the others examples use nl80211 as their driver, but Raspberry PI don't have the driver (default).<br />Therefore I can't start the service hostapd.<br />However I found some people use rtl871xdrv and they have the related hostapd binary file that supports rtl driver.<br />So... I use rtl871xdrv.<br /><pre class="brush: java">interface=wlan0                                                                                                                 <br />driver=rtl871xdrv<br />ssid=KenRaspberryPiAP<br />hw_mode=g<br />channel=6<br />macaddr_acl=0<br />auth_algs=1<br />ignore_broadcast_ssid=0<br />wpa=2<br />wpa_passphrase=safesync<br />wpa_key_mgmt=WPA-PSK<br />wpa_pairwise=TKIP<br />rsn_pairwise=CCMP<br /></pre><br /><br /><br /><b>3. Change network interface setting </b><br /><pre class="brush: java">sudo vim /etc/network/interfaces<br /></pre><br /><br /><pre class="brush: java">auto lo<br />auto br0 <br />iface lo inet loopback<br />iface br0 inet dhcp<br />        bridge_fd 1<br />        bridge_hello 3<br />        bridge_maxage 10<br />        bridge_stp off <br />        bridge_ports eth0 wlan0<br /><br />allow-hotplug eth0<br />iface eth0 inet manual<br />allow-hotplug wlan0<br />iface wlan0 inet manual  <br /></pre><br /><br /><br /><b>4. Replace the hostappd binary</b><br /><br />Download<br /><pre class="brush: java">cd /usr/sbin<br />rm -f hostapd<br />wget http://dl.dropboxusercontent.com/u/13846584/hostapd<br /></pre><br />Change Permission<br /><pre class="brush: java">sudo chown root:root hostapd<br />sudo chmod 755 hostapd<br /></pre><br /><br /><br /><b>5. Reboot</b><br /><pre class="brush: java">sudo reboot now<br /></pre><br /><br />After reboot, you should see your own Raspberry PI Access Point(AP).<br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
+  </div>
+
+  <h1><a style="color: #F22430" href="/2013/07/01/android-gcm-google-cloud_1">Android GCM (Google Cloud Messaging)：Android Client Side</a></h1>
+  <p class="author">
+    <span class="date">2013-07-01 16:30:00 +0800</span>
+  </p>
+  <div class="content">
+    <a href="http://blog.kenyang.net/2013/07/android-gcm-google-cloud.html">前篇文章</a>已經說明過GCM，以及和前身C2DM的差異！<br /><br />這篇主要會講解Android端如何實作，其實和以前在C2DM時差不多<br />如果要看差異以及一些參數說明，可以到下面幾篇文章去看<br />第一篇在講<a href="http://blog.kenyang.net/2011/12/android-c2dm.html">參數說明</a><br />第二篇在講<a href="http://blog.kenyang.net/2011/12/android-c2dm_22.html">流程說明</a><br /><br /><br /><br />這裡就直接進入主題，<br />首先一樣要在Manifest檔案中，要有下列的permission，<br /><pre class="brush: xml">    &lt;permission android:name="net.kenyang.gcm.permission.C2D_MESSAGE" android:protectionLevel="signature" /&gt;<br />    &lt;uses-permission android:name="net.kenyang.gcm.permission.C2D_MESSAGE" /&gt;<br />    &lt;uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" /&gt;<br />    &lt;uses-permission android:name="android.permission.INTERNET" /&gt;<br />    &lt;uses-permission android:name="android.permission.GET_ACCOUNTS" /&gt;<br />    &lt;uses-permission android:name="android.permission.WAKE_LOCK" /&gt;<br /></pre><br /><br />接著就是要新增一個receiver，<br />而receiver必須聆聽兩個事件，分別為receive以及registration！<br /><pre class="brush: xml">    &lt;receiver<br />        android:name="net.kenyang.gcm.GcmBroadcastReceiver"<br />        android:permission="com.google.android.c2dm.permission.SEND" &gt;<br />        &lt;intent-filter&gt;<br />            &lt;action android:name="com.google.android.c2dm.intent.RECEIVE" /&gt;<br />            &lt;action android:name="com.google.android.c2dm.intent.REGISTRATION" /&gt;<br />            &lt;category android:name="net.kenyang" /&gt;<br />        &lt;/intent-filter&gt;<br />    &lt;/receiver&gt;<br /></pre><br /><br />再寫code之前，請先確定你的eclipse有裝下面的兩個plugin，<br /><br /><div class="separator" style="clear: both; text-align: center;"></div><div class="separator" style="clear: both; text-align: center;"><a href="http://2.bp.blogspot.com/-yuDunk2TmxY/UdE32LO-2TI/AAAAAAAAE4M/bNuog0GEZj0/s632/Screen+Shot+2013-07-01+at+4.08.26+PM.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="http://2.bp.blogspot.com/-yuDunk2TmxY/UdE32LO-2TI/AAAAAAAAE4M/bNuog0GEZj0/s1600/Screen+Shot+2013-07-01+at+4.08.26+PM.png" /></a></div><br /><br />安裝完成以後，請去到你的sdk folder裡面找到下面兩個jar檔，並且include他們兩個！<br /><br /><ol><li>android-sdk-macosx/extras/google/gcm/gcm-client/dist/gcm.jar &nbsp;</li><li>android-sdk-macosx/extras/google/google_play_services/libproject/google-play-services_lib/libs/google-play-services.jar</li></ol><br /><br /><br />接著開始寫code，<br />android分為三個部分，<br /><br /><ol><li>向Google 註冊，並且取得registration id</li><li>傳送id給我們的server</li><li>準備接收資料</li></ol><br /><br />首先是註冊，記得改成你的sender_id！<br />sender_id就是你的project id，可以到<a href="https://code.google.com/apis/console">api console</a>去看你的id，<br />會有下圖，project number就是你的project id了！<br /><div class="separator" style="clear: both; text-align: center;"><a href="http://2.bp.blogspot.com/-N3KeToOerFE/UdE67sRKpaI/AAAAAAAAE4c/0auECVD3lL4/s487/Screen+Shot+2013-07-01+at+4.19.48+PM.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="http://2.bp.blogspot.com/-N3KeToOerFE/UdE67sRKpaI/AAAAAAAAE4c/0auECVD3lL4/s487/Screen+Shot+2013-07-01+at+4.19.48+PM.png" /></a></div><br />記得把它填入sender_id中！<br /><br /><pre class="brush: java"> <br /><br />    GoogleCloudMessaging gcm;<br />    String SENDER_ID = "xxxxxxxxxxx";<br />    @Override<br />    protected void onCreate(Bundle savedInstanceState) {<br />        super.onCreate(savedInstanceState);<br />        setContentView(R.layout.activity_main);<br />  <br />        tvRegisterMsg = (TextView) findViewById(R.id.tvRegisterMsg);<br />        context = getApplicationContext();<br />  <br />        // initial GCM<br />        gcm = GoogleCloudMessaging.getInstance(this);<br /><br />        // register with Google.<br />        new AsyncTask&lt;Void,String,String&gt;() {<br />            @Override<br />            protected String doInBackground(Void... params) {<br />                String msg = "";<br />                try {<br />                    if (gcm == null) {<br />                        gcm = GoogleCloudMessaging.getInstance(context);<br />                    }<br />                    strRegId = gcm.register(SENDER_ID);<br />                    msg = "Device registered, registration id=" + strRegId;<br />                 <br />                    // send id to our server<br />                    sendRegIdToServer(strRegId);<br />                } catch (IOException ex) {<br />                    msg = "Error :" + ex.getMessage();<br />                }<br />                return msg;<br />            }<br /><br />            @Override<br />            protected void onPostExecute(String msg) {<br />                tvRegisterMsg.append(msg + "\n");<br />            }<br /><br />        }.execute(null, null, null);<br />    }<br /><br /></pre><br /><br /><br />接著是第二部分，把id傳送到我們的server，<br /><pre class="brush: java"> private void sendRegIdToServer(final String strId) {<br />  new AsyncTask&lt;Void,String,String&gt;() {<br />   @Override<br />   protected String doInBackground(Void... params) {<br />    String strResponseCode = &quot;&quot;;<br />    try {<br />     HttpRequestBase request =null;<br />     request = new HttpGet(new URI(&quot;http://your_server/storeRegId?id=&quot;+strId));<br /><br />     request.addHeader(&quot;User-Agent&quot;, &quot;Android&quot;);<br />     HttpResponse response =  Connection.connect((HttpGet)request);<br />     <br />     strResponseCode =  String.valueOf(response.getStatusLine().getStatusCode());<br />    } catch (ClientProtocolException e) {<br />     // TODO Auto-generated catch block<br />     e.printStackTrace();<br />    } catch (IOException e) {<br />     // TODO Auto-generated catch block<br />     e.printStackTrace();<br />    } catch (URISyntaxException e) {<br />     // TODO Auto-generated catch block<br />     e.printStackTrace();<br />    }<br />    <br />    return strResponseCode;<br />   }<br />   <br />   @Override<br />   protected void onPostExecute(String msg) {<br />    tvRegisterMsg.append(&quot;status code:  &quot; + msg + &quot;\n&quot;);<br />   }<br />   <br />  }.execute(null, null, null);<br /> }<br /><br /></pre><br />到了此步驟你在畫面上應該會看到registration_id和status code是200！<br />如果是上述的結果的話，就代表你向Google註冊成功了！以及也把registration id傳送給我們的server知道了！<br /><br />接著就來implement receiver的部分！<br />這個receiver會接收來自Google Server的資料，<br />並且把資料丟到我們的notification bar當中！<br /><br /><pre class="brush: java">public class GcmBroadcastReceiver extends BroadcastReceiver {<br /> static final String TAG = "GCMDemo";<br /> public static final int NOTIFICATION_ID = 1;<br /> private NotificationManager mNotificationManager;<br /> NotificationCompat.Builder builder;<br /> Context ctx;<br /><br /> @Override<br /> public void onReceive(Context context, Intent intent) {<br />  GoogleCloudMessaging gcm = GoogleCloudMessaging.getInstance(context);<br />  ctx = context;<br />  String messageType = gcm.getMessageType(intent);<br />  if (GoogleCloudMessaging.MESSAGE_TYPE_SEND_ERROR.equals(messageType)) {<br />   sendNotification("Send error: " + intent.getExtras().toString());<br />  } else if (GoogleCloudMessaging.MESSAGE_TYPE_DELETED .equals(messageType)) {<br />   sendNotification("Deleted messages on server: " + intent.getExtras().toString());<br />  } else {<br />   sendNotification("Received: " + intent.getExtras().toString());<br />  }<br />  setResultCode(Activity.RESULT_OK);<br /> }<br /><br /> // Put the GCM message into a notification and post it.<br /> private void sendNotification(String msg) {<br />  mNotificationManager = (NotificationManager) ctx.getSystemService(Context.NOTIFICATION_SERVICE);<br /><br />  PendingIntent contentIntent = PendingIntent.getActivity(ctx, 0,<br />    new Intent(ctx, Main.class), 0);<br /><br />  NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(ctx)<br />    .setSmallIcon(R.drawable.ic_launcher)<br />    .setContentTitle("GCM Notification")<br />    .setStyle(new NotificationCompat.BigTextStyle().bigText(msg))<br />    .setContentText(msg);<br /><br />  mBuilder.setContentIntent(contentIntent);<br />  mNotificationManager.notify(NOTIFICATION_ID, mBuilder.build());<br /> }<br />}<br /></pre><br /><br />完成上述以後你就可以開始測試！<br />只要打開瀏覽器，然後輸入你的site，（http://your_site/<b>send</b>），<br />接著你的device上應該就會收到訊息了！<br />訊息會是一個json格式！<br /><br /><br /><br /><br /><br /><br />
+  </div>
+
+  <h1><a style="color: #F22430" href="/2013/07/01/android-gcm-google-cloud">Android GCM (Google Cloud Messaging)：Server Side</a></h1>
+  <p class="author">
+    <span class="date">2013-07-01 15:48:00 +0800</span>
+  </p>
+  <div class="content">
+    GCM (Google Cloud Messaging）其實就是<a href="http://blog.kenyang.net/2011/12/android-c2dm.html">C2DM</a> 的前身，<br />先前就有寫過四篇文章來講解C2DM，<br />分別有：<br />第一篇在講<a href="http://blog.kenyang.net/2011/12/android-c2dm.html">參數說明</a> （舊版C2DM）<br />第二篇在講<a href="http://blog.kenyang.net/2011/12/android-c2dm_22.html">流程說明</a> （舊版C2DM）<br />第三篇在講<a href="http://blog.kenyang.net/2012/03/android-c2dm-sever.html"><span class="s1">server</span>端的實作</a> （舊版C2DM）<br />第四篇在講<a href="http://blog.kenyang.net/2012/03/android-c2dm-android.html"><span class="s1">android</span>端的實作</a> （舊版C2DM）<br /><br /><br /><br />其實新版的GCM和C2DM只有些微的差別，因此在migrate時只需要小小變化，<br /><br />甚至更為方便！<br />除了方便以外，而GCM多了一項新功能，<br />就是讓你的server可以與Google Server建立一個persistent TCP connection，<br />其目的就是為了讓你使用XMPP，而此Server稱作Cloud Connection Server（CCS)<br /><br /><br />當然我們也可以用傳統的HTTP Server，而這兩者個差異，可以看這篇<a href="http://developer.android.com/google/gcm/ccs.html">文章</a>．<br /><br /><br />而本篇文章主要是告訴大家如何implement server side，<br />以及怎麼和Google Server做溝通！<br />這裡語言主要會以Python為主！<br />然後web-framework是使用flask，<br />web server是nginx+uwsgi<br /><br />如果要看Android Client Side，請至（<a href="http://blog.kenyang.net/2013/07/android-gcm-google-cloud_1.html">http://blog.kenyang.net/2013/07/android-gcm-google-cloud_1.html</a>）<br /><br /><br />在開始之前，還要告訴大家GCM有個最方便的地方，<br />還記得C2DM在傳資料給Google Server時，需要帶一個header<br />而這個header必須儲存Google Client Login的auth token．<br />我一直覺得這非常非常之愚蠢！！<br />等於我如果要做到automation，我還要有一套機制去使用Google Client Login API去login google，實在太不方便！<br />但現在不用了！！！<br />取而代之的是用API Key！（這才是根本之道啊）<br /><br />至於怎麼申請API Key呢？<br /><ol><li>請先來到<a href="https://code.google.com/apis/console/">Google API Console</a></li><li>點選左邊的Services</li><li>找到Google Cloud Messaging for Android</li><li>把它打開</li><li>接著點選左邊API Access</li><li>點選按鈕『Create new Server Key』</li><li>點選按鈕『Create』</li><li>接著就會看到下圖中的API key，請記起來！</li></ol><br /><div class="separator" style="clear: both; text-align: center;"><a href="http://1.bp.blogspot.com/---a7cZjAEeA/UdEpYeGYlxI/AAAAAAAAE30/f0KjxHr6zuI/s1104/Screen+Shot+2013-07-01+at+3.06.20+PM.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="http://1.bp.blogspot.com/---a7cZjAEeA/UdEpYeGYlxI/AAAAAAAAE30/f0KjxHr6zuI/s1600/Screen+Shot+2013-07-01+at+3.06.20+PM.png" /></a></div><br /><br /><br /><br />接著要開始寫Server Side<br />Server Side分為兩個角色！<br /><ol><li>Android Device會傳送自己本身的registration id上來給Server，此時Server必須儲存此id</li><li>把data和id一併送到Google Server去，這時候Google Server就會自動push data至對應到該id的device上</li></ol><br /><br />首先是接收registration id的部分！因為我偷懶，我收到id以後就寫到一個file裡面去<br />正規做法應該是存在database之類的，但我這邊為了方便，所以先存在一個file裡去！<br /><br /><pre class="brush: python">@app.route("/storeRegId",methods=['GET'])<br />def storeRegId():                                                                                                          <br />    id = request.args.get('id') <br />    <br />    with open("regIdList","w") as f:<br />        f.write("%s" % id) <br /><br />    return 'id %s' % id<br /></pre><br />接著就是傳送data給Google Server的部分！<br />請注意把下面的API_KEY換成您自己的！<br />這個範例傳送的資料會有兩筆，分別是last name以及first name！<br />當然你可以增加或者減少！反正就是JSON format！<br /><br /><pre class="brush: python">@app.route("/send")                                                                                                        <br />def send():<br /><br />    # remember place your API Key<br />    API_KEY = 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'<br /><br />    params = {}<br />        <br />    # put the data you want to send to device <br />    params['data']={ 'last name': 'yang','first name': 'ken'}<br /><br />    # get registration id, this registration id will be mapped to a device.<br />    f = open ("regIdList","r")<br />    regId = f.read() <br />    f.close()<br /><br />    params['registration_ids']=[regId]<br />    params = json.JSONEncoder().encode(params)<br /><br /><br />    headers = { "Content-type":     "application/json",<br />                "Authorization":    "key="+API_KEY}<br /><br />    conn = httplib.HTTPSConnection("android.googleapis.com")  <br /><br />    # method,url,body,header<br />    conn.request('POST','/gcm/send', params,headers)<br />    res = conn.getresponse() <br /><br />    conn.close()  <br />    result = {'msg':res.status}<br />    return jsonify(result)<br /><br /></pre><br /><br /><br />這樣就完成了Server side的部分！<br />將在下一篇教大家怎麼implement Android part！<br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
+  </div>
+
+
+<!-- Pagination links -->
+<div class="pagination">
+  
+    <a href="/blog/page9" class="previous">Previous</a>
+  
+  <span class="page_number ">Page: 10 of 53</span>
+  
+    <a href="/blog/page11" class="next">Next</a>
+  
+</div>
+
+      </div>
+
+    </div>
+
+    <div id="footer">
+      <div class="container">
+        <p>&copy; 2015 Ken Yang
+          with help from <a href="http://jekyllbootstrap.com" target="_blank" title="The Definitive Jekyll Blogging Framework">Jekyll Bootstrap</a>
+          and <a href="http://getbootstrap.com" target="_blank">Bootstrap</a>
+        </p>
+      </div>
+    </div>
+
+    
+
+
+
+
+
+    <!-- Latest compiled and minified JavaScript, requires jQuery 1.x (2.x not supported in IE8) -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="/assets/themes/bootstrap-3/bootstrap/js/bootstrap.min.js"></script>
+  </body>
+</html>
+

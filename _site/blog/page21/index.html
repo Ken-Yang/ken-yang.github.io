@@ -1,0 +1,296 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title></title>
+    
+    <meta name="author" content="Ken Yang">
+
+    <!-- Enable responsive viewport -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Bootstrap styles -->
+    <link href="/assets/themes/bootstrap-3/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Optional theme -->
+    <link href="/assets/themes/bootstrap-3/bootstrap/css/bootstrap-theme.min.css" rel="stylesheet">
+    <!-- Sticky Footer -->
+    <link href="/assets/themes/bootstrap-3/bootstrap/css/bs-sticky-footer.css" rel="stylesheet">
+    
+    <!-- Custom styles -->
+    <link href="/assets/themes/bootstrap-3/css/style.css?body=1" rel="stylesheet" type="text/css" media="all">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Fav and touch icons -->
+    <!-- Update these with your own images
+      <link rel="shortcut icon" href="images/favicon.ico">
+      <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+      <link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-72x72.png">
+      <link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png">
+    -->
+
+    <!-- atom & rss feed -->
+    <link href="/atom.xml" type="application/atom+xml" rel="alternate" title="Sitewide ATOM Feed">
+    <link href="/rss.xml" type="application/rss+xml" rel="alternate" title="Sitewide RSS Feed">
+
+  </head>
+
+  <body>
+    <div id="wrap">
+      <nav class="navbar navbar-default" role="navigation">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#jb-navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/">Ken Yang</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="jb-navbar-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+            
+
+
+  
+    
+      
+      	
+      	<li><a href="/archive">Archive</a></li>
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/categories">Categories</a></li>
+      	
+      
+    
+  
+    
+  
+    
+      
+      	
+      	<li><a href="/pages">Pages</a></li>
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/tags">Tags</a></li>
+      	
+      
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+
+
+
+          </ul>
+          <form class="navbar-form navbar-right" role="search">
+            <div class="form-group">
+              <input type="text" class="form-control" placeholder="Search">
+            </div>
+            <button type="submit" class="btn btn-default">Submit</button>
+          </form>
+        </div><!-- /.navbar-collapse -->
+      </nav>
+
+      <div class="container">
+        <!-- This loops through the paginated posts -->
+
+  <h1><a style="color: #F22430" href="/2012/03/23/android-c2dm-sever">Android C2DM (三)：實作之Sever篇</a></h1>
+  <p class="author">
+    <span class="date">2012-03-23 22:56:00 +0800</span>
+  </p>
+  <div class="content">
+    <span style="color: red; font-size: large;">這篇是舊版的，已經被deprecated，新版為GCM，新版的實作請看</span><br /><a href="http://blog.kenyang.net/2013/07/android-gcm-google-cloud.html"><span style="color: blue; font-size: large;">新版的Server篇</span></a><br /><br /><br /><br /><br /><br />最後一篇進入到了Android C2DM的coding了!!<br />哈! 這篇存在草稿也三個月了..........<br />今天終於有一點點時間來修改!<br /><br /><br /><span style="font-size: large;"><b>第一篇在講<a href="http://blog.kenyang.net/2011/12/android-c2dm.html">參數說明</a></b></span><br /><span style="font-size: large;"><b>第二篇在講<a href="http://blog.kenyang.net/2011/12/android-c2dm_22.html">流程說明</a></b></span><br /><span style="font-size: large;"><b>這篇專注於server端的實作</b></span><br /><span style="font-size: large;"><b>下一篇才會專注於<a href="http://blog.kenyang.net/2012/03/android-c2dm-android.html">android端的實作</a></b></span><br /><br /><br /><br /><br />OK，<br />在coding之前，請先去<a href="http://code.google.com/android/c2dm/signup.html">Google官網註冊你的app</a>，<br />比較要注意的是下面兩項<br /><div><ol><li><span style="background-color: white; font-family: Arial, sans-serif; font-size: 13px; font-weight: bold;">Package name of your Android app&nbsp;</span><span class="ss-required-asterisk" style="background-color: white; color: #c43b1d; font-family: Arial, sans-serif; font-size: 13px; font-weight: bold;">*</span></li><li><span style="background-color: white; font-family: Arial, sans-serif; font-size: 13px; font-weight: bold;">Role (sender) account email&nbsp;</span><span class="ss-required-asterisk" style="background-color: white; color: #c43b1d; font-family: Arial, sans-serif; font-size: 13px; font-weight: bold;">*</span></li></ol></div>第1項，是指你的Android app的package name，這裡一定要填對，不然C2DM Server不知道送到哪個app去。<br />第2項，是指用來傳遞訊息的帳號，也就是開發者的帳號，這裡的建議是不要用個人帳號，建議新申請另一個帳號來使用。<br /><br />完成上面註冊動作以後，就可以開始coding了!<br />網路上的code教學都是拿<a href="http://code.google.com/android/c2dm/index.html#Examples">Google官網上面放的範例（JumpNote）</a>，<br />我覺得這樣不太native，畢竟這是別人寫的app！<br />所以我直接講最基本的流程！<br /><br /><br />接下來的code大概會分成下面幾種：<br /><br /><ol><li>實作Server端：使用Google Client Login API取得Auth token，並且存起來。</li><li>實作Server端：Sending Message to C2DM Server。</li><li>Android端：基本的設定。</li><li>Android端：向C2DM 註冊，並且取得registration id。</li><li>Android端：傳送 Registration Id 到我們的Server</li></ol><br />因為其實有點多，所以就分成兩篇來打，<br />一篇為Sever篇，就是此篇！<br />另一篇為Android篇，就是下篇！<br /><br /><span style="font-size: large;"><b>【1.&nbsp; 使用<a href="https://developers.google.com/accounts/docs/AuthForInstalledApps">Google Client Login API</a>取得Auth token&nbsp;】</b></span><br /><br />因為得把token傳至C2DM Server，<br />C2DM Sever才知道你有登入，且是合格的。<br /><br />至於Google Client Login API的流程在這就不贅述，<br />就直接實做! 但大家可以去<a href="https://developers.google.com/accounts/docs/AuthForInstalledApps">Google Client Login API官網</a>看!!!<br /><br />這裡我是架在<a href="http://code.google.com/intl/zh-TW/appengine/">Google App Engine</a>上，把<a href="http://code.google.com/intl/zh-TW/appengine/">GAE</a>當作我們的Sever。<br />由於auth token可以重複使用，<br />所以我們可能可以每段時間去執行ClientLogin，<br />並取得auth token!<br />這時候就可以用GAE的cron，可能設定每天去登入一次以取得token。<br /><br />而Client Login的code如下：<br /><pre class="brush: java">String strClientLoginUrl = "https://www.google.com/accounts/ClientLogin"; // client login的url<br />String strAccountType = "accountType=HOSTED_OR_GOOGLE&amp;";// 你要登入的帳號型態，這裡就輸入HOSTED_OR_GOOGLE<br />String strEmail = "Email=test@gmail.com&amp;";     // 你的email!!<br />String strPasswd= "Passwd=123456&amp;";            // 你的密碼<br />String strService= "service=ac2dm&amp;";           // 你登入以後，要拿這token存取Google哪個Service，這裡是ac2dm<br />String strSource= "source=KenYang-AndroidC2DM-1.0";// 這個只是用來identify你的application，格式要companyName-applicationName-versionID<br /><br /><br />HttpURLConnection conn = (HttpURLConnection) new URL(strClientLoginUrl).openConnection();<br />conn.setDoOutput(true);  <br />conn.setUseCaches(false);  <br />conn.setRequestMethod("POST");  // 設定request Method為POST<br />conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");  <br /><br /><br />// 送出資料<br />OutputStream out = conn.getOutputStream();  <br />String strPostData = strAccountType+strEmail+strPasswd+strService+strSource;<br />out.write(strPostData.getBytes());  <br />out.close();  <br /><br />// 取得response code，成功的話就是200<br />resp.getWriter().println(conn.getResponseCode()+ "&lt;/br&gt;");<br /><br />// 把資料讀進來並且印出來<br />BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream(),"utf-8"));<br />String strLine = "";<br />while((strLine=reader.readLine())!=null){<br /> resp.getWriter().println(strLine+"&lt;/br&gt;");<br />}<br /><br /><br /><br /></pre><br />正常來說，如果你帳號沒有問題，<br />或者密碼沒有輸入錯誤，<br />或者的確有這帳號存在！<br />那麼response code會是200!<br />就代表登入成功!<br />此時就要取得auth token。<br /><br />印出來的資料如下：<br /><pre class="brush: java">SID=DQAAAGgA...7Zg8CTN<br />LSID=DQAAAGsA...lk8BBbG<br />Auth=DQAAAGgA...dk3fA5N<br /></pre><br />這時候，只要取得最後那一行資料即可！<br />就是Auth那一行！！！<br />然後把Auth存起來！<br />這裡我是先存在GAE的datastore！<br />以利待會使用!<br /><br /><br /><br /><br /><span style="font-size: large;"><b>【2.&nbsp;&nbsp;傳送資料至C2DM Server&nbsp;】</b></span><br /><br />至於傳送甚麼資料，可以來這<a href="http://%E3%80%901.%20%20%E4%BD%BF%E7%94%A8google%20client%20login%20api%E5%8F%96%E5%BE%97auth%20token%20%E3%80%91%20%20%E5%9B%A0%E7%82%BA%E5%BE%97%E6%8A%8Atoken%E5%82%B3%E8%87%B3c2dm%20server%EF%BC%8C/">官網</a>看詳細參數說明!<br />這邊就簡單地說明幾種"必需"的參數!<br /><br /><ol><li><span style="background-color: white; color: #007000; font-family: monospace; font-size: 14px; line-height: 17px; text-align: left;">registration_id</span>&nbsp;：android 裝置的id，一定要傳這資料給C2DM Server，C2DM才知道訊息要傳給誰，至於這個值，是來自android device的!</li><li><span style="background-color: white; color: #007000; font-family: monospace; font-size: 14px; line-height: 17px; text-align: left;">collapse_key</span>&nbsp;：這個value可以是隨意的值，這個參數的用意是怕android device的狀態是離線狀態，一旦狀態恢復為連線，避免使用者突然收到大量訊息!(這個參數可以每次都不一樣，也可以每次都一樣)</li><li><span style="background-color: white; color: #007000; font-family: monospace; font-size: 14px; line-height: 17px; text-align: left;">data.&lt;key&gt;</span>&nbsp;：這個參數就是你要傳給android device的訊息了! 型態為key-value。如data.keyName=value</li><li><span style="background-color: white; color: #007000; font-family: monospace; font-size: 14px; line-height: 17px; text-align: left;">GoogleLogin auth</span>&nbsp;：這個不是要post的參數，而是要送出的header值! 而值就是上面存在datastore裡面的Auth!</li></ol><br /><br /><br />實際的code如下：<br /><pre class="brush: java">String strSendUrl = "https://android.apis.google.com/c2dm/send";  // c2dm的url<br />String strRegistrationId = "registration_id="+req.getParameter("device_token")+"&amp;"; // 接收來自android傳來的參數<br />String strCollapse= "collapse_key=1&amp;";    // 這個參數上面說明了<br />String strAuth = "xxxxxx";                 // 從datastore撈出來的值，這裡就不寫有關datastore的操作了<br />String strData  = "data.keyHello=fromKen";    // 你要送的訊息<br /><br />String strPostData = strRegistrationId+strCollapse+strData;<br /><br />HttpURLConnection conn = (HttpURLConnection) new URL(strSendUrl).openConnection();<br />conn.setDoOutput(true);  <br />conn.setUseCaches(false);  <br />conn.setRequestMethod("POST");  <br />conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");  <br />conn.setRequestProperty("Authorization", "GoogleLogin auth=" + strAuth);  // 設定header<br />conn.setRequestProperty("Content-Length", Integer.toString(strPostData.getBytes().length)); // 告訴c2dm要傳送的資料長度<br /><br />// 送出資料<br />OutputStream out = conn.getOutputStream();  <br />out.write(strPostData.getBytes());  <br />out.close();  <br /><br />// 看response code, 200為OK<br />resp.getWriter().println(conn.getResponseCode()+ "&lt;/br&gt;&lt;/br&gt;"); <br /><br /></pre><br /><br /><br /><br />完成上面的步驟，server端就完成了！<br />但還要完成android端，才能真正收到訊息！<br />下一篇會專注於android端的實作<br /><br /><br /><br /><br /><br /><br />
+  </div>
+
+  <h1><a style="color: #F22430" href="/2012/03/04/c-webcam-using-emgu">C# 控制 Webcam 【using Emgu】</a></h1>
+  <p class="author">
+    <span class="date">2012-03-04 08:37:00 +0800</span>
+  </p>
+  <div class="content">
+    這篇似乎是我歷年來第一篇有關M$的筆記.........<br />真是寫得有點心不甘情不願XD<br />畢竟本人真的是沒有很喜歡M$的東西，<br />當然不是因為M$不好，M$也有它好的一面，<br />只能說或許是習慣問題....<br /><br />OK，進入正題，<br />這篇主要是去說明如何利用C#去控制你的網路攝影機，<br />且是使用Emgu這套dll，<br />甚麼是Emgu呢?<br />他和OpenCV有點關聯，<br />OpenCV相信不管是Java, C, C++等language的開發者，都了解OpenCV是甚麼!?<br />簡單說，OpenCV是一套強大的影像處理library，由INTEL開發，<br />非常強大，甚至你可以利用OpenCV去做到OCR，很方便。<br />也由於OpenCV沒有支援C#，那C#要怎麼使用OpenCV呢?<br />就是靠<a href="http://www.emgu.com/wiki/index.php/Main_Page">Emgu</a>，<a href="http://www.emgu.com/wiki/index.php/Main_Page">Emgu</a>是一套允許OpenCV的function在C#等語言中被使用。<br /><br />但我們這邊並不會使用到OpenCV的功能，<br />就是簡單的介紹Emgu很基本的功能，<br />就是存取攝影機，<br />首先先去<a href="http://sourceforge.net/projects/emgucv/files/emgucv/2.3.0/">下載Emgu，並且安裝</a>，<br />安裝完成以後就可以開始寫程式....<br /><br />看你是要開啟一個WPF專案，還是一個Window Form專案，<br />建議你開啟Window Form，因為到時Webcam回傳回來的image型態，<br />可以直接在 Window Form中的pictureBox裡面使用。<br /><br />開啟以後，就在你的專案中加入reference，<br />加入以下四個dll，dll的位置就是在你安裝Emgu位置的bin底下：<br /><br /><ol><li>Emgu.CV.dll</li><li>Emgu.CV.ML.dll</li><li>Emgu.CV.UI.dll</li><li>Emgu.Util.dll</li></ol><br />加入以後，請先儲存你的專案，<br />儲存以後請在你安裝Emgu位置的bin底下找到兩個dll，<br /><br /><ol><li>opencv_core231.dll</li><li>opencv_highgui231.dll</li></ol><br />把這兩個dll放置到你的專案的/bin/Debug/底下。<br />因為Emgu.CV.dll會使用到上述兩個dll。<br /><br /><br />完成上述動作以後就開始寫code，<br />先import會使用到的lib，如下:<br /><pre class="brush: c-sharp">using Emgu.CV;<br />using Emgu.CV.Structure;<br /></pre><br /><br />先宣告一個Capture物件，如下:<br /><pre class="brush: c-sharp">private Capture cap = null;                 // Webcam物件<br /></pre>這個物件就是用來連結到你的webcam。<br /><br /><br />接著在Form1_Load event中，<br />連結到攝影機以及建立一個event用來抓取畫面，如下:<br /><pre class="brush: c-sharp">private void Form1_Load(object sender, EventArgs e)<br />{<br />     cap = new Capture(0); // 連結到攝影機0，如果你有兩台攝影機，第二台就是1<br />     Application.Idle += new EventHandler(Application_Idle); // 在Idle的event下，把畫面設定到pictureBox上(當然你也可以用timer事件)<br />}<br /></pre><br /><br />接下來要寫抓取畫面event的code，<br /><pre class="brush: c-sharp">        void Application_Idle(object sender, EventArgs e)<br />        {<br />             Image&lt;Bgr, Byte&gt; frame = cap.QueryFrame(); // 去query該畫面<br />             pictureBox1.Image = frame.ToBitmap(); // 把畫面轉換成bitmap型態，在餵給pictureBox元件<br />        }<br /></pre><br /><br />完成以後按下F5執行，應該就可以順利取得攝影機畫面瞜!<br /><br /><br /><br />
+  </div>
+
+  <h1><a style="color: #F22430" href="/2012/02/20/android-out-of-memory-oom">Android Out of Memory (OOM)</a></h1>
+  <p class="author">
+    <span class="date">2012-02-20 12:40:00 +0800</span>
+  </p>
+  <div class="content">
+    呼，這篇文章放在我的草稿已經有兩個月了，<br />一直遲遲沒有完成，<br />一來是家裡太忙，<br />一來也是因為最近都在搞Kinect和Nxt Robot的應用(千百個不願意)<br />今天決定花點時間把這篇文章修完，<br />其實有很多篇都在草稿，有十幾篇要寫完，但先挑選這篇，<br />畢竟OOM是個很嚴重的問題。<br /><br /><b style="font-size: x-large;">【</b><span style="font-size: large;"><b>何謂OOM呢?</b></span><b style="font-size: x-large;">】</b><br />OOM (Out of Memory)，就是溢存的意思，<br />白話點就是超出記憶體大小了，<br />每個APP，都會有配置一定大小的heap size，<br />但這個heap size在每支設備上都不同，<br />像在Nexus one就是24mb，HTC Sensation只有16mb，<br />大小都不一定的，所以我們在寫app時，<br />必須做好記憶體的控管，<br /><br />有些人可能會納悶，不是用JAVA寫的嗎?<br />JAVA無法對記憶體有更進一步的操作(配置、釋放)阿，<br />怎麼做好記憶體的控管呢?<br />恩，沒有錯。<br /><br /><span style="font-size: large;"><b>【那OOM的問題會發生在哪?】</b></span><br />就是在圖片的使用!!!!!!<br />你每調用一張圖片，在android上都會做到auto scale的動作，<br />在做auto scale的動作是用C去配置記憶體的，<br />因此就會占用記憶體，<br />如果沒有做好控管，就會發生溢存!<br />那怎麼做好控管呢?<br /><br /><br />你們有時會發現有些APP好大喔，<br />有部分原因可能是引用其他外部的lib，<br />很少是因為程式碼寫太多....<br />大部分的問題就是在圖片太多，且太大，<br />沒有好好善用draw9patch，<a href="http://blog.kenyang.net/2010/05/draw-9-patch.html">何謂draw9patch可以來這看</a><br />當然draw9patch並不適用所有的案例，<br />甚至連根據dpi的不同，放圖片在不同的資料夾，<br />這方法我也覺得不適用所有案例，<br />我大多都還是去取得螢幕大小，自己去做到裁切圖片的動作，<br />個人覺得這樣是最精準的(畢竟android device實在太多..................)。<br /><br /><br />網路上有些解法是，<br />在做重新裁切或者取得圖片的動作時，<br />把圖片品質設小一點。<br />當然這也是一種解法啦。<br />但個人看法，認為這解法治標不治本，<br />怎麼說呢? 畢竟如果圖片一多，<br />OOM的問題還是會發生。<br /><br /><br />所以最根本的解法在於recycle!<br />但是recycle的時機很重要，<br />畢竟如果圖片還在使用中就進行recycle的話，<br />可是會發生crash的。<br /><br />我的建議是在Android Life Cycle中的onDestroy中進行recycle，<br />此時最為保險。當然如果你能保證你的圖片用不到了，就可以進行recycle了。<br />不一定要照我的建議而做。<br /><br /><br />這裡有個情境，假設我有4個畫面，A,B,C,D。<br />A有按鈕跳到B<br />B有按鈕跳到C<br />C有按鈕跳到D<br />每個畫面都有一張不同的背景圖，<br />怎麼設背景圖呢?<br />大部分人會在layout.xml中去做設定，<br />或者會在程式中設定，<br />如下：<br /><pre class="brush: java">linearLayout.setBackgroundDrawable(getResources().getDrawable(R.drawable.bg_normal));<br /></pre>這樣看似沒有甚麼問題，<br />但如果ABCD畫面換來換去，經過多次換來換去以後，<br />這時候heapSize就會越來越小....<br />最後就會發生OOM!<br /><br />所以較好的做法就是在lifecycle中的onCreate中，<br />去做init的動作，<br />先宣告二個全域的變數<br />一個是用來存圖片的BitmapDrawable<br />一個是放置圖片的LinearLayout，如下：<br /><pre class="brush: java">private LinearLayout llBackgroundPanel = null;<br />private BitmapDrawable bmpDrawImg  = null;<br /><br /></pre><br />接著在onCreate中去呼叫一個自己寫好的函數（fnSetBackground)<br />這個函數就是用來設背景圖片的，如下:<br /><pre class="brush: java">@Override<br />public void onCreate(Bundle savedInstanceState) {<br />    super.onCreate(savedInstanceState);<br />    setContentView(R.layout.a);<br />    fnSetBackground(); // 呼叫函數<br />}<br /><br /></pre><br />而函數內容如下：<br /><pre class="brush: java">public void fnSetBackground(){<br />    // 先取得LinearLayout<br />    llBackgroundPanel = (LinearLayout) findViewById(R.id.llBackgroundPanelChangePwd);<br />    // 取得該張圖片，並放置在變數bmpDrawImg中<br />    bmpDrawImg = new BitmapDrawable(getResources().openRawResource(R.drawable.bg_normal));<br />    // 最後就是設定圖片<br />    llBackgroundPanel.setBackgroundDrawable(bmpDrawImg);<br />}<br /></pre><br />完成上面步驟，只是設置圖片而已，<br />還是無法解決OOM的問題，下面才是解決的方式，<br />在lifecycle中的onDestroy中去進行清空，<br /><pre class="brush: java">@Override<br />protected void onDestroy() {<br />    super.onDestroy();<br />    // 每個Drawable被加到VIEW上面都會產生一個callback，所以在recycle圖片之前，必須先把callback設成null<br />    // 設成null以後，背景圖片自然就會不見，就會變成黑的背景。bmpDrawImg的狀態就會是沒有被使用中。<br />    llBackgroundPanel.getBackground().setCallback(null); <br /> <br />    // 先判斷bmpDrawImg 是否為null，如果不是null，且bmpDrawImg 還沒有被recycle的話就進行recycle<br />    if (null != bmpDrawImg &amp;&amp; !bmpDrawImg.getBitmap().isRecycled()){<br />        bmpDrawImg.getBitmap().recycle();<br />    }<br />    System.gc();<br />}<br /></pre><br /><br />照著上面的方法實作就能避免掉OOM的問題，<br />我寫在destroy的原因在於，<br />android lifecycle的特性，<br />當你A按下按鈕到B，<br />這時候在B畫面中按下返回按鈕(back)，<br />是不是就回到A了呢?<br />第一次按下返回按鈕，B會去調用onDestroy這個method，<br />如果這時候沒有進行recycle，那麼那塊記憶體空間就不會被釋放，<br />就會被占用著....<br />如果沒有進行RECYCLE，<br />久而久之，你持續返回A，又跳到B，重複著這動作好幾次，<br />圖片就被產生好幾次，<br />很快就會發生OOM，至於多快，就視你的圖片大小瞜!<br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
+  </div>
+
+
+<!-- Pagination links -->
+<div class="pagination">
+  
+    <a href="/blog/page20" class="previous">Previous</a>
+  
+  <span class="page_number ">Page: 21 of 53</span>
+  
+    <a href="/blog/page22" class="next">Next</a>
+  
+</div>
+
+      </div>
+
+    </div>
+
+    <div id="footer">
+      <div class="container">
+        <p>&copy; 2015 Ken Yang
+          with help from <a href="http://jekyllbootstrap.com" target="_blank" title="The Definitive Jekyll Blogging Framework">Jekyll Bootstrap</a>
+          and <a href="http://getbootstrap.com" target="_blank">Bootstrap</a>
+        </p>
+      </div>
+    </div>
+
+    
+
+
+
+
+
+    <!-- Latest compiled and minified JavaScript, requires jQuery 1.x (2.x not supported in IE8) -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="/assets/themes/bootstrap-3/bootstrap/js/bootstrap.min.js"></script>
+  </body>
+</html>
+

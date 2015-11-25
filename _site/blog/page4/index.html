@@ -1,0 +1,296 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title></title>
+    
+    <meta name="author" content="Ken Yang">
+
+    <!-- Enable responsive viewport -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Bootstrap styles -->
+    <link href="/assets/themes/bootstrap-3/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Optional theme -->
+    <link href="/assets/themes/bootstrap-3/bootstrap/css/bootstrap-theme.min.css" rel="stylesheet">
+    <!-- Sticky Footer -->
+    <link href="/assets/themes/bootstrap-3/bootstrap/css/bs-sticky-footer.css" rel="stylesheet">
+    
+    <!-- Custom styles -->
+    <link href="/assets/themes/bootstrap-3/css/style.css?body=1" rel="stylesheet" type="text/css" media="all">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Fav and touch icons -->
+    <!-- Update these with your own images
+      <link rel="shortcut icon" href="images/favicon.ico">
+      <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+      <link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-72x72.png">
+      <link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png">
+    -->
+
+    <!-- atom & rss feed -->
+    <link href="/atom.xml" type="application/atom+xml" rel="alternate" title="Sitewide ATOM Feed">
+    <link href="/rss.xml" type="application/rss+xml" rel="alternate" title="Sitewide RSS Feed">
+
+  </head>
+
+  <body>
+    <div id="wrap">
+      <nav class="navbar navbar-default" role="navigation">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#jb-navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/">Ken Yang</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="jb-navbar-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+            
+
+
+  
+    
+      
+      	
+      	<li><a href="/archive">Archive</a></li>
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/categories">Categories</a></li>
+      	
+      
+    
+  
+    
+  
+    
+      
+      	
+      	<li><a href="/pages">Pages</a></li>
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/tags">Tags</a></li>
+      	
+      
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+
+
+
+          </ul>
+          <form class="navbar-form navbar-right" role="search">
+            <div class="form-group">
+              <input type="text" class="form-control" placeholder="Search">
+            </div>
+            <button type="submit" class="btn btn-default">Submit</button>
+          </form>
+        </div><!-- /.navbar-collapse -->
+      </nav>
+
+      <div class="container">
+        <!-- This loops through the paginated posts -->
+
+  <h1><a style="color: #F22430" href="/2014/09/24/android-orm-lib-greedao">Android ORM lib: greeDao</a></h1>
+  <p class="author">
+    <span class="date">2014-09-24 10:04:00 +0800</span>
+  </p>
+  <div class="content">
+    <div style="font-size: 15px; line-height: 22px;"><a href="http://en.wikipedia.org/wiki/Object-relational_mapping">ORM</a>應該不用多做解釋了，<br />而Android自己本身並沒有ORM的任何lib可用，<br />但有很多熱心的人做了third-party lib，像是<a href="http://ormlite.com/">OrmLite</a>、<a href="http://greendao-orm.com/">greenDao</a>，<br />本篇要講的是greenDao，<br />為什麼我使用greenDao呢？<br />其實網路上不少人在做OrmLite和greenDao的<a href="https://github.com/littleinc/android-orm-benchmark">benchmark</a>，<br />greenDao的performance真是一片倒，<br />也因此我選擇了greenDao，<br />不過說實在的，greenDao一開始的前置作業真是有點麻煩！<br />所以特地寫一篇來記錄！<br /><br /><br /><span style="color: #e06666; font-size: 18px;">1. Clone the repository</span><br /><br />先把greenDao的repository clone下來，<br /><pre class="brush: bash">git clone https://github.com/greenrobot/greenDAO.git<br /></pre><br /><br /><span style="color: #e06666; font-size: 18px;">2. Download jar</span><br /><br />這就是我說的，前置作業很麻煩！<br />有3個必要的jar檔，竟然沒有在repository中！<br />要自行去下載！不過用gradle和marven就不用自行去下載，<br />anyway我用的是eclipse，所以得去下載！<br />&nbsp;&nbsp;&nbsp;&nbsp;1. <a href="http://mvnrepository.com/artifact/org.freemarker/freemarker/2.3.20">freemaker.jar</a><br />&nbsp;&nbsp;&nbsp;&nbsp;2. <a href="http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22de.greenrobot%22%20AND%20a%3A%22greendao-generator%22">greendao-generator-1.3.0</a><br />&nbsp;&nbsp;&nbsp;&nbsp;3. <a href="http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22de.greenrobot%22%20AND%20a%3A%22greendao%22">greendao-1.3.7.jar</a><br />前面兩個jar是為了build出dao而用的，<br />而後面第三個jar給我們app使用的！<br />在開始之前，先說明一下整體流程，<br />大致上分為兩個步驟，<br />&nbsp;&nbsp;&nbsp;&nbsp;1. 產生 DAO files<br />&nbsp;&nbsp;&nbsp;&nbsp;2. 把DAO files 加到自己的android project中<br /><br /><br /><span style="color: #e06666; font-size: 18px;">3. Generate DAO files</span><br /><br />還記得第一步驟clone下來的repository嗎？<br />repository中有很多份中有很多個project，<br />我們只會用到DaoExampleGenerator，<br />首先先開啟你的eclipse，<br />點選【File】->【Import】->【General】->【Existing Projects into Workspace】->選擇【DaoExampleGenerator】project<br />import進來以後應該會很多error，<br />因為少了2個jar檔，就把【freemaker.jar】和【greendao-generator-1.3.0】import進來吧！<br /><br />接著打開ExampleDaoGenerator這個class，<br />這隻java會幫你generate出4個files，<br />&nbsp;&nbsp;&nbsp;&nbsp;1. DaoMaster<br />&nbsp;&nbsp;&nbsp;&nbsp;2. DaoSession<br />&nbsp;&nbsp;&nbsp;&nbsp;3. Model<br />&nbsp;&nbsp;&nbsp;&nbsp;4. ModelDao<br />DAO就是用來負責db的一切操作, create table, insert, delete, query...etc.<br />model就單純是一個object而已！<br />這四個files都要加到我們的android project之中，<br /><br />接著來說明一下ExampleDaoGenerator裡面在做什麼，(我把原本的code改成我的sample了)<br /><pre class="brush: java">public static void main(String[] args) throws Exception {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 第一個參數是db的版本，第二個是package名稱<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Schema schema = new Schema(1, "net.kenyang.dao"); <br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;addNote(schema);<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 產生上述說明的files<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;new DaoGenerator().generateAll(schema, "../");<br />}<br /><br />private static void addNote(Schema schema) {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 這裡可以想像就是增加一個table，有三個欄位，且都是not null<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Entity note = schema.addEntity("Note");<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;note.addIdProperty();<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;note.addStringProperty("title").notNull();<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;note.addDateProperty("date").notNull();<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;note.addIntProperty("category").notNull();<br />        <br />}<br /><br /></pre><br />接著只要按下run以後，這些files就會被產生出來！<br />接著就把這些files搬移到你的android project當中，<br />請注意！！由於我們上面的schema是"net.kenyang.dao"，<br />那麼你的android project中也要有這個package，並且把這些files放置在該package當中！<br /><br /><br /><span style="color: #e06666; font-size: 18px;">4. Insert, select, delete</span><br /><br />完成上面的前置作業以後，在開始之前，<br />請記得把第二步驟下載的greendao-1.3.7.jar加到android project中，<br />接著就可以開始使用了！<br /><br />insert<br /><pre class="brush: java">DevOpenHelper helper = new DevOpenHelper(this, "expense", null);<br />DaoMaster daoMaster = new DaoMaster(helper.getWritableDatabase());<br />DaoSession daoSession = daoMaster.newSession();<br /><br />NoteDao noteDao = session.getNoteDao();<br />Note note = new Note(null, "hello", new Date(), 0);<br />noteDao.insert(note);<br /></pre><br />select<br /><pre class="brush: java">QueryBuilder&lt;Note&gt; query = noteDao.queryBuilder();<br />// 查詢如果日期小於今天，並且照日期排序<br />query.where(Properties.Date.le(calendar.getTime())).orderDesc(Properties.Date);<br />for (Note n : query.list()) {<br />     Log.e("ken", n.getTitle());       <br />}<br /></pre><br />update<br /><pre class="brush: java">public void fnUpdate(long id) {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Note note = noteDao.load(id);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;note.setTitle("change title");<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;noteDao.update(note);<br />}<br /></pre><br />delete <br /><pre class="brush: java">public void fnDelete(long id) {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;noteDao.deleteByKey(id);<br />}<br /><br /></pre><br />比原本的SQLiteOpenHelper好用太多了啊！<br /><br /><br /><br /><br /><br /></div><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
+  </div>
+
+  <h1><a style="color: #F22430" href="/2014/09/04/how-to-build-your-own-debian-package">How to build your own debian package?</a></h1>
+  <p class="author">
+    <span class="date">2014-09-04 16:26:00 +0800</span>
+  </p>
+  <div class="content">
+    <div style="font-size: 15px; line-height: 22px;">其實不久前有寫一篇講怎麼<a href="http://blog.kenyang.net/2014/03/build-deb-package-from-source.html">build deb package</a>，<br />不過那篇的code source並不是來自於自己的source，<br />那麼假設你今天自己有一個web，你想把這web打包成一個deb供人安裝，那該怎麼做呢？<br />這篇主要就是講怎麼create一個自己的deb package．<br /><br /><br /><br /><span style="color: #e06666; font-size: 18px;">1. Install necessary package</span><br /><br /><pre class="brush: bash">sudo apt-get install dh-make<br /></pre>dh-make是用來準備debian package所需要的files，<br />等等會用來gen template files．<br /><br /><br /><span style="color: #e06666; font-size: 18px;">2. Prepare environment</span><br /><br />這裡先create一個folder，名稱為www，<br />www底下也要create一些web所需的資料夾和檔案，像是images, css ,js...etc<br />www的目錄結構大概就長這樣，<br /><br />www<br />├── css<br />│   └── main.css<br />├── images<br />│   └── a.png<br />└── static<br />└── index.html<br /><br /><br /><br />我們要把folder底下的東西都打包進去debian package，<br />並且讓其他人在安裝這個debian package時，可以安裝到我們所指定的path底下！<br /><br /><br /><span style="color: #e06666; font-size: 18px;">3. Generate template files</span><br /><br />在這步要用前面安裝的dh_make來generate出debian package所需要的template files,<br />在generate之前，先設定一個環境變數，<br />這環境變數是用來記錄這個debian package的作者是誰<br /><pre class="brush: bash">export DEBFULLNAME="Ken Yang"<br /></pre><br /><pre class="brush: bash">dh_make --single --packagename ken-sdk_0.1 --native -e xxxx@gmail.com<br /></pre>--packagename要注意一下，<br />--packagename分為兩個部分，<br />前面的部分ken-sdk是package name，<br />package name只能用-來分隔，不能用底線！<br />而後面的_0.1是version number，<br />--natvie，意思是這個debian不是從一個既有的tarball gen出來的！<br /><br />generate完成以後，你會發現在www folder底下多了一個debian folder，<br />這debian folder裡面是放一些build debian package所需要的template files，<br />而既然是template files，那麼就有一些不需要的file或者需要被修改的file，<br />首先先刪除不需要的file吧！<br /><pre class="brush: bash">sudo rm debian/*.ex debian/*.EX<br /></pre><br />接著就來修改這個template，<br />首先要先改control這file，<br /><pre class="brush: bash">vim debian/control<br /></pre>打開以後，會看到很多information，<br />你比較需要改的大概就只有Depends (dependency)，和Description了！<br />改完儲存以後即可！<br /><br />接下來要改copyright，<br /><pre class="brush: bash">vim debian/copyright<br /></pre>打開以後，大概就只有年份和作者名稱要改而已！<br /><br />剩下其他的file，像是README, docs就看你要不要改了，<br />記得rules千萬別改！rules是build package的起頭！<br /><br /><br /><span style="color: #e06666; font-size: 18px;">4. Build debian package</span><br /><br />在完成template的修改，準備開始build之前，<br />我們還有最後一個步驟，就是要指定哪些files or folder是你要放進去這個debian package的！<br />而就是靠一個檔案去記錄！<br />這個檔案名稱很重要，要跟你前面的package name一模一樣，<br />我們前面的package name是ken-sdk，<br />所以這個file要叫做ken-sdk.install，<br />裡面的格式就像下面一樣，<br /><pre class="brush: bash">images/* /opt/www/image<br />css/* /opt/www/css<br />js/* /opt/www/js<br /></pre>第一格參數：現在www folder底下路徑的檔案<br />第二格參數：將來這deb package被安裝時，這些files要被安裝到哪裡<br />儲存以後，就可以開始build，指令如下：<br /><pre class="brush: bash">dpkg-buildpackage -rfakeroot -b<br /></pre>-rfakeroot：使用root的權限<br />-b：單純只是binary，不要去build source<br /><br /><br /><span style="color: #e06666; font-size: 18px;">5. Verify</span><br /><br />完成以後，<br />debian package會放在folder的上層目錄，<br />應該會有一個ken-sdk_0.1_amd64.deb，<br />有一個快速verify你要的files有沒有被包進去，<br /><pre class="brush: bash">lesspipe ken-sdk_0.1_amd64.deb<br /></pre><br />當然你也可以安裝起來看看，<br /><pre class="brush: bash">sudo dpkg --install ../ken-sdk_0.1_amd64.deb<br /></pre><br />接著就去看剛剛指定的folder（/opt/www），是否有我們原本的檔案！<br /><br /><br /><span style="color: #e06666; font-size: 18px;">6. Advance: Pre-Install or Post-Install</span><br /><br />如果你想要在這package完成安裝或者開始安裝之前，做一些前置作業，<br />那麼就可以靠preinst和postinst這兩個檔案，<br />preinst就是安裝之前，<br />postinst就是安裝完成之後，<br />相反地，如果你想要在這package被remove時，也做一些操作，<br />那麼就要有prerm和postrm這兩個檔案！<br /><br /><br /><span style="color: #e06666; font-size: 18px;">7. Advance: Update pacakge</span><br /><br />如果你這package想要更新，<br />變成0.2版本，你可以直接編輯change log，但有點麻煩！<br />可以透過指令快速達成！<br /><pre class="brush: bash">dch -v 0.2 "Update package."<br /></pre><br />之後一樣直接dpkg-buildpackage -rfakeroot -b就可以了！<br /><br /><br /></div><br /><br /><br />
+  </div>
+
+  <h1><a style="color: #F22430" href="/2014/08/27/how-to-create-x509-certificates-for">How to create X.509 certificates for Amazon IAM user?</a></h1>
+  <p class="author">
+    <span class="date">2014-08-27 16:14:00 +0800</span>
+  </p>
+  <div class="content">
+    <div style="font-size: 15px; line-height: 22px;">You will need X.509 certificates when you send a SOAP request to AWS or use command line tool.<br />There are two ways to create X.509 certificates.<br /><br />(1) If you are not using IAM account:<br />&nbsp;&nbsp;&nbsp;&nbsp;You can create certificate on <a href="https://console.aws.amazon.com/iam/home?nc1=h_m_sc#security_credential">AWS console</a>.<br />&nbsp;&nbsp;&nbsp;&nbsp;Each account only have a maximum of two certificates at a time.<br /><div class="separator" style="clear: both; text-align: center;"><a href="http://3.bp.blogspot.com/-rmeTV_n3DBc/U_2LJy60heI/AAAAAAAAFQI/lJt0rEcs3xY/s1600/Screen%2BShot%2B2014-08-27%2Bat%2B3.39.21%2BPM.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="http://3.bp.blogspot.com/-rmeTV_n3DBc/U_2LJy60heI/AAAAAAAAFQI/lJt0rEcs3xY/s400/Screen%2BShot%2B2014-08-27%2Bat%2B3.39.21%2BPM.png" /></a></div><br /><br />(2) If you are using IAM account:<br />&nbsp;&nbsp;&nbsp;&nbsp;You need to create certificate by yourself.<br /><br /><br /><br /><br /><span style="color: #e06666; font-size: 18px;">1. Create private key</span><br /><br />You need to create a private key first before create a certificate, <br />because you will use this private key to create a certificate.<br /><pre class="brush: bash">openssl genrsa 2048 > private-key.pem<br /></pre><br /><br /><span style="color: #e06666; font-size: 18px;">2. Create certificate</span><br /><br />Once you finished the step one, you can use the private key to create a certificate.<br /><pre class="brush: bash">openssl req -new -x509 -nodes -sha1 -days 99999 -key private-key.pem -outform PEM > cert.pem  <br /></pre><br /><br /><span style="color: #e06666; font-size: 18px;">3. Copy the content of certificate</span><br /><br />After you finished all the steps, just copy the content of the certificate.<br /><pre class="brush: bash">ken@build:~$ cat cert.pem <br />-----BEGIN CERTIFICATE-----<br />MIIDXzCCAkegAwIBAgIJAJxcjyc5F908MA0GCSqGSIb3DQEBBQUAMEUxCzAJBgNV<br />BAYTAkFVMRMwEQYDVQQIDApTb21lLVN0YXRlMSEwHwYDVQQKDBhJbnRlcm5ldCBX<br />aWRnaXRzIFB0eSBMdGQwIBcNMTQwODI3MDc1NDAyWhgPMjI4ODA2MTAwNzU0MDJa<br />MEUxCzAJBgNVBAYTAkFVMRMwEQYDVQQIDApTb21lLVN0YXRlMSEwHwYDVQQKDBhJ<br />bnRlcm5ldCBXaWRnaXRzIFB0eSBMdGQwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAw<br />ggEKAoIBAQCk8L/z2O84OcRno7YgGu0UkjnABuXhIM96RfZZKhqg74hga7nsLPLK<br />CzhtslDKAOEjxASo7L0Iq6/5kxJZp4cZakKacDOvnnv2HwQxCXGUEadXcmeknfAh<br />SvyRYS3FrKj4/oth+pwUm6nvd9fGYg01rJITUQupeADCqhSJUypZbQUypmPxf8Sg<br />ek7ZW5ErPuyZZ+WmL6TzZaQXfZqvPrN25hRg7AboB8SIKgusUrLK6WgnISlJ7fDh<br />kCpsy8qSD+Lu74h2hW6TiLy2qJbcTKn8sKb1C4XgWb1FBMzqfJQWtCMVWtDoyzZH<br />Vj07gzeTDkQ1EvUKHk26x6MEsOlcTV9XAgMBAAGjUDBOMB0GA1UdDgQWBBQOYnDF<br />FYz2o3+AlVHWwPIzlcFs4DAfBgNVHSMEGDAWgBQOYnDFFYz2o3+AlVHWwPIzlcFs<br />4DAMBgNVHRMEBTADAQH/MA0GCSqGSIb3DQEBBQUAA4IBAQBPE3ikbJ/vH6QfkwUK<br />qot+nU15keDSZ2c6itRnNuwjfF8lsZQCJ66w2H+HXCLBjnPymemcTPTMUqfovpFs<br />oNohRuQS6IoIrvgXAbb2X4BhygPDNSQPktGVo8qjKUyxYZa4Su8NFkb+OzZWDR4K<br />KN+OLFfaT6cx8o9o5M7cmNRokFisWynJ33EoKj1lW5YIwTwb1VKz4hXW+gKZFX7u<br />pgE1yzkOcoUW5EykNsGUaqLSdycxmDO866IFn6px9etxpIkQwUi+rb78tX6pNtpa<br />IBTsfPBqovXRdMe6mq5uO8x4Nrb47w8DZkrQSTMt1ll4t0bUL15o/6cQ5ajGaaGA<br />QVtO<br />-----END CERTIFICATE-----<br /></pre><br /><br /><span style="color: #e06666; font-size: 18px;">4. Upload the content of certificate</span><br /><br />Go to the <a href="https://console.aws.amazon.com/iam/home?#users">IAM management console</a>.<br />1. Select an IAM user <br />2. Click "User Actions" <br />3, Click "Manage Signing Certificates"<br />4. Click "Upload Signing Certificates"<br />5. Paste the content<br />6. Click "Upload Signing Certificates"<br /><br />Done. Now you can send a SOAP request to AWS or use the command line tools.<br /><br /><br /><br /></div><br /><br /><br /><br /><br /><br />
+  </div>
+
+
+<!-- Pagination links -->
+<div class="pagination">
+  
+    <a href="/blog/page3" class="previous">Previous</a>
+  
+  <span class="page_number ">Page: 4 of 53</span>
+  
+    <a href="/blog/page5" class="next">Next</a>
+  
+</div>
+
+      </div>
+
+    </div>
+
+    <div id="footer">
+      <div class="container">
+        <p>&copy; 2015 Ken Yang
+          with help from <a href="http://jekyllbootstrap.com" target="_blank" title="The Definitive Jekyll Blogging Framework">Jekyll Bootstrap</a>
+          and <a href="http://getbootstrap.com" target="_blank">Bootstrap</a>
+        </p>
+      </div>
+    </div>
+
+    
+
+
+
+
+
+    <!-- Latest compiled and minified JavaScript, requires jQuery 1.x (2.x not supported in IE8) -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="/assets/themes/bootstrap-3/bootstrap/js/bootstrap.min.js"></script>
+  </body>
+</html>
+

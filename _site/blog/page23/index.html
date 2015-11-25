@@ -1,0 +1,296 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title></title>
+    
+    <meta name="author" content="Ken Yang">
+
+    <!-- Enable responsive viewport -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Bootstrap styles -->
+    <link href="/assets/themes/bootstrap-3/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Optional theme -->
+    <link href="/assets/themes/bootstrap-3/bootstrap/css/bootstrap-theme.min.css" rel="stylesheet">
+    <!-- Sticky Footer -->
+    <link href="/assets/themes/bootstrap-3/bootstrap/css/bs-sticky-footer.css" rel="stylesheet">
+    
+    <!-- Custom styles -->
+    <link href="/assets/themes/bootstrap-3/css/style.css?body=1" rel="stylesheet" type="text/css" media="all">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Fav and touch icons -->
+    <!-- Update these with your own images
+      <link rel="shortcut icon" href="images/favicon.ico">
+      <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+      <link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-72x72.png">
+      <link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png">
+    -->
+
+    <!-- atom & rss feed -->
+    <link href="/atom.xml" type="application/atom+xml" rel="alternate" title="Sitewide ATOM Feed">
+    <link href="/rss.xml" type="application/rss+xml" rel="alternate" title="Sitewide RSS Feed">
+
+  </head>
+
+  <body>
+    <div id="wrap">
+      <nav class="navbar navbar-default" role="navigation">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#jb-navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/">Ken Yang</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="jb-navbar-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+            
+
+
+  
+    
+      
+      	
+      	<li><a href="/archive">Archive</a></li>
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/categories">Categories</a></li>
+      	
+      
+    
+  
+    
+  
+    
+      
+      	
+      	<li><a href="/pages">Pages</a></li>
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/tags">Tags</a></li>
+      	
+      
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+
+
+
+          </ul>
+          <form class="navbar-form navbar-right" role="search">
+            <div class="form-group">
+              <input type="text" class="form-control" placeholder="Search">
+            </div>
+            <button type="submit" class="btn btn-default">Submit</button>
+          </form>
+        </div><!-- /.navbar-collapse -->
+      </nav>
+
+      <div class="container">
+        <!-- This loops through the paginated posts -->
+
+  <h1><a style="color: #F22430" href="/2012/01/07/android-edittext-remove-focus">Android EditText remove focus</a></h1>
+  <p class="author">
+    <span class="date">2012-01-07 01:34:00 +0800</span>
+  </p>
+  <div class="content">
+    只要頁面中有用到EditText&nbsp;<edittext>的，</edittext><br />只要跑到那個頁面，一定會被自動focus，也就是說鍵盤會自動彈開!<br />要取消focus，只要在你layout中的root element加上下面兩個屬性，<br />(root element就是最外圍的那個element，預設都是LinearLayout）<br /><br /><br />android:focusable="true"<br />android:focusableInTouchMode="true"<br /><br /><br /><br /><br /><br />
+  </div>
+
+  <h1><a style="color: #F22430" href="/2012/01/06/facebook-login">實作Facebook Login 【新版】</a></h1>
+  <p class="author">
+    <span class="date">2012-01-06 01:20:00 +0800</span>
+  </p>
+  <div class="content">
+    今天發現前陣子有使用到Facebook登入的案子，<br />突然掛了! 不能使用Facebook登入了....<br />去查了一下，原來Facebook API改版....<br />老實說，我覺得這樣機制很差....應該也保留舊有機制，而不是連通知都沒有就改版了!<br /><br />Ok, fine! 其實也沒有太大差別!<br />主要是改一些參數名稱!<br />至於前面的註冊手續都相同! 可以來<a href="http://blog.kenyang.net/2011/02/implement-facebook-login.html">前一篇</a>看!<br /><br /><br />至於coding實作如下，<br />一樣得嵌入js檔，<br /><pre class="brush: html">&lt;script src="http://connect.facebook.net/en_US/all.js"&gt;&lt;/script&gt;<br /></pre><br />接著一樣要init，但是多了一個參數，就是oauth，以及從以前的response.session改成response.authResponse<br /><pre class="brush: javascript">&lt;script&gt;<br /> //先做init的動作，輸入自己的app id<br /> FB.init({ <br />    appId:'你自己的app id', <br />    cookie:true, <br />    status:true, <br />    xfbml:true,<br />    oauth : true // 多了這個參數<br /> });<br /> <br /><br /><br /><br /> //下面是實作一個登入的function<br />function fnLoginFb(){<br />    FB.login(function(response) {<br />        //先判斷是否已經登入了，如果是，就直接<br />        if (response.authResponse){  <br />            FB.api('/me', function(response) {<br />                alert(response.email);<br />            });<br />        //下面是沒有登入時才會做的，會去subscribe一個event，就是去監聽一個login event（也就是說login成功以後，會接收到訊息）<br />        }else{<br />            FB.Event.subscribe('auth.login', function(response) {<br />                if (response.authResponse) {<br />                    FB.api('/me', function(response) {<br />                        alert(response.email);<br />                    });          <br />                }<br />            }); <br />        }<br /><br />    }, {scope:'email'});<br /><br />} <br /><br /><br /><br />&lt;/script&gt;<br /></pre><br />然後下面就是實作FB登入的按鈕了!<br /><pre class="brush: html"><div id="fb-root"><br /></div><br /><a href="http://www.blogger.com/blogger.g?blogID=866973865356001297#"><img src="/images/fb_login.jpg" /></a> <br /><br /></pre><br /><br />
+  </div>
+
+  <h1><a style="color: #F22430" href="/2011/12/30/galaxy-nexus_30">Galaxy Nexus 使用心得</a></h1>
+  <p class="author">
+    <span class="date">2011-12-30 22:25:00 +0800</span>
+  </p>
+  <div class="content">
+    Galaxy Nexus 購入了算是第二天！<br /><br />玩了兩天，來PO點心得!<br />到底Android 4.0 ICS和先前Android 2.3以下的裝置，到底有甚麼差別!<br />以及介紹ICS比較特殊的地方!<br /><br />這邊拿Nexus One做比較! &nbsp;(恩，都原生機! 這樣才有比較介面差別的意義!)<br />底下的照片主要是拿參加GOOGLE ADL送的Flyer拍的...<br />畫質有點差，有些我沒有對焦，但能表達我要表達的意思就好了~"~<br /><br /><br /><div class="separator" style="clear: both; text-align: center;"><a href="http://4.bp.blogspot.com/-yox8rKgQO3I/Tv3NBYCIGmI/AAAAAAAAAg8/u_gJS7__zeg/s1600/1.jpg" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="346" src="http://4.bp.blogspot.com/-yox8rKgQO3I/Tv3NBYCIGmI/AAAAAAAAAg8/u_gJS7__zeg/s640/1.jpg" width="640" /></a></div><span style="text-align: center;">側面照，其實Nexus One(上)，比較厚! 以重量來說，Nexus One也比較重! 跟外殼材質也有相關! 畢竟Galaxy Nexus(下)並不是用金屬材質，但老實說，我還是覺得Nexus One摸起來的質感比較好!</span><br /><div class="separator" style="clear: both; text-align: center;"><br /></div><div class="separator" style="clear: both; text-align: center;"><br /></div><div class="separator" style="clear: both; text-align: center;"><br /></div><div class="separator" style="clear: both; text-align: left;">接著來看Nexus One和Galaxy Nexus在我手上的樣子，因為不少人擔心Galaxy Nexus螢幕很大，一手無法掌握!!!&nbsp;</div><div class="separator" style="clear: both; text-align: left;">恩，我在男生中的手算大了，算是可以一手hold住Galaxy Nexus，</div><div class="separator" style="clear: both; text-align: left;">但老實說要一手Key 文字，跟Nexus One比起來，的確會有點ㄍㄧㄥ。</div><div class="separator" style="clear: both; text-align: left;">下面是圖片，可以看一下實際拿起來的樣子!</div><div class="separator" style="clear: both; text-align: center;"><br /></div><div class="separator" style="clear: both; text-align: center;"><br /></div><div class="separator" style="clear: both; text-align: center;"><a href="http://3.bp.blogspot.com/-dpXQug1cD2U/Tv3M9CeCFPI/AAAAAAAAAgw/xb-_o50zypg/s1600/5.jpg" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="640" src="http://3.bp.blogspot.com/-dpXQug1cD2U/Tv3M9CeCFPI/AAAAAAAAAgw/xb-_o50zypg/s640/5.jpg" width="480" /></a></div><div class="separator" style="clear: both; text-align: center;">用右手拿Galaxy Nexus</div><br /><br /><div class="separator" style="clear: both; text-align: center;"><a href="http://1.bp.blogspot.com/-tgLb6p1dCTU/Tv3NHSmWPpI/AAAAAAAAAhE/LtrOR6f_ewE/s1600/6.jpg" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="640" src="http://1.bp.blogspot.com/-tgLb6p1dCTU/Tv3NHSmWPpI/AAAAAAAAAhE/LtrOR6f_ewE/s640/6.jpg" width="480" /></a></div><div class="separator" style="clear: both; text-align: center;">要去點最左邊的ㄅ鍵時，跟Nexus One相比，的確有點點ㄍㄧㄥ，更別說要碰到左上角了!</div><div class="separator" style="clear: both; text-align: center;"><br /></div><div class="separator" style="clear: both; text-align: center;"><br /></div><div class="separator" style="clear: both; text-align: center;"><br /></div><div class="separator" style="clear: both; text-align: center;"><br /></div><div class="separator" style="clear: both; text-align: center;">下面是拿Nexus One的樣子</div><div class="separator" style="clear: both; text-align: center;"><br /></div><div class="separator" style="clear: both; text-align: center;"><a href="http://1.bp.blogspot.com/-DrvycCvQeG4/Tv3NMkBODII/AAAAAAAAAhM/tqXw7ExGeOg/s1600/7.jpg" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="640" src="http://1.bp.blogspot.com/-DrvycCvQeG4/Tv3NMkBODII/AAAAAAAAAhM/tqXw7ExGeOg/s640/7.jpg" width="480" /></a></div><div class="separator" style="clear: both; text-align: center;">恩，相較起來，Nexus One在我手中變小好多XD &nbsp;應該是A CUP(誤) &nbsp;</div><div class="separator" style="clear: both; text-align: center;"><br /></div><div class="separator" style="clear: both; text-align: center;"><br /></div><div class="separator" style="clear: both; text-align: center;"><br /></div><div class="separator" style="clear: both; text-align: center;"><a href="http://4.bp.blogspot.com/-9xbp5LNVemA/Tv3NY0VME6I/AAAAAAAAAhk/eNQ90Dtt6WI/s1600/8.jpg" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="640" src="http://4.bp.blogspot.com/-9xbp5LNVemA/Tv3NY0VME6I/AAAAAAAAAhk/eNQ90Dtt6WI/s640/8.jpg" width="480" /></a></div><div class="separator" style="clear: both; text-align: center;">可以看到我輕易地碰到ㄅ鍵，也可以輕易地碰到左上角!</div><div class="separator" style="clear: both; text-align: center;"><br /></div><div class="separator" style="clear: both; text-align: center;"><br /></div><div class="separator" style="clear: both; text-align: center;"><br /></div><div class="separator" style="clear: both; text-align: center;"><span style="font-size: large;"><b>下面要介紹ICS比較特別之處!!!</b></span></div><div class="separator" style="clear: both; text-align: center;"><span style="font-size: large;"><b><br /></b></span></div><div class="separator" style="clear: both; text-align: center;"><span style="font-size: large;"><b><br /></b></span></div><div class="separator" style="clear: both; text-align: left;">記得Android 2.3以下的裝置，想要擷取手機畫面，必須用Android SDK裡面的DDMS去擷取嗎? 這對一個不懂技術的人來說，的確是一大門檻! 而iPhone就不用，iPhone可以輕易地擷取手機畫面!</div><div class="separator" style="clear: both; text-align: left;"><b><span style="font-size: large;">但是!!!!! </span></b>Android 4.0 ICS 有了這項功能了!!!!!!</div><div class="separator" style="clear: both; text-align: left;">只要同時按下音量減少鍵(手機左方)，以及電源鍵(手機右方)</div><div class="separator" style="clear: both; text-align: left;">下面是操作圖</div><br /><div class="separator" style="clear: both; text-align: center;"><a href="http://2.bp.blogspot.com/-Y8Of4c5aQvA/Tv3M6gtgxoI/AAAAAAAAAgg/y-8Plp5OSw8/s1600/2.jpg" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="400" src="http://2.bp.blogspot.com/-Y8Of4c5aQvA/Tv3M6gtgxoI/AAAAAAAAAgg/y-8Plp5OSw8/s400/2.jpg" width="300" /></a></div><div class="separator" style="clear: both; text-align: center;">按下手機音量減少鍵(手機左方)</div><div class="separator" style="clear: both; text-align: center;"><br /></div><div class="separator" style="clear: both; text-align: center;"><a href="http://4.bp.blogspot.com/-c-Chrep96M4/Tv3M52cXkRI/AAAAAAAAAgc/aoJ9_o23dEQ/s1600/3.jpg" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="400" src="http://4.bp.blogspot.com/-c-Chrep96M4/Tv3M52cXkRI/AAAAAAAAAgc/aoJ9_o23dEQ/s400/3.jpg" width="300" /></a></div><div class="separator" style="clear: both; text-align: center;">以及同時按下手機電源鍵(手機右方)</div><div class="separator" style="clear: both; text-align: center;"><br /></div><div class="separator" style="clear: both; text-align: center;"><br /></div><div class="separator" style="clear: both; text-align: center;"><a href="http://2.bp.blogspot.com/-g0j0aQwT4vI/Tv3M8W3WQaI/AAAAAAAAAgs/KKkC2jeOsow/s1600/4.jpg" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="400" src="http://2.bp.blogspot.com/-g0j0aQwT4vI/Tv3M8W3WQaI/AAAAAAAAAgs/KKkC2jeOsow/s400/4.jpg" width="300" /></a></div><div class="separator" style="clear: both; text-align: center;">同時按下以後，就會出現此圖，白色框框裡面就是你擷取的圖!! 此範例是擷取我的桌面XD 是Amanda Seyfried!!!!!!!!!!! &gt;//////&lt;</div><div class="separator" style="clear: both; text-align: center;"><br /></div><div class="separator" style="clear: both; text-align: center;"><br /></div><div class="separator" style="clear: both; text-align: center;"><b><span style="font-size: large;">接下來要介紹ICS!!!</span></b></div><div class="separator" style="clear: both; text-align: center;"><br /></div><div class="separator" style="clear: both; text-align: center;"><a href="http://1.bp.blogspot.com/-AJs_jgwPFaQ/Tv3NUtIP11I/AAAAAAAAAhc/rc6KA_bKYAo/s1600/9.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="640" src="http://1.bp.blogspot.com/-AJs_jgwPFaQ/Tv3NUtIP11I/AAAAAAAAAhc/rc6KA_bKYAo/s640/9.png" width="360" /></a></div><div class="separator" style="clear: both; text-align: center;">看到上圖有三個框框，紅、橘、藍!</div><div class="separator" style="clear: both; text-align: center;"><span style="color: red;">紅色框框</span>是Android 2.3以下裝置沒有的!這是虛擬鍵盤，從左到右，分別是BACK, Home, Task，在Android 2.3以下的手機上面，通通都有實體按鍵(BACK,Home,Menu,Search)，偏偏這幾種按鍵，每一家廠商都放得不一樣，有些可能是HOME先，有些可能是BACK先，有些還沒有SEARCH，某支手機還很智障設置了facebook的按鍵..................... 老實說，這對Android系統來說，不是件好事，這樣的usability非常不好!!!! 拜託別荼毒這些end user，end user只會覺得，【靠，android很爛耶，怎都亂擺】! 殊不知，這些都是那些廠商搞得鬼.......所以ICS直接內建了虛擬按鍵，我想就是為了解決這些第三方廠商不統一設置按鍵的問題吧!</div><div class="separator" style="clear: both; text-align: center;">(咦? 我很納悶，現在有實體鍵盤的裝置，將來要更新ICS時，那...不就有兩個鍵盤了嗎? 不過說不定這些廠商又去改Android Kernel，又把虛擬鍵盤改掉.....)</div><div class="separator" style="clear: both; text-align: center;"><span style="color: orange;">橘色框框</span>算是navigation bar了，有用過iPhone的都知道，使用者可以將APP拖曳到下方，這樣可以方便我們快速使用，現在ICS也有了! 等等會有圖說明!&nbsp;</div><div class="separator" style="clear: both; text-align: center;"><span style="color: blue;">藍色框框</span>，哈! 我覺得這是ICS很失敗的地方耶! 這塊是search bar....是不能刪除的== 它永遠都在那!!</div><br /><br /><br /><div class="separator" style="clear: both; text-align: center;"></div><div class="separator" style="clear: both; text-align: center;"><a href="http://1.bp.blogspot.com/-n9wK8rUc1g0/Tv3NZo9r36I/AAAAAAAAAhs/2Lsfs0a53sA/s1600/10.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="640" src="http://1.bp.blogspot.com/-n9wK8rUc1g0/Tv3NZo9r36I/AAAAAAAAAhs/2Lsfs0a53sA/s640/10.png" width="360" /></a></div><div class="separator" style="clear: both; text-align: center;">這張圖，我們可以看到，我可以將APP拖曳到下方的navigation bar，方便我們快速使用!!! 超方便! 但可惜只能放四個!&nbsp;</div><div class="separator" style="clear: both; text-align: center;"><br /></div><br /><div class="separator" style="clear: both; text-align: center;"><a href="http://1.bp.blogspot.com/-tsGYxpKPgRI/Tv3Nju98fLI/AAAAAAAAAh0/LBzzZz_fer0/s1600/11.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="640" src="http://1.bp.blogspot.com/-tsGYxpKPgRI/Tv3Nju98fLI/AAAAAAAAAh0/LBzzZz_fer0/s640/11.png" width="360" /></a></div><div class="separator" style="clear: both; text-align: center;">喔，對了，iPhone有分類的功能，就是可以將2個以上的app放在一個資料夾裡面，現在ICS也有了!!! 可以看到這張圖，我把一個名稱為Utility的資料夾，放在navigation bar裏頭!! 點開以後就是圖中的樣子!!&nbsp;</div><div class="separator" style="clear: both; text-align: center;"><br /></div><div class="separator" style="clear: both; text-align: center;"><br /></div><div class="separator" style="clear: both; text-align: center;"><a href="http://1.bp.blogspot.com/-3ziKAy2ycgw/Tv3Nng869RI/AAAAAAAAAiA/XzQrij67H6M/s1600/12.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="640" src="http://1.bp.blogspot.com/-3ziKAy2ycgw/Tv3Nng869RI/AAAAAAAAAiA/XzQrij67H6M/s640/12.png" width="360" /></a></div><div class="separator" style="clear: both; text-align: center;">可以看到這張圖的桌面，我就放了三個資料夾</div><div class="separator" style="clear: both; text-align: center;"><br /></div><div class="separator" style="clear: both; text-align: center;"><br /></div><div class="separator" style="clear: both; text-align: center;"><br /></div><div class="separator" style="clear: both; text-align: center;"><a href="http://2.bp.blogspot.com/-UPPYZPdbRvs/Tv3NnnJCEwI/AAAAAAAAAh8/K3JB1jxCNPg/s1600/13.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="640" src="http://2.bp.blogspot.com/-UPPYZPdbRvs/Tv3NnnJCEwI/AAAAAAAAAh8/K3JB1jxCNPg/s640/13.png" width="360" /></a></div><div class="separator" style="clear: both; text-align: center;">點開某一個，展開來就是長這樣</div><div class="separator" style="clear: both; text-align: center;"><br /></div><div class="separator" style="clear: both; text-align: center;"><br /></div><div class="separator" style="clear: both; text-align: center;"><a href="http://1.bp.blogspot.com/-RE5fUIU8sfg/Tv3Npb4pKyI/AAAAAAAAAiM/lzA_9EURJhg/s1600/Screenshot_2011-12-30-22-20-43.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="640" src="http://1.bp.blogspot.com/-RE5fUIU8sfg/Tv3Npb4pKyI/AAAAAAAAAiM/lzA_9EURJhg/s640/Screenshot_2011-12-30-22-20-43.png" width="360" /></a></div><div class="separator" style="clear: both; text-align: center;">喔，對了，上面有講到Task這個按鍵，在虛擬鍵盤中的最右方，它的作用就是，點了你可以看到最近執行過的程式!!!!</div><br /><br /><br /><br />用的這幾天，我對ICS還算滿意瞜!!! 至少我很愛它的分類和navigation bar功能!!!<br />可能是桌面是Amanda Seyfried...也因此讓我更愛它吧!(誤)<br /><br /><br /><br /><br />
+  </div>
+
+
+<!-- Pagination links -->
+<div class="pagination">
+  
+    <a href="/blog/page22" class="previous">Previous</a>
+  
+  <span class="page_number ">Page: 23 of 53</span>
+  
+    <a href="/blog/page24" class="next">Next</a>
+  
+</div>
+
+      </div>
+
+    </div>
+
+    <div id="footer">
+      <div class="container">
+        <p>&copy; 2015 Ken Yang
+          with help from <a href="http://jekyllbootstrap.com" target="_blank" title="The Definitive Jekyll Blogging Framework">Jekyll Bootstrap</a>
+          and <a href="http://getbootstrap.com" target="_blank">Bootstrap</a>
+        </p>
+      </div>
+    </div>
+
+    
+
+
+
+
+
+    <!-- Latest compiled and minified JavaScript, requires jQuery 1.x (2.x not supported in IE8) -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="/assets/themes/bootstrap-3/bootstrap/js/bootstrap.min.js"></script>
+  </body>
+</html>
+

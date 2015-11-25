@@ -1,0 +1,296 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title></title>
+    
+    <meta name="author" content="Ken Yang">
+
+    <!-- Enable responsive viewport -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Bootstrap styles -->
+    <link href="/assets/themes/bootstrap-3/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Optional theme -->
+    <link href="/assets/themes/bootstrap-3/bootstrap/css/bootstrap-theme.min.css" rel="stylesheet">
+    <!-- Sticky Footer -->
+    <link href="/assets/themes/bootstrap-3/bootstrap/css/bs-sticky-footer.css" rel="stylesheet">
+    
+    <!-- Custom styles -->
+    <link href="/assets/themes/bootstrap-3/css/style.css?body=1" rel="stylesheet" type="text/css" media="all">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Fav and touch icons -->
+    <!-- Update these with your own images
+      <link rel="shortcut icon" href="images/favicon.ico">
+      <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+      <link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-72x72.png">
+      <link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png">
+    -->
+
+    <!-- atom & rss feed -->
+    <link href="/atom.xml" type="application/atom+xml" rel="alternate" title="Sitewide ATOM Feed">
+    <link href="/rss.xml" type="application/rss+xml" rel="alternate" title="Sitewide RSS Feed">
+
+  </head>
+
+  <body>
+    <div id="wrap">
+      <nav class="navbar navbar-default" role="navigation">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#jb-navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/">Ken Yang</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="jb-navbar-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+            
+
+
+  
+    
+      
+      	
+      	<li><a href="/archive">Archive</a></li>
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/categories">Categories</a></li>
+      	
+      
+    
+  
+    
+  
+    
+      
+      	
+      	<li><a href="/pages">Pages</a></li>
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/tags">Tags</a></li>
+      	
+      
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+
+
+
+          </ul>
+          <form class="navbar-form navbar-right" role="search">
+            <div class="form-group">
+              <input type="text" class="form-control" placeholder="Search">
+            </div>
+            <button type="submit" class="btn btn-default">Submit</button>
+          </form>
+        </div><!-- /.navbar-collapse -->
+      </nav>
+
+      <div class="container">
+        <!-- This loops through the paginated posts -->
+
+  <h1><a style="color: #F22430" href="/2011/11/17/c-reference">C++: Reference (參考)</a></h1>
+  <p class="author">
+    <span class="date">2011-11-17 00:40:00 +0800</span>
+  </p>
+  <div class="content">
+    C++: Reference (參考)<br /><br /><a href="http://blog.kenyang.net/2011/11/c-pointer.html">前面一篇講了pointer</a>，這篇要講只有C++才有的reference，<br />C是沒有reference的，相較於pointer，reference顯得平易近人多了!<br />reference有個很大的特性，它的意思是<b>別名(alias)</b>的意思!<br />reference不像pointer記錄著變數的記憶體位置，它只是變數的<span class="Apple-style-span" style="font-size: large;"><b>別名</b></span>!<br /><br />下面用個簡單的例子講解：<br /><br /><pre class="brush: c++">int iValue = 2;<br />int &amp;iReference = iValue;<br />cout &lt;&lt; iReference &lt;&lt; endl;   //會印出2<br />cout &lt;&lt; &amp;iReference &lt;&lt; endl;  //會印出iValue 的記憶體位置<br />cout &lt;&lt; &amp;iValue &lt;&lt; endl;　　　 //會印出iValue本身自己的記憶體位置<br /></pre><br />上面的範例宣告了一個整數變數（iValue)，和一個參考變數（iReference) 第一行會先印出2，<br />因為前面說過參考只是別名， 意思就是說iReference是iValue的別名，<br />在白話一點iReference等於iValue，<br />所以第二行會印出iReference(也就是iValue)的記憶體位置，假設印出0x28ff44（每台電腦都不一定是這個值）<br />第三行就是印出iValue自己的記憶體位置，所以！！！它也會印出0x28ff44!! 跟第二行一樣!!&nbsp;(因為他們兩個相等咩)<br /><br />reference跟pointer不一樣的還有幾點，<br />reference一定要有初始值!!!<br />取值不需要加上*!!<br /><br />不過其實參考使用的時機大部分是用在函數時， 因為是別名，所以可以避免複製大量的變數到函數去(就算是pointer函數，也會複製)<br />下面是一個簡單的參考函數範例：<br /><br /><pre class="brush: c++">void fnReference(int &amp;iValue){<br />     iValue = iValue +1;<br />     cout &lt;&lt; iValue &lt;&lt; endl;        <br />}<br />main(){  <br />          <br />     int iValue = 2;<br />     fnReference(iValue);<br />     cout &lt;&lt; iValue &lt;&lt; endl;<br />        <br />     system("pause");<br />     return 0; <br />}<br /></pre><br /><br />在上面的範例我們宣告了一個函數（fnReference），其傳遞參數為參考型態（&amp;iValue）<br />在主程式中(main)，傳遞了單純的整數變數進去，<br />跟pointer不一樣，pointer是傳記憶體位置進去，<br />參考就直接傳普通的變數進去，<br />我們在函數中把傳遞進去的參數+1，然後印出，會印出3，<br />回到主程式以後，在印出iValue，一樣會印出3。<br />因為我們是傳遞參考，這就是call by reference！<br /><br />最後，reference還有一個跟pointer不一樣的點！<br />就是reference不能用來進行運算!!!!!<br /><br /><br /><br /><br /><br /><br />
+  </div>
+
+  <h1><a style="color: #F22430" href="/2011/11/16/c-pointer">C++: pointer (指標)</a></h1>
+  <p class="author">
+    <span class="date">2011-11-16 21:45:00 +0800</span>
+  </p>
+  <div class="content">
+    學C/C++，我想pointer(指標)是最大的門檻吧!<br />這也是大部分人學C/C++，最痛的東西吧!<br />這篇就稍微的講解pointer!<br /><br />pointer是專門用來儲存<b>某變數</b>的<b>記憶體位置</b>!<br />每宣告一個pointer時，就會配置一塊<b>4 bytes</b>的記憶體空間，<br />專門用來儲存某變數的記憶體位置。<br />下面用簡單的code來說明，<br /><pre class="brush: c++">int iValue = 10;<br />int *iPointer = &amp;iValue;<br /><br />printf("iPointer的value=%d \r\n"            ,  *iPointer);      //取值要用* <br />printf("iPointer儲存value的address=%X \r\n" ,  iPointer);       //沒有*就是印出本身儲存的記憶體位置   <br />printf("iPointer本身的address=%X \r\n"      ,  &amp;iPointer);      //取得記憶體位置都是用&amp; <br />printf("iValue  本身的address=%X \r\n"      ,  &amp;iValue);        //取得記憶體位置都是用&amp; <br />printf("iPointer的size=%d \r\n"             ,  sizeof(iPointer));  <br />printf("iValue的size=%d \r\n"               ,  sizeof(iValue));    <br /><br /><br /></pre><br /><br /><br />下面為執行結果以及說明，：<br /><table border="1"><tbody><tr style="background-color: grey; font-size: 16px; font-weight: bold;">           <td align="center" width="35%">output</td>           <td align="center">&nbsp;&nbsp; 說明</td>     </tr><tr><td width="30%">&nbsp;&nbsp; iPointer的value=10</td><td>印出儲存的記憶體位置本身的value，前面說過pointer是用來儲存記憶體位置，<br />如果要取得該記憶體位置的value，就是利用*</td>      </tr><tr><td width="30%">&nbsp;&nbsp; iPointer儲存value的address=28FF3C</td><td>印出iPointer儲存的資訊（記憶體位置）</td>      </tr><tr><td width="30%">&nbsp;&nbsp; iPointer本身的address=28FF38</td><td>iPointer自己的記憶體起始位置在哪</td>      </tr><tr><td width="30%">&nbsp;&nbsp; iValue &nbsp;本身的address=28FF3C</td><td>第四行就是印出iValue本身的記憶體起始位置，會發現跟第二行一樣，因為iPointer就是儲存這個資訊</td>      </tr><tr><td width="30%">&nbsp;&nbsp; iPointer的size=4</td><td>印出iPointer的大小，前面說過，每個pointer的大小都為4 bytes，不論型態為和</td>      </tr><tr><td width="30%">&nbsp;&nbsp; iValue的size=4</td><td>印出iValue本身的大小，因為是interger，所以為4 bytes</td>      </tr></tbody></table><br /><br />上面為基本用法。<br />pointer也很常用來做字串的處理。<br />原因是用指標處理字串較省記憶體空間，也比較彈性，<br />我們可以宣告一個字串指標指向一個字串常數，<br />下面是個簡單的範例：<br /><pre class="brush: c++">char *pValue[2]     = {"Ken","Yang"};<br />char szValue[2][10] = {"Ken","Yang"};<br />printf("szValue的value=%s \r\n"   ,  szValue[0]);     <br />printf("pValue的value=%s \r\n"  ,  pValue[0]);    <br />printf("szValue的size=%d \r\n"   ,  sizeof(szValue));     <br />printf("pValue的size=%d \r\n"  ,  sizeof(pValue));    <br /><br /></pre><br /><br />下面為執行結果以及說明，顏色相同的為該對應的結果及說明：<br /><table border="1" 　width="70%"><tbody><tr style="background-color: grey; font-size: 16px; font-weight: bold;">           <td align="center" width="35%">output</td>           <td align="center">&nbsp;&nbsp; 說明</td>     </tr><tr><td width="30%">&nbsp;&nbsp;szValue的value=Ken</td><td>印出儲存在陣列0的value</td>      </tr><tr><td width="30%">&nbsp;&nbsp;pValue的value=Ken</td><td>印出儲存在指標陣列0的value</td>      </tr><tr><td width="30%">&nbsp;&nbsp;szValue的size=20</td><td>字元陣列的大小為20</td>      </tr><tr><td width="30%">&nbsp;&nbsp;pValue的size=8</td><td>指標陣列的大小為8</td>      </tr></tbody></table><br />可以發現陣列以及指標陣列的第0項，都是ken阿，可是大小卻都不一樣!<br />陣列的大小為20，而指標陣列為8<br />這就是為什麼使用指標會較為省空間的原因，且也較為彈性<br />因為字串指標是可以更改值的，可是字元陣列是不行的。<br /><br />指標還有個特性，就是可以用來做運算，<br />可以看下面簡單的範例，<br /><pre class="brush: c++">char *pString = "Ken";<br />cout &lt;&lt; pString &lt;&lt; endl;<br />cout &lt;&lt; *(pString+1) &lt;&lt; endl;<br />cout &lt;&lt; sizeof(pString) &lt;&lt; endl;<br />cout &lt;&lt; sizeof(*(pString+1)) &lt;&lt; endl;<br />cout &lt;&lt; &amp;pString &lt;&lt; endl;<br /><br /></pre><br />上面的例子，第一行我們先宣告字串指標，然後指定一個字串常數給他，<br />第二行就是印出value來(會印出Ken)<br />第三行就是進行指標的運算(會印出e，如果我們改成+2，就變成n)<br />第四行是印出大小，會印出4，因為說過指標的長度都固定為4<br />第五行也是印出大小，差別是印出該位置的字元大小，那就一定是1了<br />第六行就是印出該記憶體位置了，會發現字串指標跟前面講的變數指標(int, double..之類的)存取value或者存取記憶體的方式都不太同。<br /><br /><br />最後要講的是指標函數，用個簡單的範例來說明，<br /><pre class="brush: c++">void fnPointer(int *pValue){<br />     *pValue=*pValue+1;<br />     cout &lt;&lt; pValue &lt;&lt; endl;    //印出記憶體位置<br />}<br />main(){  <br />     int iValue = 2; <br />     cout &lt;&lt; &amp;iValue &lt;&lt; endl;<br />     fnPointer(&amp;iValue);   //傳遞int變數的記憶體位置進去<br />     cout &lt;&lt; iValue &lt;&lt; endl;<br />}<br /></pre><br />我們先宣告一個函數，那個函數裡的參數是pointer型態，<br />那麼使用方式就是傳遞某變數的記憶體位置進去即可，<br />因為我們說過指標是用來存某變數的記憶體位置!!!<br />所以就是傳遞記憶體位置進去。<br />然後我們再函數fnPointer裡面對value進行+1的動作，<br />然後在印出傳遞進來pointer的記憶體位置，<br />而主程式則是先印出iValue的記憶體位置，<br />在印出iValue的值。<br />會發現，主程式跟函數印出來的記憶體位置都相同!!<br />且在函數裡面進行+1以後，最後在main印出的value會變成3。<br />如果有些人可能會認為還是印出2，代表對pointer的概念還是不太了解(囧)，因為是pointer，還是存取到原本的變數啊!<br />所以也是對原本的變數做操作!!!<br />印出2的方式我們稱為call by value，<br />但印出3的方式我們稱為call by address!<br />還有一種是call by reference!<br />後面一篇會講道!<br /><br /><br />以上是pointer一些簡單的介紹!<br /><a href="http://blog.kenyang.net/2011/11/c-reference.html">下一篇會介紹c++才有的參考(reference)</a><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
+  </div>
+
+  <h1><a style="color: #F22430" href="/2011/11/09/android-sd-card">Android 強制安裝至 sd card</a></h1>
+  <p class="author">
+    <span class="date">2011-11-09 12:59:00 +0800</span>
+  </p>
+  <div class="content">
+    下指令讓"所有"&nbsp;android app強制安裝到sd card中，<br />其實這個指令我還蠻常用到的，蠻常幫朋友下的。<br />但是每次都會稍微忘記!<br />所以記錄一下。<br /><br />首先要先下載<a href="http://dl.google.com/android/android-sdk_r15-windows.zip">android sdk</a>，<br />下載以後，解壓縮放置您要放的目錄，<br />這裡假設放置在C槽，假設目錄名稱為android-sdk，<br />然後將手機插上USB線!<br />接著打開cmd (命令提示字元)，<br />cd到C槽底下的android sdk目錄，在cd到platform-tools底下，<br />完整指令為<br /><pre class="brush: java">cd android-sdk/platform-tools<br /></pre><br />接著利用底下的adb.exe去執行強制安裝至sd card的指令，<br />指令如下：<br /><pre class="brush: java">adb shell pm setInstallLocation 2<br /></pre><br />2：代表讓所有app可以安裝至sd card<br />0：就是初始值，可以自己選擇<br />1：強制安裝在ROM裡面<br /><br />所以如果要恢復初始值的話，指令如下：<br /><pre class="brush: java">adb shell pm setInstallLocation 0<br /></pre><br />
+  </div>
+
+
+<!-- Pagination links -->
+<div class="pagination">
+  
+    <a href="/blog/page27" class="previous">Previous</a>
+  
+  <span class="page_number ">Page: 28 of 53</span>
+  
+    <a href="/blog/page29" class="next">Next</a>
+  
+</div>
+
+      </div>
+
+    </div>
+
+    <div id="footer">
+      <div class="container">
+        <p>&copy; 2015 Ken Yang
+          with help from <a href="http://jekyllbootstrap.com" target="_blank" title="The Definitive Jekyll Blogging Framework">Jekyll Bootstrap</a>
+          and <a href="http://getbootstrap.com" target="_blank">Bootstrap</a>
+        </p>
+      </div>
+    </div>
+
+    
+
+
+
+
+
+    <!-- Latest compiled and minified JavaScript, requires jQuery 1.x (2.x not supported in IE8) -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="/assets/themes/bootstrap-3/bootstrap/js/bootstrap.min.js"></script>
+  </body>
+</html>
+

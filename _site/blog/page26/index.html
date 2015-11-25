@@ -1,0 +1,296 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title></title>
+    
+    <meta name="author" content="Ken Yang">
+
+    <!-- Enable responsive viewport -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Bootstrap styles -->
+    <link href="/assets/themes/bootstrap-3/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Optional theme -->
+    <link href="/assets/themes/bootstrap-3/bootstrap/css/bootstrap-theme.min.css" rel="stylesheet">
+    <!-- Sticky Footer -->
+    <link href="/assets/themes/bootstrap-3/bootstrap/css/bs-sticky-footer.css" rel="stylesheet">
+    
+    <!-- Custom styles -->
+    <link href="/assets/themes/bootstrap-3/css/style.css?body=1" rel="stylesheet" type="text/css" media="all">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Fav and touch icons -->
+    <!-- Update these with your own images
+      <link rel="shortcut icon" href="images/favicon.ico">
+      <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+      <link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-72x72.png">
+      <link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png">
+    -->
+
+    <!-- atom & rss feed -->
+    <link href="/atom.xml" type="application/atom+xml" rel="alternate" title="Sitewide ATOM Feed">
+    <link href="/rss.xml" type="application/rss+xml" rel="alternate" title="Sitewide RSS Feed">
+
+  </head>
+
+  <body>
+    <div id="wrap">
+      <nav class="navbar navbar-default" role="navigation">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#jb-navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/">Ken Yang</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="jb-navbar-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+            
+
+
+  
+    
+      
+      	
+      	<li><a href="/archive">Archive</a></li>
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/categories">Categories</a></li>
+      	
+      
+    
+  
+    
+  
+    
+      
+      	
+      	<li><a href="/pages">Pages</a></li>
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/tags">Tags</a></li>
+      	
+      
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+
+
+
+          </ul>
+          <form class="navbar-form navbar-right" role="search">
+            <div class="form-group">
+              <input type="text" class="form-control" placeholder="Search">
+            </div>
+            <button type="submit" class="btn btn-default">Submit</button>
+          </form>
+        </div><!-- /.navbar-collapse -->
+      </nav>
+
+      <div class="container">
+        <!-- This loops through the paginated posts -->
+
+  <h1><a style="color: #F22430" href="/2011/12/13/telnet-post">如何用Telnet POST資料</a></h1>
+  <p class="author">
+    <span class="date">2011-12-13 02:44:00 +0800</span>
+  </p>
+  <div class="content">
+    有極少數的網站開發者，<br />在處理有關input資料時，只會在client端進行validate（用Javascript），<br />往往忽略了server端的驗證。<br /><br />如果這時候，hacker寫個小軟體利用telnet發送一個post到你的server，<br />那就爆了!<br />當然，hacker也可以直接寫個form，然後action是對你的server，<br />這樣就避掉client端的js，只不過這邊要說明怎麼用telnet去發出一個request。<br /><br /><br /><br />假設對方做一個輸入mail的page，<br />然後該page有驗證，如果你輸入不是mail的格式，<br />就不會將資料傳到他的server，以及新增至DB。<br />這時候我們就可以利用telnet，跳過他前端的驗證機制!<br /><br /><br />首先打開你的cmd!<br /><br />接著輸入下圖中的指令：<br /><br /><a href="http://4.bp.blogspot.com/-3Q5xiAZwjPY/TuZIO7ov11I/AAAAAAAAAYU/Q2RQKz0vGIg/s1600/1.PNG" imageanchor="1" style="clear: left; float: left; margin-bottom: 1em; margin-right: 1em;"><img border="0" height="48" src="http://4.bp.blogspot.com/-3Q5xiAZwjPY/TuZIO7ov11I/AAAAAAAAAYU/Q2RQKz0vGIg/s400/1.PNG" width="400" /></a><br /><br /><br /><br /><br /><br />恩，上圖中的網址，記得改成連線的網址，圖中只是範例，<br />你連不到的！<br /><br />連到以後，按下鍵盤的&nbsp;<span class="Apple-style-span" style="font-size: large;">CTRL+]</span>　按鍵<br />接著輸入下圖中的指令，set localecho，輸入完成，按2下enter，<br />這段的目的是讓你等等輸入指令時看得到自己在輸入甚麼，<br />如果沒有這段，等等輸入指令，你是看不到自己在打啥！<br /><br /><a href="http://3.bp.blogspot.com/-OipJ3-j6jOI/TuZIPZO6UBI/AAAAAAAAAYY/iCJeMLTTC1o/s1600/2.PNG" imageanchor="1" style="clear: left; float: left; margin-bottom: 1em; margin-right: 1em;"><img border="0" height="151" src="http://3.bp.blogspot.com/-OipJ3-j6jOI/TuZIPZO6UBI/AAAAAAAAAYY/iCJeMLTTC1o/s400/2.PNG" style="cursor: move;" width="400" /></a><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />接著就可以輸入發送POST的指令了！可以看下圖！<br />建議你，先在記事本上打一打，再貼上，因為在CMD輸入錯了，<br />是不能按DELETE或者Backspace的<br /><br /><div class="separator" style="clear: both; text-align: center;"><a href="http://1.bp.blogspot.com/-CjCQk5V-DRk/TuZIP39S0WI/AAAAAAAAAYg/RWNn_jH76UM/s1600/3.png" imageanchor="1" style="clear: left; float: left; margin-bottom: 1em; margin-right: 1em;"><img border="0" height="169" src="http://1.bp.blogspot.com/-CjCQk5V-DRk/TuZIP39S0WI/AAAAAAAAAYg/RWNn_jH76UM/s640/3.png" width="640" /></a></div><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />第一行，記得是POST，然後/yyyy，就是你要收資料的page，要改成自己的喔!<br />第二行，HOST就是主機名稱，<br />第三行，就是告訴server，會有表單的資料傳遞過來<br /><form>第四行，content-lengh，就是你要傳的資料有多長，因為我們的資料是mail=88811，所以是10<br />第五行，就是response完，連線就斷掉。<br /><br />上面都是http header，當然還有很多，你可以自己偽造!<br />例如cookie、date等等之類的!<br />記得header與data之間要空一行空白，<br />接著才可以輸入資料<br />就是圖中的mail=88811。<br />這樣就完成了，你就輸入一個不是正確mail格式的mail給他!<br />且如果他 server沒有進行驗證，這時候就錯誤了!<br />當然你可以把mail的問題放大，可能是sql injection，或者是XSS之類的問題!<br /><br /><br /><br /><br /><br /><br /><br /><br /><br /></form><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
+  </div>
+
+  <h1><a style="color: #F22430" href="/2011/12/12/chrome-xss">Chrome 防範XSS機制</a></h1>
+  <p class="author">
+    <span class="date">2011-12-12 06:31:00 +0800</span>
+  </p>
+  <div class="content">
+    <span class="Apple-style-span" style="background-color: white; color: red; font-family: Consolas, 'Lucida Console', monospace; font-size: 12px; white-space: pre-wrap;">Refused to execute a JavaScript script. Source code of script found within request.</span><br /><br /><br />恩，今天再做一個準備Demo何謂XSS攻擊的網頁，<br />發現用Chrome開啟該網頁時，所有的攻擊都無效!!!!!!<br />去看了一下Console，發現出現了下列的訊息<br /><br /><span class="Apple-style-span" style="background-color: white; color: red; font-family: Consolas, 'Lucida Console', monospace; font-size: 12px; white-space: pre-wrap;">Refused to execute a JavaScript script. Source code of script found within request.</span><br /><div>才知道原來在Chrome裡面，只要request裡面含有JS code的，且只要有print出來的，都會被擋掉!!!</div><div><br /></div><div>不知道是在第幾版才有的，感覺Chrome太聰明也不是好事，</div><div>認為還是有些事情是developer該懂的，</div><div>當然!!! 這樣的機制對end user來說是好事! 至少不會被攻擊!<br /><br /><br /><br /><br /><br /><br /><br /><br /><br /></div>
+  </div>
+
+  <h1><a style="color: #F22430" href="/2011/12/08/hadoop-datanode">Hadoop DataNode 無法啟動</a></h1>
+  <p class="author">
+    <span class="date">2011-12-08 19:50:00 +0800</span>
+  </p>
+  <div class="content">
+    好久沒碰Hadoop，今天要重新跑一次project，<br />發現怪怪的，怎麼連都連不上，<br />就連到server上，<br />下了指令jps，看一下是否都正常啟動，<br />發現DataNode沒有啟動!<br /><br />找了一下解決方式，<br />把預設的hadoop.tmr.dir資料夾先砍掉，假設我放在/appKen/hadoop/tmp<br />那就下指令：rm -rf tmp (rf意思是底下所有資料都砍掉)<br /><br />再來就是重新format NameNode，<br />指令：hadoop namenode -format<br /><br />接著就在啟動一次，<br />指令：start-all.sh<br /><br /><br /><br />
+  </div>
+
+
+<!-- Pagination links -->
+<div class="pagination">
+  
+    <a href="/blog/page25" class="previous">Previous</a>
+  
+  <span class="page_number ">Page: 26 of 53</span>
+  
+    <a href="/blog/page27" class="next">Next</a>
+  
+</div>
+
+      </div>
+
+    </div>
+
+    <div id="footer">
+      <div class="container">
+        <p>&copy; 2015 Ken Yang
+          with help from <a href="http://jekyllbootstrap.com" target="_blank" title="The Definitive Jekyll Blogging Framework">Jekyll Bootstrap</a>
+          and <a href="http://getbootstrap.com" target="_blank">Bootstrap</a>
+        </p>
+      </div>
+    </div>
+
+    
+
+
+
+
+
+    <!-- Latest compiled and minified JavaScript, requires jQuery 1.x (2.x not supported in IE8) -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="/assets/themes/bootstrap-3/bootstrap/js/bootstrap.min.js"></script>
+  </body>
+</html>
+

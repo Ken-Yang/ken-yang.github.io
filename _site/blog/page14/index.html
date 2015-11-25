@@ -1,0 +1,296 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title></title>
+    
+    <meta name="author" content="Ken Yang">
+
+    <!-- Enable responsive viewport -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Bootstrap styles -->
+    <link href="/assets/themes/bootstrap-3/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Optional theme -->
+    <link href="/assets/themes/bootstrap-3/bootstrap/css/bootstrap-theme.min.css" rel="stylesheet">
+    <!-- Sticky Footer -->
+    <link href="/assets/themes/bootstrap-3/bootstrap/css/bs-sticky-footer.css" rel="stylesheet">
+    
+    <!-- Custom styles -->
+    <link href="/assets/themes/bootstrap-3/css/style.css?body=1" rel="stylesheet" type="text/css" media="all">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Fav and touch icons -->
+    <!-- Update these with your own images
+      <link rel="shortcut icon" href="images/favicon.ico">
+      <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+      <link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-72x72.png">
+      <link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png">
+    -->
+
+    <!-- atom & rss feed -->
+    <link href="/atom.xml" type="application/atom+xml" rel="alternate" title="Sitewide ATOM Feed">
+    <link href="/rss.xml" type="application/rss+xml" rel="alternate" title="Sitewide RSS Feed">
+
+  </head>
+
+  <body>
+    <div id="wrap">
+      <nav class="navbar navbar-default" role="navigation">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#jb-navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/">Ken Yang</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="jb-navbar-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+            
+
+
+  
+    
+      
+      	
+      	<li><a href="/archive">Archive</a></li>
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/categories">Categories</a></li>
+      	
+      
+    
+  
+    
+  
+    
+      
+      	
+      	<li><a href="/pages">Pages</a></li>
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/tags">Tags</a></li>
+      	
+      
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+
+
+
+          </ul>
+          <form class="navbar-form navbar-right" role="search">
+            <div class="form-group">
+              <input type="text" class="form-control" placeholder="Search">
+            </div>
+            <button type="submit" class="btn btn-default">Submit</button>
+          </form>
+        </div><!-- /.navbar-collapse -->
+      </nav>
+
+      <div class="container">
+        <!-- This loops through the paginated posts -->
+
+  <h1><a style="color: #F22430" href="/2013/01/03/arduino-bluetooth">Arduino bluetooth</a></h1>
+  <p class="author">
+    <span class="date">2013-01-03 18:15:00 +0800</span>
+  </p>
+  <div class="content">
+    先前講過arduino的基本介紹，<br />這篇要講如何綁上bluetooth shield到arduino上面！<br /><br /><br />首先要先介紹bluetooth shield上的pin腳，<br />先看到下圖，下圖中右邊有一排pin腳，<br />主要會用到前面4隻pin腳，<br />而4隻pin腳依序為：<br /><br /><ol><li>5V：供電的(+)</li><li>TX：傳送訊號</li><li>RX：接收訊號</li><li>GND：接地線(-)</li></ol><br /><div class="separator" style="clear: both; text-align: center;"><a href="http://2.bp.blogspot.com/-myo8iSxgbSQ/UOAPRwyFaBI/AAAAAAAAEho/wkEGI3LJIjw/s1600/IMG_20121230_175016.jpg" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="480" src="http://2.bp.blogspot.com/-myo8iSxgbSQ/UOAPRwyFaBI/AAAAAAAAEho/wkEGI3LJIjw/s640/IMG_20121230_175016.jpg" width="640" /></a></div><br /><br /><br />而arduino板上也一定會有上述對應的pin腳，<br />基本上都插上去就可以，<br />不過有一點比較特別，<br />在於RX/TX的點，<br />Arduino板上的TX要接到Bluetooh shield上的RX，<br />Arduino板上的RX反而接到Bluetooth shield上的TX，<br /><br />可以看到參考下面的表，<br /><table border="1px"><tbody><tr> <td><br />Arduino</td> <td><br />Bluetooth Shield</td> </tr><tr> <td>RX</td> <td>TX</td> </tr><tr> <td>TX</td> <td>RX</td> </tr><tr> <td>5V</td> <td>5V</td> </tr><tr> <td>GND</td> <td>GND</td> </tr></tbody></table><br /><br />對了，基本上arduino板上的RX/TX都是預設pin0和pin1！<br />至少uno和duemilanove這兩塊板子上都是！<br />所以就差在對應上的pin0和pin1吧！<br />（當然你也可以插在別的pin腳上，但是在寫code時就得稍為設定）<br /><br /><br />差上去以後，基本上你的bluetooth shield會一直閃紅燈，<br />一直閃一直閃，直到有人連結上這台bluetooth上，紅燈才會恆亮！<br /><br />接著來寫個sample測試！<br /><br /><pre class="brush: java">int iLedPin        = 13;<br />void setup(){<br />  // define the PIN as OUTPUT <br />  pinMode(iLedPin        ,OUTPUT);  <br />  <br />  // using baud rate 9600 to listen.<br />  Serial.begin(9600);<br />}<br /><br />void loop(){<br />  while (Serial.available()){<br />    char cCmd = Serial.read();<br />    if (cCmd =='o'){<br />      digitalWrite(iLedPin,HIGH);<br />    }else if (cCmd == 'c'){<br />      digitalWrite(iLedPin,LOW);<br />    }<br />  }<br />}<br /></pre><br /><br /><br />把上述的code deploy進去arduino以後，<br />就可以用你的電腦來測試了！<br /><br /><br />不管你是windows,osx,linux，只要你的OS連接到藍牙以後，<br />都會被模擬成serial port！<br />所以如果你用的是linux或者mac，<br />你會發現在你的/dev/底下多了一個device，<br />像我的就是/dev/tty.KENarduino-DevB，<br />那麼就可以用下列的指令連結到你的藍牙了，<br /><pre class="brush: java">sudo cu -s 9600 -l /dev/tty.KENarduino-DevB <br /></pre><br /><br />如果連結成功應該會在你的terminal上看到下列字樣<br /><pre class="brush: java">Connected<br /></pre><br />那麼就代表你成功連結到藍牙裝置，就可以透過藍牙下指令給arduino了！<br />最後可以試著輸入o和c，然後觀察你的pin13那顆led有無變化！<br /><br /><br /><br /><br /><br /><br />ＰＳ：如果你用的是windows，直接去載putty吧！透過putty去連結藍芽，只要輸入你的藍牙是COM幾就可以連線！<br /><br /><br /><br />
+  </div>
+
+  <h1><a style="color: #F22430" href="/2012/11/25/android-startservice-vs-bindservice">Android: startService vs bindService</a></h1>
+  <p class="author">
+    <span class="date">2012-11-25 23:26:00 +0800</span>
+  </p>
+  <div class="content">
+    這篇要說明<br /><ul><li>startService</li><li>bindService</li></ul>這兩者的差別！<br /><br />其實在我之前的筆記有關<a href="https://developer.android.com/guide/components/services.html">Service</a>的文章，都是使用startService！<br />並沒有使用bindService！<br />一方面是因為startService簡單很多！<br />再來也是最近才發現有bindService！<br />應該是說我原本以為startService的行為與bindService差不多！<br />但實際找答案以後才知道不是這樣的！<br /><br /><br />這裡就不多作說明如何使用startService或者bindService！<br />主要會說明這兩者差異性！<br />如果要看如何使用可以看之前的筆記：<br /><br /><ol><li><a href="http://blog.kenyang.net/2012/03/android-c2dm-android.html">Android C2DM (四)：實作之Android篇</a></li><li><a href="http://blog.kenyang.net/2010/11/android-detect-screen-on-and-screen-off.html">android detect screen on and screen off</a></li><li><a href="http://blog.kenyang.net/2010/08/android-sdcard.html">android 偵測 sdcard</a></li></ol><div><br /></div><br />先去看Google的定義，對於startService，Google定義如下<br /><blockquote><b>Once started, a service can run in the background indefinitely, even if the component that started it is destroyed. Usually, a started service performs a single operation and does not return a result to the caller. For example, it might download or upload a file over the network. When the operation is done, the service should stop itself.</b></blockquote>簡言之用startService啟動，這個service是不會跟隨著啓動他的component消滅！且原則上是不能與UI互動的！（原則上）<br /><br /><br />而對於bindService，定義如下：<br /><blockquote><b>A bound service offers a client-server interface that allows components to interact with the service, send requests, get results, and even do so across processes with interprocess communication (IPC). A bound service runs only as long as another application component is bound to it. Multiple components can bind to the service at once, but when all of them unbind, the service is destroyed.</b></blockquote>用bindService起來的話，則此service可以跟該component進行溝通！甚至可以做到 IPC！<br /><br />小結：<br />bindService和startService最主要的差異在於其本身的lifecycle！<div>以及bindService可以用來做IPC！簡單的說就是可以讓你的service和UI溝通！<br /><br /></div><div>這裡就用一個project來說明吧！<br /><div><br />先建立一個new project！<br />在這project中建立一個Activity，並指定它為launcher！<br />然後在建立一個Service！內如如下：<br /><pre class="brush: java">public class Services extends Service {<br /><br /> @Override<br /> public IBinder onBind(Intent intent) {<br />  // TODO Auto-generated method stub<br />  Log.d("TestService","onBind");<br />  return null;<br /> }<br /> <br /> @Override<br /> public int onStartCommand(Intent intent, int flags, int startId) {<br />  Log.d("TestService","onStartCommand");<br />  return super.onStartCommand(intent, flags, startId);<br /> }<br /> @Override<br /> public ComponentName startService(Intent service) {<br />  Log.d("TestService","startService");<br />  return super.startService(service);<br /> }<br /> <br /> @Override<br /> public void onCreate() {<br />  super.onCreate();<br />  Log.d("TestService","onCreate");<br /> }<br /> <br /> @Override<br /> public void onDestroy() {<br />  super.onDestroy();<br />  Log.d("TestService","onDestroy");<br /> }<br /><br /> @Override<br /> public boolean onUnbind(Intent intent) {<br />  Log.d("TestService","onUnbind");<br />  return super.onUnbind(intent);<br /> }<br /> <br />}<br /></pre><br />可以看到上面的Service中並沒有做任何處理！<br />只有簡單的Log！<br />目的只是要讓我們瞭解startService和bindService的lifecycle差異性！<br /><br />首先先來講startService，<br />我們先在onCreate中start！如下：<br /><pre class="brush: java">@Override<br /> protected void onCreate(Bundle savedInstanceState) {<br />  super.onCreate(savedInstanceState);<br />  <br />  startService(new Intent(this,Services.class));<br /> }<br /></pre><br />然後按下run，在開啟DDMS來觀看log！<br />會發現印出了”onCreate"->"onStartCommand"！<br /><br />這時候按下back鍵來destroy這個activity，你會發現什麼都沒有印出來！<br />也就是說這個service仍在background執行！（你得手動stop）<br /><br />這時候我們換成bindService來看看，如下：<br /><pre class="brush: java">@Override<br /> protected void onCreate(Bundle savedInstanceState) {<br />  super.onCreate(savedInstanceState);<br />  <br />  bindService(new Intent(this,Services.class),null,Context.BIND_AUTO_CREATE);<br /> }<br /></pre><br />一樣按下run！再看一下ＬＯＧ！<br />會發現印出“onCreate"->"onBind"！<br /><br />再按下back鍵，會發現...印出了！<br />“onUnbind"->"onDestroy"<br /><br /><br /><br />總結上面兩項的差異，<br />會發現使用bindService時，<br />這個service的lifecycle是跟隨著bind它的object！<br />所以當該object被destroy，自然而然這個service也被destroy！<br /><br />而使用startService，<br />就不是這樣了！這個service就是獨立的！不屬於任何一個object！<br />得靠stopService來停止！（任何一個Activity中都可以stop）<br /><br /><br />註：bindService的使用方式比較特別！<br />多帶了幾個參數！<br />在這個例子我們第二個參數設為null！<br />其實這參數是要傳入一個ServiceConnection的物件！<br />而ServiceConnection是一個Interface，這個Interface中<br />會有兩個callback function！<br />主要是用來monitor 這個service的state！<br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /></div></div>
+  </div>
+
+  <h1><a style="color: #F22430" href="/2012/11/19/android-r-cannot-be-resolved-to-variable">Android: r cannot be resolved to a variable</a></h1>
+  <p class="author">
+    <span class="date">2012-11-19 09:38:00 +0800</span>
+  </p>
+  <div class="content">
+    <span style="background-color: white; color: #333333; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; font-size: 13px; line-height: 17px;">早上發生了一個很有趣的事情...</span><br /><span style="background-color: white; color: #333333; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; font-size: 13px; line-height: 17px;">因為最近新版的Android</span><wbr style="background-color: white; color: #333333; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; font-size: 13px; line-height: 17px;"></wbr><span class="word_break" style="background-color: white; color: #333333; display: inline-block; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; font-size: 13px; line-height: 17px;"></span><span style="background-color: white; color: #333333; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; font-size: 13px; line-height: 17px;">&nbsp;SDK非常的雞婆！</span><br /><span style="background-color: white; color: #333333; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; font-size: 13px; line-height: 17px;">如果一開始預設選的sdk是4.x以上，</span><br /><span style="background-color: white; color: #333333; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; font-size: 13px; line-height: 17px;">re</span><wbr style="background-color: white; color: #333333; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; font-size: 13px; line-height: 17px;"></wbr><span class="word_break" style="background-color: white; color: #333333; display: inline-block; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; font-size: 13px; line-height: 17px;"></span><span style="background-color: white; color: #333333; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; font-size: 13px; line-height: 17px;">s/</span><wbr style="background-color: white; color: #333333; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; font-size: 13px; line-height: 17px;"></wbr><span class="word_break" style="background-color: white; color: #333333; display: inline-block; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; font-size: 13px; line-height: 17px;"></span><span style="background-color: white; color: #333333; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; font-size: 13px; line-height: 17px;">底下會多了一個value-v11, value-v14住兩個資料夾，</span><br /><span style="background-color: white; color: #333333; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; font-size: 13px; line-height: 17px;">這裡面都是放一些layout/</span><wbr style="background-color: white; color: #333333; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; font-size: 13px; line-height: 17px;"></wbr><span class="word_break" style="background-color: white; color: #333333; display: inline-block; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; font-size: 13px; line-height: 17px;"></span><span style="background-color: white; color: #333333; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; font-size: 13px; line-height: 17px;">theme！</span><br /><span style="background-color: white; color: #333333; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; font-size: 13px; line-height: 17px;"><br /></span> <span style="background-color: white; color: #333333; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; font-size: 13px; line-height: 17px;">這些layout就是根據不同的SDK version去gen出來的！</span><br /><span style="background-color: white; color: #333333; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; font-size: 13px; line-height: 17px;">其實它的目的就是要你吃它新推出</span><wbr style="background-color: white; color: #333333; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; font-size: 13px; line-height: 17px;"></wbr><span class="word_break" style="background-color: white; color: #333333; display: inline-block; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; font-size: 13px; line-height: 17px;"></span><span style="background-color: white; color: #333333; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; font-size: 13px; line-height: 17px;">的action bar的概念！</span><br /><span style="background-color: white; color: #333333; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; font-size: 13px; line-height: 17px;">但是如果你把project default sdk version改成2.x！</span><br /><span style="background-color: white; color: #333333; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; font-size: 13px; line-height: 17px;">那就慘了！因為2.X SDK不認得那是什麼！！！</span><br /><span style="background-color: white; color: #333333; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; font-size: 13px; line-height: 17px;">所以你的R.java會一直buil</span><wbr style="background-color: white; color: #333333; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; font-size: 13px; line-height: 17px;"></wbr><span class="word_break" style="background-color: white; color: #333333; display: inline-block; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; font-size: 13px; line-height: 17px;"></span><span style="background-color: white; color: #333333; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; font-size: 13px; line-height: 17px;">d不出來！</span><br /><span style="background-color: white; color: #333333; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; font-size: 13px; line-height: 17px;">soloution就是把那兩個資料夾砍了！</span><br /><span style="background-color: white; color: #333333; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; font-size: 13px; line-height: 17px;">還有一點</span><wbr style="background-color: white; color: #333333; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; font-size: 13px; line-height: 17px;"></wbr><span class="word_break" style="background-color: white; color: #333333; display: inline-block; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; font-size: 13px; line-height: 17px;"></span><span style="background-color: white; color: #333333; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; font-size: 13px; line-height: 17px;">！在layout裡面以前有一個attribute是fill_</span><wbr style="background-color: white; color: #333333; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; font-size: 13px; line-height: 17px;"></wbr><span class="word_break" style="background-color: white; color: #333333; display: inline-block; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; font-size: 13px; line-height: 17px;"></span><span style="background-color: white; color: #333333; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; font-size: 13px; line-height: 17px;">parent！</span><br /><span style="background-color: white; color: #333333; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; font-size: 13px; line-height: 17px;">但在某個版本SDK被deprecated！改成</span><wbr style="background-color: white; color: #333333; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; font-size: 13px; line-height: 17px;"></wbr><span class="word_break" style="background-color: white; color: #333333; display: inline-block; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; font-size: 13px; line-height: 17px;"></span><span style="background-color: white; color: #333333; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; font-size: 13px; line-height: 17px;">match_parent！！！</span><br /><span style="background-color: white; color: #333333; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; font-size: 13px; line-height: 17px;"><br /></span> <span style="background-color: white; color: #333333; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; font-size: 13px; line-height: 17px;">而4.X就是用match_pa</span><wbr style="background-color: white; color: #333333; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; font-size: 13px; line-height: 17px;"></wbr><span class="word_break" style="background-color: white; color: #333333; display: inline-block; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; font-size: 13px; line-height: 17px;"></span><span style="background-color: white; color: #333333; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; font-size: 13px; line-height: 17px;">rent！</span><br /><span style="background-color: white; color: #333333; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; font-size: 13px; line-height: 17px;">如果改回2.X sdk就要把match_parent改成fill_paren</span><wbr style="background-color: white; color: #333333; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; font-size: 13px; line-height: 17px;"></wbr><span class="word_break" style="background-color: white; color: #333333; display: inline-block; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; font-size: 13px; line-height: 17px;"></span><span style="background-color: white; color: #333333; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; font-size: 13px; line-height: 17px;">t！</span><br /><br /><br /><br />
+  </div>
+
+
+<!-- Pagination links -->
+<div class="pagination">
+  
+    <a href="/blog/page13" class="previous">Previous</a>
+  
+  <span class="page_number ">Page: 14 of 53</span>
+  
+    <a href="/blog/page15" class="next">Next</a>
+  
+</div>
+
+      </div>
+
+    </div>
+
+    <div id="footer">
+      <div class="container">
+        <p>&copy; 2015 Ken Yang
+          with help from <a href="http://jekyllbootstrap.com" target="_blank" title="The Definitive Jekyll Blogging Framework">Jekyll Bootstrap</a>
+          and <a href="http://getbootstrap.com" target="_blank">Bootstrap</a>
+        </p>
+      </div>
+    </div>
+
+    
+
+
+
+
+
+    <!-- Latest compiled and minified JavaScript, requires jQuery 1.x (2.x not supported in IE8) -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="/assets/themes/bootstrap-3/bootstrap/js/bootstrap.min.js"></script>
+  </body>
+</html>
+

@@ -1,0 +1,296 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title></title>
+    
+    <meta name="author" content="Ken Yang">
+
+    <!-- Enable responsive viewport -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Bootstrap styles -->
+    <link href="/assets/themes/bootstrap-3/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Optional theme -->
+    <link href="/assets/themes/bootstrap-3/bootstrap/css/bootstrap-theme.min.css" rel="stylesheet">
+    <!-- Sticky Footer -->
+    <link href="/assets/themes/bootstrap-3/bootstrap/css/bs-sticky-footer.css" rel="stylesheet">
+    
+    <!-- Custom styles -->
+    <link href="/assets/themes/bootstrap-3/css/style.css?body=1" rel="stylesheet" type="text/css" media="all">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Fav and touch icons -->
+    <!-- Update these with your own images
+      <link rel="shortcut icon" href="images/favicon.ico">
+      <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+      <link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-72x72.png">
+      <link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png">
+    -->
+
+    <!-- atom & rss feed -->
+    <link href="/atom.xml" type="application/atom+xml" rel="alternate" title="Sitewide ATOM Feed">
+    <link href="/rss.xml" type="application/rss+xml" rel="alternate" title="Sitewide RSS Feed">
+
+  </head>
+
+  <body>
+    <div id="wrap">
+      <nav class="navbar navbar-default" role="navigation">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#jb-navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/">Ken Yang</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="jb-navbar-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+            
+
+
+  
+    
+      
+      	
+      	<li><a href="/archive">Archive</a></li>
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/categories">Categories</a></li>
+      	
+      
+    
+  
+    
+  
+    
+      
+      	
+      	<li><a href="/pages">Pages</a></li>
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/tags">Tags</a></li>
+      	
+      
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+
+
+
+          </ul>
+          <form class="navbar-form navbar-right" role="search">
+            <div class="form-group">
+              <input type="text" class="form-control" placeholder="Search">
+            </div>
+            <button type="submit" class="btn btn-default">Submit</button>
+          </form>
+        </div><!-- /.navbar-collapse -->
+      </nav>
+
+      <div class="container">
+        <!-- This loops through the paginated posts -->
+
+  <h1><a style="color: #F22430" href="/2010/08/19/android-sdcard">android 偵測 sdcard</a></h1>
+  <p class="author">
+    <span class="date">2010-08-19 19:17:00 +0800</span>
+  </p>
+  <div class="content">
+    最近在寫一些有關檔案的操作，<br /><br />要把檔案寫到sdcard裡去<br /><br />至於怎麼寫，這裡就不多說<br /><br />在寫檔之前，好的programmer一定要注意到防呆!<br /><br />就是detect sdcard的狀態<br /><br />是否有被mount上去?<br /><br />之前都直接寫一個function去取得目前sdcard的狀態，如下   <br /><pre class="brush: java"> private static final boolean fnIsSDcard(){<br />  return Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED);  <br /> }<br /></pre><br /><br /><br />但是在我的需求中，這種寫法會有問題，<br /><br />因為我的檔案較大，在寫的過程中會耗費比較久的時間，<br /><br />如果在寫檔的過程中，sdcard被unmounted了! 很好，這個process會被killed掉!<br /><br />因為這是process中有參照到sdcard裡的位置，所以android os會強制kill掉!<br /><br />所以我就在想...sdcard有沒有event listener啊??<br /><br />但是沒有，所以我透過Service和BroadcastReceiver去實作<br /><br />首先先新增一個class，然後要extends Service，如下<br /><br /><br /><pre class="brush: java">public class serviceSDcard extends Service {<br /> @Override<br /> public IBinder onBind(Intent intent) {<br />  return null;<br /> }<br /><br /> @Override<br /> public void onStart(Intent intent, int startId) {<br />  //新增一個IntentFilter<br />  IntentFilter intentFilter = new IntentFilter();   <br />  //並且新增兩個action，告知此 service什麼時候的動作才要通知你<br />  intentFilter.addAction(Intent.ACTION_MEDIA_MOUNTED); //如果sdcard被掛載上去時通知<br />  intentFilter.addAction(Intent.ACTION_MEDIA_UNMOUNTED); //如果sdcard被卸載時通知<br />  intentFilter.addDataScheme("file"); <br />  intentFilter.addDataAuthority("*", null);<br />  registerReceiver(receiver, intentFilter);    //註冊一個BroadcastReceiver<br />  super.onStart(intent, startId);<br /> }<br /> private BroadcastReceiver receiver = new BroadcastReceiver() {<br />  <br />  @Override<br />  public void onReceive(Context context, Intent intent) {<br />   try {<br />    <br />    if (intent.getAction().equals(Intent.ACTION_MEDIA_UNMOUNTED)){<br />     //sdcard被卸載時的動作<br />     <br />    }else{<br />     //sdcard被掛載時的動作<br />    }<br />    <br />    <br />   } catch (Exception e) {<br />    Log.d("main", e.toString());<br />   }<br />  <br />  }<br /> };<br />}<br /></pre><br /><br /><br />一個Service就完成了，現在就要把Service啟動!<br /><br />在主要執行的activity中去startService();，如下<br /><br /><br /><pre class="brush: java">public class main extends Activity {<br />    @Override<br />    public void onCreate(Bundle savedInstanceState) {<br />        super.onCreate(savedInstanceState);<br />        setContentView(R.layout.main);<br />        Intent intent = new Intent(this,serviceSDcard.class);<br />        startService(intent);<br />    }<br />}<br /></pre><br /><br /><br /><br />這樣就完成啦! 記得要在manifest.xml中新增一個service喔!!如下:<br /><br /><br /><pre class="brush: java">&lt;service android:name=".serviceSDcard"&gt;&lt;/service&gt;<br /></pre><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
+  </div>
+
+  <h1><a style="color: #F22430" href="/2010/08/07/android-progressbar-in-appwidget">android ProgressBar in AppWidget</a></h1>
+  <p class="author">
+    <span class="date">2010-08-07 05:18:00 +0800</span>
+  </p>
+  <div class="content">
+    android ProgressBar in AppWidget<br /><br />會產生一些問題!<br /><br />基本上在顯示，或者設定目前progress都是沒問題的!!<br /><br />但是當你要把ProgressBar 設為Invisible的時候就會產生BUG!<br /><br />目前看來似乎是android本身的bug...<br /><br />至少找資料找到現在...蠻多人都說這樣的!<br /><br /><pre class="brush: java">Views.setViewVisibility(R.id.TextView01, View.VISIBLE);<br /></pre><br />以往只要打這行code就能把某個元件Invisible或者GONE掉<br /><br />但是如果元件是Progress Bar的話!<br /><br />會無法動作!!<br /><br />所以在這建議大家使用兩個layout<br /><br />一個是有progress bar，一個沒有!<br /><br />如下!<br /><br /><br /><pre class="brush: java">RemoteViews withProgressViews= new RemoteViews(this.getPackageName(),R.layout.progress_layout);//這個是有Progress的<br /><br />RemoteViews withoutProgressViews= new RemoteViews(this.getPackageName(),R.layout.init_layout);//這沒有Progress的<br /><br />app_manager.updateAppWidget(appWidgetId, withProgressViews/withoutProgressViews);//在透過app_manager去更新妳widget的layout樣式<br /><br /></pre><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
+  </div>
+
+  <h1><a style="color: #F22430" href="/2010/08/07/android-filemkdir">android file.mkdir()</a></h1>
+  <p class="author">
+    <span class="date">2010-08-07 04:54:00 +0800</span>
+  </p>
+  <div class="content">
+    <br />今天在實作在 sdcard裡面建立一個檔案!<br /><br />其實這沒什麼難度!<br /><br /><pre class="brush: java">File file = new File("/sdcard/tmp/tmp.db");<br />file.createNewFile();<br /></pre><br /><br />這樣乍看之下是沒甚麼問題<br /><br />但如果沒有tmp此目錄的話!<br /><br />則會出現exception<br /><br />當然! 要建立一個目錄也很簡單!!只要用mkdir即可!<br /><br /><pre class="brush: java">file.mkdir();<br /></pre><br /><br />但是!<br /><br />必須加入一個權限才可以建立目錄!<br /><br /><pre class="brush: java">&lt;uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"&gt;&lt;/uses-permission&gt;<br /><br /></pre><br /><br />但是建立檔案就不用了!
+  </div>
+
+
+<!-- Pagination links -->
+<div class="pagination">
+  
+    <a href="/blog/page45" class="previous">Previous</a>
+  
+  <span class="page_number ">Page: 46 of 53</span>
+  
+    <a href="/blog/page47" class="next">Next</a>
+  
+</div>
+
+      </div>
+
+    </div>
+
+    <div id="footer">
+      <div class="container">
+        <p>&copy; 2015 Ken Yang
+          with help from <a href="http://jekyllbootstrap.com" target="_blank" title="The Definitive Jekyll Blogging Framework">Jekyll Bootstrap</a>
+          and <a href="http://getbootstrap.com" target="_blank">Bootstrap</a>
+        </p>
+      </div>
+    </div>
+
+    
+
+
+
+
+
+    <!-- Latest compiled and minified JavaScript, requires jQuery 1.x (2.x not supported in IE8) -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="/assets/themes/bootstrap-3/bootstrap/js/bootstrap.min.js"></script>
+  </body>
+</html>
+
