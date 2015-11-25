@@ -1,0 +1,211 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>Android Life Cycle （二）詳細講解</title>
+    
+    <meta name="author" content="Name Lastname">
+
+    <!-- Enable responsive viewport -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Bootstrap styles -->
+    <link href="/assets/themes//bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Optional theme -->
+    <link href="/assets/themes//bootstrap/css/bootstrap-theme.min.css" rel="stylesheet">
+    <!-- Sticky Footer -->
+    <link href="/assets/themes//bootstrap/css/bs-sticky-footer.css" rel="stylesheet">
+    
+    <!-- Custom styles -->
+    <link href="/assets/themes//css/style.css?body=1" rel="stylesheet" type="text/css" media="all">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Fav and touch icons -->
+    <!-- Update these with your own images
+      <link rel="shortcut icon" href="images/favicon.ico">
+      <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+      <link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-72x72.png">
+      <link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png">
+    -->
+
+    <!-- atom & rss feed -->
+    <link href="/atom.xml" type="application/atom+xml" rel="alternate" title="Sitewide ATOM Feed">
+    <link href="/rss.xml" type="application/rss+xml" rel="alternate" title="Sitewide RSS Feed">
+
+  </head>
+
+  <body>
+    <div id="wrap">
+      <nav class="navbar navbar-default" role="navigation">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#jb-navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/">Jekyll Bootstrap</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="jb-navbar-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+            
+
+
+  
+    
+      
+      	
+      	<li><a href="/archive">Archive</a></li>
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/categories">Categories</a></li>
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/pages">Pages</a></li>
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/tags">Tags</a></li>
+      	
+      
+    
+  
+
+
+
+          </ul>
+          <form class="navbar-form navbar-right" role="search">
+            <div class="form-group">
+              <input type="text" class="form-control" placeholder="Search">
+            </div>
+            <button type="submit" class="btn btn-default">Submit</button>
+          </form>
+        </div><!-- /.navbar-collapse -->
+      </nav>
+
+      <div class="container">
+        
+<div class="page-header">
+  <h1>Android Life Cycle （二）詳細講解 </h1>
+</div>
+
+<div class="row post-full">
+  <div class="col-xs-12">
+    <div class="date">
+      <span>17 December 2011</span>
+    </div>
+    <div class="content">
+      <a href="http://blog.kenyang.net/2011/11/android-lifecycle.html">前一篇</a>已經簡略的說明Android Activity Life Cycle，<br />這篇將詳細說明Activity在Android 裡記憶體life cycle的呈現，<br /><br /><br /><br />假設我有2個 Activity&nbsp;，分別是A(主畫面)、B(子畫面)，<br />A中有一個按鈕，可以換頁面到B<br /><pre class="brush: java">startActivity(new Intent(A.this, B.class));</pre><br /><br />B中有一個按鈕，可以換頁面到A<br /><pre class="brush: java">startActivity(new Intent(B.this, A.class));</pre><br /><br /><br />且A為app進入點<br /><pre class="brush: java">&lt;intent-filter &gt;<br />  &lt;action android:name="android.intent.action.MAIN" /&gt;<br />  &lt;category android:name="android.intent.category.LAUNCHER" /&gt;<br />&lt;/intent-filter&gt;<br /><br /></pre><br /><br />執行此app時，記憶體的表現會如下圖： <br /><div class="separator" style="clear: both; text-align: center;"><a href="http://4.bp.blogspot.com/-dlbPjhqBxWg/TuubZRYATLI/AAAAAAAAAaQ/fGxJXl8DYm8/s1600/a4.png" imageanchor="1" style="clear: left; float: left; margin-bottom: 1em; margin-right: 1em;"><img border="0" height="320" src="http://4.bp.blogspot.com/-dlbPjhqBxWg/TuubZRYATLI/AAAAAAAAAaQ/fGxJXl8DYm8/s320/a4.png" width="281" /></a></div><br /><br /><div class="separator" style="clear: both; text-align: center;"><a href="http://3.bp.blogspot.com/-pNjJbp9rEKM/TuuawgdQ18I/AAAAAAAAAZ4/KlNmWLLs2Wg/s1600/a1.png" imageanchor="1" style="clear: left; float: left; margin-bottom: 1em; margin-right: 1em;"><br /></a><a href="http://3.bp.blogspot.com/-pNjJbp9rEKM/TuuawgdQ18I/AAAAAAAAAZ4/KlNmWLLs2Wg/s1600/a1.png" imageanchor="1" style="clear: left; float: left; margin-bottom: 1em; margin-right: 1em;"><br /></a><a href="http://3.bp.blogspot.com/-pNjJbp9rEKM/TuuawgdQ18I/AAAAAAAAAZ4/KlNmWLLs2Wg/s1600/a1.png" imageanchor="1" style="clear: left; float: left; margin-bottom: 1em; margin-right: 1em;"><br /></a><a href="http://3.bp.blogspot.com/-pNjJbp9rEKM/TuuawgdQ18I/AAAAAAAAAZ4/KlNmWLLs2Wg/s1600/a1.png" imageanchor="1" style="clear: left; float: left; margin-bottom: 1em; margin-right: 1em;"><img border="0" height="326" src="http://3.bp.blogspot.com/-pNjJbp9rEKM/TuuawgdQ18I/AAAAAAAAAZ4/KlNmWLLs2Wg/s400/a1.png" width="400" /></a></div><br />如果這時候在A畫面按下換頁面至B的按鈕，<br />則記憶體的狀態如下圖<br />A會先去call onPause-&gt;onStop<br />注意!!! 並沒有onDestroy，A這個物件是還存在的<br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />如果這時候在B畫面按下手機上的"【返回】按鈕，<br />則記憶體的狀態如下圖<br />B會先去call onPause -&gt; onStop -&gt; <span style="color: blue;">onDestroy</span><br />注意!!! 這裡有onDestroy，此時B物件是被銷毀的，<br />這個情況應該是正常的life cycle，<br />可是有些人會用換頁的方式(startActivity)回到上一個畫面，<br />在我的觀念裡，會不建議這樣的行為，繼續往下看!<br /><br /><br /><div class="separator" style="clear: both; text-align: center;"><a href="http://1.bp.blogspot.com/-qoMJj_xRCBc/TuuaxIEhKqI/AAAAAAAAAZ8/DCLpAMb1RSQ/s1600/a2.png" imageanchor="1" style="clear: left; float: left; margin-bottom: 1em; margin-right: 1em;"><img border="0" height="276" src="http://1.bp.blogspot.com/-qoMJj_xRCBc/TuuaxIEhKqI/AAAAAAAAAZ8/DCLpAMb1RSQ/s400/a2.png" width="400" /></a></div><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />如果這時候在B畫面，而且想要回到A畫面，<br />B畫面(下圖)中左上角，有一個自己做的返回按鈕，<br />則此時這返回按鈕的code為<br /><pre class="brush: java">startActivity(new Intent(B.this, A.class));</pre><br />當使用者按下這個按鈕時！<br /><br /><br /><div class="separator" style="clear: both; text-align: center;"></div><div class="separator" style="clear: both; text-align: center;"><a href="http://4.bp.blogspot.com/-GIwwGSk0eqI/TuueLiXlvBI/AAAAAAAAAaY/eVsiQXL-Lqk/s1600/device-2011-12-17-033450.png" imageanchor="1" style="clear: left; float: left; margin-bottom: 1em; margin-right: 1em;"><img border="0" height="400" src="http://4.bp.blogspot.com/-GIwwGSk0eqI/TuueLiXlvBI/AAAAAAAAAaY/eVsiQXL-Lqk/s400/device-2011-12-17-033450.png" width="240" /></a></div><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />則此時記憶體的狀態如下圖！<br />B會進入到onStop的狀態！<br />且會有一個新的A畫面（橘色）!!!<br />則此時舊的A畫面（藍色）就會存在記憶體裡，暫時無法回收....<br /><br /><br /><div class="separator" style="clear: both; text-align: center;"><a href="http://1.bp.blogspot.com/-SjVEDlL6_8o/Tuuax056yzI/AAAAAAAAAaE/lgui8Dzhe0Y/s1600/a3.png" imageanchor="1" style="clear: left; float: left; margin-bottom: 1em; margin-right: 1em;"><img border="0" height="281" src="http://1.bp.blogspot.com/-SjVEDlL6_8o/Tuuax056yzI/AAAAAAAAAaE/lgui8Dzhe0Y/s400/a3.png" width="400" /></a></div><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />因此不建議用這種方式回到上一個畫面，<br />會講這篇的原因，是為了稍後的另一篇，<br />要講解Bitmap recycle和 Out of Memory (OOM)的問題！<br />在做recycle時，得去考慮到整體life cycle的問題才行！<br /><br /><br /><br /><br /><br /><br />
+    </div>
+
+    
+
+    
+  
+    <hr>
+    <ul class="pagination">
+    
+      <li class="prev"><a href="/2011/12/15/googe-app-engine-gae-domain" title="Googe App Engine (GAE) 設定 Domain">&laquo; Previous</a></li>
+    
+      <li><a href="/archive.html">Archive</a></li>
+    
+      <li class="next"><a href="/2011/12/24/android-c2dm" title="Android C2DM (一)：元件參數說明">Next &raquo;</a></li>
+    
+    </ul>
+    <hr>
+    
+
+
+  <div id="disqus_thread"></div>
+<script type="text/javascript">
+    
+    var disqus_developer = 1;
+    var disqus_shortname = 'jekyllbootstrap'; // required: replace example with your forum shortname
+    
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+
+
+  </div>
+</div>
+
+
+      </div>
+
+    </div>
+
+    <div id="footer">
+      <div class="container">
+        <p>&copy; 2015 Name Lastname
+          with help from <a href="http://jekyllbootstrap.com" target="_blank" title="The Definitive Jekyll Blogging Framework">Jekyll Bootstrap</a>
+          and <a href="http://getbootstrap.com" target="_blank">Bootstrap</a>
+        </p>
+      </div>
+    </div>
+
+    
+
+
+
+
+
+    <!-- Latest compiled and minified JavaScript, requires jQuery 1.x (2.x not supported in IE8) -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="/assets/themes//bootstrap/js/bootstrap.min.js"></script>
+  </body>
+</html>
+

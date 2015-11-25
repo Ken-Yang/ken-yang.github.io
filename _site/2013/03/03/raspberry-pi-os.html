@@ -1,0 +1,229 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>Raspberry Pi 安裝OS</title>
+    
+    <meta name="author" content="Name Lastname">
+
+    <!-- Enable responsive viewport -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Bootstrap styles -->
+    <link href="/assets/themes//bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Optional theme -->
+    <link href="/assets/themes//bootstrap/css/bootstrap-theme.min.css" rel="stylesheet">
+    <!-- Sticky Footer -->
+    <link href="/assets/themes//bootstrap/css/bs-sticky-footer.css" rel="stylesheet">
+    
+    <!-- Custom styles -->
+    <link href="/assets/themes//css/style.css?body=1" rel="stylesheet" type="text/css" media="all">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Fav and touch icons -->
+    <!-- Update these with your own images
+      <link rel="shortcut icon" href="images/favicon.ico">
+      <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+      <link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-72x72.png">
+      <link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png">
+    -->
+
+    <!-- atom & rss feed -->
+    <link href="/atom.xml" type="application/atom+xml" rel="alternate" title="Sitewide ATOM Feed">
+    <link href="/rss.xml" type="application/rss+xml" rel="alternate" title="Sitewide RSS Feed">
+
+  </head>
+
+  <body>
+    <div id="wrap">
+      <nav class="navbar navbar-default" role="navigation">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#jb-navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/">Jekyll Bootstrap</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="jb-navbar-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+            
+
+
+  
+    
+      
+      	
+      	<li><a href="/archive">Archive</a></li>
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/categories">Categories</a></li>
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/pages">Pages</a></li>
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/tags">Tags</a></li>
+      	
+      
+    
+  
+
+
+
+          </ul>
+          <form class="navbar-form navbar-right" role="search">
+            <div class="form-group">
+              <input type="text" class="form-control" placeholder="Search">
+            </div>
+            <button type="submit" class="btn btn-default">Submit</button>
+          </form>
+        </div><!-- /.navbar-collapse -->
+      </nav>
+
+      <div class="container">
+        
+<div class="page-header">
+  <h1>Raspberry Pi 安裝OS </h1>
+</div>
+
+<div class="row post-full">
+  <div class="col-xs-12">
+    <div class="date">
+      <span>03 March 2013</span>
+    </div>
+    <div class="content">
+      <br />這篇的操作是以mac os為主，且是以command line進行安裝！<br /><br /><br /><br /><span style="font-size: large;">1. 首先先去<a href="http://www.raspberrypi.org/downloads/">官網下載</a>image下來</span><br />只有幾種可以選擇！<br />不過網路上也有很多customized的image可以下！（例如：android）<br /><br /><br /><br /><span style="font-size: large;">2. 下載以後先確認image的完整性吧！</span><br /><pre class="brush: java">shasum ~/Downloads/2012-12-16-wheezy-raspbian.zip<br /></pre>看看結果是不是跟官網的結果一樣！如果是的話，就沒問題拉！！<br />（我下載了好多次，超多次都下失敗...建議選個北美的載點）<br /><br /><br /><span style="font-size: large;">3. 接著解開下載的壓縮檔吧！</span><br /><pre class="brush: java">unzip ~/Downloads/2012-12-16-wheezy-raspbian.zip<br /></pre>解開以後會是一個.img檔案，<br />如：2013-02-09-wheezy-raspbian.img<br /><br /><br /><span style="font-size: large;">4. 查看自己的SD Card 在哪（記得插上sd card）</span><br /><pre class="brush: java">df -h<br /></pre>先看看自己的SD Card的Filesystem名稱！<br />我的是：/dev/disk1s1<br /><br /><br /><span style="font-size: large;">5. 先umount</span><br /><pre class="brush: java">sudo diskutil unmount /dev/disk1s1<br /></pre><br /><br /><span style="font-size: large;">6. 複製image到sd card中！</span><br />這裡很重要！<br />這裡可不是手動複製喔！！！！<br />要用到dd指令進行複製！<br />還有一點很重要！！記得是要寫在raw device上！<br />記得第四步驟嗎？你看到的filesystem name是<span style="color: red;">disk1s1</span>！<br />但我們要寫在<span style="color: red;">rdisk1</span>！別寫錯了！<br /><pre class="brush: java">sudo dd bs=1m if=2013-02-09-wheezy-raspbian.img of=/dev/rdisk1<br /></pre><br /><br /><br /><br />完成上述六步驟就完成安裝了！！！<br />把你的sd card插上pi吧！<br />插上電源以後，完成開機！<br />你在df一次，<br />你會發現很奇怪！<br />假設你是用8G的sd card，你會發現df以後，只有2g差不多而已！<br />那是因為你還沒有expand！由於手動expand很麻煩！<br />所以pi有內建的script可以幫你自動expand！<br />只要下下面的指令：<br /><pre class="brush: java">raspi-config<br /></pre>下了以後會看到下圖！請選第二個選項，並按下enter！<br />就完成expand了！<br />在df一次應該就可以看到正確的size！<br /><br /><br /><div class="separator" style="clear: both; text-align: center;"><a href="http://3.bp.blogspot.com/-WSgKkKjKhaI/UTNvkbMy0FI/AAAAAAAAElE/QqJHuxWD0E0/s1600/Screen+Shot+2013-02-27+at+11.29.41+AM.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="400" src="http://3.bp.blogspot.com/-WSgKkKjKhaI/UTNvkbMy0FI/AAAAAAAAElE/QqJHuxWD0E0/s640/Screen+Shot+2013-02-27+at+11.29.41+AM.png" width="640" /></a></div><br /><br /><br /><br /><br /><br /><br /><br />
+    </div>
+
+    
+
+  
+    <ul class="tag_box inline">
+      <li><i class="glyphicon glyphicon-tags"></i></li>
+      
+      
+
+
+  
+     
+    	<li><a href="/tags.html#pi-ref">pi <span>1</span></a></li>
+     
+    	<li><a href="/tags.html#raspberry-ref">raspberry <span>2</span></a></li>
+    
+  
+
+
+
+    </ul>
+    
+  
+    <hr>
+    <ul class="pagination">
+    
+      <li class="prev"><a href="/2013/02/22/android-facebook-login-v30" title="Android Facebook Login (v3.0)">&laquo; Previous</a></li>
+    
+      <li><a href="/archive.html">Archive</a></li>
+    
+      <li class="next"><a href="/2013/03/14/android-fragment-activity" title="Android Fragment Activity">Next &raquo;</a></li>
+    
+    </ul>
+    <hr>
+    
+
+
+  <div id="disqus_thread"></div>
+<script type="text/javascript">
+    
+    var disqus_developer = 1;
+    var disqus_shortname = 'jekyllbootstrap'; // required: replace example with your forum shortname
+    
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+
+
+  </div>
+</div>
+
+
+      </div>
+
+    </div>
+
+    <div id="footer">
+      <div class="container">
+        <p>&copy; 2015 Name Lastname
+          with help from <a href="http://jekyllbootstrap.com" target="_blank" title="The Definitive Jekyll Blogging Framework">Jekyll Bootstrap</a>
+          and <a href="http://getbootstrap.com" target="_blank">Bootstrap</a>
+        </p>
+      </div>
+    </div>
+
+    
+
+
+
+
+
+    <!-- Latest compiled and minified JavaScript, requires jQuery 1.x (2.x not supported in IE8) -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="/assets/themes//bootstrap/js/bootstrap.min.js"></script>
+  </body>
+</html>
+

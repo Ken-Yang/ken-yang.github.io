@@ -1,0 +1,231 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>Install Android NDK on MAC</title>
+    
+    <meta name="author" content="Name Lastname">
+
+    <!-- Enable responsive viewport -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Bootstrap styles -->
+    <link href="/assets/themes//bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Optional theme -->
+    <link href="/assets/themes//bootstrap/css/bootstrap-theme.min.css" rel="stylesheet">
+    <!-- Sticky Footer -->
+    <link href="/assets/themes//bootstrap/css/bs-sticky-footer.css" rel="stylesheet">
+    
+    <!-- Custom styles -->
+    <link href="/assets/themes//css/style.css?body=1" rel="stylesheet" type="text/css" media="all">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Fav and touch icons -->
+    <!-- Update these with your own images
+      <link rel="shortcut icon" href="images/favicon.ico">
+      <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+      <link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-72x72.png">
+      <link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png">
+    -->
+
+    <!-- atom & rss feed -->
+    <link href="/atom.xml" type="application/atom+xml" rel="alternate" title="Sitewide ATOM Feed">
+    <link href="/rss.xml" type="application/rss+xml" rel="alternate" title="Sitewide RSS Feed">
+
+  </head>
+
+  <body>
+    <div id="wrap">
+      <nav class="navbar navbar-default" role="navigation">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#jb-navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/">Jekyll Bootstrap</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="jb-navbar-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+            
+
+
+  
+    
+      
+      	
+      	<li><a href="/archive">Archive</a></li>
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/categories">Categories</a></li>
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/pages">Pages</a></li>
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/tags">Tags</a></li>
+      	
+      
+    
+  
+
+
+
+          </ul>
+          <form class="navbar-form navbar-right" role="search">
+            <div class="form-group">
+              <input type="text" class="form-control" placeholder="Search">
+            </div>
+            <button type="submit" class="btn btn-default">Submit</button>
+          </form>
+        </div><!-- /.navbar-collapse -->
+      </nav>
+
+      <div class="container">
+        
+<div class="page-header">
+  <h1>Install Android NDK on MAC </h1>
+</div>
+
+<div class="row post-full">
+  <div class="col-xs-12">
+    <div class="date">
+      <span>24 October 2012</span>
+    </div>
+    <div class="content">
+      <span style="font-family: Verdana, sans-serif;">這篇主要講怎麼<u>安裝</u>以及<u>使用</u><a href="http://developer.android.com/tools/sdk/ndk/index.html">Android NDK</a>,</span><br /><span style="font-family: Verdana, sans-serif;">Android NDK簡單地說，就是讓您能夠在你的app當中使用C/C++進行implementation,</span><br /><span style="font-family: Verdana, sans-serif;">它可以把您寫的C/C++ build出一個share object檔案 (*.so) 讓Java call！類似windows中的dll檔！</span><br /><span style="font-family: Verdana, sans-serif;">當然你也可以在JNI call Java method，也就是說是雙向的！</span><br /><span style="font-family: Verdana, sans-serif;">而使用NDK的</span><span style="font-family: Verdana, sans-serif;">好處是大概有下面兩個（我只能想到這兩個..）</span><br /><ol><li><span style="font-family: Verdana, sans-serif;">效能較好（depends on situation)</span></li><li><span style="font-family: Verdana, sans-serif;">可以控制到底層的裝置</span></li></ol><br /><u><span style="font-family: Verdana, sans-serif;"><br /></span></u> <span style="font-family: Verdana, sans-serif;">不過在Android官網也指出</span><br /><blockquote class="tr_bq"><span style="font-family: Verdana, sans-serif;"><span style="background-color: #f9f9f9; color: #222222; line-height: 19px;">”you should understand that&nbsp;</span><span style="background-color: #f9f9f9; color: #222222; line-height: 19px;">the NDK will not benefit most apps“</span></span></blockquote><span style="font-family: Verdana, sans-serif;">所以使用時機要自己斟酌，但我知道蠻多game都是用NDK去implement！</span><br /><span style="font-family: Verdana, sans-serif;">因為需要太多memory，靠自己free效能會較好！</span><br /><span style="font-family: Verdana, sans-serif;"><br /></span> <span style="font-family: Verdana, sans-serif;"><br /></span> <span style="font-family: Verdana, sans-serif;"><br /></span> <span style="font-family: Verdana, sans-serif;">首先先講<a href="http://developer.android.com/tools/sdk/ndk/index.html">Android NDK</a>的安裝以及使用方法！</span><br /><br /><span style="color: red; font-family: Verdana, sans-serif; font-size: large;"><b>（1） 下載</b></span><br /><span style="font-family: Verdana, sans-serif;">下載頁面在<a href="http://developer.android.com/tools/sdk/ndk/index.html#Downloads">http://developer.android.com/tools/sdk/ndk/index.html#Downloads</a></span><br /><span style="font-family: Verdana, sans-serif;">請選擇符合你自己ＯＳ的版本！</span><br /><span style="font-family: Verdana, sans-serif;">（如果你使用的是windows！請先下載<a href="http://www.cygwin.com/">cygwin</a>，至於cygwin是什麼，前面很多篇文章已經敘述過，這裡不多加敘述）</span><br /><br /><span style="color: red; font-size: large;"><b>（2）解壓縮</b></span><br /><span style="font-family: Verdana, sans-serif;">此篇是用mac，因此就下載osx的版本吧！</span><br /><span style="font-family: Verdana, sans-serif;">下載下來以後就進行解壓縮．</span><br /><span style="font-family: Verdana, sans-serif;">基本上其實就完成了！</span><br /><span style="font-family: Verdana, sans-serif;">在NDK r4之前還需要跑一隻setup script，但之後的就不用了！</span><br /><span style="font-family: Verdana, sans-serif;"><br /></span> <span style="font-family: Verdana, sans-serif;">其實解壓縮之後裡面就有很多doc可以看！不過都是英文！</span><br /><span style="font-family: Verdana, sans-serif;"><br /></span> <span style="color: red; font-family: Verdana, sans-serif; font-size: large;"><b>（3）建立jni資料夾</b></span><br /><span style="font-family: Verdana, sans-serif;">在你的$project/底下建立一個jni資料夾！如下：</span><br /><span style="font-family: Verdana, sans-serif;"><project>$project/jni</project></span><br /><span style="font-family: Verdana, sans-serif;"><br /></span> <span style="color: red; font-family: Verdana, sans-serif; font-size: large;"><b>（4）撰寫C/C++</b></span><br /><span style="font-family: Verdana, sans-serif;">在$project<project>/jni底下開始寫C/C++的code了！</project></span><br /><span style="font-family: Verdana, sans-serif;">先建立一個檔案叫做test-jni.c，</span><br /><span style="font-family: Verdana, sans-serif;">內容如下：</span><br /><pre class="brush: c">#include &lt;string.h&gt;<br />#include &lt;jni.h&gt;<br /><br />jstring<br />Java_net_kenyang_jni_RunJNI_getText( JNIEnv* env,<br />                                                  jobject thiz )<br />{<br />    return (*env)-&gt;NewStringUTF(env, "Hello from JNI !");<br />}<br /></pre><span style="font-family: Verdana, sans-serif;">jstring是return type</span><br /><span style="font-family: Verdana, sans-serif;">而</span><span style="font-family: Verdana, sans-serif;"><span style="color: red;">Java</span>_<span style="color: blue;">net_kenyang_jni</span>_<span style="color: #38761d;">RunJNI</span>_<span style="color: #b45f06;">getText</span>是這個method的命名規則！</span><br /><span style="font-family: Verdana, sans-serif;">這是JNI的規則，所以請遵守！</span><br /><br /><span style="font-family: Verdana, sans-serif;">開頭一律Java_<span style="color: blue;">自己的package名稱_</span><span style="color: #38761d;">Class名稱_</span><span style="color: #b45f06;">method名稱</span></span><span style="font-family: Verdana, sans-serif;"><br /></span><span style="font-family: Verdana, sans-serif;">你可以改成自己的！但記得後面的步驟也要記得改！ </span><br /><span style="font-family: Verdana, sans-serif;"><br /></span> <span style="font-family: Verdana, sans-serif;"><br /></span> <span style="font-family: Verdana, sans-serif;"><br /></span> <span style="color: red; font-family: Verdana, sans-serif; font-size: large;"><b>（5）建立Android.mk</b></span><br /><span style="font-family: Verdana, sans-serif;">一樣在$project/jni底下建立Android.mk檔案</span><br /><span style="font-family: Verdana, sans-serif;">Android.mk這個檔案是用來告訴NDK等等要去build哪些resource！</span><br /><span style="font-family: Verdana, sans-serif;">而我們目前只有一隻test-jni.c，所以檔案內容如下：</span><br /><pre class="brush: c">LOCAL_PATH := $(call my-dir)<br /><br />include $(CLEAR_VARS)<br /><br />LOCAL_MODULE    := test-jni<br />LOCAL_SRC_FILES := test-jni.c<br /><br />include $(BUILD_SHARED_LIBRARY)<br /><br /></pre><br /><span style="font-family: Verdana, sans-serif;"><br /></span> <span style="font-family: Verdana, sans-serif;"><br /></span> <span style="color: red; font-family: Verdana, sans-serif; font-size: large;"><b>（6）開始build *.so檔案</b></span><br /><span style="font-family: Verdana, sans-serif;">先開啓你的terminate，然後cd到$project/jni底下</span><br /><span style="font-family: Verdana, sans-serif;">直接在該目錄底下</span><span style="font-family: Verdana, sans-serif;">用NDK的tool進行build！</span><br /><span style="font-family: Verdana, sans-serif;">這樣就會產生一個.so檔！</span><br /><span style="font-family: Verdana, sans-serif;">這個檔案會放在$project/lib/armeabi底下！</span><br /><span style="font-family: Verdana, sans-serif;">檔名一定會是lib開頭，.so結尾！</span><br /><span style="font-family: Verdana, sans-serif;">也就是說在這個範例build出來的.so檔案名稱為libtest-jni.so</span><br /><span style="font-family: Verdana, sans-serif;"><br /></span> <span style="font-family: Verdana, sans-serif;">而build指令如下：</span><br /><pre class="brush: c">cd xxx/project/jni<br />xxx/ndk/ndk-build<br /></pre><br /><br /><span style="font-family: Verdana, sans-serif;"><br /></span> <br /><span style="color: red; font-family: Verdana, sans-serif; font-size: large;"><b>（7）開始寫code</b></span><br /><span style="font-family: Verdana, sans-serif;">在你的android project中直接建立一個activity（名稱為RunJNI）</span><span style="font-family: Verdana, sans-serif;">，</span><br /><span style="font-family: Verdana, sans-serif;">我們將在這個activity中進行呼叫剛剛用c建立的method，</span><br /><span style="font-family: Verdana, sans-serif;">ＣＯＤＥ如下：</span><br /><pre class="brush: java">public class RunJNI extends Activity {<br /> // 宣告一個native method（就是剛剛用c寫的）<br /> private native String getText();<br /> <br /> // 載入剛剛的.so檔案！（這裡不需要加上lib，直接去掉就好<br />    static {<br />        System.loadLibrary("test-jni");<br />    }<br /><br /><br /> @Override<br /> protected void onCreate(Bundle savedInstanceState) {<br />  super.onCreate(savedInstanceState);<br />  setContentView(R.layout.run_jni);<br />  <br />  TextView tv = (TextView) findViewById(R.id.textView1);<br />  <br />  // 呼叫method,把method回傳的字給textView進行設定<br />  tv.setText(getText());<br />  <br /> }<br />}<br /><br /></pre><br /><u><span style="font-family: Verdana, sans-serif;"><br /></span></u><span style="font-family: Verdana, sans-serif;">完成上面7個步驟就完成了！</span><br /><span style="font-family: Verdana, sans-serif;">直接點選run應該就可以看到下面畫面！&nbsp;</span><br /><span style="font-family: Verdana, sans-serif;"><br /></span><div class="separator" style="clear: both; text-align: center;"><a href="http://1.bp.blogspot.com/-jnrxKIWQCPs/UIekOU43QAI/AAAAAAAAA6k/3LdoMLKSWq0/s1600/Screenshot_2012-10-24-16-18-19.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="640" src="http://1.bp.blogspot.com/-jnrxKIWQCPs/UIekOU43QAI/AAAAAAAAA6k/3LdoMLKSWq0/s640/Screenshot_2012-10-24-16-18-19.png" width="360" /></a></div><span style="font-family: Verdana, sans-serif;"><br /></span><u><span style="font-family: Verdana, sans-serif;"><br /></span></u><u><span style="font-family: Verdana, sans-serif;"><br /></span></u><u><span style="font-family: Verdana, sans-serif;"><br /></span></u><u><span style="font-family: Verdana, sans-serif;"><br /></span></u><u><span style="font-family: Verdana, sans-serif;"><br /></span></u><u><span style="font-family: Verdana, sans-serif;"><br /></span></u> <span style="font-family: Verdana, sans-serif;"><br /></span> <br /><pre></pre><pre></pre>
+    </div>
+
+    
+
+  
+    <ul class="tag_box inline">
+      <li><i class="glyphicon glyphicon-tags"></i></li>
+      
+      
+
+
+  
+     
+    	<li><a href="/tags.html#jni-ref">jni <span>1</span></a></li>
+     
+    	<li><a href="/tags.html#android-ref">android <span>64</span></a></li>
+     
+    	<li><a href="/tags.html#ndk-ref">ndk <span>1</span></a></li>
+    
+  
+
+
+
+    </ul>
+    
+  
+    <hr>
+    <ul class="pagination">
+    
+      <li class="prev"><a href="/2012/10/18/amazon-ec2-regenerate-key" title="Amazon EC2 regenerate key">&laquo; Previous</a></li>
+    
+      <li><a href="/archive.html">Archive</a></li>
+    
+      <li class="next"><a href="/2012/11/18/google-analytics-for-android-easytrack" title="Google Analytics for Android - EasyTrack ">Next &raquo;</a></li>
+    
+    </ul>
+    <hr>
+    
+
+
+  <div id="disqus_thread"></div>
+<script type="text/javascript">
+    
+    var disqus_developer = 1;
+    var disqus_shortname = 'jekyllbootstrap'; // required: replace example with your forum shortname
+    
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+
+
+  </div>
+</div>
+
+
+      </div>
+
+    </div>
+
+    <div id="footer">
+      <div class="container">
+        <p>&copy; 2015 Name Lastname
+          with help from <a href="http://jekyllbootstrap.com" target="_blank" title="The Definitive Jekyll Blogging Framework">Jekyll Bootstrap</a>
+          and <a href="http://getbootstrap.com" target="_blank">Bootstrap</a>
+        </p>
+      </div>
+    </div>
+
+    
+
+
+
+
+
+    <!-- Latest compiled and minified JavaScript, requires jQuery 1.x (2.x not supported in IE8) -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="/assets/themes//bootstrap/js/bootstrap.min.js"></script>
+  </body>
+</html>
+

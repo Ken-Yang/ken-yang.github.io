@@ -1,0 +1,227 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>Integer.valueOf的Cache機制</title>
+    
+    <meta name="author" content="Name Lastname">
+
+    <!-- Enable responsive viewport -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Bootstrap styles -->
+    <link href="/assets/themes//bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Optional theme -->
+    <link href="/assets/themes//bootstrap/css/bootstrap-theme.min.css" rel="stylesheet">
+    <!-- Sticky Footer -->
+    <link href="/assets/themes//bootstrap/css/bs-sticky-footer.css" rel="stylesheet">
+    
+    <!-- Custom styles -->
+    <link href="/assets/themes//css/style.css?body=1" rel="stylesheet" type="text/css" media="all">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Fav and touch icons -->
+    <!-- Update these with your own images
+      <link rel="shortcut icon" href="images/favicon.ico">
+      <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+      <link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-72x72.png">
+      <link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png">
+    -->
+
+    <!-- atom & rss feed -->
+    <link href="/atom.xml" type="application/atom+xml" rel="alternate" title="Sitewide ATOM Feed">
+    <link href="/rss.xml" type="application/rss+xml" rel="alternate" title="Sitewide RSS Feed">
+
+  </head>
+
+  <body>
+    <div id="wrap">
+      <nav class="navbar navbar-default" role="navigation">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#jb-navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/">Jekyll Bootstrap</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="jb-navbar-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+            
+
+
+  
+    
+      
+      	
+      	<li><a href="/archive">Archive</a></li>
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/categories">Categories</a></li>
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/pages">Pages</a></li>
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/tags">Tags</a></li>
+      	
+      
+    
+  
+
+
+
+          </ul>
+          <form class="navbar-form navbar-right" role="search">
+            <div class="form-group">
+              <input type="text" class="form-control" placeholder="Search">
+            </div>
+            <button type="submit" class="btn btn-default">Submit</button>
+          </form>
+        </div><!-- /.navbar-collapse -->
+      </nav>
+
+      <div class="container">
+        
+<div class="page-header">
+  <h1>Integer.valueOf的Cache機制 </h1>
+</div>
+
+<div class="row post-full">
+  <div class="col-xs-12">
+    <div class="date">
+      <span>27 October 2011</span>
+    </div>
+    <div class="content">
+      <br /><br /><br />如果有一個Integer的物件要宣告，<br />大部分的人宣告方式會是如下<br /><pre class="brush: java">Integer a = new Integer(2);<br /></pre><br />但如果其value是介於-128~127之間，<br />某些時刻可以使用下面的宣告方式<br /><pre class="brush: java">Integer a = Integer.valueOf(2);<br /></pre><br />在<b><u>某些條件下</u></b>，速度較快一點點點!!<br />為什麼呢??  我們來看下面的例子!<br /><br /><pre class="brush: java">/*<br /> * 如果不是用new Integer()去賦予值，<br /> * 如果是下方的宣告方式，都會去call Integer.valueOf()這個method<br /> * 也就是說下方的宣告方式，a=2 如同 a=Integer.valueOf(2)<br /> */<br />Integer a = 3;<br />Integer b = 3;<br />System.out.println( a==b ); //印出來會是什麼? <br /></pre><br />如果你的答案是<span class="Apple-style-span" style="color: purple; font-size: x-large;">false</span>，只能說不完全錯<br />因為你的想法，可能是認為==是用來比較2個物件的位址是否相同。<br />如果你是這樣想，那你觀念對了，可是就是忽略掉了valueOf的cache機制。<br />這算是一個陷阱。<br /><br />如果你的答案是<span class="Apple-style-span" style="background-color: white;"><span class="Apple-style-span" style="color: purple; font-size: x-large;">true</span></span>，只能說不完全對<br />因為得取決於你的想法，<br /><br /><ol><li>如果你認為因為a是3，b也是3，3等於3阿，所以是true，那就大錯特錯了。你的觀念需要加強。因為==是比較2個物件的位置是否相同，也就說用來判斷是否為同個物件，並不是判斷value是否相同。</li><li>如果你是認為因為==是比較位置，且知道valueOf有cache機制，所以為true，那你答對了。</li></ol><br />因為在call valueOf這個method時，<br />此method裡面會有判斷是否要調用cache的code，<br />如下，<br /><pre class="brush: java">public static Integer valueOf(int i) {<br />    if(i &gt;= -128 &amp;&amp; i &lt;= IntegerCache.high)<br />        return IntegerCache.cache[i + 128];<br />    else<br />        return new Integer(i);<br />}<br /></pre><br />也就是說如果value是介於-128~127之間，<br />就會掉入到if裡面，而IntegerCache為一個class，<br />在使用這個class時就會去new 256個Integer的物件，並放入cache中，<br />所以在上面的例子a跟b的value都是3，<br />自然會調用同一塊cache，所以用==在比較時，他們的記憶體位置自然為同一塊。<br />因此答案為TRUE。<br /><br />最後!!!<br />或許有人會覺得奇怪，cache會去new 256個Integer物件耶!!<br />這樣用valueOf怎麼會比較快呢??<br />上面有說到<b style="text-decoration: underline;">某些條件下</b>，該條件就是，<br />如果是<span class="Apple-style-span" style="font-size: large;"><b>大量</b></span>宣告的話，此時調用valueOf比較快的條件就成立了。<br /><br /><br />我們可以寫一小段code來判斷執行時間，如下<br /><pre class="brush: java">long lStart = System.nanoTime();<br />for (int i = 0; i &lt; 1000000000 ; i++) {<br /> Integer a = new Integer(3);<br />}<br />long lEnd = System.nanoTime()-lStart;<br /><br />System.out.println((float) lEnd/1000000000);<br /><br />lStart = System.nanoTime();<br />for (int i = 0; i &lt; 1000000000 ; i++) {<br /> Integer a = Integer.valueOf(3);<br />}<br />lEnd = System.nanoTime()-lStart;<br />System.out.println((float) lEnd/1000000000);<br /></pre><br />可以發現上面的例子，<br />用new Integer的方法大概都快要1秒鐘，差不多為0.6秒，<br />但調用Integer.valueOf()的方法大概0.003秒，<br />當然其實人感覺不太到差異啦。<br />只是說硬要評比的話，valueOf的方法較為快。<br />但記得!! 必須符合大量資料的前提才成立。<br /><br /><br /><br /><br /><br />
+    </div>
+
+    
+
+  
+    <ul class="tag_box inline">
+      <li><i class="glyphicon glyphicon-tags"></i></li>
+      
+      
+
+
+  
+     
+    	<li><a href="/tags.html#java-ref">java <span>13</span></a></li>
+    
+  
+
+
+
+    </ul>
+    
+  
+    <hr>
+    <ul class="pagination">
+    
+      <li class="prev"><a href="/2011/10/24/class-c" title="切割子網域（subnet）">&laquo; Previous</a></li>
+    
+      <li><a href="/archive.html">Archive</a></li>
+    
+      <li class="next"><a href="/2011/11/09/android-sd-card" title="Android 強制安裝至 sd card">Next &raquo;</a></li>
+    
+    </ul>
+    <hr>
+    
+
+
+  <div id="disqus_thread"></div>
+<script type="text/javascript">
+    
+    var disqus_developer = 1;
+    var disqus_shortname = 'jekyllbootstrap'; // required: replace example with your forum shortname
+    
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+
+
+  </div>
+</div>
+
+
+      </div>
+
+    </div>
+
+    <div id="footer">
+      <div class="container">
+        <p>&copy; 2015 Name Lastname
+          with help from <a href="http://jekyllbootstrap.com" target="_blank" title="The Definitive Jekyll Blogging Framework">Jekyll Bootstrap</a>
+          and <a href="http://getbootstrap.com" target="_blank">Bootstrap</a>
+        </p>
+      </div>
+    </div>
+
+    
+
+
+
+
+
+    <!-- Latest compiled and minified JavaScript, requires jQuery 1.x (2.x not supported in IE8) -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="/assets/themes//bootstrap/js/bootstrap.min.js"></script>
+  </body>
+</html>
+

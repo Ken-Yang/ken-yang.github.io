@@ -1,0 +1,229 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>How to install Hadoop on Ubuntu (single-node cluster)</title>
+    
+    <meta name="author" content="Name Lastname">
+
+    <!-- Enable responsive viewport -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Bootstrap styles -->
+    <link href="/assets/themes//bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Optional theme -->
+    <link href="/assets/themes//bootstrap/css/bootstrap-theme.min.css" rel="stylesheet">
+    <!-- Sticky Footer -->
+    <link href="/assets/themes//bootstrap/css/bs-sticky-footer.css" rel="stylesheet">
+    
+    <!-- Custom styles -->
+    <link href="/assets/themes//css/style.css?body=1" rel="stylesheet" type="text/css" media="all">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Fav and touch icons -->
+    <!-- Update these with your own images
+      <link rel="shortcut icon" href="images/favicon.ico">
+      <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+      <link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-72x72.png">
+      <link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png">
+    -->
+
+    <!-- atom & rss feed -->
+    <link href="/atom.xml" type="application/atom+xml" rel="alternate" title="Sitewide ATOM Feed">
+    <link href="/rss.xml" type="application/rss+xml" rel="alternate" title="Sitewide RSS Feed">
+
+  </head>
+
+  <body>
+    <div id="wrap">
+      <nav class="navbar navbar-default" role="navigation">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#jb-navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/">Jekyll Bootstrap</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="jb-navbar-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+            
+
+
+  
+    
+      
+      	
+      	<li><a href="/archive">Archive</a></li>
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/categories">Categories</a></li>
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/pages">Pages</a></li>
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/tags">Tags</a></li>
+      	
+      
+    
+  
+
+
+
+          </ul>
+          <form class="navbar-form navbar-right" role="search">
+            <div class="form-group">
+              <input type="text" class="form-control" placeholder="Search">
+            </div>
+            <button type="submit" class="btn btn-default">Submit</button>
+          </form>
+        </div><!-- /.navbar-collapse -->
+      </nav>
+
+      <div class="container">
+        
+<div class="page-header">
+  <h1>How to install Hadoop on Ubuntu (single-node cluster) </h1>
+</div>
+
+<div class="row post-full">
+  <div class="col-xs-12">
+    <div class="date">
+      <span>01 July 2011</span>
+    </div>
+    <div class="content">
+      這篇主要教導大家如何在ubuntu上架起single-node的hadoop。<br />會在其他篇教導大家如何架設multi-node。<br />因為架設multi-node的前提是先得架設single-node。<br />所以先教導大家如何架設。<br />至於如何執行一個MapReduce的project將在下一篇教導大家。<br /><br />我的環境如下：<br />ubuntu版本：10.10<br />hadoop：0.20.2<br /><br /><span class="Apple-style-span" style="font-size: large;"><br /></span><br /><b><span class="Apple-style-span" style="font-size: large;">【1】要架設hadoop起來的前提是必須安裝Sun的java-jdk</span></b><br />&nbsp; &nbsp; &nbsp;<b>【1.1】首先先增加Canonical Partner Repository到我們的repositories，語法如下：</b><br /><pre class="brush: java">sudo add-apt-repository "deb http://archive.canonical.com/ lucid partner"</pre>&nbsp; &nbsp; &nbsp;<b>【1.2】更新我們的source.list，語法如下：</b><br /><pre class="brush: java">sudo apt-get update</pre>&nbsp; &nbsp; &nbsp;<b>【1.3】安裝sun java sdk，語法如下：</b><br /><pre class="brush: java">sudo apt-get install sun-java6-jdk</pre>&nbsp; &nbsp; &nbsp;<b>【1.4】因為linux的jdk預設為open-jdk，所以語法如下：</b><br /><br /><br /><b><span class="Apple-style-span" style="font-size: large;">【2】建立一個Hadoop系統的專屬使用者</span></b><br /><pre class="brush: java">sudo addgroup hadoop<br />sudo adduser --ingroup hadoop hadoop<br /></pre><br /><br /><b><span class="Apple-style-span" style="font-size: large;">【3】設定SSH，因為hadoop利用ssh去管理node</span></b><br />&nbsp; &nbsp; &nbsp;<b>【3.1】首先先產生一個SSH key給hadoop user，語法如下：</b><br /><pre class="brush: java">su - hadoop<br />ssh-keygen -t rsa -P "" &nbsp;</pre>&nbsp; &nbsp; &nbsp;<b>【3.2】利用新產生的key去accees本機上的機器，語法如下：</b><br /><pre class="brush: java">su - hadoop<br />cat $HOME/.ssh/id_rsa.pub &gt;&gt; $HOME/.ssh/authorized_keys<br /></pre><br /><br /><b><span class="Apple-style-span" style="font-size: large;">【4】關閉IPv6</span></b><br />&nbsp; &nbsp; &nbsp;<b>【4.1】利用vim去開啟設定檔，語法如下：</b><br /><pre class="brush: java">vim /etc/sysctl.conf&nbsp;</pre>&nbsp; &nbsp; &nbsp;<b>【4.2】將檔案中的設定改</b><b>如下：</b><br /><pre class="brush: java">#disable ipv6<br />net.ipv6.conf.all.disable_ipv6 = 1<br />net.ipv6.conf.default.disable_ipv6 = 1<br />net.ipv6.conf.lo.disable_ipv6 = 1<br /></pre><br /><br /><br /><b>上面都是為了安裝Hadoop的先前作業</b><br /><b>下面是正式進行下載以及安裝Hadoop</b><br /><br /><br /><b><span class="Apple-style-span" style="font-size: large;">【5】下載Hadoop並且解壓縮</span></b><br /><pre class="brush: java">cd /usr/local<br />wget http://apache.ntu.edu.tw/hadoop/core/hadoop-0.20.2/hadoop-0.20.2.tar.gz<br />tar zxvf hadoop-0.20.2.tar.gz<br />sudo mv hadoop-0.20.2 hadoop<br />sudo chown -R hadoop:hadoop hadoop<br /></pre><br /><br /><b><span class="Apple-style-span" style="font-size: large;">【6】更新$HOME/.bashrc(注意!是以hadoop身分執行語法)</span></b><br />&nbsp; &nbsp; &nbsp;<b>【6.1】利用vim去開啟.bashrc，語法如下：</b><br /><pre class="brush: java">sudo vim $HOME/.bashrc&nbsp;</pre>&nbsp; &nbsp; &nbsp;<b>【6.2】將檔案中的設定更改成如下：</b><br /><pre class="brush: java"># Set Hadoop-related environment variables<br />export HADOOP_HOME=/usr/local/hadoop<br /><br /># Add Hadoop bin/ directory to PATH<br />export PATH=$PATH:$HADOOP_HOME/bin<br /></pre><br /><br /><b><span class="Apple-style-span" style="font-size: large;">【7】Hadoop的設定</span></b><br />&nbsp; &nbsp; &nbsp;<b>&nbsp;接著是一連串的Hadoop設定檔，設定檔的位置都位於/usr/local/hadoop/conf/底下，</b><br />&nbsp; &nbsp; &nbsp;<b>&nbsp;都是先利用vim去開啟設定檔案做編輯，故下面就省略vim的語法</b><br />&nbsp; &nbsp; &nbsp;<b>【7.1】hadoop-env.sh，語法如下：</b><br />&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp;把預設的JAVA_HOME位置更改掉<br /><pre class="brush: java"># The java implementation to use.  Required.<br />export JAVA_HOME=/usr/lib/jvm/java-6-sun&nbsp;</pre>&nbsp; &nbsp; &nbsp;<b>【7.2】core-site.xml，語法如下：</b><br />&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp;紀錄Hadoop將資料存在哪<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp;先建立一個Hadoop的暫存資料夾，並設定權限及擁有人<br /><pre class="brush: java">sudo mkdir /app/hadoop/tmp<br />sudo chown hadoop:hadoop /app/hadoop/tmp<br />sudo chmod 750 /app/hadoop/tmp&nbsp;</pre>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp;接著就是打開設定檔更改設定，注意!請填自己的ip，改成如下:<br /><pre class="brush: xml"><property><br />  <name>hadoop.tmp.dir</name><br />  <value>/app/hadoop/tmp</value><br />  <description>A base for other temporary directories.</description><br /></property><br /><br /><property><br />  <name>fs.default.name</name><br />  <value>hdfs://140.133.xxx.xxx:54310</value><br />  <description>The name of the default file system.  A URI whose<br />  scheme and authority determine the FileSystem implementation.  The<br />  uri's scheme determines the config property (fs.SCHEME.impl) naming<br />  the FileSystem implementation class.  The uri's authority is used to<br />  determine the host, port, etc. for a filesystem.</description><br /></property><br /></pre><br />&nbsp; &nbsp; &nbsp; <b>【7.3】mapred-site.xml，語法如下：</b><br />&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;打開設定檔更改設定，注意!請填自己的ip，改成如下:<br /><pre class="brush: xml"><property><br />  <name>mapred.job.tracker</name><br />  <value>140.133.xxx.xxx:54311</value><br />  <description>The host and port that the MapReduce job tracker runs<br />  at.  If "local", then jobs are run in-process as a single map<br />  and reduce task.<br />  </description><br /></property><br /></pre><br />&nbsp; &nbsp; &nbsp;<span class="Apple-style-span" style="font-weight: bold;">【7.4】hdfs-site.xml，語法如下：</span><br />&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp;打開設定檔更改設定，此檔案紀錄著檔案被複製的數量，改成如下:<br /><pre class="brush: xml"><property><br />  <name>dfs.replication</name><br />  <value>1</value><br />  <description>Default block replication.<br />  The actual number of replications can be specified when the file is created.<br />  The default is used if replication is not specified in create time.<br />  </description><br /></property><br /></pre><br /><br /><br /><b><span class="Apple-style-span" style="font-size: large;">【8】對我們的namenode格式化</span></b><br /><pre class="brush: xml">/usr/local/hadoop/bin/hadoop namenode -format<br /></pre><br />出來的output應該會如下：<br /><pre class="brush: xml">11/06/30 16:59:56 INFO namenode.NameNode: STARTUP_MSG:<br />/************************************************************<br />STARTUP_MSG: Starting NameNode<br />STARTUP_MSG:   host = ubuntu/140.133.xxx.xxx<br />STARTUP_MSG:   args = [-format]<br />STARTUP_MSG:   version = 0.20.2<br />STARTUP_MSG:   build = https://svn.apache.org/repos/asf/hadoop/common/branches/branch-0.20 -r 911707; compiled by 'chrisdo' on Fri Feb 19 08:07:34 UTC 2010<br />************************************************************/<br />10/05/08 16:59:56 INFO namenode.FSNamesystem: fsOwner=hadoop,hadoop<br />10/05/08 16:59:56 INFO namenode.FSNamesystem: supergroup=supergroup<br />10/05/08 16:59:56 INFO namenode.FSNamesystem: isPermissionEnabled=true<br />10/05/08 16:59:56 INFO common.Storage: Image file of size 96 saved in 0 seconds.<br />10/05/08 16:59:57 INFO common.Storage: Storage directory .../hadoop-hadoop/dfs/name has been successfully formatted.<br />10/05/08 16:59:57 INFO namenode.NameNode: SHUTDOWN_MSG:<br />/************************************************************<br />SHUTDOWN_MSG: Shutting down NameNode at ubuntu/140.133.xxx.xxx<br />************************************************************/<br /><br /></pre><br /><br /><br /><b><span class="Apple-style-span" style="font-size: large;">【9】啟動我們的single-node cluster</span></b><br /><pre class="brush: xml">/usr/local/hadoop/bin/start-all.sh<br /></pre><br /><br /><span class="Apple-style-span" style="color: #333333; font-family: arial, sans-serif; line-height: 24px;">這將會啟動機器上的Namenode, Datanode, Jobtracker and a Tasktracker!!</span><br />出來的output應該會如下：<br /><pre class="brush: java">starting namenode, logging to /usr/local/hadoop/bin/../logs/hadoop-hadoop-namenode-ubuntu.out<br />localhost: starting datanode, logging to /usr/local/hadoop/bin/../logs/hadoop-hadoop-datanode-ubuntu.out<br />localhost: starting secondarynamenode, logging to /usr/local/hadoop/bin/../logs/hadoop-hadoop-secondarynamenode-ubuntu.out<br />starting jobtracker, logging to /usr/local/hadoop/bin/../logs/hadoop-hadoop-jobtracker-ubuntu.out<br />localhost: starting tasktracker, logging to /usr/local/hadoop/bin/../logs/hadoop-hadoop-tasktracker-ubuntu.out<br /></pre><br /><br />如果要檢查是否有啟動成功，可以打入下列語法:<br /><pre class="brush: java">jps</pre><br />正確出來的output應該會如下：<br /><pre class="brush: java">2287 TaskTracker<br />2149 JobTracker<br />1938 DataNode<br />2085 SecondaryNameNode<br />2349 Jps<br />1788 NameNode<br /></pre><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><blockquote></blockquote>
+    </div>
+
+    
+
+  
+    <ul class="tag_box inline">
+      <li><i class="glyphicon glyphicon-tags"></i></li>
+      
+      
+
+
+  
+     
+    	<li><a href="/tags.html#mapreduce-ref">mapreduce <span>2</span></a></li>
+     
+    	<li><a href="/tags.html#hadoop-ref">hadoop <span>3</span></a></li>
+    
+  
+
+
+
+    </ul>
+    
+  
+    <hr>
+    <ul class="pagination">
+    
+      <li class="prev"><a href="/2011/05/30/integrate-captcha-to-your-site-using" title="Integrate CAPTCHA to your site (using plugin)-【1】">&laquo; Previous</a></li>
+    
+      <li><a href="/archive.html">Archive</a></li>
+    
+      <li class="next"><a href="/2011/07/03/using-eclipse-for-windows-to-connect-to" title="Using Eclipse for Windows to connect to Hadoop">Next &raquo;</a></li>
+    
+    </ul>
+    <hr>
+    
+
+
+  <div id="disqus_thread"></div>
+<script type="text/javascript">
+    
+    var disqus_developer = 1;
+    var disqus_shortname = 'jekyllbootstrap'; // required: replace example with your forum shortname
+    
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+
+
+  </div>
+</div>
+
+
+      </div>
+
+    </div>
+
+    <div id="footer">
+      <div class="container">
+        <p>&copy; 2015 Name Lastname
+          with help from <a href="http://jekyllbootstrap.com" target="_blank" title="The Definitive Jekyll Blogging Framework">Jekyll Bootstrap</a>
+          and <a href="http://getbootstrap.com" target="_blank">Bootstrap</a>
+        </p>
+      </div>
+    </div>
+
+    
+
+
+
+
+
+    <!-- Latest compiled and minified JavaScript, requires jQuery 1.x (2.x not supported in IE8) -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="/assets/themes//bootstrap/js/bootstrap.min.js"></script>
+  </body>
+</html>
+

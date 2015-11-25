@@ -1,0 +1,211 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>如何用Telnet POST資料</title>
+    
+    <meta name="author" content="Name Lastname">
+
+    <!-- Enable responsive viewport -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Bootstrap styles -->
+    <link href="/assets/themes//bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Optional theme -->
+    <link href="/assets/themes//bootstrap/css/bootstrap-theme.min.css" rel="stylesheet">
+    <!-- Sticky Footer -->
+    <link href="/assets/themes//bootstrap/css/bs-sticky-footer.css" rel="stylesheet">
+    
+    <!-- Custom styles -->
+    <link href="/assets/themes//css/style.css?body=1" rel="stylesheet" type="text/css" media="all">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Fav and touch icons -->
+    <!-- Update these with your own images
+      <link rel="shortcut icon" href="images/favicon.ico">
+      <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+      <link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-72x72.png">
+      <link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png">
+    -->
+
+    <!-- atom & rss feed -->
+    <link href="/atom.xml" type="application/atom+xml" rel="alternate" title="Sitewide ATOM Feed">
+    <link href="/rss.xml" type="application/rss+xml" rel="alternate" title="Sitewide RSS Feed">
+
+  </head>
+
+  <body>
+    <div id="wrap">
+      <nav class="navbar navbar-default" role="navigation">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#jb-navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/">Jekyll Bootstrap</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="jb-navbar-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+            
+
+
+  
+    
+      
+      	
+      	<li><a href="/archive">Archive</a></li>
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/categories">Categories</a></li>
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/pages">Pages</a></li>
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/tags">Tags</a></li>
+      	
+      
+    
+  
+
+
+
+          </ul>
+          <form class="navbar-form navbar-right" role="search">
+            <div class="form-group">
+              <input type="text" class="form-control" placeholder="Search">
+            </div>
+            <button type="submit" class="btn btn-default">Submit</button>
+          </form>
+        </div><!-- /.navbar-collapse -->
+      </nav>
+
+      <div class="container">
+        
+<div class="page-header">
+  <h1>如何用Telnet POST資料 </h1>
+</div>
+
+<div class="row post-full">
+  <div class="col-xs-12">
+    <div class="date">
+      <span>13 December 2011</span>
+    </div>
+    <div class="content">
+      有極少數的網站開發者，<br />在處理有關input資料時，只會在client端進行validate（用Javascript），<br />往往忽略了server端的驗證。<br /><br />如果這時候，hacker寫個小軟體利用telnet發送一個post到你的server，<br />那就爆了!<br />當然，hacker也可以直接寫個form，然後action是對你的server，<br />這樣就避掉client端的js，只不過這邊要說明怎麼用telnet去發出一個request。<br /><br /><br /><br />假設對方做一個輸入mail的page，<br />然後該page有驗證，如果你輸入不是mail的格式，<br />就不會將資料傳到他的server，以及新增至DB。<br />這時候我們就可以利用telnet，跳過他前端的驗證機制!<br /><br /><br />首先打開你的cmd!<br /><br />接著輸入下圖中的指令：<br /><br /><a href="http://4.bp.blogspot.com/-3Q5xiAZwjPY/TuZIO7ov11I/AAAAAAAAAYU/Q2RQKz0vGIg/s1600/1.PNG" imageanchor="1" style="clear: left; float: left; margin-bottom: 1em; margin-right: 1em;"><img border="0" height="48" src="http://4.bp.blogspot.com/-3Q5xiAZwjPY/TuZIO7ov11I/AAAAAAAAAYU/Q2RQKz0vGIg/s400/1.PNG" width="400" /></a><br /><br /><br /><br /><br /><br />恩，上圖中的網址，記得改成連線的網址，圖中只是範例，<br />你連不到的！<br /><br />連到以後，按下鍵盤的&nbsp;<span class="Apple-style-span" style="font-size: large;">CTRL+]</span>　按鍵<br />接著輸入下圖中的指令，set localecho，輸入完成，按2下enter，<br />這段的目的是讓你等等輸入指令時看得到自己在輸入甚麼，<br />如果沒有這段，等等輸入指令，你是看不到自己在打啥！<br /><br /><a href="http://3.bp.blogspot.com/-OipJ3-j6jOI/TuZIPZO6UBI/AAAAAAAAAYY/iCJeMLTTC1o/s1600/2.PNG" imageanchor="1" style="clear: left; float: left; margin-bottom: 1em; margin-right: 1em;"><img border="0" height="151" src="http://3.bp.blogspot.com/-OipJ3-j6jOI/TuZIPZO6UBI/AAAAAAAAAYY/iCJeMLTTC1o/s400/2.PNG" style="cursor: move;" width="400" /></a><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />接著就可以輸入發送POST的指令了！可以看下圖！<br />建議你，先在記事本上打一打，再貼上，因為在CMD輸入錯了，<br />是不能按DELETE或者Backspace的<br /><br /><div class="separator" style="clear: both; text-align: center;"><a href="http://1.bp.blogspot.com/-CjCQk5V-DRk/TuZIP39S0WI/AAAAAAAAAYg/RWNn_jH76UM/s1600/3.png" imageanchor="1" style="clear: left; float: left; margin-bottom: 1em; margin-right: 1em;"><img border="0" height="169" src="http://1.bp.blogspot.com/-CjCQk5V-DRk/TuZIP39S0WI/AAAAAAAAAYg/RWNn_jH76UM/s640/3.png" width="640" /></a></div><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />第一行，記得是POST，然後/yyyy，就是你要收資料的page，要改成自己的喔!<br />第二行，HOST就是主機名稱，<br />第三行，就是告訴server，會有表單的資料傳遞過來<br /><form>第四行，content-lengh，就是你要傳的資料有多長，因為我們的資料是mail=88811，所以是10<br />第五行，就是response完，連線就斷掉。<br /><br />上面都是http header，當然還有很多，你可以自己偽造!<br />例如cookie、date等等之類的!<br />記得header與data之間要空一行空白，<br />接著才可以輸入資料<br />就是圖中的mail=88811。<br />這樣就完成了，你就輸入一個不是正確mail格式的mail給他!<br />且如果他 server沒有進行驗證，這時候就錯誤了!<br />當然你可以把mail的問題放大，可能是sql injection，或者是XSS之類的問題!<br /><br /><br /><br /><br /><br /><br /><br /><br /><br /></form><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
+    </div>
+
+    
+
+    
+  
+    <hr>
+    <ul class="pagination">
+    
+      <li class="prev"><a href="/2011/12/12/chrome-xss" title="Chrome 防範XSS機制">&laquo; Previous</a></li>
+    
+      <li><a href="/archive.html">Archive</a></li>
+    
+      <li class="next"><a href="/2011/12/15/googe-app-engine-gae-domain" title="Googe App Engine (GAE) 設定 Domain">Next &raquo;</a></li>
+    
+    </ul>
+    <hr>
+    
+
+
+  <div id="disqus_thread"></div>
+<script type="text/javascript">
+    
+    var disqus_developer = 1;
+    var disqus_shortname = 'jekyllbootstrap'; // required: replace example with your forum shortname
+    
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+
+
+  </div>
+</div>
+
+
+      </div>
+
+    </div>
+
+    <div id="footer">
+      <div class="container">
+        <p>&copy; 2015 Name Lastname
+          with help from <a href="http://jekyllbootstrap.com" target="_blank" title="The Definitive Jekyll Blogging Framework">Jekyll Bootstrap</a>
+          and <a href="http://getbootstrap.com" target="_blank">Bootstrap</a>
+        </p>
+      </div>
+    </div>
+
+    
+
+
+
+
+
+    <!-- Latest compiled and minified JavaScript, requires jQuery 1.x (2.x not supported in IE8) -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="/assets/themes//bootstrap/js/bootstrap.min.js"></script>
+  </body>
+</html>
+

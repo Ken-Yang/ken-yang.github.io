@@ -1,0 +1,231 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>Setup Linux Multipath in Ubuntu</title>
+    
+    <meta name="author" content="Name Lastname">
+
+    <!-- Enable responsive viewport -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Bootstrap styles -->
+    <link href="/assets/themes//bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Optional theme -->
+    <link href="/assets/themes//bootstrap/css/bootstrap-theme.min.css" rel="stylesheet">
+    <!-- Sticky Footer -->
+    <link href="/assets/themes//bootstrap/css/bs-sticky-footer.css" rel="stylesheet">
+    
+    <!-- Custom styles -->
+    <link href="/assets/themes//css/style.css?body=1" rel="stylesheet" type="text/css" media="all">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Fav and touch icons -->
+    <!-- Update these with your own images
+      <link rel="shortcut icon" href="images/favicon.ico">
+      <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+      <link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-72x72.png">
+      <link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png">
+    -->
+
+    <!-- atom & rss feed -->
+    <link href="/atom.xml" type="application/atom+xml" rel="alternate" title="Sitewide ATOM Feed">
+    <link href="/rss.xml" type="application/rss+xml" rel="alternate" title="Sitewide RSS Feed">
+
+  </head>
+
+  <body>
+    <div id="wrap">
+      <nav class="navbar navbar-default" role="navigation">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#jb-navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/">Jekyll Bootstrap</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="jb-navbar-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+            
+
+
+  
+    
+      
+      	
+      	<li><a href="/archive">Archive</a></li>
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/categories">Categories</a></li>
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/pages">Pages</a></li>
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/tags">Tags</a></li>
+      	
+      
+    
+  
+
+
+
+          </ul>
+          <form class="navbar-form navbar-right" role="search">
+            <div class="form-group">
+              <input type="text" class="form-control" placeholder="Search">
+            </div>
+            <button type="submit" class="btn btn-default">Submit</button>
+          </form>
+        </div><!-- /.navbar-collapse -->
+      </nav>
+
+      <div class="container">
+        
+<div class="page-header">
+  <h1>Setup Linux Multipath in Ubuntu </h1>
+</div>
+
+<div class="row post-full">
+  <div class="col-xs-12">
+    <div class="date">
+      <span>13 August 2015</span>
+    </div>
+    <div class="content">
+      <div style="font-size: 15px; line-height: 22px;"><br />這篇要講Linux Multipath，<br />為了使用Linux Multipath，所以用了multipath-tool這個package，<br />multipath-tool提供了二個功能，<br />&nbsp;&nbsp;&nbsp;1. input/output fail-over<br />&nbsp;&nbsp;&nbsp;2. load balancing for block device<br /><br /><br /><span style="color: #e06666; font-size: 18px;">1. Prerequisite</span><br /><br />開始之前先，準備下面所需要的環境，<br />1. 1台server上有2張網卡(eth0, eth1)<br />2. iSCSI target x1<br />理論上，server上的2張網卡應接在不同的swtich上，抑或在不同的網段上。<br />目的在於某一條線路斷時，才不會影響另外一條。<br />但為了測試可以先都放在同個網段上。<br /><br />假設，<br />eth0 IP為172.16.131.134<br />eth1 IP為172.16.131.135<br />iSCSI IP為172.16.131.138<br /><br />整體的網路架構可以參考此張圖，<br /><div class="separator" style="clear: both; text-align: center;"><a href="http://1.bp.blogspot.com/-ZfPX7UenJK4/Vcw-nyopwMI/AAAAAAAAFmo/_MV4SmjPRo8/s1600/Network%2BDiagram%2B-%2BPage%2B1%2B%25283%2529.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="400" src="http://1.bp.blogspot.com/-ZfPX7UenJK4/Vcw-nyopwMI/AAAAAAAAFmo/_MV4SmjPRo8/s400/Network%2BDiagram%2B-%2BPage%2B1%2B%25283%2529.png" width="263" /></a></div><span style="color: #e06666; font-size: 18px;">2. Installation</span><br /><br />接著安裝我們需要的package，<br /><pre class="brush: bash">apt-get install open-iscsi<br />apt-get install multipath-tools<br /></pre><br /><span style="color: #e06666; font-size: 18px;">3. multipath configuration</span><br /><br />接著來設定multipah，先create一個config file，（你也可以從/usr/share/doc/multipath-tools/examples/multipath.conf.synthetic這裏複製至/etc/multipah.conf底下）<br /><pre class="brush: bash">$ vim /etc/multipath.conf<br /></pre><br />內容如下，參數的說明可以看這（<a href="https://help.ubuntu.com/lts/serverguide/multipath-dm-multipath-config-file.html">點我</a>）<br /><pre class="brush: bash">defaults {<br />     user_friendly_names yes<br />}<br /><br />devices {<br />     device {<br />          polling_interval 5<br />          path_selector "round-robin 0"<br />          path_grouping_policy group_by_prio<br />          prio rdac<br />          path_checker rdac<br />          hardware_handler "1 rdac"<br />          failback immediate<br />          features "2 pg_init_retires 50"<br />          no_path_retry 30<br />          rr_min_io 100<br />     }<br />}<br /></pre><br /><span style="color: #e06666; font-size: 18px;">4. iSCSI configuration</span><br /><br />接著我們要設定iSCSI，讓我們在login某target時，<br />可以透過不同的NIC同時進行login，<br /><pre class="brush: bash">$ iscsiadm -m iface -I eth0 -o new<br />$ iscsiadm -m iface -I eth1 -o new<br />$ iscsiadm -m iface -I eth0 --op=update -n iface.net_ifacename -v eth0<br />$ iscsiadm -m iface -I eth1 --op=update -n iface.net_ifacename -v eth1<br /></pre><br />接著要把reverse path filtering關掉，<br />否則其中一張網卡登入target時的packet會被ignore，<br />所以要去編輯/etc/sysctl.conf，<br />加入下面兩行。<br /><pre class="brush: bash">net.ipv4.conf.eth0.rp_filter=2<br />net.ipv4.conf.eth1.rp_filter=2<br /></pre><br />然後執行下面指令讓conf生效。<br /><pre class="brush: bash">$ sysctl -p<br /></pre><br /><span style="color: #e06666; font-size: 18px;">5. Login iSCSI</span><br /><br />首先先discovery該iSCSI，看該iSCSI上有哪些target，<br />可以發現一模一樣的target卻顯示了2筆，這是因為剛剛前面我們設定了2張nic了！<br /><pre class="brush: bash">$ iscsiadm -m discovery -t st -p 172.16.131.138:3260<br />172.16.131.138:3260,1 iqn.2015-07.net.kenyang:ken.iscsi<br />172.16.131.138:3260,1 iqn.2015-07.net.kenyang:ken.iscsi<br /></pre><br />接著login該target，會發現login了二次，且這二次分別是透過eth0以及eth1去完成。<br /><pre class="brush: bash">$ iscsiadm -m node -T iqn.2015-07.net.kenyang:ken.iscsi --login<br /><br />Logging in to [iface: eth0, target: iqn.2015-07.net.kenyang:ken.iscsi, portal: 172.16.131.138,3260]<br />Logging in to [iface: eth1, target: iqn.2015-07.net.kenyang:ken.iscsi, portal: 172.16.131.138,3260]<br />Login to [iface: eth0, target: iqn.2015-07.net.kenyang:ken.iscsi, portal: 172.16.131.138,3260]: successful<br />Login to [iface: eth1, target: iqn.2015-07.net.kenyang:ken.iscsi, portal: 172.16.131.138,3260]: successful<br /></pre><br />顯示multipath的topology，<br />會發現有2個blcok device，<br />因為我們登入了2次，所以該target在我們server上被視為2個block device，分別為sdb, sdc。<br />然後再透過device mapper的概念去把它aggregate成一個/dev/mapper/mpath1。<br /><pre class="brush: bash">$ multipath -ll<br /><br />mpath1 (xxxxxxxxxxxxxxxxxxx) dm-6 EQLOGIC,100E-00<br />size=60G features='0' hwhandler='0' wp=rw<br />`-+- policy='round-robin 0' prio=1 status=active<br /> |- 7:0:0:0 sdb 8:16 active ready running<br /> `- 8:0:0:0 sdc 8:32 active ready running<br /></pre><br /><span style="color: #e06666; font-size: 18px;">6. Format block device</span><br /><br />最後一步就要把該block device mount起來使用，<br />但mount之前要先fdisk以及mkfs，要注意我們的對象不是sdb,sdc，<br />而是mpatch1。<br /><pre class="brush: bash">fdisk /dev/mapper/mpath1<br />mkfs.ext4 /dev/mapper/mpath1<br /></pre><br />完成以後就可以mount起來使用看看。<br /><pre class="brush: bash">mount /dev/mapper/mpath1 /storage/<br /></pre><br /><br /></div>
+    </div>
+
+    
+
+  
+    <ul class="tag_box inline">
+      <li><i class="glyphicon glyphicon-tags"></i></li>
+      
+      
+
+
+  
+     
+    	<li><a href="/tags.html#ubuntu-ref">ubuntu <span>5</span></a></li>
+     
+    	<li><a href="/tags.html#iscsi-ref">iscsi <span>1</span></a></li>
+     
+    	<li><a href="/tags.html#multipath-ref">multipath <span>1</span></a></li>
+    
+  
+
+
+
+    </ul>
+    
+  
+    <hr>
+    <ul class="pagination">
+    
+      <li class="prev"><a href="/2015/06/25/apache-kafka-distributed-messaging" title="Apache Kafka: Distributed messaging system.">&laquo; Previous</a></li>
+    
+      <li><a href="/archive.html">Archive</a></li>
+    
+      <li class="next disabled"><a>Next &rarr;</a>
+    
+    </ul>
+    <hr>
+    
+
+
+  <div id="disqus_thread"></div>
+<script type="text/javascript">
+    
+    var disqus_developer = 1;
+    var disqus_shortname = 'jekyllbootstrap'; // required: replace example with your forum shortname
+    
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+
+
+  </div>
+</div>
+
+
+      </div>
+
+    </div>
+
+    <div id="footer">
+      <div class="container">
+        <p>&copy; 2015 Name Lastname
+          with help from <a href="http://jekyllbootstrap.com" target="_blank" title="The Definitive Jekyll Blogging Framework">Jekyll Bootstrap</a>
+          and <a href="http://getbootstrap.com" target="_blank">Bootstrap</a>
+        </p>
+      </div>
+    </div>
+
+    
+
+
+
+
+
+    <!-- Latest compiled and minified JavaScript, requires jQuery 1.x (2.x not supported in IE8) -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="/assets/themes//bootstrap/js/bootstrap.min.js"></script>
+  </body>
+</html>
+

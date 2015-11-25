@@ -1,0 +1,229 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>Eclipse Classic with Java Server Page (JSP)</title>
+    
+    <meta name="author" content="Name Lastname">
+
+    <!-- Enable responsive viewport -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Bootstrap styles -->
+    <link href="/assets/themes//bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Optional theme -->
+    <link href="/assets/themes//bootstrap/css/bootstrap-theme.min.css" rel="stylesheet">
+    <!-- Sticky Footer -->
+    <link href="/assets/themes//bootstrap/css/bs-sticky-footer.css" rel="stylesheet">
+    
+    <!-- Custom styles -->
+    <link href="/assets/themes//css/style.css?body=1" rel="stylesheet" type="text/css" media="all">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Fav and touch icons -->
+    <!-- Update these with your own images
+      <link rel="shortcut icon" href="images/favicon.ico">
+      <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+      <link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-72x72.png">
+      <link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png">
+    -->
+
+    <!-- atom & rss feed -->
+    <link href="/atom.xml" type="application/atom+xml" rel="alternate" title="Sitewide ATOM Feed">
+    <link href="/rss.xml" type="application/rss+xml" rel="alternate" title="Sitewide RSS Feed">
+
+  </head>
+
+  <body>
+    <div id="wrap">
+      <nav class="navbar navbar-default" role="navigation">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#jb-navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/">Jekyll Bootstrap</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="jb-navbar-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+            
+
+
+  
+    
+      
+      	
+      	<li><a href="/archive">Archive</a></li>
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/categories">Categories</a></li>
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/pages">Pages</a></li>
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/tags">Tags</a></li>
+      	
+      
+    
+  
+
+
+
+          </ul>
+          <form class="navbar-form navbar-right" role="search">
+            <div class="form-group">
+              <input type="text" class="form-control" placeholder="Search">
+            </div>
+            <button type="submit" class="btn btn-default">Submit</button>
+          </form>
+        </div><!-- /.navbar-collapse -->
+      </nav>
+
+      <div class="container">
+        
+<div class="page-header">
+  <h1>Eclipse Classic with Java Server Page (JSP) </h1>
+</div>
+
+<div class="row post-full">
+  <div class="col-xs-12">
+    <div class="date">
+      <span>10 October 2010</span>
+    </div>
+    <div class="content">
+      因為有再寫GAE和android<br /><br />大家也都知道Eclipse分很多種版本<br /><br />1. Eclipse classic<br /><br />2. Eclipse IDEfor Java EE Developer<br /><br />3. Eclipse IDEfor Java Developer<br /><br />等等之類的!<br /><br />如果你想寫JSP、又想寫一般的java application。<br /><br />有些人會去下載兩種 eclipse（2、3）<br /><br />然後想寫ＪＳＰ，就開第二個，想寫java就開第三個。<br /><br />會不會太麻煩勒？<br /><br /><br /><br />我也遇到個問題，想在同個IDE環境中寫GAE和Android。<br /><br />該怎麼做呢？<br /><br />先去下載<a href="http://www.eclipse.org/downloads/packages/eclipse-classic-361/heliossr1">Eclipse classic</a><br /><br />解壓縮出來後，<br /><br />就去install new software（android、GAE)<br /><br />安裝這兩個的步驟就不說明了！<br /><br />直接跳過！<br /><br /><br /><br />完成後，當你建立一個.jsp檔案時，<br /><br />有沒有發現完全沒有highlight，也沒有content assist！！<br /><br />那是因為沒有裝pluging！<br /><br />那就把它裝起來吧！<br /><br />首先！<br /><br /><table align="center" cellpadding="0" cellspacing="0" class="tr-caption-container" style="margin-left: auto; margin-right: auto; text-align: center;"><tbody><tr><td style="text-align: center;"><a href="http://1.bp.blogspot.com/_6SxqtkJQECI/TLHcInoMV8I/AAAAAAAAAK0/U363joRV6-g/s1600/1.png" imageanchor="1" style="margin-left: auto; margin-right: auto;"><img border="0" height="280" src="http://1.bp.blogspot.com/_6SxqtkJQECI/TLHcInoMV8I/AAAAAAAAAK0/U363joRV6-g/s640/1.png" width="640" /></a></td></tr><tr><td class="tr-caption" style="text-align: center;">首先先點選Install New Software</td></tr></tbody></table><br /><table align="center" cellpadding="0" cellspacing="0" class="tr-caption-container" style="margin-left: auto; margin-right: auto; text-align: center;"><tbody><tr><td style="text-align: center;"><a href="http://3.bp.blogspot.com/_6SxqtkJQECI/TLHcJvu4i4I/AAAAAAAAAK4/5C29Yco1kl0/s1600/2.png" imageanchor="1" style="margin-left: auto; margin-right: auto;"><img border="0" height="452" src="http://3.bp.blogspot.com/_6SxqtkJQECI/TLHcJvu4i4I/AAAAAAAAAK4/5C29Yco1kl0/s640/2.png" width="640" /></a></td></tr><tr><td class="tr-caption" style="text-align: center;">接著選取圖中選取的項目，注意！版本不同，項目中的版本名稱會有所不同，此版本為HELIOS</td></tr></tbody></table><br /><table align="center" cellpadding="0" cellspacing="0" class="tr-caption-container" style="margin-left: auto; margin-right: auto; text-align: center;"><tbody><tr><td style="text-align: center;"><a href="http://1.bp.blogspot.com/_6SxqtkJQECI/TLHcKdDJ3WI/AAAAAAAAAK8/ZZ-wREFau18/s1600/3.png" imageanchor="1" style="margin-left: auto; margin-right: auto;"><img border="0" src="http://1.bp.blogspot.com/_6SxqtkJQECI/TLHcKdDJ3WI/AAAAAAAAAK8/ZZ-wREFau18/s1600/3.png" /></a></td></tr><tr><td class="tr-caption" style="text-align: center;">接著拉到最下面，點選Web, XML , Java EE Developement</td></tr></tbody></table><br /><br /><br /><br />點開以後，點選Web Page Editor就好！<br /><br />不要安裝其他的（要裝也是可以拉，你有需求的話）<br /><br />安裝完成以後，就會發現*.jsp檔案中的highlight和content assist都出現了！<br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
+    </div>
+
+    
+
+  
+    <ul class="tag_box inline">
+      <li><i class="glyphicon glyphicon-tags"></i></li>
+      
+      
+
+
+  
+     
+    	<li><a href="/tags.html#jsp-ref">jsp <span>4</span></a></li>
+     
+    	<li><a href="/tags.html#eclipse-ref">eclipse <span>6</span></a></li>
+    
+  
+
+
+
+    </ul>
+    
+  
+    <hr>
+    <ul class="pagination">
+    
+      <li class="prev"><a href="/2010/10/10/thinkpad-t410" title="thinkpad t410 非常不專業 開箱文【不是教學文】">&laquo; Previous</a></li>
+    
+      <li><a href="/archive.html">Archive</a></li>
+    
+      <li class="next"><a href="/2010/10/12/eclipse-show-line-number" title="Eclipse show line number">Next &raquo;</a></li>
+    
+    </ul>
+    <hr>
+    
+
+
+  <div id="disqus_thread"></div>
+<script type="text/javascript">
+    
+    var disqus_developer = 1;
+    var disqus_shortname = 'jekyllbootstrap'; // required: replace example with your forum shortname
+    
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+
+
+  </div>
+</div>
+
+
+      </div>
+
+    </div>
+
+    <div id="footer">
+      <div class="container">
+        <p>&copy; 2015 Name Lastname
+          with help from <a href="http://jekyllbootstrap.com" target="_blank" title="The Definitive Jekyll Blogging Framework">Jekyll Bootstrap</a>
+          and <a href="http://getbootstrap.com" target="_blank">Bootstrap</a>
+        </p>
+      </div>
+    </div>
+
+    
+
+
+
+
+
+    <!-- Latest compiled and minified JavaScript, requires jQuery 1.x (2.x not supported in IE8) -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="/assets/themes//bootstrap/js/bootstrap.min.js"></script>
+  </body>
+</html>
+

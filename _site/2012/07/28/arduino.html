@@ -1,0 +1,227 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>Arduino 基本教學</title>
+    
+    <meta name="author" content="Name Lastname">
+
+    <!-- Enable responsive viewport -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Bootstrap styles -->
+    <link href="/assets/themes//bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Optional theme -->
+    <link href="/assets/themes//bootstrap/css/bootstrap-theme.min.css" rel="stylesheet">
+    <!-- Sticky Footer -->
+    <link href="/assets/themes//bootstrap/css/bs-sticky-footer.css" rel="stylesheet">
+    
+    <!-- Custom styles -->
+    <link href="/assets/themes//css/style.css?body=1" rel="stylesheet" type="text/css" media="all">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Fav and touch icons -->
+    <!-- Update these with your own images
+      <link rel="shortcut icon" href="images/favicon.ico">
+      <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+      <link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-72x72.png">
+      <link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png">
+    -->
+
+    <!-- atom & rss feed -->
+    <link href="/atom.xml" type="application/atom+xml" rel="alternate" title="Sitewide ATOM Feed">
+    <link href="/rss.xml" type="application/rss+xml" rel="alternate" title="Sitewide RSS Feed">
+
+  </head>
+
+  <body>
+    <div id="wrap">
+      <nav class="navbar navbar-default" role="navigation">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#jb-navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/">Jekyll Bootstrap</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="jb-navbar-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+            
+
+
+  
+    
+      
+      	
+      	<li><a href="/archive">Archive</a></li>
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/categories">Categories</a></li>
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/pages">Pages</a></li>
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/tags">Tags</a></li>
+      	
+      
+    
+  
+
+
+
+          </ul>
+          <form class="navbar-form navbar-right" role="search">
+            <div class="form-group">
+              <input type="text" class="form-control" placeholder="Search">
+            </div>
+            <button type="submit" class="btn btn-default">Submit</button>
+          </form>
+        </div><!-- /.navbar-collapse -->
+      </nav>
+
+      <div class="container">
+        
+<div class="page-header">
+  <h1>Arduino 基本教學 </h1>
+</div>
+
+<div class="row post-full">
+  <div class="col-xs-12">
+    <div class="date">
+      <span>28 July 2012</span>
+    </div>
+    <div class="content">
+      Arduino 是一塊Open Source電路板，<br />開發者可以利用這塊板子去做到一些電子器材的控制，<br />例如：開燈、關燈，甚至可以在Arduino上裝上sensor，<br />然後根據sensor的資料來做處理！例如接上了光敏電阻這個sensor，<br />我們就可以判斷目前光的亮度，就可以根據不同亮度做不同的回應。<br />詳細資料可以去官網看：<a href="http://arduino.cc/en/">http://arduino.cc/en/</a><br /><br /><br />這篇主要教大家怎麼寫一個簡單的應用，<br />在後面會教大家怎麼接上藍芽模組，然後透過無線的方式和Arduino溝通！<br />基本上要做到下列的事項<br /><br /><ol><li>購買Arduino電路板</li><li>下載Arduino IDE開發工具</li><li>在電腦上安裝Arduino的Driver</li><li>寫個簡單應用並部屬上去Arduino</li></ol><br /><b><span style="font-size: large;">【第一步、購買Arduino】</span></b><br />在開發前，大家一定要有一塊Arduino電路板，<br />基本上在Y拍就買得到了，一塊基本的價格大概在600~1000左右！<br />因為其實Arduino板子有分很多種，且有的還算是加強版！<br />但都大同小異。<br />我買的板子是Duemilanove版本，如圖！<br /><div class="separator" style="clear: both; text-align: center;"><a href="http://3.bp.blogspot.com/-sN72o_XlMx8/UBMQ_RihaGI/AAAAAAAAAzM/oPSP0dbtwpk/s1600/IMG_20120728_054118.jpg" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="300" src="http://3.bp.blogspot.com/-sN72o_XlMx8/UBMQ_RihaGI/AAAAAAAAAzM/oPSP0dbtwpk/s400/IMG_20120728_054118.jpg" width="400" /></a></div><br /><br /><span style="font-size: large;"><b>【第二步、下載Arduino IDE】 </b></span><br />接著得去下載開發工具，<br />才能寫程式，並燒到Arduino上面去。<br />下載網址：<a href="http://arduino.cc/en/Main/Software">http://arduino.cc/en/Main/Software</a> <br />下載下來以後，就解壓縮出來即可。<br /><br /><br /><br /><b><span style="font-size: large;">【第三步、安裝Driver】 </span></b><br />接著把Arduino接上電腦，如下圖，<br /><div class="separator" style="clear: both; text-align: center;"><a href="http://4.bp.blogspot.com/-uI9qyEXk_dc/UBMRHlyanXI/AAAAAAAAAzU/X9oEw4_uJ24/s1600/IMG_20120728_054835.jpg" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="240" src="http://4.bp.blogspot.com/-uI9qyEXk_dc/UBMRHlyanXI/AAAAAAAAAzU/X9oEw4_uJ24/s320/IMG_20120728_054835.jpg" width="320" /></a></div>基本上你的電腦應該找不到Driver，<br />這時候就【我的電腦點選右鍵】→【點選管理】→【點選裝置管理員】<br />基本上應該就會看到無法辨識的設備，<br />在該設備上點選右鍵，選擇內容。<br />然後接著就自己去尋找Driver的路徑，<br />而Driver就在第二步下載下來的檔案當中，<br />在解壓縮出來的資料夾當中\arduino-1.0.1\drivers。<br />安裝完成以後，請記得自己的Serial Port！！（像我的就是21，如下圖）<br />因為等等會透過此Port把程式燒進去。<br /><br /><div class="separator" style="clear: both; text-align: center;"><a href="http://3.bp.blogspot.com/-GKGHJUHOiFY/UBMQj7W04pI/AAAAAAAAAy8/S6_wfgFsgOs/s1600/5.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="80" src="http://3.bp.blogspot.com/-GKGHJUHOiFY/UBMQj7W04pI/AAAAAAAAAy8/S6_wfgFsgOs/s320/5.png" width="320" /></a></div><br /><br /><b><span style="font-size: large;">【第四步、寫個應用】 </span></b><br />首先先打開Arduino IDE，<br />就在第二步中解壓縮的資料夾當中，<br />檔名為arduino.exe。<br />打開以後會見到下圖。<br />而白色的區塊就是你可以寫code的地方。<br /><div class="separator" style="clear: both; text-align: center;"><a href="http://2.bp.blogspot.com/-EC2IyUkb088/UBMQgIqu-RI/AAAAAAAAAyc/v4FIcmZiuD8/s1600/1.JPG" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="320" src="http://2.bp.blogspot.com/-EC2IyUkb088/UBMQgIqu-RI/AAAAAAAAAyc/v4FIcmZiuD8/s320/1.JPG" width="238" /></a></div><br /><br />接著得點選Tool→Board，如下圖<br />先選擇你購買的Arduino電路板版本，像我是Duemilanove，<br />所以就選這個！<br />如果你選錯，基本上是無法upload到Arduino板子上去的！<br /><div class="separator" style="clear: both; text-align: center;"><a href="http://4.bp.blogspot.com/-ietO9fuZtq0/UBMQg-gdhrI/AAAAAAAAAyk/HQrNWqlh35o/s1600/2.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="315" src="http://4.bp.blogspot.com/-ietO9fuZtq0/UBMQg-gdhrI/AAAAAAAAAyk/HQrNWqlh35o/s640/2.png" width="640" /></a></div><br />接著就選擇第三步中的Serial Port，像我是21，所以就選21，<br />如下圖。<br /><br /><div class="separator" style="clear: both; text-align: center;"><a href="http://2.bp.blogspot.com/-sO6zqPybv8k/UBMQhURq0aI/AAAAAAAAAys/hA9qnuPy9-8/s1600/3.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="366" src="http://2.bp.blogspot.com/-sO6zqPybv8k/UBMQhURq0aI/AAAAAAAAAys/hA9qnuPy9-8/s640/3.png" width="640" /></a></div><br /><br />接著就可以開始寫程式了，<br />首先我先說明一下，基本上你們購買的Arduino板子上，<br />一定會有一個小小的LED燈，<br />而這LED燈是連接到pin腳為13的pin上。如下圖<br /><div class="separator" style="clear: both; text-align: center;"><a href="http://2.bp.blogspot.com/-JUr-DuoAbdg/UBMQvAyNtDI/AAAAAAAAAzE/t-fzi8X4vFE/s1600/IMG_201207228_054118.jpg" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="480" src="http://2.bp.blogspot.com/-JUr-DuoAbdg/UBMQvAyNtDI/AAAAAAAAAzE/t-fzi8X4vFE/s640/IMG_201207228_054118.jpg" width="640" /></a></div><br /><br />而我們現在就要寫一個程式去開關該led燈。<br />CODE如下：<br /><pre class="brush: java">// 先宣告Pin腳位置<br />int iPinLed = 13;<br />void setup() {           <br />  // 宣告該Pin腳是output  <br />  pinMode(iPinLed, OUTPUT);     <br />}<br />void loop() {<br />  // 開始寫資料，寫HIGH進去就是讓它亮<br />  digitalWrite(iPinLed, HIGH); <br />  delay(1000);        <br />　// 寫LOW進去就是讓它暗<br />  digitalWrite(iPinLed, LOW);   <br />  delay(1000);             <br />}<br /></pre><br />基本上Arduino的程式分了兩個區塊<br /><br /><ol><li>setup</li><li>loop</li></ol>setup就是傳統的main，也可以想成是constructor，<br />loop就是會一直執行的部分，可以想成for迴圈。<br />而上述的程式中，我們先宣告了一個整數(iPinLed)，代表pin腳的位置，<br />接著在setup中把它宣告成是做輸出的動作，也就是說我們會透過這個pin腳餵資料給led<br />然後就進入loop，第一行就是讓led變亮，<br />接著就delay一秒鐘，<br />之後又把led關掉。<br />又停了一秒。<br />不斷的重複上述步驟。<br />而程式的結果如下列影片。<br />LED燈會一閃一閃的！<br /><br /><div class="separator" style="clear: both; text-align: center;"><object width="320" height="266" class="BLOG_video_class" id="BLOG_video-e338391bc4bf5307" classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,40,0"><param name="movie" value="//www.youtube.com/get_player"><param name="bgcolor" value="#FFFFFF"><param name="allowfullscreen" value="true"><param name="flashvars" value="flvurl=http://redirector.googlevideo.com/videoplayback?id%3De338391bc4bf5307%26itag%3D5%26source%3Dblogger%26app%3Dblogger%26cmo%3Dsensitive_content%253Dyes%26ip%3D0.0.0.0%26ipbits%3D0%26expire%3D1450516984%26sparams%3Did,itag,source,ip,ipbits,expire%26signature%3DA0FC7A3189FB9ED0BD788D826D17DE4490654.6B757629731B92C0E7FB6DCC6A08B8FA46E3D406%26key%3Dck2&amp;iurl=http://video.google.com/ThumbnailServer2?app%3Dblogger%26contentid%3De338391bc4bf5307%26offsetms%3D5000%26itag%3Dw160%26sigh%3DEKWSP7lBmNlXqcU-3ib3oa3O_Tk&amp;autoplay=0&amp;ps=blogger"><embed src="//www.youtube.com/get_player" type="application/x-shockwave-flash" width="320" height="266" bgcolor="#FFFFFF" flashvars="flvurl=http://redirector.googlevideo.com/videoplayback?id%3De338391bc4bf5307%26itag%3D5%26source%3Dblogger%26app%3Dblogger%26cmo%3Dsensitive_content%253Dyes%26ip%3D0.0.0.0%26ipbits%3D0%26expire%3D1450516984%26sparams%3Did,itag,source,ip,ipbits,expire%26signature%3DA0FC7A3189FB9ED0BD788D826D17DE4490654.6B757629731B92C0E7FB6DCC6A08B8FA46E3D406%26key%3Dck2&iurl=http://video.google.com/ThumbnailServer2?app%3Dblogger%26contentid%3De338391bc4bf5307%26offsetms%3D5000%26itag%3Dw160%26sigh%3DEKWSP7lBmNlXqcU-3ib3oa3O_Tk&autoplay=0&ps=blogger" allowFullScreen="true" /></object></div><br /><br /><br /><br />&nbsp;從上述的例子來看或許有點過於單調，<br />但就像本文一開始所說的，<br />Arduino可以接上許多裝置，然後透過Arduino控制該裝置。<br />像此文就是透過Arduino去控制單一LED。<br />你可以想像如果你有一百顆LED，你也可以通通接上 Arduino&nbsp;，<br />然後透過Arduino去控制那一百顆LED。<br /><br />然後在後面的文章將會介紹怎麼透過Arduino去控制機器手臂。<br /><br /><br /><div class="separator" style="clear: both; text-align: center;"></div><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
+    </div>
+
+    
+
+  
+    <ul class="tag_box inline">
+      <li><i class="glyphicon glyphicon-tags"></i></li>
+      
+      
+
+
+  
+     
+    	<li><a href="/tags.html#arduino-ref">arduino <span>4</span></a></li>
+    
+  
+
+
+
+    </ul>
+    
+  
+    <hr>
+    <ul class="pagination">
+    
+      <li class="prev"><a href="/2012/07/28/android-bluetooth-api" title="Android Bluetooth API">&laquo; Previous</a></li>
+    
+      <li><a href="/archive.html">Archive</a></li>
+    
+      <li class="next"><a href="/2012/09/15/google-oauth-20-google-api" title="使用Google OAuth 2.0 存取Google API">Next &raquo;</a></li>
+    
+    </ul>
+    <hr>
+    
+
+
+  <div id="disqus_thread"></div>
+<script type="text/javascript">
+    
+    var disqus_developer = 1;
+    var disqus_shortname = 'jekyllbootstrap'; // required: replace example with your forum shortname
+    
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+
+
+  </div>
+</div>
+
+
+      </div>
+
+    </div>
+
+    <div id="footer">
+      <div class="container">
+        <p>&copy; 2015 Name Lastname
+          with help from <a href="http://jekyllbootstrap.com" target="_blank" title="The Definitive Jekyll Blogging Framework">Jekyll Bootstrap</a>
+          and <a href="http://getbootstrap.com" target="_blank">Bootstrap</a>
+        </p>
+      </div>
+    </div>
+
+    
+
+
+
+
+
+    <!-- Latest compiled and minified JavaScript, requires jQuery 1.x (2.x not supported in IE8) -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="/assets/themes//bootstrap/js/bootstrap.min.js"></script>
+  </body>
+</html>
+

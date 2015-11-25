@@ -1,0 +1,231 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>Android tab activity</title>
+    
+    <meta name="author" content="Name Lastname">
+
+    <!-- Enable responsive viewport -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Bootstrap styles -->
+    <link href="/assets/themes//bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Optional theme -->
+    <link href="/assets/themes//bootstrap/css/bootstrap-theme.min.css" rel="stylesheet">
+    <!-- Sticky Footer -->
+    <link href="/assets/themes//bootstrap/css/bs-sticky-footer.css" rel="stylesheet">
+    
+    <!-- Custom styles -->
+    <link href="/assets/themes//css/style.css?body=1" rel="stylesheet" type="text/css" media="all">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Fav and touch icons -->
+    <!-- Update these with your own images
+      <link rel="shortcut icon" href="images/favicon.ico">
+      <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+      <link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-72x72.png">
+      <link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png">
+    -->
+
+    <!-- atom & rss feed -->
+    <link href="/atom.xml" type="application/atom+xml" rel="alternate" title="Sitewide ATOM Feed">
+    <link href="/rss.xml" type="application/rss+xml" rel="alternate" title="Sitewide RSS Feed">
+
+  </head>
+
+  <body>
+    <div id="wrap">
+      <nav class="navbar navbar-default" role="navigation">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#jb-navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/">Jekyll Bootstrap</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="jb-navbar-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+            
+
+
+  
+    
+      
+      	
+      	<li><a href="/archive">Archive</a></li>
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/categories">Categories</a></li>
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/pages">Pages</a></li>
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/tags">Tags</a></li>
+      	
+      
+    
+  
+
+
+
+          </ul>
+          <form class="navbar-form navbar-right" role="search">
+            <div class="form-group">
+              <input type="text" class="form-control" placeholder="Search">
+            </div>
+            <button type="submit" class="btn btn-default">Submit</button>
+          </form>
+        </div><!-- /.navbar-collapse -->
+      </nav>
+
+      <div class="container">
+        
+<div class="page-header">
+  <h1>Android tab activity </h1>
+</div>
+
+<div class="row post-full">
+  <div class="col-xs-12">
+    <div class="date">
+      <span>26 July 2010</span>
+    </div>
+    <div class="content">
+      今天來介紹一下Android tab activity好了!<br /><br />其實最近實作了不少東西，但一直沒有時間記錄下來<br /><br />Tab Actity倒是蠻久之前的，拿出來溫習一下吧!<br /><br />先新增一個class吧!<br /><br />但要繼承的是TabActivity!<br /><br />如果要做到Tab變換時，會有所動作時，<br /><br />要記得implements OnTabChangeListener<br /><br />如下:<br /><br /><pre class="brush: java">public class main extends TabActivity implements OnTabChangeListener {<br /><br />}<br /></pre><br /><br />接著就來部屬Tab的長相了!<br /><br />這邊先預設兩個Tab(tab1、tab2)，其實tab裡的東西可以重複使用，這裡只是為了清楚定義<br /><br />而宣告兩個!<br /><br /><br /><pre class="brush: xml">&lt;?xml version="1.0" encoding="utf-8"?&gt;<br />&lt;FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"<br /> android:orientation="vertical" android:layout_width="fill_parent"<br /> android:layout_height="fill_parent"&gt;<br /> &lt;LinearLayout <br />  android:id="@+id/tab1" <br />  android:layout_width="fill_parent"<br />  android:layout_height="fill_parent" <br />  androidrientation="vertical"<br />  android:background="#ffffff"<br /> &gt;<br /> &lt;/LinearLayout&gt;<br /><br /> &lt;LinearLayout <br />  android:id="@+id/tab2" <br />  android:layout_width="fill_parent"<br />  android:layout_height="fill_parent" <br />  androidrientation="vertical"<br />  android:background="#ff0000"<br /> &gt;<br /> &lt;/LinearLayout&gt;<br />&lt;/FrameLayout&gt;<br /></pre><br /><br />接著來撰寫主要的CODE了!<br /><br /><br /><pre class="brush: java"> <br />public class main extends TabActivity implements OnTabChangeListener {<br /> private TabHost tabHost;  //宣告一個TabHost，主機的意思。所有的TAB都要被加在裡面<br /> private TabSpec tab1, tab2;  //先宣告兩個tab<br /><br /> @Override<br /> public void onCreate(Bundle savedInstanceState) {<br />  super.onCreate(savedInstanceState);<br />  tabHost = this.getTabHost(); //先取得TabHost<br />  <br />  //利用Inflater來渲染版變<br />  LayoutInflater.from(this).inflate(R.layout.main,tabHost.getTabContentView(), true);<br />  <br />  //接著就利用newTabSpec新增一個TAB，setIndicator是設定TITLE和背景圖，setContent是設定這個TAB裡面的樣式<br />  tab1 = tabHost.newTabSpec("Id1")<br />      .setIndicator("Tab1",this.getResources().getDrawable(R.drawable.icon2))<br />      .setContent(R.id.tab1);<br />  //加入至tabHost<br />  tabHost.addTab(tab1);<br />  <br />  tab2 = tabHost.newTabSpec("Id2")<br />      .setIndicator("Tab2",this.getResources().getDrawable(R.drawable.icon))<br />      .setContent(R.id.tab2);<br />  tabHost.addTab(tab2);<br />  tabHost.setOnTabChangedListener(this);<br /> }<br /><br /> @Override<br /> public void onTabChanged(String tabId) {<br />  new AlertDialog.Builder(this).setTitle("Hint").setMessage(tabId)<br />    .setPositiveButton("OK", null).show();<br /> }<br />}<br /></pre><br /><br /><br /><br />基本上這樣就大功告成了!<br /><br /><br /><br /><br /><br /><br /><br />
+    </div>
+
+    
+
+  
+    <ul class="tag_box inline">
+      <li><i class="glyphicon glyphicon-tags"></i></li>
+      
+      
+
+
+  
+     
+    	<li><a href="/tags.html#TabActivity-ref">TabActivity <span>1</span></a></li>
+     
+    	<li><a href="/tags.html#android-ref">android <span>64</span></a></li>
+     
+    	<li><a href="/tags.html#Tab-ref">Tab <span>3</span></a></li>
+    
+  
+
+
+
+    </ul>
+    
+  
+    <hr>
+    <ul class="pagination">
+    
+      <li class="prev"><a href="/2010/07/21/android-appsd-card" title="讓android app安裝在SD card">&laquo; Previous</a></li>
+    
+      <li><a href="/archive.html">Archive</a></li>
+    
+      <li class="next"><a href="/2010/08/01/drawable-bitmap" title="Drawable 轉換 Bitmap">Next &raquo;</a></li>
+    
+    </ul>
+    <hr>
+    
+
+
+  <div id="disqus_thread"></div>
+<script type="text/javascript">
+    
+    var disqus_developer = 1;
+    var disqus_shortname = 'jekyllbootstrap'; // required: replace example with your forum shortname
+    
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+
+
+  </div>
+</div>
+
+
+      </div>
+
+    </div>
+
+    <div id="footer">
+      <div class="container">
+        <p>&copy; 2015 Name Lastname
+          with help from <a href="http://jekyllbootstrap.com" target="_blank" title="The Definitive Jekyll Blogging Framework">Jekyll Bootstrap</a>
+          and <a href="http://getbootstrap.com" target="_blank">Bootstrap</a>
+        </p>
+      </div>
+    </div>
+
+    
+
+
+
+
+
+    <!-- Latest compiled and minified JavaScript, requires jQuery 1.x (2.x not supported in IE8) -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="/assets/themes//bootstrap/js/bootstrap.min.js"></script>
+  </body>
+</html>
+

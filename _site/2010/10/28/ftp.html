@@ -1,0 +1,227 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>主動式與被動式FTP 差別</title>
+    
+    <meta name="author" content="Name Lastname">
+
+    <!-- Enable responsive viewport -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Bootstrap styles -->
+    <link href="/assets/themes//bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Optional theme -->
+    <link href="/assets/themes//bootstrap/css/bootstrap-theme.min.css" rel="stylesheet">
+    <!-- Sticky Footer -->
+    <link href="/assets/themes//bootstrap/css/bs-sticky-footer.css" rel="stylesheet">
+    
+    <!-- Custom styles -->
+    <link href="/assets/themes//css/style.css?body=1" rel="stylesheet" type="text/css" media="all">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Fav and touch icons -->
+    <!-- Update these with your own images
+      <link rel="shortcut icon" href="images/favicon.ico">
+      <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+      <link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-72x72.png">
+      <link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png">
+    -->
+
+    <!-- atom & rss feed -->
+    <link href="/atom.xml" type="application/atom+xml" rel="alternate" title="Sitewide ATOM Feed">
+    <link href="/rss.xml" type="application/rss+xml" rel="alternate" title="Sitewide RSS Feed">
+
+  </head>
+
+  <body>
+    <div id="wrap">
+      <nav class="navbar navbar-default" role="navigation">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#jb-navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/">Jekyll Bootstrap</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="jb-navbar-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+            
+
+
+  
+    
+      
+      	
+      	<li><a href="/archive">Archive</a></li>
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/categories">Categories</a></li>
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/pages">Pages</a></li>
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/tags">Tags</a></li>
+      	
+      
+    
+  
+
+
+
+          </ul>
+          <form class="navbar-form navbar-right" role="search">
+            <div class="form-group">
+              <input type="text" class="form-control" placeholder="Search">
+            </div>
+            <button type="submit" class="btn btn-default">Submit</button>
+          </form>
+        </div><!-- /.navbar-collapse -->
+      </nav>
+
+      <div class="container">
+        
+<div class="page-header">
+  <h1>主動式與被動式FTP 差別 </h1>
+</div>
+
+<div class="row post-full">
+  <div class="col-xs-12">
+    <div class="date">
+      <span>28 October 2010</span>
+    </div>
+    <div class="content">
+      FTP是一個特殊的protocol之一，<br /><br />其他的protocol，如:http、pop3、....等等之類的，<br /><br />都只需要1個connection、1個port。<br /><br />但是FTP則不是，FTP需要2個connection、2個port。<br /><br />一個是Command connection / port，用來傳遞client與FTP Server之間的command。(通常設在port 21)<br /><br />另一個是Data&nbsp;connection /&nbsp;port，是用來傳遞資料的。(通常設在port 20)<br /><br /><br />一般的人都會認為關掉20、21port，FTP Server就會無法運作，<br /><br />從某種角度來說，這樣的觀念是正確的，但是其實是錯誤的觀念！！<br /><br />但這是在傳統式模式FTP的條件下，這樣的觀念才是正確的。<br /><br />FTP主要分成兩種模式：<br /><span class="Apple-style-span" style="color: red;"><b>1.主動式（POST）</b></span><br /><span class="Apple-style-span" style="color: red;"><b>2.被動式</b></span><span class="Apple-style-span" style="color: red;"><b>（PASV）</b></span><br /><br />傳統的FTP是採用主動式的模式進行連線，<br /><br />底下為主動式FTP運作圖<br /><br /><div class="separator" style="clear: both; text-align: center;"><a href="http://1.bp.blogspot.com/_6SxqtkJQECI/TMjo0nS6Y0I/AAAAAAAAALI/hEnR6232wkg/s1600/%E4%B8%BB%E5%8B%95%E5%BC%8F.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="295" src="http://1.bp.blogspot.com/_6SxqtkJQECI/TMjo0nS6Y0I/AAAAAAAAALI/hEnR6232wkg/s400/%E4%B8%BB%E5%8B%95%E5%BC%8F.png" width="400" /></a></div><br /><br /><span class="Apple-style-span" style="color: red;">1. client端會開啟一個大於</span><span class="Apple-style-span" style="color: red;">1024</span><span class="Apple-style-span" style="color: red;">的</span><span class="Apple-style-span" style="color: red;">port&nbsp;</span>( port x )<span class="Apple-style-span" style="color: red;">對FTP Server的port 21進行connection</span><br /><br /><span class="Apple-style-span" style="color: red;">2. FTP Server會回應client端的connection，告知Client端收到連線了</span><br /><br /><span class="Apple-style-span" style="color: blue;">3. FTP Server的port 20會主動和 Client端的port 1025</span>(port x+1)<span class="Apple-style-span" style="color: blue;">進行連線(進行資料傳輸)</span><br /><span class="Apple-style-span" style="color: blue;"><br /></span><br /><span class="Apple-style-span" style="color: blue;">4. Client會回應Server端的連線。</span><br /><br />看完步驟說明，大家會發現一個問題，<br /><br />一開始client端會開啟兩個port，<br /><br />port x (connection port)和port x+1 (data port)<br /><br />在connection port沒有甚麼問題存在，<br /><br />問題出在data port，<br /><br />因為client端並不是自己建立一個connection，而是自行開啟一個port等待FTP Server連線進來<br /><br />這很有可能被Client端的防火牆過濾掉<br /><br /><br /><br />因此為了解決FTP連線到Client端被過濾掉的問題，所以發展出另一種連線模式<br /><br />就是被動式模式<br /><br />被動式模式不管是command &nbsp;connection或是data connection都是由client端建立的<br /><br />底下為運作圖<br /><br /><div class="separator" style="clear: both; text-align: center;"><a href="http://2.bp.blogspot.com/_6SxqtkJQECI/TMjugUmILnI/AAAAAAAAALM/tu85ED5r1KA/s1600/%E8%A2%AB%E5%8B%95%E5%BC%8F.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="296" src="http://2.bp.blogspot.com/_6SxqtkJQECI/TMjugUmILnI/AAAAAAAAALM/tu85ED5r1KA/s400/%E8%A2%AB%E5%8B%95%E5%BC%8F.png" width="400" /></a></div><br /><br /><div style="margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px;"><span class="Apple-style-span" style="color: red;">1. 首先，client端會開啟一個大於</span><span class="Apple-style-span" style="color: red;">1024</span><span class="Apple-style-span" style="color: red;">的</span><span class="Apple-style-span" style="color: red;">port&nbsp;</span>( port x )<span class="Apple-style-span" style="color: red;">對FTP Server的port 21進行connection</span></div><div style="margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px;"><br /></div><div style="margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px;"><span class="Apple-style-span" style="color: red;">2. FTP Server會回應client端的connection，並告知Client端，Server開啟了port 1200等待資料連線</span></div><br /><div style="margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px;"><span class="Apple-style-span" style="color: blue;">3. Client端的port 1026會和</span><span class="Apple-style-span" style="color: blue;">FTP Server的port 1200</span><span class="Apple-style-span" style="color: blue;">進行資料連線</span></div><div style="margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px;"><span class="Apple-style-span" style="color: blue;"><br /></span></div><div style="margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px;"><span class="Apple-style-span" style="color: blue;">4.&nbsp;Server會回應Client端的連線。</span></div><br /><br /><br /><br />使用了被動模式，解決了client端的問題，<br /><br />可是相反的，也把這些問題帶給了server。<br /><br /><br /><br /><br /><br />至於要用哪種模式，是由client端決定的，<br /><br />client端會在command connection時發出POST或PASV的命令<br /><br />但是server可以決定是否支援這些模式。<br /><br /><br /><br />
+    </div>
+
+    
+
+  
+    <ul class="tag_box inline">
+      <li><i class="glyphicon glyphicon-tags"></i></li>
+      
+      
+
+
+  
+     
+    	<li><a href="/tags.html#ftp-ref">ftp <span>2</span></a></li>
+    
+  
+
+
+
+    </ul>
+    
+  
+    <hr>
+    <ul class="pagination">
+    
+      <li class="prev"><a href="/2010/10/28/android-multiple-language" title="android multiple language">&laquo; Previous</a></li>
+    
+      <li><a href="/archive.html">Archive</a></li>
+    
+      <li class="next"><a href="/2010/11/01/android-detect-screen-on-and-screen-off" title="android detect screen on and screen off">Next &raquo;</a></li>
+    
+    </ul>
+    <hr>
+    
+
+
+  <div id="disqus_thread"></div>
+<script type="text/javascript">
+    
+    var disqus_developer = 1;
+    var disqus_shortname = 'jekyllbootstrap'; // required: replace example with your forum shortname
+    
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+
+
+  </div>
+</div>
+
+
+      </div>
+
+    </div>
+
+    <div id="footer">
+      <div class="container">
+        <p>&copy; 2015 Name Lastname
+          with help from <a href="http://jekyllbootstrap.com" target="_blank" title="The Definitive Jekyll Blogging Framework">Jekyll Bootstrap</a>
+          and <a href="http://getbootstrap.com" target="_blank">Bootstrap</a>
+        </p>
+      </div>
+    </div>
+
+    
+
+
+
+
+
+    <!-- Latest compiled and minified JavaScript, requires jQuery 1.x (2.x not supported in IE8) -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="/assets/themes//bootstrap/js/bootstrap.min.js"></script>
+  </body>
+</html>
+

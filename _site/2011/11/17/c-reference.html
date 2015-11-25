@@ -1,0 +1,229 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>C++: Reference (參考)</title>
+    
+    <meta name="author" content="Name Lastname">
+
+    <!-- Enable responsive viewport -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Bootstrap styles -->
+    <link href="/assets/themes//bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Optional theme -->
+    <link href="/assets/themes//bootstrap/css/bootstrap-theme.min.css" rel="stylesheet">
+    <!-- Sticky Footer -->
+    <link href="/assets/themes//bootstrap/css/bs-sticky-footer.css" rel="stylesheet">
+    
+    <!-- Custom styles -->
+    <link href="/assets/themes//css/style.css?body=1" rel="stylesheet" type="text/css" media="all">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Fav and touch icons -->
+    <!-- Update these with your own images
+      <link rel="shortcut icon" href="images/favicon.ico">
+      <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+      <link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-72x72.png">
+      <link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png">
+    -->
+
+    <!-- atom & rss feed -->
+    <link href="/atom.xml" type="application/atom+xml" rel="alternate" title="Sitewide ATOM Feed">
+    <link href="/rss.xml" type="application/rss+xml" rel="alternate" title="Sitewide RSS Feed">
+
+  </head>
+
+  <body>
+    <div id="wrap">
+      <nav class="navbar navbar-default" role="navigation">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#jb-navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/">Jekyll Bootstrap</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="jb-navbar-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+            
+
+
+  
+    
+      
+      	
+      	<li><a href="/archive">Archive</a></li>
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/categories">Categories</a></li>
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/pages">Pages</a></li>
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/tags">Tags</a></li>
+      	
+      
+    
+  
+
+
+
+          </ul>
+          <form class="navbar-form navbar-right" role="search">
+            <div class="form-group">
+              <input type="text" class="form-control" placeholder="Search">
+            </div>
+            <button type="submit" class="btn btn-default">Submit</button>
+          </form>
+        </div><!-- /.navbar-collapse -->
+      </nav>
+
+      <div class="container">
+        
+<div class="page-header">
+  <h1>C++: Reference (參考) </h1>
+</div>
+
+<div class="row post-full">
+  <div class="col-xs-12">
+    <div class="date">
+      <span>17 November 2011</span>
+    </div>
+    <div class="content">
+      C++: Reference (參考)<br /><br /><a href="http://blog.kenyang.net/2011/11/c-pointer.html">前面一篇講了pointer</a>，這篇要講只有C++才有的reference，<br />C是沒有reference的，相較於pointer，reference顯得平易近人多了!<br />reference有個很大的特性，它的意思是<b>別名(alias)</b>的意思!<br />reference不像pointer記錄著變數的記憶體位置，它只是變數的<span class="Apple-style-span" style="font-size: large;"><b>別名</b></span>!<br /><br />下面用個簡單的例子講解：<br /><br /><pre class="brush: c++">int iValue = 2;<br />int &amp;iReference = iValue;<br />cout &lt;&lt; iReference &lt;&lt; endl;   //會印出2<br />cout &lt;&lt; &amp;iReference &lt;&lt; endl;  //會印出iValue 的記憶體位置<br />cout &lt;&lt; &amp;iValue &lt;&lt; endl;　　　 //會印出iValue本身自己的記憶體位置<br /></pre><br />上面的範例宣告了一個整數變數（iValue)，和一個參考變數（iReference) 第一行會先印出2，<br />因為前面說過參考只是別名， 意思就是說iReference是iValue的別名，<br />在白話一點iReference等於iValue，<br />所以第二行會印出iReference(也就是iValue)的記憶體位置，假設印出0x28ff44（每台電腦都不一定是這個值）<br />第三行就是印出iValue自己的記憶體位置，所以！！！它也會印出0x28ff44!! 跟第二行一樣!!&nbsp;(因為他們兩個相等咩)<br /><br />reference跟pointer不一樣的還有幾點，<br />reference一定要有初始值!!!<br />取值不需要加上*!!<br /><br />不過其實參考使用的時機大部分是用在函數時， 因為是別名，所以可以避免複製大量的變數到函數去(就算是pointer函數，也會複製)<br />下面是一個簡單的參考函數範例：<br /><br /><pre class="brush: c++">void fnReference(int &amp;iValue){<br />     iValue = iValue +1;<br />     cout &lt;&lt; iValue &lt;&lt; endl;        <br />}<br />main(){  <br />          <br />     int iValue = 2;<br />     fnReference(iValue);<br />     cout &lt;&lt; iValue &lt;&lt; endl;<br />        <br />     system("pause");<br />     return 0; <br />}<br /></pre><br /><br />在上面的範例我們宣告了一個函數（fnReference），其傳遞參數為參考型態（&amp;iValue）<br />在主程式中(main)，傳遞了單純的整數變數進去，<br />跟pointer不一樣，pointer是傳記憶體位置進去，<br />參考就直接傳普通的變數進去，<br />我們在函數中把傳遞進去的參數+1，然後印出，會印出3，<br />回到主程式以後，在印出iValue，一樣會印出3。<br />因為我們是傳遞參考，這就是call by reference！<br /><br />最後，reference還有一個跟pointer不一樣的點！<br />就是reference不能用來進行運算!!!!!<br /><br /><br /><br /><br /><br /><br />
+    </div>
+
+    
+
+  
+    <ul class="tag_box inline">
+      <li><i class="glyphicon glyphicon-tags"></i></li>
+      
+      
+
+
+  
+     
+    	<li><a href="/tags.html#reference-ref">reference <span>2</span></a></li>
+     
+    	<li><a href="/tags.html#c++-ref">c++ <span>2</span></a></li>
+    
+  
+
+
+
+    </ul>
+    
+  
+    <hr>
+    <ul class="pagination">
+    
+      <li class="prev"><a href="/2011/11/16/c-pointer" title="C++: pointer (指標)">&laquo; Previous</a></li>
+    
+      <li><a href="/archive.html">Archive</a></li>
+    
+      <li class="next"><a href="/2011/11/18/java-thread-run-vs-start" title="Java Thread: run() vs start()">Next &raquo;</a></li>
+    
+    </ul>
+    <hr>
+    
+
+
+  <div id="disqus_thread"></div>
+<script type="text/javascript">
+    
+    var disqus_developer = 1;
+    var disqus_shortname = 'jekyllbootstrap'; // required: replace example with your forum shortname
+    
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+
+
+  </div>
+</div>
+
+
+      </div>
+
+    </div>
+
+    <div id="footer">
+      <div class="container">
+        <p>&copy; 2015 Name Lastname
+          with help from <a href="http://jekyllbootstrap.com" target="_blank" title="The Definitive Jekyll Blogging Framework">Jekyll Bootstrap</a>
+          and <a href="http://getbootstrap.com" target="_blank">Bootstrap</a>
+        </p>
+      </div>
+    </div>
+
+    
+
+
+
+
+
+    <!-- Latest compiled and minified JavaScript, requires jQuery 1.x (2.x not supported in IE8) -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="/assets/themes//bootstrap/js/bootstrap.min.js"></script>
+  </body>
+</html>
+

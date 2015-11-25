@@ -1,0 +1,231 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>Google Analytics for Android - EasyTrack </title>
+    
+    <meta name="author" content="Name Lastname">
+
+    <!-- Enable responsive viewport -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Bootstrap styles -->
+    <link href="/assets/themes//bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Optional theme -->
+    <link href="/assets/themes//bootstrap/css/bootstrap-theme.min.css" rel="stylesheet">
+    <!-- Sticky Footer -->
+    <link href="/assets/themes//bootstrap/css/bs-sticky-footer.css" rel="stylesheet">
+    
+    <!-- Custom styles -->
+    <link href="/assets/themes//css/style.css?body=1" rel="stylesheet" type="text/css" media="all">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Fav and touch icons -->
+    <!-- Update these with your own images
+      <link rel="shortcut icon" href="images/favicon.ico">
+      <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+      <link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-72x72.png">
+      <link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png">
+    -->
+
+    <!-- atom & rss feed -->
+    <link href="/atom.xml" type="application/atom+xml" rel="alternate" title="Sitewide ATOM Feed">
+    <link href="/rss.xml" type="application/rss+xml" rel="alternate" title="Sitewide RSS Feed">
+
+  </head>
+
+  <body>
+    <div id="wrap">
+      <nav class="navbar navbar-default" role="navigation">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#jb-navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/">Jekyll Bootstrap</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="jb-navbar-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+            
+
+
+  
+    
+      
+      	
+      	<li><a href="/archive">Archive</a></li>
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/categories">Categories</a></li>
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/pages">Pages</a></li>
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/tags">Tags</a></li>
+      	
+      
+    
+  
+
+
+
+          </ul>
+          <form class="navbar-form navbar-right" role="search">
+            <div class="form-group">
+              <input type="text" class="form-control" placeholder="Search">
+            </div>
+            <button type="submit" class="btn btn-default">Submit</button>
+          </form>
+        </div><!-- /.navbar-collapse -->
+      </nav>
+
+      <div class="container">
+        
+<div class="page-header">
+  <h1>Google Analytics for Android - EasyTrack  </h1>
+</div>
+
+<div class="row post-full">
+  <div class="col-xs-12">
+    <div class="date">
+      <span>18 November 2012</span>
+    </div>
+    <div class="content">
+      <a href="https://www.google.com/analytics/web/">Google Analytics</a>是一套分析工具！<br />最初只有ＷＥＢ版才有，可以分析你的流量、人口分布、瀏覽器來源等等之類的資訊！<br />但現在已有了<a href="https://developers.google.com/analytics/devguides/collection/android/v2/">Android</a> &amp; iOS等其他版本，<br />可以利用這套API去分析使用者在你app上的使用情況．<br />（例如：在這個Activiy待了多久，或者做了怎樣的行為，點了哪些button等等之類的，甚至可以有exception report）<br /><br /><br />這篇主要會說明在Android上面如何使用！<br />在這篇會先講解簡單的EasyTrakcer的部分！<br />EasyTrakcer顧名思義就是很簡單的意思！<br />有好有壞！好的是你可以快速implement，<br />壞的是彈性較小！<br /><br /><br /><br />在開始實作之前，你得先去Google Analytics上開一個project for android，<br />目的是為了申請一個ID ！<br />網址：<a href="https://www.google.com/analytics/web/">https://www.google.com/analytics/web/</a><br /><br />進來此網站之後，會見到下圖，<br />(1) &nbsp;請點選下圖中的New Account<br /><br /><table align="center" cellpadding="0" cellspacing="0" class="tr-caption-container" style="margin-left: auto; margin-right: auto; text-align: center;"><tbody><tr><td style="text-align: center;"><a href="http://3.bp.blogspot.com/-Dxkod0pGeq4/UJxdp3jg3II/AAAAAAAAEfU/Qj7JmF9xBao/s1600/0.png" imageanchor="1" style="margin-left: auto; margin-right: auto;"><img border="0" height="234" src="http://3.bp.blogspot.com/-Dxkod0pGeq4/UJxdp3jg3II/AAAAAAAAEfU/Qj7JmF9xBao/s640/0.png" width="640" /></a></td></tr><tr><td class="tr-caption" style="text-align: center;">圖一</td></tr></tbody></table><br /><br />(2) &nbsp;接著會看到下圖，請點選“應用程式”（預設是網站）<br /><div>接著就輸入自己的應用程式名<br /><br /><table align="center" cellpadding="0" cellspacing="0" class="tr-caption-container" style="margin-left: auto; margin-right: auto; text-align: center;"><tbody><tr><td style="text-align: center;"><a href="http://3.bp.blogspot.com/-U0rDuWSvaw8/UJxdrj63k2I/AAAAAAAAEfk/RMHvNLVQvgM/s1600/1.png" imageanchor="1" style="margin-left: auto; margin-right: auto;"><img border="0" height="286" src="http://3.bp.blogspot.com/-U0rDuWSvaw8/UJxdrj63k2I/AAAAAAAAEfk/RMHvNLVQvgM/s640/1.png" width="640" /></a></td></tr><tr><td class="tr-caption" style="text-align: center;">圖二</td></tr></tbody></table><br />(3) &nbsp;完成上述步驟以後，你就會得到自己的Google Analytics ID，</div><div>這ID要記起來！因為待會再Android</div><div><br /><table align="center" cellpadding="0" cellspacing="0" class="tr-caption-container" style="margin-left: auto; margin-right: auto; text-align: center;"><tbody><tr><td style="text-align: center;"><a href="http://4.bp.blogspot.com/-lEh6Ua6CVAI/UJxds0IAtZI/AAAAAAAAEfo/MJQjdZKRnek/s1600/2.png" imageanchor="1" style="margin-left: auto; margin-right: auto;"><img border="0" height="556" src="http://4.bp.blogspot.com/-lEh6Ua6CVAI/UJxds0IAtZI/AAAAAAAAEfo/MJQjdZKRnek/s640/2.png" width="640" /></a></td></tr><tr><td class="tr-caption" style="text-align: center;">圖三</td></tr></tbody></table><br /><br /><br /><br />完成上述的申請以後！<br />(1) 接著要先去下載Google Analytics SDK (<a href="https://developers.google.com/analytics/devguides/collection/android/resources">Here</a>)<br /><br />(2) 解壓縮出來<br /><br />(3) 開一個Android Project<br /><br />(4) 把lib include至Android Project中<br />&nbsp; &nbsp; &nbsp;在Project中點選右鍵選擇properties<br />&nbsp; &nbsp; &nbsp;接著會見到下圖，點選下圖中右方的紅色框框Java Build Path<br />&nbsp; &nbsp; &nbsp;然後點選下圖中上方的紅色框框Libraries<br />&nbsp; &nbsp; &nbsp;再點選下圖中有方紅色框框的Add External JARS...<br />&nbsp; &nbsp; &nbsp;然後找到你剛剛下載的lib，把它加進來就好！<br /><br /><table align="center" cellpadding="0" cellspacing="0" class="tr-caption-container" style="margin-left: auto; margin-right: auto; text-align: center;"><tbody><tr><td style="text-align: center;"><a href="http://1.bp.blogspot.com/-aGK_Oeia2Hg/UJxgQJ9HNPI/AAAAAAAAEgE/WPQna3wVp_Y/s1600/Screen+Shot+2012-11-09+at+9.31.08+AM.png" imageanchor="1" style="margin-left: auto; margin-right: auto;"><img border="0" height="358" src="http://1.bp.blogspot.com/-aGK_Oeia2Hg/UJxgQJ9HNPI/AAAAAAAAEgE/WPQna3wVp_Y/s640/Screen+Shot+2012-11-09+at+9.31.08+AM.png" width="640" /></a></td></tr><tr><td class="tr-caption" style="text-align: center;">圖四</td></tr></tbody></table><br />(5) 把剛剛include進來的jar export出來！（如下圖）</div><div><br /><div class="separator" style="clear: both; text-align: center;"><a href="http://2.bp.blogspot.com/-AXA_hPFjM3g/UJxgRE5lXfI/AAAAAAAAEgI/zAIK41K29fc/s1600/Screen+Shot+2012-11-09+at+9.31.35+AM.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="352" src="http://2.bp.blogspot.com/-AXA_hPFjM3g/UJxgRE5lXfI/AAAAAAAAEgI/zAIK41K29fc/s640/Screen+Shot+2012-11-09+at+9.31.35+AM.png" width="640" /></a></div><br /><br /><br /><br /><br /><br /><div class="p1">(7) 加入下列兩項permission<br /><pre class="brush: xml">&lt;uses-permission android:name="android.permission.INTERNET" /&gt;<br />&lt;uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" /&gt;<br /><br /></pre></div></div><br /><br />(8) 接著在project中/res/value底下建立一個analytics.xml<br />內容如下：<br /><pre class="brush: xml">&lt;?xml version="1.0" encoding="utf-8" ?&gt;<br /><br />&lt;resources&gt;<br />  &lt;!--Replace ID with your tracking ID--&gt;<br />  &lt;string name="ga_trackingId"&gt;UA-XXXX-Y&lt;/string&gt;<br /><br />  &lt;!-- use for debug --&gt;<br />  &lt;bool name="ga_debug"&gt;true&lt;/bool&gt;<br /> <br />  &lt;!--Enable Activity tracking--&gt;<br />  &lt;bool name="ga_autoActivityTracking"&gt;false&lt;/bool&gt;<br /><br />&lt;/resources&gt;<br /><br /></pre><br />註：<br />ga_trackingId記得填寫自己剛剛申請的那個id<br />ga_debug的意思是使用debug模式，可以讓你在local端看到一些track的資訊！<br />如果你沒有設置這個attributes，你可能要等很久很久，你的Google Analytics後台管理頁面才會更新資訊.....<br />所以還是設定一下吧！<br />ga_autoActivityTracking這個property也很重要，如果設為true的話，在initial tracker時，tracker會自動發出一個request，這個requset就包含了device name, screen resolution, os等等之類的資訊！在這我們先設為false，一切以手動的方式進行track！<br /><br />(9) 開始寫code，<br /><pre class="brush: java">private Tracker tracker  = null; // use for track event, exception..etc.<br /> private Context cxt   = null;<br /> private int iDispatchTime  = 3; // determine how long send the information to Google<br /> private double dSampleRate  = 100;  // determine how much information to be send <br /> <br /> @Override<br /> protected void onCreate(Bundle savedInstanceState) {<br />  super.onCreate(savedInstanceState);<br />  setContentView(R.layout.main);<br />  cxt = this;<br />  <br />  EasyTracker.getInstance().setContext(cxt); // initial<br />  <br />  // start a Tracker, you must to do this thing otherwise you can't send any tracker to Google.<br />  EasyTracker.getInstance().activityStart((Activity)cxt); // Add this method.<br />  <br />  // 取得一個tracker<br />  tracker = EasyTracker.getTracker();<br />  <br />  // 設定Sample Rate, sample rate用意在於如果你的app很多人使用，<br />  // 那麼你可以自己設定有百分之幾的device資訊會被送出Google<br />  // 這裡設定100%，也就是說所有device都會送出資訊<br />  tracker.setSampleRate(dSampleRate);<br />  <br />  // 設定dispatch time<br />  // 這裡預設為3秒,也就是說每次trackEvent, trackException一次<br />  // 都會在3秒以後送出（當然你可以手動進行dipatch)<br />  GAServiceManager.getInstance().setDispatchPeriod(iDispatchTime);<br />  <br />  <br />  // track event<br />  tracker.trackEvent("UI_ACTION", "buttonClick", "labelCreatedByKen", 0l);<br />  <br />  // track view, 追蹤這個activity使用者停留了多久之類的<br />  tracker.trackView("trackViewHomePage");<br />  <br />  // track exception, 這裡是手動的track exception<br />  // 你可以把trackException放在try{}cathc(){};之中<br />  tracker.trackException("ExceptionCreatedByKen", false);<br />  <br /> }<br /></pre><br /><br />完成以後你可以利用DDMS進行debug，<br />你可以用來看這些track(trackEvent, trackView,trackExeption)送出了那些資訊<br />大概會看到下面那張圖！<br /><br /><br /><div class="separator" style="clear: both; text-align: center;"><a href="http://4.bp.blogspot.com/-BywlH9TcOc0/UKjIMzVBY6I/AAAAAAAAEgo/q6FIZcZuLSU/s1600/Screen+Shot+2012-11-18+at+7.31.19+PM.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="242" src="http://4.bp.blogspot.com/-BywlH9TcOc0/UKjIMzVBY6I/AAAAAAAAEgo/q6FIZcZuLSU/s640/Screen+Shot+2012-11-18+at+7.31.19+PM.png" width="640" /></a></div><br /><br /><br /><br />而在Google Analytics的後台就會看到上面送出的那些資訊！<br />如下圖！<br /><table align="center" cellpadding="0" cellspacing="0" class="tr-caption-container" style="margin-left: auto; margin-right: auto; text-align: center;"><tbody><tr><td style="text-align: center;"><a href="http://3.bp.blogspot.com/-6cfIImlH8IY/UKjI8wzRvFI/AAAAAAAAEgw/S8amYNJZcXY/s1600/Screen+Shot+2012-11-18+at+7.37.11+PM.png" imageanchor="1" style="margin-left: auto; margin-right: auto;"><img border="0" height="50" src="http://3.bp.blogspot.com/-6cfIImlH8IY/UKjI8wzRvFI/AAAAAAAAEgw/S8amYNJZcXY/s640/Screen+Shot+2012-11-18+at+7.37.11+PM.png" width="640" /></a></td></tr><tr><td class="tr-caption" style="text-align: center;">trackEvent</td></tr></tbody></table><br /><table align="center" cellpadding="0" cellspacing="0" class="tr-caption-container" style="margin-left: auto; margin-right: auto; text-align: center;"><tbody><tr><td style="text-align: center;"><a href="http://2.bp.blogspot.com/-5ENuqzoe-iE/UKjI9Qfgn7I/AAAAAAAAEg4/DkvcbgIbzDs/s1600/Screen+Shot+2012-11-18+at+7.37.26+PM.png" imageanchor="1" style="margin-left: auto; margin-right: auto;"><img border="0" height="112" src="http://2.bp.blogspot.com/-5ENuqzoe-iE/UKjI9Qfgn7I/AAAAAAAAEg4/DkvcbgIbzDs/s640/Screen+Shot+2012-11-18+at+7.37.26+PM.png" width="640" /></a></td></tr><tr><td class="tr-caption" style="text-align: center;">trackView</td></tr></tbody></table><br /><table align="center" cellpadding="0" cellspacing="0" class="tr-caption-container" style="margin-left: auto; margin-right: auto; text-align: center;"><tbody><tr><td style="text-align: center;"><a href="http://3.bp.blogspot.com/-yhHyh90Fc6g/UKjI98iTrZI/AAAAAAAAEhA/-vlpKVWqca8/s1600/Screen+Shot+2012-11-18+at+7.37.49+PM.png" imageanchor="1" style="margin-left: auto; margin-right: auto;"><img border="0" height="72" src="http://3.bp.blogspot.com/-yhHyh90Fc6g/UKjI98iTrZI/AAAAAAAAEhA/-vlpKVWqca8/s640/Screen+Shot+2012-11-18+at+7.37.49+PM.png" width="640" /></a></td></tr><tr><td class="tr-caption" style="text-align: center;">trackExcpetion-1</td></tr></tbody></table><br /><table align="center" cellpadding="0" cellspacing="0" class="tr-caption-container" style="margin-left: auto; margin-right: auto; text-align: center;"><tbody><tr><td style="text-align: center;"><a href="http://1.bp.blogspot.com/-wnVzemAc0CU/UKjI-kckbiI/AAAAAAAAEhI/GDtgDoJv6FM/s1600/Screen+Shot+2012-11-18+at+7.37.59+PM.png" imageanchor="1" style="margin-left: auto; margin-right: auto;"><img border="0" height="102" src="http://1.bp.blogspot.com/-wnVzemAc0CU/UKjI-kckbiI/AAAAAAAAEhI/GDtgDoJv6FM/s640/Screen+Shot+2012-11-18+at+7.37.59+PM.png" width="640" /></a></td></tr><tr><td class="tr-caption" style="text-align: center;">trackException-2</td></tr></tbody></table><br />trackException有兩張圖，因為trackException會記錄著是那個version的app發生exception的！<br />所以如果你有很多個version，你會在第一張圖看到很多個version，<br />因為這個是test app，所以目前只有一個1.0，點進去以後就會看到詳細的exception資訊了！（如第二張圖）<br /><br /><br /><br /><br />上面code之中有講到trackException，大家可能會有點confused，<br />因為如果你在開發app時，error handling做不好的時候，可能會導致app crash！<br />那麼屬於這邊的exception 該怎麼抓到呢？<br />恩！在Google Analytics也有提供這樣的功能！<br />只要在上面的xml檔當中加入下面的element即可！<br /><br /><pre class="brush: xml">&lt;!--Enable automatic exception tracking--&gt;<br />  &lt;bool name=&quot;ga_reportUncaughtExceptions&quot;&gt;true&lt;/bool&gt;  <br /></pre><br /><br />上面就是一些稍微進階的Google Analytic的使用方式！<br /><br /><br /><br />
+    </div>
+
+    
+
+  
+    <ul class="tag_box inline">
+      <li><i class="glyphicon glyphicon-tags"></i></li>
+      
+      
+
+
+  
+     
+    	<li><a href="/tags.html#Google-ref">Google <span>4</span></a></li>
+     
+    	<li><a href="/tags.html#android-ref">android <span>64</span></a></li>
+     
+    	<li><a href="/tags.html#Google Analytic-ref">Google Analytic <span>1</span></a></li>
+    
+  
+
+
+
+    </ul>
+    
+  
+    <hr>
+    <ul class="pagination">
+    
+      <li class="prev"><a href="/2012/10/24/install-android-ndk-on-mac" title="Install Android NDK on MAC">&laquo; Previous</a></li>
+    
+      <li><a href="/archive.html">Archive</a></li>
+    
+      <li class="next"><a href="/2012/11/19/android-r-cannot-be-resolved-to-variable" title="Android: r cannot be resolved to a variable">Next &raquo;</a></li>
+    
+    </ul>
+    <hr>
+    
+
+
+  <div id="disqus_thread"></div>
+<script type="text/javascript">
+    
+    var disqus_developer = 1;
+    var disqus_shortname = 'jekyllbootstrap'; // required: replace example with your forum shortname
+    
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+
+
+  </div>
+</div>
+
+
+      </div>
+
+    </div>
+
+    <div id="footer">
+      <div class="container">
+        <p>&copy; 2015 Name Lastname
+          with help from <a href="http://jekyllbootstrap.com" target="_blank" title="The Definitive Jekyll Blogging Framework">Jekyll Bootstrap</a>
+          and <a href="http://getbootstrap.com" target="_blank">Bootstrap</a>
+        </p>
+      </div>
+    </div>
+
+    
+
+
+
+
+
+    <!-- Latest compiled and minified JavaScript, requires jQuery 1.x (2.x not supported in IE8) -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="/assets/themes//bootstrap/js/bootstrap.min.js"></script>
+  </body>
+</html>
+

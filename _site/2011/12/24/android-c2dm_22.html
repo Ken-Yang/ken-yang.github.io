@@ -1,0 +1,227 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>Android C2DM (二)：流程</title>
+    
+    <meta name="author" content="Name Lastname">
+
+    <!-- Enable responsive viewport -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Bootstrap styles -->
+    <link href="/assets/themes//bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Optional theme -->
+    <link href="/assets/themes//bootstrap/css/bootstrap-theme.min.css" rel="stylesheet">
+    <!-- Sticky Footer -->
+    <link href="/assets/themes//bootstrap/css/bs-sticky-footer.css" rel="stylesheet">
+    
+    <!-- Custom styles -->
+    <link href="/assets/themes//css/style.css?body=1" rel="stylesheet" type="text/css" media="all">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Fav and touch icons -->
+    <!-- Update these with your own images
+      <link rel="shortcut icon" href="images/favicon.ico">
+      <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+      <link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-72x72.png">
+      <link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png">
+    -->
+
+    <!-- atom & rss feed -->
+    <link href="/atom.xml" type="application/atom+xml" rel="alternate" title="Sitewide ATOM Feed">
+    <link href="/rss.xml" type="application/rss+xml" rel="alternate" title="Sitewide RSS Feed">
+
+  </head>
+
+  <body>
+    <div id="wrap">
+      <nav class="navbar navbar-default" role="navigation">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#jb-navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/">Jekyll Bootstrap</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="jb-navbar-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+            
+
+
+  
+    
+      
+      	
+      	<li><a href="/archive">Archive</a></li>
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/categories">Categories</a></li>
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/pages">Pages</a></li>
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/tags">Tags</a></li>
+      	
+      
+    
+  
+
+
+
+          </ul>
+          <form class="navbar-form navbar-right" role="search">
+            <div class="form-group">
+              <input type="text" class="form-control" placeholder="Search">
+            </div>
+            <button type="submit" class="btn btn-default">Submit</button>
+          </form>
+        </div><!-- /.navbar-collapse -->
+      </nav>
+
+      <div class="container">
+        
+<div class="page-header">
+  <h1>Android C2DM (二)：流程 </h1>
+</div>
+
+<div class="row post-full">
+  <div class="col-xs-12">
+    <div class="date">
+      <span>24 December 2011</span>
+    </div>
+    <div class="content">
+      <span style="font-size: large;"><b>前一篇在講<a href="http://blog.kenyang.net/2011/12/android-c2dm.html">參數說明</a></b></span><br /><span style="font-size: large;"><b>這篇專注於流程說明</b></span><br /><span style="font-size: large;"><b>第三篇在講<a href="http://blog.kenyang.net/2012/03/android-c2dm-sever.html">Server端的實作</a></b></span><br /><span style="font-size: large;"><b>第四篇在講<a href="http://blog.kenyang.net/2012/03/android-c2dm-android.html">Android端的實作</a></b></span><br /><br />Android C2DM的實作步驟大概分為下列三項：<br /><ul><li><b>Enabling C2DM </b>：在Android Device上啟動C2DM準備receive訊息。</li><li><b>Sending a message</b>：Server傳遞訊息至Device</li><li><b>Receiving a message</b>：Android上收來自C2DM Server的訊息</li></ul><div>下面是個三項的說明流程，</div><div><br /></div><div><b><span style="font-size: large;">1. Enabling C2DM</span></b></div><div><ol><li>首先要先啟動一個registration Intent到C2DM的SERVER (com.google.android.c2dm.intent.REGISTER)，且這Intent必須但兩個參數，第一個是<span style="color: red;">SENDER ID</span>，第二個是<span style="color: red;">application ID</span>。<a href="http://blog.kenyang.net/2011/12/android-c2dm.html">參數說明請看這。</a></li><li>如果這個registration成功了，C2DM的Server會回傳(broadcast)一個<span style="color: red;">registration ID</span>，這時候Android applicaiton要把這<span style="color: red;">registration ID</span>先存起來，待會用。(Google可能會一段時間就去refresh這個registration ID）</li><li>完成註冊以及取得<span style="color: red;">resgistration ID</span>以後，Android App必須把此ID傳到自己的server上去。Server一樣得把這ID存起來。</li></ol></div>註：register ID會存活直到你unregister，或者直到Google refresh為止。<br /><br /><br /><br /><div><span style="font-size: large;"><b>2. Sending a message</b></span></div><div><ol><li>在send a message之前，必須確認<b>Android app</b>和<b>Sever</b>上已經有<span style="color: red;"> resgistration&nbsp;&nbsp;ID</span>了，以及Sever必須有<span style="color: red;">ClientLogin authorization token</span>. 至於怎麼取得這個token，可以去看<a href="http://code.google.com/apis/accounts/docs/AuthForInstalledApps.html">Google官網說明</a></li><li>完成上面的以後，首先，Sever必須先send訊息至C2DM Sever上</li><li>Google收到以後，會先存起來，以免Android device是inactive的狀態。</li><li>當Device是online的狀態，Google就會send訊息至device上。</li></ol><div><br /></div></div><br /><br /><div><span style="font-size: large;"><b>3. Receiving a Message</b></span></div><div><ol><li>首先Android OS會先收到這則Message， </li><li>接著Android OS會把這則訊息，會根據package name發送到含有註冊com.google.android.c2dm.intent.RECEIVE的app上去</li><li>最後，該app就會從自己註冊的RECEIVER的Intent裡收到message，就可以處理資料了。</li></ol><br /><br /><span style="font-size: large;"><br /></span></div><span style="font-size: large;"><b>下一篇會講如何去實作。</b></span><br /><span style="font-size: large;"><b><br /></b></span><br /><span style="font-size: large;"><b><br /></b></span><br /><span style="font-size: large;"><b><br /></b></span><br /><br /><br /><br /><br />
+    </div>
+
+    
+
+  
+    <ul class="tag_box inline">
+      <li><i class="glyphicon glyphicon-tags"></i></li>
+      
+      
+
+
+  
+     
+    	<li><a href="/tags.html#android-ref">android <span>64</span></a></li>
+    
+  
+
+
+
+    </ul>
+    
+  
+    <hr>
+    <ul class="pagination">
+    
+      <li class="prev"><a href="/2011/12/24/android-c2dm" title="Android C2DM (一)：元件參數說明">&laquo; Previous</a></li>
+    
+      <li><a href="/archive.html">Archive</a></li>
+    
+      <li class="next"><a href="/2011/12/27/android-httpurlconnection-multipartform" title="Android HttpURLConnection 上傳檔案 (multipart/form-data)">Next &raquo;</a></li>
+    
+    </ul>
+    <hr>
+    
+
+
+  <div id="disqus_thread"></div>
+<script type="text/javascript">
+    
+    var disqus_developer = 1;
+    var disqus_shortname = 'jekyllbootstrap'; // required: replace example with your forum shortname
+    
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+
+
+  </div>
+</div>
+
+
+      </div>
+
+    </div>
+
+    <div id="footer">
+      <div class="container">
+        <p>&copy; 2015 Name Lastname
+          with help from <a href="http://jekyllbootstrap.com" target="_blank" title="The Definitive Jekyll Blogging Framework">Jekyll Bootstrap</a>
+          and <a href="http://getbootstrap.com" target="_blank">Bootstrap</a>
+        </p>
+      </div>
+    </div>
+
+    
+
+
+
+
+
+    <!-- Latest compiled and minified JavaScript, requires jQuery 1.x (2.x not supported in IE8) -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="/assets/themes//bootstrap/js/bootstrap.min.js"></script>
+  </body>
+</html>
+

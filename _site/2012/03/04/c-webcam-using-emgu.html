@@ -1,0 +1,231 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>C# 控制 Webcam 【using Emgu】</title>
+    
+    <meta name="author" content="Name Lastname">
+
+    <!-- Enable responsive viewport -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Bootstrap styles -->
+    <link href="/assets/themes//bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Optional theme -->
+    <link href="/assets/themes//bootstrap/css/bootstrap-theme.min.css" rel="stylesheet">
+    <!-- Sticky Footer -->
+    <link href="/assets/themes//bootstrap/css/bs-sticky-footer.css" rel="stylesheet">
+    
+    <!-- Custom styles -->
+    <link href="/assets/themes//css/style.css?body=1" rel="stylesheet" type="text/css" media="all">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Fav and touch icons -->
+    <!-- Update these with your own images
+      <link rel="shortcut icon" href="images/favicon.ico">
+      <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+      <link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-72x72.png">
+      <link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png">
+    -->
+
+    <!-- atom & rss feed -->
+    <link href="/atom.xml" type="application/atom+xml" rel="alternate" title="Sitewide ATOM Feed">
+    <link href="/rss.xml" type="application/rss+xml" rel="alternate" title="Sitewide RSS Feed">
+
+  </head>
+
+  <body>
+    <div id="wrap">
+      <nav class="navbar navbar-default" role="navigation">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#jb-navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/">Jekyll Bootstrap</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="jb-navbar-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+            
+
+
+  
+    
+      
+      	
+      	<li><a href="/archive">Archive</a></li>
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/categories">Categories</a></li>
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/pages">Pages</a></li>
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/tags">Tags</a></li>
+      	
+      
+    
+  
+
+
+
+          </ul>
+          <form class="navbar-form navbar-right" role="search">
+            <div class="form-group">
+              <input type="text" class="form-control" placeholder="Search">
+            </div>
+            <button type="submit" class="btn btn-default">Submit</button>
+          </form>
+        </div><!-- /.navbar-collapse -->
+      </nav>
+
+      <div class="container">
+        
+<div class="page-header">
+  <h1>C# 控制 Webcam 【using Emgu】 </h1>
+</div>
+
+<div class="row post-full">
+  <div class="col-xs-12">
+    <div class="date">
+      <span>04 March 2012</span>
+    </div>
+    <div class="content">
+      這篇似乎是我歷年來第一篇有關M$的筆記.........<br />真是寫得有點心不甘情不願XD<br />畢竟本人真的是沒有很喜歡M$的東西，<br />當然不是因為M$不好，M$也有它好的一面，<br />只能說或許是習慣問題....<br /><br />OK，進入正題，<br />這篇主要是去說明如何利用C#去控制你的網路攝影機，<br />且是使用Emgu這套dll，<br />甚麼是Emgu呢?<br />他和OpenCV有點關聯，<br />OpenCV相信不管是Java, C, C++等language的開發者，都了解OpenCV是甚麼!?<br />簡單說，OpenCV是一套強大的影像處理library，由INTEL開發，<br />非常強大，甚至你可以利用OpenCV去做到OCR，很方便。<br />也由於OpenCV沒有支援C#，那C#要怎麼使用OpenCV呢?<br />就是靠<a href="http://www.emgu.com/wiki/index.php/Main_Page">Emgu</a>，<a href="http://www.emgu.com/wiki/index.php/Main_Page">Emgu</a>是一套允許OpenCV的function在C#等語言中被使用。<br /><br />但我們這邊並不會使用到OpenCV的功能，<br />就是簡單的介紹Emgu很基本的功能，<br />就是存取攝影機，<br />首先先去<a href="http://sourceforge.net/projects/emgucv/files/emgucv/2.3.0/">下載Emgu，並且安裝</a>，<br />安裝完成以後就可以開始寫程式....<br /><br />看你是要開啟一個WPF專案，還是一個Window Form專案，<br />建議你開啟Window Form，因為到時Webcam回傳回來的image型態，<br />可以直接在 Window Form中的pictureBox裡面使用。<br /><br />開啟以後，就在你的專案中加入reference，<br />加入以下四個dll，dll的位置就是在你安裝Emgu位置的bin底下：<br /><br /><ol><li>Emgu.CV.dll</li><li>Emgu.CV.ML.dll</li><li>Emgu.CV.UI.dll</li><li>Emgu.Util.dll</li></ol><br />加入以後，請先儲存你的專案，<br />儲存以後請在你安裝Emgu位置的bin底下找到兩個dll，<br /><br /><ol><li>opencv_core231.dll</li><li>opencv_highgui231.dll</li></ol><br />把這兩個dll放置到你的專案的/bin/Debug/底下。<br />因為Emgu.CV.dll會使用到上述兩個dll。<br /><br /><br />完成上述動作以後就開始寫code，<br />先import會使用到的lib，如下:<br /><pre class="brush: c-sharp">using Emgu.CV;<br />using Emgu.CV.Structure;<br /></pre><br /><br />先宣告一個Capture物件，如下:<br /><pre class="brush: c-sharp">private Capture cap = null;                 // Webcam物件<br /></pre>這個物件就是用來連結到你的webcam。<br /><br /><br />接著在Form1_Load event中，<br />連結到攝影機以及建立一個event用來抓取畫面，如下:<br /><pre class="brush: c-sharp">private void Form1_Load(object sender, EventArgs e)<br />{<br />     cap = new Capture(0); // 連結到攝影機0，如果你有兩台攝影機，第二台就是1<br />     Application.Idle += new EventHandler(Application_Idle); // 在Idle的event下，把畫面設定到pictureBox上(當然你也可以用timer事件)<br />}<br /></pre><br /><br />接下來要寫抓取畫面event的code，<br /><pre class="brush: c-sharp">        void Application_Idle(object sender, EventArgs e)<br />        {<br />             Image&lt;Bgr, Byte&gt; frame = cap.QueryFrame(); // 去query該畫面<br />             pictureBox1.Image = frame.ToBitmap(); // 把畫面轉換成bitmap型態，在餵給pictureBox元件<br />        }<br /></pre><br /><br />完成以後按下F5執行，應該就可以順利取得攝影機畫面瞜!<br /><br /><br /><br />
+    </div>
+
+    
+
+  
+    <ul class="tag_box inline">
+      <li><i class="glyphicon glyphicon-tags"></i></li>
+      
+      
+
+
+  
+     
+    	<li><a href="/tags.html#C#-ref">C# <span>1</span></a></li>
+     
+    	<li><a href="/tags.html#逼不得已-ref">逼不得已 <span>1</span></a></li>
+     
+    	<li><a href="/tags.html#webcam-ref">webcam <span>1</span></a></li>
+    
+  
+
+
+
+    </ul>
+    
+  
+    <hr>
+    <ul class="pagination">
+    
+      <li class="prev"><a href="/2012/02/20/android-out-of-memory-oom" title="Android Out of Memory (OOM)">&laquo; Previous</a></li>
+    
+      <li><a href="/archive.html">Archive</a></li>
+    
+      <li class="next"><a href="/2012/03/23/android-c2dm-sever" title="Android C2DM (三)：實作之Sever篇">Next &raquo;</a></li>
+    
+    </ul>
+    <hr>
+    
+
+
+  <div id="disqus_thread"></div>
+<script type="text/javascript">
+    
+    var disqus_developer = 1;
+    var disqus_shortname = 'jekyllbootstrap'; // required: replace example with your forum shortname
+    
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+
+
+  </div>
+</div>
+
+
+      </div>
+
+    </div>
+
+    <div id="footer">
+      <div class="container">
+        <p>&copy; 2015 Name Lastname
+          with help from <a href="http://jekyllbootstrap.com" target="_blank" title="The Definitive Jekyll Blogging Framework">Jekyll Bootstrap</a>
+          and <a href="http://getbootstrap.com" target="_blank">Bootstrap</a>
+        </p>
+      </div>
+    </div>
+
+    
+
+
+
+
+
+    <!-- Latest compiled and minified JavaScript, requires jQuery 1.x (2.x not supported in IE8) -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="/assets/themes//bootstrap/js/bootstrap.min.js"></script>
+  </body>
+</html>
+

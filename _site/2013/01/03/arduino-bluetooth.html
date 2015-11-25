@@ -1,0 +1,227 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>Arduino bluetooth</title>
+    
+    <meta name="author" content="Name Lastname">
+
+    <!-- Enable responsive viewport -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Bootstrap styles -->
+    <link href="/assets/themes//bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Optional theme -->
+    <link href="/assets/themes//bootstrap/css/bootstrap-theme.min.css" rel="stylesheet">
+    <!-- Sticky Footer -->
+    <link href="/assets/themes//bootstrap/css/bs-sticky-footer.css" rel="stylesheet">
+    
+    <!-- Custom styles -->
+    <link href="/assets/themes//css/style.css?body=1" rel="stylesheet" type="text/css" media="all">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Fav and touch icons -->
+    <!-- Update these with your own images
+      <link rel="shortcut icon" href="images/favicon.ico">
+      <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+      <link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-72x72.png">
+      <link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png">
+    -->
+
+    <!-- atom & rss feed -->
+    <link href="/atom.xml" type="application/atom+xml" rel="alternate" title="Sitewide ATOM Feed">
+    <link href="/rss.xml" type="application/rss+xml" rel="alternate" title="Sitewide RSS Feed">
+
+  </head>
+
+  <body>
+    <div id="wrap">
+      <nav class="navbar navbar-default" role="navigation">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#jb-navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/">Jekyll Bootstrap</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="jb-navbar-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+            
+
+
+  
+    
+      
+      	
+      	<li><a href="/archive">Archive</a></li>
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/categories">Categories</a></li>
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/pages">Pages</a></li>
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/tags">Tags</a></li>
+      	
+      
+    
+  
+
+
+
+          </ul>
+          <form class="navbar-form navbar-right" role="search">
+            <div class="form-group">
+              <input type="text" class="form-control" placeholder="Search">
+            </div>
+            <button type="submit" class="btn btn-default">Submit</button>
+          </form>
+        </div><!-- /.navbar-collapse -->
+      </nav>
+
+      <div class="container">
+        
+<div class="page-header">
+  <h1>Arduino bluetooth </h1>
+</div>
+
+<div class="row post-full">
+  <div class="col-xs-12">
+    <div class="date">
+      <span>03 January 2013</span>
+    </div>
+    <div class="content">
+      先前講過arduino的基本介紹，<br />這篇要講如何綁上bluetooth shield到arduino上面！<br /><br /><br />首先要先介紹bluetooth shield上的pin腳，<br />先看到下圖，下圖中右邊有一排pin腳，<br />主要會用到前面4隻pin腳，<br />而4隻pin腳依序為：<br /><br /><ol><li>5V：供電的(+)</li><li>TX：傳送訊號</li><li>RX：接收訊號</li><li>GND：接地線(-)</li></ol><br /><div class="separator" style="clear: both; text-align: center;"><a href="http://2.bp.blogspot.com/-myo8iSxgbSQ/UOAPRwyFaBI/AAAAAAAAEho/wkEGI3LJIjw/s1600/IMG_20121230_175016.jpg" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="480" src="http://2.bp.blogspot.com/-myo8iSxgbSQ/UOAPRwyFaBI/AAAAAAAAEho/wkEGI3LJIjw/s640/IMG_20121230_175016.jpg" width="640" /></a></div><br /><br /><br />而arduino板上也一定會有上述對應的pin腳，<br />基本上都插上去就可以，<br />不過有一點比較特別，<br />在於RX/TX的點，<br />Arduino板上的TX要接到Bluetooh shield上的RX，<br />Arduino板上的RX反而接到Bluetooth shield上的TX，<br /><br />可以看到參考下面的表，<br /><table border="1px"><tbody><tr> <td><br />Arduino</td> <td><br />Bluetooth Shield</td> </tr><tr> <td>RX</td> <td>TX</td> </tr><tr> <td>TX</td> <td>RX</td> </tr><tr> <td>5V</td> <td>5V</td> </tr><tr> <td>GND</td> <td>GND</td> </tr></tbody></table><br /><br />對了，基本上arduino板上的RX/TX都是預設pin0和pin1！<br />至少uno和duemilanove這兩塊板子上都是！<br />所以就差在對應上的pin0和pin1吧！<br />（當然你也可以插在別的pin腳上，但是在寫code時就得稍為設定）<br /><br /><br />差上去以後，基本上你的bluetooth shield會一直閃紅燈，<br />一直閃一直閃，直到有人連結上這台bluetooth上，紅燈才會恆亮！<br /><br />接著來寫個sample測試！<br /><br /><pre class="brush: java">int iLedPin        = 13;<br />void setup(){<br />  // define the PIN as OUTPUT <br />  pinMode(iLedPin        ,OUTPUT);  <br />  <br />  // using baud rate 9600 to listen.<br />  Serial.begin(9600);<br />}<br /><br />void loop(){<br />  while (Serial.available()){<br />    char cCmd = Serial.read();<br />    if (cCmd =='o'){<br />      digitalWrite(iLedPin,HIGH);<br />    }else if (cCmd == 'c'){<br />      digitalWrite(iLedPin,LOW);<br />    }<br />  }<br />}<br /></pre><br /><br /><br />把上述的code deploy進去arduino以後，<br />就可以用你的電腦來測試了！<br /><br /><br />不管你是windows,osx,linux，只要你的OS連接到藍牙以後，<br />都會被模擬成serial port！<br />所以如果你用的是linux或者mac，<br />你會發現在你的/dev/底下多了一個device，<br />像我的就是/dev/tty.KENarduino-DevB，<br />那麼就可以用下列的指令連結到你的藍牙了，<br /><pre class="brush: java">sudo cu -s 9600 -l /dev/tty.KENarduino-DevB <br /></pre><br /><br />如果連結成功應該會在你的terminal上看到下列字樣<br /><pre class="brush: java">Connected<br /></pre><br />那麼就代表你成功連結到藍牙裝置，就可以透過藍牙下指令給arduino了！<br />最後可以試著輸入o和c，然後觀察你的pin13那顆led有無變化！<br /><br /><br /><br /><br /><br /><br />ＰＳ：如果你用的是windows，直接去載putty吧！透過putty去連結藍芽，只要輸入你的藍牙是COM幾就可以連線！<br /><br /><br /><br />
+    </div>
+
+    
+
+  
+    <ul class="tag_box inline">
+      <li><i class="glyphicon glyphicon-tags"></i></li>
+      
+      
+
+
+  
+     
+    	<li><a href="/tags.html#arduino-ref">arduino <span>4</span></a></li>
+    
+  
+
+
+
+    </ul>
+    
+  
+    <hr>
+    <ul class="pagination">
+    
+      <li class="prev"><a href="/2012/11/25/android-startservice-vs-bindservice" title="Android: startService vs bindService">&laquo; Previous</a></li>
+    
+      <li><a href="/archive.html">Archive</a></li>
+    
+      <li class="next"><a href="/2013/01/05/java-integer-pool" title="Java Integer Pool">Next &raquo;</a></li>
+    
+    </ul>
+    <hr>
+    
+
+
+  <div id="disqus_thread"></div>
+<script type="text/javascript">
+    
+    var disqus_developer = 1;
+    var disqus_shortname = 'jekyllbootstrap'; // required: replace example with your forum shortname
+    
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+
+
+  </div>
+</div>
+
+
+      </div>
+
+    </div>
+
+    <div id="footer">
+      <div class="container">
+        <p>&copy; 2015 Name Lastname
+          with help from <a href="http://jekyllbootstrap.com" target="_blank" title="The Definitive Jekyll Blogging Framework">Jekyll Bootstrap</a>
+          and <a href="http://getbootstrap.com" target="_blank">Bootstrap</a>
+        </p>
+      </div>
+    </div>
+
+    
+
+
+
+
+
+    <!-- Latest compiled and minified JavaScript, requires jQuery 1.x (2.x not supported in IE8) -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="/assets/themes//bootstrap/js/bootstrap.min.js"></script>
+  </body>
+</html>
+

@@ -1,0 +1,229 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>Android BroadcastReceiver detecting outgoing phone call</title>
+    
+    <meta name="author" content="Name Lastname">
+
+    <!-- Enable responsive viewport -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Bootstrap styles -->
+    <link href="/assets/themes//bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Optional theme -->
+    <link href="/assets/themes//bootstrap/css/bootstrap-theme.min.css" rel="stylesheet">
+    <!-- Sticky Footer -->
+    <link href="/assets/themes//bootstrap/css/bs-sticky-footer.css" rel="stylesheet">
+    
+    <!-- Custom styles -->
+    <link href="/assets/themes//css/style.css?body=1" rel="stylesheet" type="text/css" media="all">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Fav and touch icons -->
+    <!-- Update these with your own images
+      <link rel="shortcut icon" href="images/favicon.ico">
+      <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+      <link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-72x72.png">
+      <link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png">
+    -->
+
+    <!-- atom & rss feed -->
+    <link href="/atom.xml" type="application/atom+xml" rel="alternate" title="Sitewide ATOM Feed">
+    <link href="/rss.xml" type="application/rss+xml" rel="alternate" title="Sitewide RSS Feed">
+
+  </head>
+
+  <body>
+    <div id="wrap">
+      <nav class="navbar navbar-default" role="navigation">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#jb-navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/">Jekyll Bootstrap</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="jb-navbar-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+            
+
+
+  
+    
+      
+      	
+      	<li><a href="/archive">Archive</a></li>
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/categories">Categories</a></li>
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/pages">Pages</a></li>
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/tags">Tags</a></li>
+      	
+      
+    
+  
+
+
+
+          </ul>
+          <form class="navbar-form navbar-right" role="search">
+            <div class="form-group">
+              <input type="text" class="form-control" placeholder="Search">
+            </div>
+            <button type="submit" class="btn btn-default">Submit</button>
+          </form>
+        </div><!-- /.navbar-collapse -->
+      </nav>
+
+      <div class="container">
+        
+<div class="page-header">
+  <h1>Android BroadcastReceiver detecting outgoing phone call </h1>
+</div>
+
+<div class="row post-full">
+  <div class="col-xs-12">
+    <div class="date">
+      <span>27 March 2013</span>
+    </div>
+    <div class="content">
+      Android BroadcastReceiver是一種類似“pending”在背景的服務，<br />它可以用來監聽、接收某些事件（action），例如開機完成、收到簡訊、電池快沒電等等之類。<br />以及可以用來作為訊息的傳遞！<br />而為什麼會說類似pending呢？<br />因為BroadcastReceiver的lifecycle，並不是一直常駐的，<br />是只有onReceive被call時，才會存在，當return之後，system會判斷是否要unactive！<br /><br /><br />BroadcastReceiver可以監聽兩種類型的事件：<br />1. 系統事件<br />2. 自己定義的事件<br />這裡將會實作出這兩種兼聽方式！<br /><br /><br /><br />首先這裡將實作一個receiver會去監聽以下<b>系統</b>事件<br />1. 撥打電話<br />2. 螢幕打開<br />3. 螢幕關閉<br /><br /><br />首先先實作一個BroadcastReceiver，如下：<br /><pre class="brush: java">public class ReceiverDetect extends BroadcastReceiver {<br /> @Override<br /> public void onReceive(Context context, Intent intent) {<br />  String strAction = intent.getAction();<br />  Log.e("kencyang", "action:" + strAction);<br />  <br />  // if you make a phone call...<br />  if (strAction.equals(Intent.ACTION_NEW_OUTGOING_CALL)){<br />   String number = getResultData();<br />   Log.e("kencyang", "number:" +number);<br />  }<br /> }<br />}<br /><br /><br /></pre><br /><br />接著我們必須去access 額外的permission才能接收到使用者撥打電話的事件，<br /><br /><pre class="brush: xml">&lt;uses-permission android:name="android.permission.PROCESS_OUTGOING_CALLS"&gt;&lt;/uses-permission&gt;<br /></pre><br />當然你要在你的AndroidManifest.xml中的<application>加入剛剛實作的BroadcastReceiver，<br /></application><br /><pre class="brush: xml">&lt;receiver android:name="ReceiverDetect"&gt;<br />&lt;/receiver&gt;<br /></pre><br />接著我們將手動地去註冊這個Receiver要接收什麼事件，<br />以及註冊這個Receiver，<br />而這些動作我們可以在MainActivity中實作，<br /><pre class="brush: java">public class MainActivity extends Activity {<br /><br /> @Override<br /> protected void onCreate(Bundle savedInstanceState) {<br />  super.onCreate(savedInstanceState);<br />  setContentView(R.layout.activity_main);<br />  <br />  IntentFilter ifilter = new IntentFilter();<br />  ifilter.addAction(Intent.ACTION_NEW_OUTGOING_CALL);  // if make a phone call<br />  ifilter.addAction(Intent.ACTION_SCREEN_OFF);    // if screen turn off<br />  ifilter.addAction(Intent.ACTION_SCREEN_ON);     // if screen turn on<br />  <br />  ReceiverDetect r = new ReceiverDetect();<br />  registerReceiver(r, ifilter);<br /> }<br />}<br /></pre><br />接著就deploy到手機上吧！<br />可以試試看打一通電話，以及開關螢幕，<br />然後打開你的ddms，應該就可以看到下列的log，<br /><br /><a href="http://1.bp.blogspot.com/-9BYyZHibK-c/UVK9eUxeFrI/AAAAAAAAEmA/u53pJRT8KoQ/s1600/Screen+Shot+2013-03-27+at+5.26.17+PM.png" imageanchor="1"><img border="0" height="70" src="http://1.bp.blogspot.com/-9BYyZHibK-c/UVK9eUxeFrI/AAAAAAAAEmA/u53pJRT8KoQ/s640/Screen+Shot+2013-03-27+at+5.26.17+PM.png" width="640" /></a><br /><br /><br /><br /><br />這樣就完成了監聽系統事件，<br />接下來要講如何監聽一個自己定義的事件，<br />其實和監聽系統事件沒有太大的差別，<br />我們只是增加了一組action！<br />以及教你怎麼send出一個broadcast，讓你的receiver收到！<br />一樣在MainActivity中，增加下列的code：<br /><pre class="brush: java"> @Override<br /> protected void onCreate(Bundle savedInstanceState) {<br />  super.onCreate(savedInstanceState);<br />  setContentView(R.layout.activity_main);<br />  <br />  IntentFilter ifilter = new IntentFilter();<br />  ifilter.addAction("i am hungry");<br />  <br />  ReceiverDetect r = new ReceiverDetect();<br />  registerReceiver(r, ifilter);<br />  <br />  <br />  Button btnSend = (Button) findViewById(R.id.button1);<br />  <br />  // click button will send a broadcast, then our receiver will receive the action<br />  btnSend.setOnClickListener(new OnClickListener() {<br />   @Override<br />   public void onClick(View v) {<br />    Intent intent = new Intent();<br />    intent.setAction("i am hungry");<br />    sendBroadcast(intent);<br />   }<br />  });<br />  <br /> }<br /><br /></pre><br /><br />然後deploy上去，<br />按下button以後，應該會看到下圖中的log！<br /><br /><a href="http://2.bp.blogspot.com/-gd9epuS6-js/UVK85ieHAzI/AAAAAAAAEl4/UVRRQC7V4os/s1600/Screen+Shot+2013-03-27+at+5.33.54+PM.png" imageanchor="1"><img border="0" height="62" src="http://2.bp.blogspot.com/-gd9epuS6-js/UVK85ieHAzI/AAAAAAAAEl4/UVRRQC7V4os/s640/Screen+Shot+2013-03-27+at+5.33.54+PM.png" width="640" /></a><br /><br /><br /><br /><br />這樣就完成了BroadcastReceiver的基本實作！<br /><br /><br /><br /><br /><br />
+    </div>
+
+    
+
+  
+    <ul class="tag_box inline">
+      <li><i class="glyphicon glyphicon-tags"></i></li>
+      
+      
+
+
+  
+     
+    	<li><a href="/tags.html#broadcast receiver-ref">broadcast receiver <span>2</span></a></li>
+     
+    	<li><a href="/tags.html#android-ref">android <span>64</span></a></li>
+    
+  
+
+
+
+    </ul>
+    
+  
+    <hr>
+    <ul class="pagination">
+    
+      <li class="prev"><a href="/2013/03/14/android-fragment-activity" title="Android Fragment Activity">&laquo; Previous</a></li>
+    
+      <li><a href="/archive.html">Archive</a></li>
+    
+      <li class="next"><a href="/2013/05/02/nginx-flask-uwsgi-deployment" title="Nginx + Flask + uWSGI Deployment">Next &raquo;</a></li>
+    
+    </ul>
+    <hr>
+    
+
+
+  <div id="disqus_thread"></div>
+<script type="text/javascript">
+    
+    var disqus_developer = 1;
+    var disqus_shortname = 'jekyllbootstrap'; // required: replace example with your forum shortname
+    
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+
+
+  </div>
+</div>
+
+
+      </div>
+
+    </div>
+
+    <div id="footer">
+      <div class="container">
+        <p>&copy; 2015 Name Lastname
+          with help from <a href="http://jekyllbootstrap.com" target="_blank" title="The Definitive Jekyll Blogging Framework">Jekyll Bootstrap</a>
+          and <a href="http://getbootstrap.com" target="_blank">Bootstrap</a>
+        </p>
+      </div>
+    </div>
+
+    
+
+
+
+
+
+    <!-- Latest compiled and minified JavaScript, requires jQuery 1.x (2.x not supported in IE8) -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="/assets/themes//bootstrap/js/bootstrap.min.js"></script>
+  </body>
+</html>
+

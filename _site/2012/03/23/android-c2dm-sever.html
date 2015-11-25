@@ -1,0 +1,227 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>Android C2DM (三)：實作之Sever篇</title>
+    
+    <meta name="author" content="Name Lastname">
+
+    <!-- Enable responsive viewport -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Bootstrap styles -->
+    <link href="/assets/themes//bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Optional theme -->
+    <link href="/assets/themes//bootstrap/css/bootstrap-theme.min.css" rel="stylesheet">
+    <!-- Sticky Footer -->
+    <link href="/assets/themes//bootstrap/css/bs-sticky-footer.css" rel="stylesheet">
+    
+    <!-- Custom styles -->
+    <link href="/assets/themes//css/style.css?body=1" rel="stylesheet" type="text/css" media="all">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Fav and touch icons -->
+    <!-- Update these with your own images
+      <link rel="shortcut icon" href="images/favicon.ico">
+      <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+      <link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-72x72.png">
+      <link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png">
+    -->
+
+    <!-- atom & rss feed -->
+    <link href="/atom.xml" type="application/atom+xml" rel="alternate" title="Sitewide ATOM Feed">
+    <link href="/rss.xml" type="application/rss+xml" rel="alternate" title="Sitewide RSS Feed">
+
+  </head>
+
+  <body>
+    <div id="wrap">
+      <nav class="navbar navbar-default" role="navigation">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#jb-navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/">Jekyll Bootstrap</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="jb-navbar-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+            
+
+
+  
+    
+      
+      	
+      	<li><a href="/archive">Archive</a></li>
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/categories">Categories</a></li>
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/pages">Pages</a></li>
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/tags">Tags</a></li>
+      	
+      
+    
+  
+
+
+
+          </ul>
+          <form class="navbar-form navbar-right" role="search">
+            <div class="form-group">
+              <input type="text" class="form-control" placeholder="Search">
+            </div>
+            <button type="submit" class="btn btn-default">Submit</button>
+          </form>
+        </div><!-- /.navbar-collapse -->
+      </nav>
+
+      <div class="container">
+        
+<div class="page-header">
+  <h1>Android C2DM (三)：實作之Sever篇 </h1>
+</div>
+
+<div class="row post-full">
+  <div class="col-xs-12">
+    <div class="date">
+      <span>23 March 2012</span>
+    </div>
+    <div class="content">
+      <span style="color: red; font-size: large;">這篇是舊版的，已經被deprecated，新版為GCM，新版的實作請看</span><br /><a href="http://blog.kenyang.net/2013/07/android-gcm-google-cloud.html"><span style="color: blue; font-size: large;">新版的Server篇</span></a><br /><br /><br /><br /><br /><br />最後一篇進入到了Android C2DM的coding了!!<br />哈! 這篇存在草稿也三個月了..........<br />今天終於有一點點時間來修改!<br /><br /><br /><span style="font-size: large;"><b>第一篇在講<a href="http://blog.kenyang.net/2011/12/android-c2dm.html">參數說明</a></b></span><br /><span style="font-size: large;"><b>第二篇在講<a href="http://blog.kenyang.net/2011/12/android-c2dm_22.html">流程說明</a></b></span><br /><span style="font-size: large;"><b>這篇專注於server端的實作</b></span><br /><span style="font-size: large;"><b>下一篇才會專注於<a href="http://blog.kenyang.net/2012/03/android-c2dm-android.html">android端的實作</a></b></span><br /><br /><br /><br /><br />OK，<br />在coding之前，請先去<a href="http://code.google.com/android/c2dm/signup.html">Google官網註冊你的app</a>，<br />比較要注意的是下面兩項<br /><div><ol><li><span style="background-color: white; font-family: Arial, sans-serif; font-size: 13px; font-weight: bold;">Package name of your Android app&nbsp;</span><span class="ss-required-asterisk" style="background-color: white; color: #c43b1d; font-family: Arial, sans-serif; font-size: 13px; font-weight: bold;">*</span></li><li><span style="background-color: white; font-family: Arial, sans-serif; font-size: 13px; font-weight: bold;">Role (sender) account email&nbsp;</span><span class="ss-required-asterisk" style="background-color: white; color: #c43b1d; font-family: Arial, sans-serif; font-size: 13px; font-weight: bold;">*</span></li></ol></div>第1項，是指你的Android app的package name，這裡一定要填對，不然C2DM Server不知道送到哪個app去。<br />第2項，是指用來傳遞訊息的帳號，也就是開發者的帳號，這裡的建議是不要用個人帳號，建議新申請另一個帳號來使用。<br /><br />完成上面註冊動作以後，就可以開始coding了!<br />網路上的code教學都是拿<a href="http://code.google.com/android/c2dm/index.html#Examples">Google官網上面放的範例（JumpNote）</a>，<br />我覺得這樣不太native，畢竟這是別人寫的app！<br />所以我直接講最基本的流程！<br /><br /><br />接下來的code大概會分成下面幾種：<br /><br /><ol><li>實作Server端：使用Google Client Login API取得Auth token，並且存起來。</li><li>實作Server端：Sending Message to C2DM Server。</li><li>Android端：基本的設定。</li><li>Android端：向C2DM 註冊，並且取得registration id。</li><li>Android端：傳送 Registration Id 到我們的Server</li></ol><br />因為其實有點多，所以就分成兩篇來打，<br />一篇為Sever篇，就是此篇！<br />另一篇為Android篇，就是下篇！<br /><br /><span style="font-size: large;"><b>【1.&nbsp; 使用<a href="https://developers.google.com/accounts/docs/AuthForInstalledApps">Google Client Login API</a>取得Auth token&nbsp;】</b></span><br /><br />因為得把token傳至C2DM Server，<br />C2DM Sever才知道你有登入，且是合格的。<br /><br />至於Google Client Login API的流程在這就不贅述，<br />就直接實做! 但大家可以去<a href="https://developers.google.com/accounts/docs/AuthForInstalledApps">Google Client Login API官網</a>看!!!<br /><br />這裡我是架在<a href="http://code.google.com/intl/zh-TW/appengine/">Google App Engine</a>上，把<a href="http://code.google.com/intl/zh-TW/appengine/">GAE</a>當作我們的Sever。<br />由於auth token可以重複使用，<br />所以我們可能可以每段時間去執行ClientLogin，<br />並取得auth token!<br />這時候就可以用GAE的cron，可能設定每天去登入一次以取得token。<br /><br />而Client Login的code如下：<br /><pre class="brush: java">String strClientLoginUrl = "https://www.google.com/accounts/ClientLogin"; // client login的url<br />String strAccountType = "accountType=HOSTED_OR_GOOGLE&amp;";// 你要登入的帳號型態，這裡就輸入HOSTED_OR_GOOGLE<br />String strEmail = "Email=test@gmail.com&amp;";     // 你的email!!<br />String strPasswd= "Passwd=123456&amp;";            // 你的密碼<br />String strService= "service=ac2dm&amp;";           // 你登入以後，要拿這token存取Google哪個Service，這裡是ac2dm<br />String strSource= "source=KenYang-AndroidC2DM-1.0";// 這個只是用來identify你的application，格式要companyName-applicationName-versionID<br /><br /><br />HttpURLConnection conn = (HttpURLConnection) new URL(strClientLoginUrl).openConnection();<br />conn.setDoOutput(true);  <br />conn.setUseCaches(false);  <br />conn.setRequestMethod("POST");  // 設定request Method為POST<br />conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");  <br /><br /><br />// 送出資料<br />OutputStream out = conn.getOutputStream();  <br />String strPostData = strAccountType+strEmail+strPasswd+strService+strSource;<br />out.write(strPostData.getBytes());  <br />out.close();  <br /><br />// 取得response code，成功的話就是200<br />resp.getWriter().println(conn.getResponseCode()+ "&lt;/br&gt;");<br /><br />// 把資料讀進來並且印出來<br />BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream(),"utf-8"));<br />String strLine = "";<br />while((strLine=reader.readLine())!=null){<br /> resp.getWriter().println(strLine+"&lt;/br&gt;");<br />}<br /><br /><br /><br /></pre><br />正常來說，如果你帳號沒有問題，<br />或者密碼沒有輸入錯誤，<br />或者的確有這帳號存在！<br />那麼response code會是200!<br />就代表登入成功!<br />此時就要取得auth token。<br /><br />印出來的資料如下：<br /><pre class="brush: java">SID=DQAAAGgA...7Zg8CTN<br />LSID=DQAAAGsA...lk8BBbG<br />Auth=DQAAAGgA...dk3fA5N<br /></pre><br />這時候，只要取得最後那一行資料即可！<br />就是Auth那一行！！！<br />然後把Auth存起來！<br />這裡我是先存在GAE的datastore！<br />以利待會使用!<br /><br /><br /><br /><br /><span style="font-size: large;"><b>【2.&nbsp;&nbsp;傳送資料至C2DM Server&nbsp;】</b></span><br /><br />至於傳送甚麼資料，可以來這<a href="http://%E3%80%901.%20%20%E4%BD%BF%E7%94%A8google%20client%20login%20api%E5%8F%96%E5%BE%97auth%20token%20%E3%80%91%20%20%E5%9B%A0%E7%82%BA%E5%BE%97%E6%8A%8Atoken%E5%82%B3%E8%87%B3c2dm%20server%EF%BC%8C/">官網</a>看詳細參數說明!<br />這邊就簡單地說明幾種"必需"的參數!<br /><br /><ol><li><span style="background-color: white; color: #007000; font-family: monospace; font-size: 14px; line-height: 17px; text-align: left;">registration_id</span>&nbsp;：android 裝置的id，一定要傳這資料給C2DM Server，C2DM才知道訊息要傳給誰，至於這個值，是來自android device的!</li><li><span style="background-color: white; color: #007000; font-family: monospace; font-size: 14px; line-height: 17px; text-align: left;">collapse_key</span>&nbsp;：這個value可以是隨意的值，這個參數的用意是怕android device的狀態是離線狀態，一旦狀態恢復為連線，避免使用者突然收到大量訊息!(這個參數可以每次都不一樣，也可以每次都一樣)</li><li><span style="background-color: white; color: #007000; font-family: monospace; font-size: 14px; line-height: 17px; text-align: left;">data.&lt;key&gt;</span>&nbsp;：這個參數就是你要傳給android device的訊息了! 型態為key-value。如data.keyName=value</li><li><span style="background-color: white; color: #007000; font-family: monospace; font-size: 14px; line-height: 17px; text-align: left;">GoogleLogin auth</span>&nbsp;：這個不是要post的參數，而是要送出的header值! 而值就是上面存在datastore裡面的Auth!</li></ol><br /><br /><br />實際的code如下：<br /><pre class="brush: java">String strSendUrl = "https://android.apis.google.com/c2dm/send";  // c2dm的url<br />String strRegistrationId = "registration_id="+req.getParameter("device_token")+"&amp;"; // 接收來自android傳來的參數<br />String strCollapse= "collapse_key=1&amp;";    // 這個參數上面說明了<br />String strAuth = "xxxxxx";                 // 從datastore撈出來的值，這裡就不寫有關datastore的操作了<br />String strData  = "data.keyHello=fromKen";    // 你要送的訊息<br /><br />String strPostData = strRegistrationId+strCollapse+strData;<br /><br />HttpURLConnection conn = (HttpURLConnection) new URL(strSendUrl).openConnection();<br />conn.setDoOutput(true);  <br />conn.setUseCaches(false);  <br />conn.setRequestMethod("POST");  <br />conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");  <br />conn.setRequestProperty("Authorization", "GoogleLogin auth=" + strAuth);  // 設定header<br />conn.setRequestProperty("Content-Length", Integer.toString(strPostData.getBytes().length)); // 告訴c2dm要傳送的資料長度<br /><br />// 送出資料<br />OutputStream out = conn.getOutputStream();  <br />out.write(strPostData.getBytes());  <br />out.close();  <br /><br />// 看response code, 200為OK<br />resp.getWriter().println(conn.getResponseCode()+ "&lt;/br&gt;&lt;/br&gt;"); <br /><br /></pre><br /><br /><br /><br />完成上面的步驟，server端就完成了！<br />但還要完成android端，才能真正收到訊息！<br />下一篇會專注於android端的實作<br /><br /><br /><br /><br /><br /><br />
+    </div>
+
+    
+
+  
+    <ul class="tag_box inline">
+      <li><i class="glyphicon glyphicon-tags"></i></li>
+      
+      
+
+
+  
+     
+    	<li><a href="/tags.html#android-ref">android <span>64</span></a></li>
+    
+  
+
+
+
+    </ul>
+    
+  
+    <hr>
+    <ul class="pagination">
+    
+      <li class="prev"><a href="/2012/03/04/c-webcam-using-emgu" title="C# 控制 Webcam 【using Emgu】">&laquo; Previous</a></li>
+    
+      <li><a href="/archive.html">Archive</a></li>
+    
+      <li class="next"><a href="/2012/03/25/android-c2dm-android" title="Android C2DM (四)：實作之Android篇">Next &raquo;</a></li>
+    
+    </ul>
+    <hr>
+    
+
+
+  <div id="disqus_thread"></div>
+<script type="text/javascript">
+    
+    var disqus_developer = 1;
+    var disqus_shortname = 'jekyllbootstrap'; // required: replace example with your forum shortname
+    
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+
+
+  </div>
+</div>
+
+
+      </div>
+
+    </div>
+
+    <div id="footer">
+      <div class="container">
+        <p>&copy; 2015 Name Lastname
+          with help from <a href="http://jekyllbootstrap.com" target="_blank" title="The Definitive Jekyll Blogging Framework">Jekyll Bootstrap</a>
+          and <a href="http://getbootstrap.com" target="_blank">Bootstrap</a>
+        </p>
+      </div>
+    </div>
+
+    
+
+
+
+
+
+    <!-- Latest compiled and minified JavaScript, requires jQuery 1.x (2.x not supported in IE8) -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="/assets/themes//bootstrap/js/bootstrap.min.js"></script>
+  </body>
+</html>
+

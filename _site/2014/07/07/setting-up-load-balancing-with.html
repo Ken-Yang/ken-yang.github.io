@@ -1,0 +1,231 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>Setting up load balancing with Keepalived</title>
+    
+    <meta name="author" content="Name Lastname">
+
+    <!-- Enable responsive viewport -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Bootstrap styles -->
+    <link href="/assets/themes//bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Optional theme -->
+    <link href="/assets/themes//bootstrap/css/bootstrap-theme.min.css" rel="stylesheet">
+    <!-- Sticky Footer -->
+    <link href="/assets/themes//bootstrap/css/bs-sticky-footer.css" rel="stylesheet">
+    
+    <!-- Custom styles -->
+    <link href="/assets/themes//css/style.css?body=1" rel="stylesheet" type="text/css" media="all">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Fav and touch icons -->
+    <!-- Update these with your own images
+      <link rel="shortcut icon" href="images/favicon.ico">
+      <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+      <link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-72x72.png">
+      <link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png">
+    -->
+
+    <!-- atom & rss feed -->
+    <link href="/atom.xml" type="application/atom+xml" rel="alternate" title="Sitewide ATOM Feed">
+    <link href="/rss.xml" type="application/rss+xml" rel="alternate" title="Sitewide RSS Feed">
+
+  </head>
+
+  <body>
+    <div id="wrap">
+      <nav class="navbar navbar-default" role="navigation">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#jb-navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/">Jekyll Bootstrap</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="jb-navbar-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+            
+
+
+  
+    
+      
+      	
+      	<li><a href="/archive">Archive</a></li>
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/categories">Categories</a></li>
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/pages">Pages</a></li>
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/tags">Tags</a></li>
+      	
+      
+    
+  
+
+
+
+          </ul>
+          <form class="navbar-form navbar-right" role="search">
+            <div class="form-group">
+              <input type="text" class="form-control" placeholder="Search">
+            </div>
+            <button type="submit" class="btn btn-default">Submit</button>
+          </form>
+        </div><!-- /.navbar-collapse -->
+      </nav>
+
+      <div class="container">
+        
+<div class="page-header">
+  <h1>Setting up load balancing with Keepalived </h1>
+</div>
+
+<div class="row post-full">
+  <div class="col-xs-12">
+    <div class="date">
+      <span>07 July 2014</span>
+    </div>
+    <div class="content">
+      <div style="font-size: 15px; line-height: 22px;"><a href="http://blog.kenyang.net/2014/07/setting-up-high-availabilityha.html">前一篇</a>有講過了，<br />Keepalived是一個routing software，<br />它可以做到load balancing和high-availability，<br />而<a href="http://blog.kenyang.net/2014/07/setting-up-high-availabilityha.html">前一篇</a>也教怎麼set up HA，<br />這篇會講怎麼set up load balancing，<br /><b><strike>理論上</strike></b>架構應該要和下圖中一樣，才會比較合理，<br />有N檯load-balancer，專門做load balancing，<br />有N檯web！<br />而這些load balancer，都會裝keepalived，然後去binding Virtual IP！<br /><br /><div class="separator" style="clear: both; text-align: center;"><a href="http://4.bp.blogspot.com/-rxBME9e5d4g/U7fayrtLTzI/AAAAAAAAFMk/yOp-1IBSHaQ/s1600/Network+Diagram.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="http://4.bp.blogspot.com/-rxBME9e5d4g/U7fayrtLTzI/AAAAAAAAFMk/yOp-1IBSHaQ/s1600/Network+Diagram.png" /></a></div><br />但基於測試方便加上懶得安裝這麼多檯機器來說明，<br />先簡化成下圖，<br />每一檯server身兼load balancer和web server，<br /><br /><div class="separator" style="clear: both; text-align: center;"><a href="http://4.bp.blogspot.com/-HUzm7NOhTrQ/U7fcTr3Rh3I/AAAAAAAAFMw/c4HRt5LI6sE/s1600/Network+Diagram+(1).png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="http://4.bp.blogspot.com/-HUzm7NOhTrQ/U7fcTr3Rh3I/AAAAAAAAFMw/c4HRt5LI6sE/s1600/Network+Diagram+(1).png" /></a></div><br /><br /><br /><br /><br />和<a href="http://blog.kenyang.net/2014/07/setting-up-high-availabilityha.html">前一篇</a>一樣，假設我們有兩檯server，<br />IP分別為<br />&nbsp;&nbsp;1. 10.1.190.142<br />&nbsp;&nbsp;2. 10.1.190.143<br /><br />virtual ip：10.1.190.150<br /><br />在開始之前，請先去完成<a href="http://blog.kenyang.net/2014/07/setting-up-high-availabilityha.html">前一篇</a>的所有操作，<br /><br /><span style="color: #e06666; font-size: 18px;">1. Generate hash </span><br /><br />首先，先gen hash，<br />這hash是給load balancer用的，<br />原因是load balancer會去確認每一檯的web server是活著的，<br />確認時會帶著這個hash值！<br />因為有兩檯機器，所以要gen 2組，<br /><pre class="brush: bash">root@host1:~$ genhash -s 10.1.190.142 -p 80 -u /index.html<br />MD5SUM = 043e8a8eeaf59e7ef9c6b4cd6f71a7de<br /><br />root@host1:~$ genhash -s 10.1.190.143 -p 80 -u /index.html<br />MD5SUM = 66d84fe2b7e20944dd5d077e768b2cfb<br /><br /></pre><br /><span style="color: #e06666; font-size: 18px;">2. Write a script for handling iptables </span><br /><br />在這步驟，要寫一隻script，<br />負責add和delete rule的，<br />為什麼要add?<br />因為當如果沒有add virtual ip進去rule，<br />當load balancer把packet轉進來時，是送不進來的！<br /><pre class="brush: bash">#!/bin/bash                                                                                                                                                                 <br /><br />VIP=$2<br /><br />count=$(iptables -t nat -L| grep $VIP | wc -l)<br /><br />case "$1" in<br />  --add)<br />    if [[ $count == 0 ]]; then<br />        iptables -A PREROUTING -t nat -d $VIP -p tcp -j REDIRECT<br />    fi  <br />    ;;  <br />  --del)<br />    if [[ $count &gt; 0 ]]; then<br />        iptables -D PREROUTING -t nat -d $VIP -p tcp -j REDIRECT<br />    fi<br />    ;;  <br />esac<br /><br />exit 0<br /></pre><br /><span style="color: #e06666; font-size: 18px;">3. Configuration settings</span><br /><br />基本上設置跟第一篇沒有什麼太大差別，<br />首先只有第<span style="color: red;">26,27</span>行，多了兩個指令，<br />分別是當這檯機器進入master模式時，要把rule刪除<br />以及進入backup時，要把rule加進去!<br /><br />以及增加了<span style="color: red;">31~60</span>行的setting,<br />記得第一檯和第二檯都要進行設定，但一樣要把state,priority, router_id改成符合該host的設定！<br /><pre class="brush: bash">global_defs {<br />  notification_email {<br />    kenyang@xxx.com<br />  }<br />  notification_email_from xxxx@example.com<br />  smtp_server 127.0.0.1<br />  smtp_connect_timeout 30<br />  router_id host1      # 用來識別是哪檯機器，如果postfix有安裝，在寄信的時候，title就會跟你說是哪檯機器有問題<br />}<br /><br />vrrp_instance VI_1 {   # VI_1 可以改成自己想要的string<br /><br />  state MASTER         # MASTER意思是這檯為主要的機器<br /><br />  interface eth0       # 把virtual ip binding在eht0上<br /><br />  virtual_router_id 1  # 0~255之間，用來識別是哪一個instance<br />  priority 100         <br /><br />  virtual_ipaddress {<br />    10.1.190.150/24<br />  }<br /><br />  smtp_alert           # 當有問題時要發信通知<br /><br />  notify_master "/etc/keepalived/handle_iptable.sh --del 10.1.190.150" # 當這檯機器進入master模式時，要把rule刪除<br />  notify_backup "/etc/keepalived/handle_iptable.sh --add 10.1.190.150" # 當這檯機器進入backup模式時，要把rule加入<br />}<br /><br /># virtual web server<br />virtual_server 10.1.190.150 80 {<br />  delay_loop 10              # n秒確認底下的web一次<br />  lb_algo rr                 # 使用Round Robin的演算法做load balancing (rr, wrr, al, wlc, ......etc)<br />  lb_kind DR                 # Forwarding的方法 （dr, nat, tun)<br />  persistence_timeout 5      # timeout for persistent connection<br />  protocol TCP <br /><br />  real_server 10.1.190.142 80 {<br />    HTTP_GET {  # 使用HTTP_GET的方式進行確認web活著<br />      url {<br />        path /index.html<br />        digest 043e8a8eeaf59e7ef9c6b4cd6f71a7de   # 剛剛第一步驟gen的hash<br />      }   <br />      connect_timeout 3<br />      nb_get_retry 3<br />      delay_before_retry 2<br />    }   <br />  }<br />  real_server 10.1.190.143 80 {<br />    HTTP_GET { # 使用HTTP_GET的方式進行確認web活著<br />      url {<br />        path /index.html<br />        digest 66d84fe2b7e20944dd5d077e768b2cfb   # 剛剛第一步驟gen的hash<br />      }   <br />      connect_timeout 3<br />      nb_get_retry 3<br />      delay_before_retry 2<br />    }   <br />  }<br />}   <br /></pre><br /><br /><br /><span style="color: #e06666; font-size: 18px;">4. Verify</span><br /><br />完成上述設定以後，<br />先把keepalived reload，<br /><pre class="brush: bash">service keepalived reload<br /></pre><br />reload完成以後，<br />先在第一檯打下面的指令，<br />為什麼是在第一檯打？因為現在第一檯是master，它搶到virtual ip，<br />所以load balancing的工作是交由第一檯來做的！<br /><pre class="brush: bash">ipvsadm -ln<br /></pre><br />打完應該會看到下面的內容，<br />10.1.190.150這檯底下有兩檯主機，<br />分別是142, 143，<br />load balancer就是透過上述的HTTP_GET去確認web server是活著的，<br />比較特別的有兩個參數，<br />&nbsp;&nbsp;1. ActiveConn: 簡言之這檯機器目前有幾個人連上來<br />&nbsp;&nbsp;2. InActConn: 有幾檯機器的tcp status不是established<br /><pre class="brush: bash">Prot LocalAddress:Port Scheduler Flags<br />  -&gt; RemoteAddress:Port           Forward Weight ActiveConn InActConn<br />TCP  10.1.190.150:80 rr persistent 5<br />  -&gt; 10.1.190.142:80              Route   1      0          0         <br />  -&gt; 10.1.190.143:80              Route   1      0          0    <br /></pre><br />這時候在電腦上的browser瀏覽10.1.190.150，<br />然後在手機（或者其他檯電腦上）也瀏覽10.1.190.150<br />然後再馬上在第一檯機器打下面的指令<br /><pre class="brush: bash">ipvsadm -ln<br /></pre>應該會發現ActiveConn都變成1了！<br />如果你有第三檯機器，你可以試試看再連線10.1.190.150!<br />這時某一檯的ActiveConn會變成2！<br /><br /><br /><br /><br /><br /></div><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
+    </div>
+
+    
+
+  
+    <ul class="tag_box inline">
+      <li><i class="glyphicon glyphicon-tags"></i></li>
+      
+      
+
+
+  
+     
+    	<li><a href="/tags.html#keepalived-ref">keepalived <span>2</span></a></li>
+     
+    	<li><a href="/tags.html#load balancer-ref">load balancer <span>1</span></a></li>
+     
+    	<li><a href="/tags.html#load balancing-ref">load balancing <span>1</span></a></li>
+    
+  
+
+
+
+    </ul>
+    
+  
+    <hr>
+    <ul class="pagination">
+    
+      <li class="prev"><a href="/2014/07/06/setting-up-high-availabilityha" title="Setting up a High-Availability(HA) environment with Keepalived">&laquo; Previous</a></li>
+    
+      <li><a href="/archive.html">Archive</a></li>
+    
+      <li class="next"><a href="/2014/08/27/how-to-create-x509-certificates-for" title="How to create X.509 certificates for Amazon IAM user?">Next &raquo;</a></li>
+    
+    </ul>
+    <hr>
+    
+
+
+  <div id="disqus_thread"></div>
+<script type="text/javascript">
+    
+    var disqus_developer = 1;
+    var disqus_shortname = 'jekyllbootstrap'; // required: replace example with your forum shortname
+    
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+
+
+  </div>
+</div>
+
+
+      </div>
+
+    </div>
+
+    <div id="footer">
+      <div class="container">
+        <p>&copy; 2015 Name Lastname
+          with help from <a href="http://jekyllbootstrap.com" target="_blank" title="The Definitive Jekyll Blogging Framework">Jekyll Bootstrap</a>
+          and <a href="http://getbootstrap.com" target="_blank">Bootstrap</a>
+        </p>
+      </div>
+    </div>
+
+    
+
+
+
+
+
+    <!-- Latest compiled and minified JavaScript, requires jQuery 1.x (2.x not supported in IE8) -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="/assets/themes//bootstrap/js/bootstrap.min.js"></script>
+  </body>
+</html>
+

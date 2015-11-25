@@ -1,0 +1,229 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>Android C2DM (四)：實作之Android篇</title>
+    
+    <meta name="author" content="Name Lastname">
+
+    <!-- Enable responsive viewport -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Bootstrap styles -->
+    <link href="/assets/themes//bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Optional theme -->
+    <link href="/assets/themes//bootstrap/css/bootstrap-theme.min.css" rel="stylesheet">
+    <!-- Sticky Footer -->
+    <link href="/assets/themes//bootstrap/css/bs-sticky-footer.css" rel="stylesheet">
+    
+    <!-- Custom styles -->
+    <link href="/assets/themes//css/style.css?body=1" rel="stylesheet" type="text/css" media="all">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Fav and touch icons -->
+    <!-- Update these with your own images
+      <link rel="shortcut icon" href="images/favicon.ico">
+      <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+      <link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-72x72.png">
+      <link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png">
+    -->
+
+    <!-- atom & rss feed -->
+    <link href="/atom.xml" type="application/atom+xml" rel="alternate" title="Sitewide ATOM Feed">
+    <link href="/rss.xml" type="application/rss+xml" rel="alternate" title="Sitewide RSS Feed">
+
+  </head>
+
+  <body>
+    <div id="wrap">
+      <nav class="navbar navbar-default" role="navigation">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#jb-navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/">Jekyll Bootstrap</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="jb-navbar-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+            
+
+
+  
+    
+      
+      	
+      	<li><a href="/archive">Archive</a></li>
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/categories">Categories</a></li>
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/pages">Pages</a></li>
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/tags">Tags</a></li>
+      	
+      
+    
+  
+
+
+
+          </ul>
+          <form class="navbar-form navbar-right" role="search">
+            <div class="form-group">
+              <input type="text" class="form-control" placeholder="Search">
+            </div>
+            <button type="submit" class="btn btn-default">Submit</button>
+          </form>
+        </div><!-- /.navbar-collapse -->
+      </nav>
+
+      <div class="container">
+        
+<div class="page-header">
+  <h1>Android C2DM (四)：實作之Android篇 </h1>
+</div>
+
+<div class="row post-full">
+  <div class="col-xs-12">
+    <div class="date">
+      <span>25 March 2012</span>
+    </div>
+    <div class="content">
+      <span style="color: red; font-size: large;">這篇是舊版的，已經被deprecated，新版為GCM，新版的實作請看</span><br /><a href="http://blog.kenyang.net/2013/07/android-gcm-google-cloud_1.html"><span style="color: blue; font-size: large;">新版的Android篇</span></a><br /><br /><br /><br /><br /><span style="font-size: large;"><b>這篇主要在說明Android端的實作</b></span><br /><span style="font-size: large;"><b>第一篇在講<a href="http://blog.kenyang.net/2011/12/android-c2dm.html">參數說明</a></b></span><br /><span style="font-size: large;"><b>第二篇在講<a href="http://blog.kenyang.net/2011/12/android-c2dm_22.html">流程說明</a></b></span><br /><span style="font-size: large;"><b>第三篇在講<a href="http://blog.kenyang.net/2012/03/android-c2dm-sever.html">server端的實作</a></b></span><br /><br /><br />這篇主要會完成下列項目：<br /><ol style="background-color: white; color: #333333; font-family: Verdana, Arial, sans-serif; font-size: 13px; line-height: 16px; text-align: left;"><li>基本的manifest設定(加入receiver,permission)。</li><li>向C2DM 註冊。</li><li>接收自C2DM Sever回傳的registration id&nbsp;並傳送 Registration Id 到我們的Server，以及<span style="background-color: white;">接收Message</span></li></ol><div style="text-align: left;"><span style="color: #333333; font-family: Verdana, Arial, sans-serif; font-size: x-small;"><span style="line-height: 16px;"><br /></span></span></div><div style="text-align: left;"><span style="color: #333333; font-family: Verdana, Arial, sans-serif; font-size: x-small;"><span style="line-height: 16px;"><br /></span></span></div><div style="text-align: left;"><b style="background-color: white; color: #333333; font-family: Verdana, Arial, sans-serif; font-size: large; line-height: 16px;">【1. &nbsp;設定Manifest資料 】</b>&nbsp;<span style="color: #333333; font-family: Verdana, Arial, sans-serif; font-size: x-small;"><span style="line-height: 16px;"><br /></span></span></div><div style="text-align: left;"><span style="color: #333333; font-family: Verdana, Arial, sans-serif;"><span style="line-height: 16px;">這步驟，分了兩個部分!</span></span><br /><span style="color: #333333; font-family: Verdana, Arial, sans-serif;"><span style="line-height: 16px;">第一個就是要先加入一個receiver，</span></span><br /><span style="color: #333333; font-family: Verdana, Arial, sans-serif;"><span style="line-height: 16px;">記得下面的category android:name，</span></span><br /><span style="color: #333333; font-family: Verdana, Arial, sans-serif;"><span style="line-height: 16px;">裡面的value要改成自己的package name</span></span><br /><span style="color: #333333; font-family: Verdana, Arial, sans-serif;"><span style="line-height: 16px;">如下：</span></span></div><pre class="brush: xml">&lt;!-- 用來接收C2DM Server的receiver，且要有send的permssion --&gt;<br />        &lt;receiver android:name=".C2DMReceiver" android:permission="com.google.android.c2dm.permission.SEND"&gt;<br />            &lt;!-- Receive the actual message --&gt;<br />           &lt;intent-filter&gt;<br />               &lt;action android:name="com.google.android.c2dm.intent.RECEIVE" /&gt;<br />               &lt;category android:name="net.kenyang.android" /&gt;<br />           &lt;/intent-filter&gt;<br />           <br />           &lt;!-- Receive the registration id --&gt;<br />           &lt;intent-filter&gt;<br />               &lt;action android:name="com.google.android.c2dm.intent.REGISTRATION" /&gt;<br />               &lt;category android:name="net.kenyang.android" /&gt;<br />           &lt;/intent-filter&gt;<br />       &lt;/receiver&gt;<br /><br /></pre><br /><br />第二部分就是加入應有的permission，<br /><pre class="brush: xml">&lt;!-- 下面的net.kenyang記得要改成自己的package name --&gt;<br />&lt;permission   android:name="net.kenyang.android.permission.C2D_MESSAGE" android:protectionLevel="signature" /&gt;<br />&lt;uses-permission  android:name="net.kenyang.android.permission.C2D_MESSAGE" /&gt;<br />&lt;uses-permission  android:name="com.google.android.c2dm.permission.RECEIVE" /&gt;<br />&lt;uses-permission android:name="android.permission.INTERNET"/&gt;<br /><br /></pre><br /><b style="background-color: white; color: #333333; font-family: Verdana, Arial, sans-serif; font-size: large; line-height: 16px; text-align: left;"><br class="Apple-interchange-newline" />【2. &nbsp;向C2DM註冊 】</b><span style="text-align: left;">&nbsp;</span><br /><br />這一步驟就是啟動C2DM，並告訴C2DM要註冊，<br /><pre class="brush: java">Intent registrationIntent = new Intent("com.google.android.c2dm.intent.REGISTER");<br />registrationIntent.putExtra("app", PendingIntent.getBroadcast(SelectLoginMode.this, 0, new Intent(), 0)); // boilerplate<br />registrationIntent.putExtra("sender", "xxxxx@gmail.com"); // 記得這邊要填入當初你在第三篇註冊的MAIL<br />startService(registrationIntent);<br /><br /></pre><br /><b style="background-color: white; color: #333333; font-family: Verdana, Arial, sans-serif; font-size: large; line-height: 16px; text-align: left;">【3. &nbsp;接收與傳送資料 】</b><span style="text-align: left;">&nbsp;</span><br /><br />這一步驟就是寫一個receiver，<br />這個receiver會<br /><br /><ol><li>接收C2DM傳來的registration id，</li><li>也會接收C2DM傳來的message(這個message就是我們Server傳給C2DM的message)</li><li>並且將registration id傳送到我們第三篇實作的server上面去</li></ol><br /><br />我們先在receiver中寫一個函數將registration id傳送至我們第三篇實作的server上面去，<br />server只要收到，就會傳送資料到C2DM上!<br /><pre class="brush: java">private void fnRegistrationDone(final String strRegistrationId){<br />  try{<br />   Thread thread = new Thread(new Runnable() {<br />    <br />    @Override<br />    public void run() {<br />     HttpURLConnection conn = (HttpURLConnection) new URL("http://c2dm.kenyang.net/registration").openConnection();<br />     conn.setDoOutput(true);  <br />     conn.setUseCaches(false);  <br />     conn.setRequestMethod("GET");  // 因為在GAE上面的servlet，我是用get method<br />     conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");  <br />     conn.setRequestProperty("Content-Length", strRegistrationId.getBytes().length); // 告訴c2dm要傳送的資料長度<br />      <br />     // 送出資料<br />     OutputStream out = conn.getOutputStream();  <br />     out.write(strRegistrationId.getBytes());  <br />     out.close();  <br />      <br />     conn.fnClose();<br />     // 到這，一個註冊就完成，接著就是等著收資料<br />          <br />    }<br />   });<br />   thread.start();<br /><br />  }catch (Exception e) {<br />  }<br />  <br /> }<br /><br /></pre><br /><br />接著開始寫接收資料(registration_id, message)的code，如下：<br /><pre class="brush: java">@Override<br /> public void onReceive(Context context, Intent intent) {<br />  <br />  // 接收到C2DM的訊息<br />  if (intent.getAction().equals("com.google.android.c2dm.intent.REGISTRATION")) {<br />      <br />   String strRegistrationId = intent.getStringExtra("registration_id"); <br />   // 如果註冊失敗<br />      if (intent.getStringExtra("error") != null) {<br />          <br />    Log.d("Ken.yang", "c2dm registration fail");<br />    <br />   // Registration 成功<br />      } else if (strRegistrationId != null) {<br />       // 把registration_id傳到我們server(呼叫我們上面寫的函數)<br />       fnRegistrationDone(strRegistrationId);<br />        <br />      }<br />   <br />  } else if (intent.getAction().equals("com.google.android.c2dm.intent.RECEIVE")) {<br />   <br />   // 接收來自C2DM的MESSAGE，這message就是我們server傳給C2DM的 (可以看第三篇)<br />   if (intent.getExtras().containsKey("keyHello")){<br />    strValue =  intent.getExtras().getString("keyHello");<br />    Log.d("Ken.yang", "C2DM=== receive" + strValue);<br />   }<br />  }<br /> }<br /> <br /><br /></pre><br />完成上面步驟，就完成c2dm了！<br />也可以收到訊息了！！！！<br />因為我們<a href="http://blog.kenyang.net/2012/03/android-c2dm-sever.html">第三篇</a>server上傳送的訊息是fromKen，<br />所以這裡收到的也是fromKen!!<br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
+    </div>
+
+    
+
+  
+    <ul class="tag_box inline">
+      <li><i class="glyphicon glyphicon-tags"></i></li>
+      
+      
+
+
+  
+     
+    	<li><a href="/tags.html#android-ref">android <span>64</span></a></li>
+     
+    	<li><a href="/tags.html#c2dm-ref">c2dm <span>1</span></a></li>
+    
+  
+
+
+
+    </ul>
+    
+  
+    <hr>
+    <ul class="pagination">
+    
+      <li class="prev"><a href="/2012/03/23/android-c2dm-sever" title="Android C2DM (三)：實作之Sever篇">&laquo; Previous</a></li>
+    
+      <li><a href="/archive.html">Archive</a></li>
+    
+      <li class="next"><a href="/2012/04/04/androidunable-to-instantiate-activity" title="Android錯誤訊息：Unable to instantiate activity">Next &raquo;</a></li>
+    
+    </ul>
+    <hr>
+    
+
+
+  <div id="disqus_thread"></div>
+<script type="text/javascript">
+    
+    var disqus_developer = 1;
+    var disqus_shortname = 'jekyllbootstrap'; // required: replace example with your forum shortname
+    
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+
+
+  </div>
+</div>
+
+
+      </div>
+
+    </div>
+
+    <div id="footer">
+      <div class="container">
+        <p>&copy; 2015 Name Lastname
+          with help from <a href="http://jekyllbootstrap.com" target="_blank" title="The Definitive Jekyll Blogging Framework">Jekyll Bootstrap</a>
+          and <a href="http://getbootstrap.com" target="_blank">Bootstrap</a>
+        </p>
+      </div>
+    </div>
+
+    
+
+
+
+
+
+    <!-- Latest compiled and minified JavaScript, requires jQuery 1.x (2.x not supported in IE8) -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="/assets/themes//bootstrap/js/bootstrap.min.js"></script>
+  </body>
+</html>
+

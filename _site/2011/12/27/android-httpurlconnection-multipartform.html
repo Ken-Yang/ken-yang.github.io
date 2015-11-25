@@ -1,0 +1,233 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>Android HttpURLConnection 上傳檔案 (multipart/form-data)</title>
+    
+    <meta name="author" content="Name Lastname">
+
+    <!-- Enable responsive viewport -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Bootstrap styles -->
+    <link href="/assets/themes//bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Optional theme -->
+    <link href="/assets/themes//bootstrap/css/bootstrap-theme.min.css" rel="stylesheet">
+    <!-- Sticky Footer -->
+    <link href="/assets/themes//bootstrap/css/bs-sticky-footer.css" rel="stylesheet">
+    
+    <!-- Custom styles -->
+    <link href="/assets/themes//css/style.css?body=1" rel="stylesheet" type="text/css" media="all">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Fav and touch icons -->
+    <!-- Update these with your own images
+      <link rel="shortcut icon" href="images/favicon.ico">
+      <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+      <link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-72x72.png">
+      <link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png">
+    -->
+
+    <!-- atom & rss feed -->
+    <link href="/atom.xml" type="application/atom+xml" rel="alternate" title="Sitewide ATOM Feed">
+    <link href="/rss.xml" type="application/rss+xml" rel="alternate" title="Sitewide RSS Feed">
+
+  </head>
+
+  <body>
+    <div id="wrap">
+      <nav class="navbar navbar-default" role="navigation">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#jb-navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/">Jekyll Bootstrap</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="jb-navbar-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+            
+
+
+  
+    
+      
+      	
+      	<li><a href="/archive">Archive</a></li>
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/categories">Categories</a></li>
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/pages">Pages</a></li>
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/tags">Tags</a></li>
+      	
+      
+    
+  
+
+
+
+          </ul>
+          <form class="navbar-form navbar-right" role="search">
+            <div class="form-group">
+              <input type="text" class="form-control" placeholder="Search">
+            </div>
+            <button type="submit" class="btn btn-default">Submit</button>
+          </form>
+        </div><!-- /.navbar-collapse -->
+      </nav>
+
+      <div class="container">
+        
+<div class="page-header">
+  <h1>Android HttpURLConnection 上傳檔案 (multipart/form-data) </h1>
+</div>
+
+<div class="row post-full">
+  <div class="col-xs-12">
+    <div class="date">
+      <span>27 December 2011</span>
+    </div>
+    <div class="content">
+      在Android實作(模擬)一個form，<br />不管method是用POST或者GET傳遞普通參數(type="text/password/hidden")，都很簡單!<br /><br />那要傳遞type="fiile"的呢?<br />也就是說要上傳一個檔案呢?<br />在Android裡面就稍嫌複雜了一點點點點!<br /><br />這篇將會結合使用camera，將上傳照相完以後的相片!<br />至於怎麼<a href="http://blog.kenyang.net/2010/10/android-camera.html">取得camera的照完相的照片</a>，可以去看我先前PO的教學! <a href="http://blog.kenyang.net/2010/10/android-camera.html">來這看!</a><br />這邊就不多說怎麼取得，就假設已經取得照片了!<br /><br />我們知道在HTML裡，要上傳含有file的參數，<br />&lt;form&gt;必須加上enctype="multipart/form-data"<br /><br />在實作之前，必須說明一下發出這個form的request的格式會怎樣!<br /><pre class="brush: xml">--==============<br />Content-Disposition: form-data; name="image"; filename="image.jpg"<br />Content-Type: image/jpeg<br /><br />!@#!FAWE@#$!A=fj2j12r<br />--==============--<br /><br /></pre><b><span style="font-size: large;"><br /></span></b><br /><b><span style="font-size: large;"><br /></span></b><br /><b><span style="font-size: large;">第一行是<span style="color: #38761d;">--==============</span>，</span></b><br />是由--加上boundary組成的<br />boundary很重要! 是用來區隔參數的!!<br />也就是說，如果裡有很2個參數，<br />那這2個參數前面都會有這一行!!!<br />對了，boundary可以自己設定，但是前提是要告訴server你的boundary是甚麼!<br />等等會說明到! 這裡的boundary假設是===========<br /><br /><br /><b><span style="font-size: large;">第二行Content-Disposition: form-data; name="image"; filename="image.jpg"</span></b><br />這是宣告你的參數名稱，以及他的當案名稱<br /><br /><br /><b><span style="font-size: large;">第三行Content-Type: image/jpeg</span></b><br />是宣告你的file是甚麼型態，因為我們這邊是拿圖片說明，<br />所以就是jpeg。<br /><br /><br /><span style="font-size: large;"><b>第四行是空白行，</b></span><br />在你寫入參數之前，前面一定是一行空白行<br /><br /><br /><b><span style="font-size: large;">第五行!@#!FAWE@#$!A=fj2j12r</span></b><br />這行就是資料行了，開始寫入資料，因為是上傳圖片，<br />所以這樣看一定是亂碼!<br />如果今天type不是file，是text，<br />那麼就會是明文!<br /><br /><br /><span style="font-size: large;"><b>第六行<span style="color: #38761d;">--==============--</span></b></span><br />最後一個參數傳遞完，一定要加上這一行，<br />告訴server，傳完了!<br /><br /><br /><br />了解格式後，現在就來實作，<br />而在Android的實作如下，<br /><pre class="brush: java">	// 先取得圖片<br />	// uriFilePath是當初設定照相完，要存在哪<br />	// 如果忘記可以去看文章上面說的教學文<br />	FileInputStream fileInputStream = new FileInputStream(new File(uriFilePath.getPath()));<br /><br />	final String BOUNDARY 	= "==================================";<br />	final String HYPHENS 	= "--";<br />	final String CRLF 		= "\r\n";<br />	URL url 				= new URL("http://xxx.xxx.xxx/uploadImage");	<br />	HttpURLConnection conn 	= (HttpURLConnection) url.openConnection();<br />	conn.setRequestMethod("POST");						// method一定要是POST<br />	conn.setDoOutput(true);<br />	conn.setDoInput(true);<br />	conn.setUseCaches(false);	<br />	<br />	// 把Content Type設為multipart/form-data<br />	// 以及設定Boundary，Boundary很重要!<br />	// 當你不只一個參數時，Boundary是用來區隔參數的	<br />	conn.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + BOUNDARY);<br />	<br />	<br />	// 下面是開始寫參數<br />	String strContentDisposition = "Content-Disposition: form-data; name=\"image\"; filename=\"image\"";<br />    String strContentType = "Content-Type: image/jpeg";<br />	DataOutputStream dataOS = new DataOutputStream(conn.getOutputStream());<br />	dataOS.writeBytes(HYPHENS+BOUNDARY+CRLF);		// 寫--==================================<br />	dataOS.writeBytes(strContentDisposition+CRLF);	// 寫(Disposition)<br />	dataOS.writeBytes(contentType+CRLF);			// 寫(Content Type)<br />	dataOS.writeBytes(CRLF);		<br />	<br />	int iBytesAvailable = fileInputStream.available();<br />	byte[] byteData = new byte[iBytesAvailable];<br />    int iBytesRead = fileInputStream.read(byteData, 0, iBytesAvailable);<br />	while (iBytesRead &gt; 0) {<br />		dataOS.write(byteData, 0, iBytesAvailable);	// 開始寫內容<br />		iBytesAvailable = fileInputStream.available();<br />		iBytesRead = fileInputStream.read(byteData, 0, iBytesAvailable);<br />	}<br />	dataOS.writeBytes(CRLF);	<br />	dataOS.writeBytes(HYPHENS+BOUNDARY+HYPHENS);	// (結束)寫--==================================--		<br />	file.close();<br />	dataOS.flush();<br />	dataOS.close();<br /><br /></pre><br />這樣完成了!!<br /><br />
+    </div>
+
+    
+
+  
+    <ul class="tag_box inline">
+      <li><i class="glyphicon glyphicon-tags"></i></li>
+      
+      
+
+
+  
+     
+    	<li><a href="/tags.html#http-ref">http <span>1</span></a></li>
+     
+    	<li><a href="/tags.html#htm-ref">htm <span>1</span></a></li>
+     
+    	<li><a href="/tags.html#android-ref">android <span>64</span></a></li>
+     
+    	<li><a href="/tags.html#java-ref">java <span>13</span></a></li>
+    
+  
+
+
+
+    </ul>
+    
+  
+    <hr>
+    <ul class="pagination">
+    
+      <li class="prev"><a href="/2011/12/24/android-c2dm_22" title="Android C2DM (二)：流程">&laquo; Previous</a></li>
+    
+      <li><a href="/archive.html">Archive</a></li>
+    
+      <li class="next"><a href="/2011/12/28/galaxy-nexus" title="Galaxy Nexus 不專業開箱文">Next &raquo;</a></li>
+    
+    </ul>
+    <hr>
+    
+
+
+  <div id="disqus_thread"></div>
+<script type="text/javascript">
+    
+    var disqus_developer = 1;
+    var disqus_shortname = 'jekyllbootstrap'; // required: replace example with your forum shortname
+    
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+
+
+  </div>
+</div>
+
+
+      </div>
+
+    </div>
+
+    <div id="footer">
+      <div class="container">
+        <p>&copy; 2015 Name Lastname
+          with help from <a href="http://jekyllbootstrap.com" target="_blank" title="The Definitive Jekyll Blogging Framework">Jekyll Bootstrap</a>
+          and <a href="http://getbootstrap.com" target="_blank">Bootstrap</a>
+        </p>
+      </div>
+    </div>
+
+    
+
+
+
+
+
+    <!-- Latest compiled and minified JavaScript, requires jQuery 1.x (2.x not supported in IE8) -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="/assets/themes//bootstrap/js/bootstrap.min.js"></script>
+  </body>
+</html>
+

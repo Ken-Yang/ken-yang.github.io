@@ -1,0 +1,231 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>Android GCM (Google Cloud Messaging)：Server Side</title>
+    
+    <meta name="author" content="Name Lastname">
+
+    <!-- Enable responsive viewport -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Bootstrap styles -->
+    <link href="/assets/themes//bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Optional theme -->
+    <link href="/assets/themes//bootstrap/css/bootstrap-theme.min.css" rel="stylesheet">
+    <!-- Sticky Footer -->
+    <link href="/assets/themes//bootstrap/css/bs-sticky-footer.css" rel="stylesheet">
+    
+    <!-- Custom styles -->
+    <link href="/assets/themes//css/style.css?body=1" rel="stylesheet" type="text/css" media="all">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Fav and touch icons -->
+    <!-- Update these with your own images
+      <link rel="shortcut icon" href="images/favicon.ico">
+      <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+      <link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-72x72.png">
+      <link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png">
+    -->
+
+    <!-- atom & rss feed -->
+    <link href="/atom.xml" type="application/atom+xml" rel="alternate" title="Sitewide ATOM Feed">
+    <link href="/rss.xml" type="application/rss+xml" rel="alternate" title="Sitewide RSS Feed">
+
+  </head>
+
+  <body>
+    <div id="wrap">
+      <nav class="navbar navbar-default" role="navigation">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#jb-navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/">Jekyll Bootstrap</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="jb-navbar-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+            
+
+
+  
+    
+      
+      	
+      	<li><a href="/archive">Archive</a></li>
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/categories">Categories</a></li>
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/pages">Pages</a></li>
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/tags">Tags</a></li>
+      	
+      
+    
+  
+
+
+
+          </ul>
+          <form class="navbar-form navbar-right" role="search">
+            <div class="form-group">
+              <input type="text" class="form-control" placeholder="Search">
+            </div>
+            <button type="submit" class="btn btn-default">Submit</button>
+          </form>
+        </div><!-- /.navbar-collapse -->
+      </nav>
+
+      <div class="container">
+        
+<div class="page-header">
+  <h1>Android GCM (Google Cloud Messaging)：Server Side </h1>
+</div>
+
+<div class="row post-full">
+  <div class="col-xs-12">
+    <div class="date">
+      <span>01 July 2013</span>
+    </div>
+    <div class="content">
+      GCM (Google Cloud Messaging）其實就是<a href="http://blog.kenyang.net/2011/12/android-c2dm.html">C2DM</a> 的前身，<br />先前就有寫過四篇文章來講解C2DM，<br />分別有：<br />第一篇在講<a href="http://blog.kenyang.net/2011/12/android-c2dm.html">參數說明</a> （舊版C2DM）<br />第二篇在講<a href="http://blog.kenyang.net/2011/12/android-c2dm_22.html">流程說明</a> （舊版C2DM）<br />第三篇在講<a href="http://blog.kenyang.net/2012/03/android-c2dm-sever.html"><span class="s1">server</span>端的實作</a> （舊版C2DM）<br />第四篇在講<a href="http://blog.kenyang.net/2012/03/android-c2dm-android.html"><span class="s1">android</span>端的實作</a> （舊版C2DM）<br /><br /><br /><br />其實新版的GCM和C2DM只有些微的差別，因此在migrate時只需要小小變化，<br /><br />甚至更為方便！<br />除了方便以外，而GCM多了一項新功能，<br />就是讓你的server可以與Google Server建立一個persistent TCP connection，<br />其目的就是為了讓你使用XMPP，而此Server稱作Cloud Connection Server（CCS)<br /><br /><br />當然我們也可以用傳統的HTTP Server，而這兩者個差異，可以看這篇<a href="http://developer.android.com/google/gcm/ccs.html">文章</a>．<br /><br /><br />而本篇文章主要是告訴大家如何implement server side，<br />以及怎麼和Google Server做溝通！<br />這裡語言主要會以Python為主！<br />然後web-framework是使用flask，<br />web server是nginx+uwsgi<br /><br />如果要看Android Client Side，請至（<a href="http://blog.kenyang.net/2013/07/android-gcm-google-cloud_1.html">http://blog.kenyang.net/2013/07/android-gcm-google-cloud_1.html</a>）<br /><br /><br />在開始之前，還要告訴大家GCM有個最方便的地方，<br />還記得C2DM在傳資料給Google Server時，需要帶一個header<br />而這個header必須儲存Google Client Login的auth token．<br />我一直覺得這非常非常之愚蠢！！<br />等於我如果要做到automation，我還要有一套機制去使用Google Client Login API去login google，實在太不方便！<br />但現在不用了！！！<br />取而代之的是用API Key！（這才是根本之道啊）<br /><br />至於怎麼申請API Key呢？<br /><ol><li>請先來到<a href="https://code.google.com/apis/console/">Google API Console</a></li><li>點選左邊的Services</li><li>找到Google Cloud Messaging for Android</li><li>把它打開</li><li>接著點選左邊API Access</li><li>點選按鈕『Create new Server Key』</li><li>點選按鈕『Create』</li><li>接著就會看到下圖中的API key，請記起來！</li></ol><br /><div class="separator" style="clear: both; text-align: center;"><a href="http://1.bp.blogspot.com/---a7cZjAEeA/UdEpYeGYlxI/AAAAAAAAE30/f0KjxHr6zuI/s1104/Screen+Shot+2013-07-01+at+3.06.20+PM.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="http://1.bp.blogspot.com/---a7cZjAEeA/UdEpYeGYlxI/AAAAAAAAE30/f0KjxHr6zuI/s1600/Screen+Shot+2013-07-01+at+3.06.20+PM.png" /></a></div><br /><br /><br /><br />接著要開始寫Server Side<br />Server Side分為兩個角色！<br /><ol><li>Android Device會傳送自己本身的registration id上來給Server，此時Server必須儲存此id</li><li>把data和id一併送到Google Server去，這時候Google Server就會自動push data至對應到該id的device上</li></ol><br /><br />首先是接收registration id的部分！因為我偷懶，我收到id以後就寫到一個file裡面去<br />正規做法應該是存在database之類的，但我這邊為了方便，所以先存在一個file裡去！<br /><br /><pre class="brush: python">@app.route("/storeRegId",methods=['GET'])<br />def storeRegId():                                                                                                          <br />    id = request.args.get('id') <br />    <br />    with open("regIdList","w") as f:<br />        f.write("%s" % id) <br /><br />    return 'id %s' % id<br /></pre><br />接著就是傳送data給Google Server的部分！<br />請注意把下面的API_KEY換成您自己的！<br />這個範例傳送的資料會有兩筆，分別是last name以及first name！<br />當然你可以增加或者減少！反正就是JSON format！<br /><br /><pre class="brush: python">@app.route("/send")                                                                                                        <br />def send():<br /><br />    # remember place your API Key<br />    API_KEY = 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'<br /><br />    params = {}<br />        <br />    # put the data you want to send to device <br />    params['data']={ 'last name': 'yang','first name': 'ken'}<br /><br />    # get registration id, this registration id will be mapped to a device.<br />    f = open ("regIdList","r")<br />    regId = f.read() <br />    f.close()<br /><br />    params['registration_ids']=[regId]<br />    params = json.JSONEncoder().encode(params)<br /><br /><br />    headers = { "Content-type":     "application/json",<br />                "Authorization":    "key="+API_KEY}<br /><br />    conn = httplib.HTTPSConnection("android.googleapis.com")  <br /><br />    # method,url,body,header<br />    conn.request('POST','/gcm/send', params,headers)<br />    res = conn.getresponse() <br /><br />    conn.close()  <br />    result = {'msg':res.status}<br />    return jsonify(result)<br /><br /></pre><br /><br /><br />這樣就完成了Server side的部分！<br />將在下一篇教大家怎麼implement Android part！<br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
+    </div>
+
+    
+
+  
+    <ul class="tag_box inline">
+      <li><i class="glyphicon glyphicon-tags"></i></li>
+      
+      
+
+
+  
+     
+    	<li><a href="/tags.html#gcm-ref">gcm <span>2</span></a></li>
+     
+    	<li><a href="/tags.html#Google-ref">Google <span>4</span></a></li>
+     
+    	<li><a href="/tags.html#android-ref">android <span>64</span></a></li>
+    
+  
+
+
+
+    </ul>
+    
+  
+    <hr>
+    <ul class="pagination">
+    
+      <li class="prev"><a href="/2013/06/18/android-datepicker-scroll-problem" title="Android DatePicker scroll problem.">&laquo; Previous</a></li>
+    
+      <li><a href="/archive.html">Archive</a></li>
+    
+      <li class="next"><a href="/2013/07/01/android-gcm-google-cloud_1" title="Android GCM (Google Cloud Messaging)：Android Client Side">Next &raquo;</a></li>
+    
+    </ul>
+    <hr>
+    
+
+
+  <div id="disqus_thread"></div>
+<script type="text/javascript">
+    
+    var disqus_developer = 1;
+    var disqus_shortname = 'jekyllbootstrap'; // required: replace example with your forum shortname
+    
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+
+
+  </div>
+</div>
+
+
+      </div>
+
+    </div>
+
+    <div id="footer">
+      <div class="container">
+        <p>&copy; 2015 Name Lastname
+          with help from <a href="http://jekyllbootstrap.com" target="_blank" title="The Definitive Jekyll Blogging Framework">Jekyll Bootstrap</a>
+          and <a href="http://getbootstrap.com" target="_blank">Bootstrap</a>
+        </p>
+      </div>
+    </div>
+
+    
+
+
+
+
+
+    <!-- Latest compiled and minified JavaScript, requires jQuery 1.x (2.x not supported in IE8) -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="/assets/themes//bootstrap/js/bootstrap.min.js"></script>
+  </body>
+</html>
+

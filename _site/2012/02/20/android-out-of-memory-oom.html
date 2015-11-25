@@ -1,0 +1,233 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>Android Out of Memory (OOM)</title>
+    
+    <meta name="author" content="Name Lastname">
+
+    <!-- Enable responsive viewport -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Bootstrap styles -->
+    <link href="/assets/themes//bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Optional theme -->
+    <link href="/assets/themes//bootstrap/css/bootstrap-theme.min.css" rel="stylesheet">
+    <!-- Sticky Footer -->
+    <link href="/assets/themes//bootstrap/css/bs-sticky-footer.css" rel="stylesheet">
+    
+    <!-- Custom styles -->
+    <link href="/assets/themes//css/style.css?body=1" rel="stylesheet" type="text/css" media="all">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Fav and touch icons -->
+    <!-- Update these with your own images
+      <link rel="shortcut icon" href="images/favicon.ico">
+      <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+      <link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-72x72.png">
+      <link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png">
+    -->
+
+    <!-- atom & rss feed -->
+    <link href="/atom.xml" type="application/atom+xml" rel="alternate" title="Sitewide ATOM Feed">
+    <link href="/rss.xml" type="application/rss+xml" rel="alternate" title="Sitewide RSS Feed">
+
+  </head>
+
+  <body>
+    <div id="wrap">
+      <nav class="navbar navbar-default" role="navigation">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#jb-navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/">Jekyll Bootstrap</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="jb-navbar-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+            
+
+
+  
+    
+      
+      	
+      	<li><a href="/archive">Archive</a></li>
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/categories">Categories</a></li>
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/pages">Pages</a></li>
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/tags">Tags</a></li>
+      	
+      
+    
+  
+
+
+
+          </ul>
+          <form class="navbar-form navbar-right" role="search">
+            <div class="form-group">
+              <input type="text" class="form-control" placeholder="Search">
+            </div>
+            <button type="submit" class="btn btn-default">Submit</button>
+          </form>
+        </div><!-- /.navbar-collapse -->
+      </nav>
+
+      <div class="container">
+        
+<div class="page-header">
+  <h1>Android Out of Memory (OOM) </h1>
+</div>
+
+<div class="row post-full">
+  <div class="col-xs-12">
+    <div class="date">
+      <span>20 February 2012</span>
+    </div>
+    <div class="content">
+      呼，這篇文章放在我的草稿已經有兩個月了，<br />一直遲遲沒有完成，<br />一來是家裡太忙，<br />一來也是因為最近都在搞Kinect和Nxt Robot的應用(千百個不願意)<br />今天決定花點時間把這篇文章修完，<br />其實有很多篇都在草稿，有十幾篇要寫完，但先挑選這篇，<br />畢竟OOM是個很嚴重的問題。<br /><br /><b style="font-size: x-large;">【</b><span style="font-size: large;"><b>何謂OOM呢?</b></span><b style="font-size: x-large;">】</b><br />OOM (Out of Memory)，就是溢存的意思，<br />白話點就是超出記憶體大小了，<br />每個APP，都會有配置一定大小的heap size，<br />但這個heap size在每支設備上都不同，<br />像在Nexus one就是24mb，HTC Sensation只有16mb，<br />大小都不一定的，所以我們在寫app時，<br />必須做好記憶體的控管，<br /><br />有些人可能會納悶，不是用JAVA寫的嗎?<br />JAVA無法對記憶體有更進一步的操作(配置、釋放)阿，<br />怎麼做好記憶體的控管呢?<br />恩，沒有錯。<br /><br /><span style="font-size: large;"><b>【那OOM的問題會發生在哪?】</b></span><br />就是在圖片的使用!!!!!!<br />你每調用一張圖片，在android上都會做到auto scale的動作，<br />在做auto scale的動作是用C去配置記憶體的，<br />因此就會占用記憶體，<br />如果沒有做好控管，就會發生溢存!<br />那怎麼做好控管呢?<br /><br /><br />你們有時會發現有些APP好大喔，<br />有部分原因可能是引用其他外部的lib，<br />很少是因為程式碼寫太多....<br />大部分的問題就是在圖片太多，且太大，<br />沒有好好善用draw9patch，<a href="http://blog.kenyang.net/2010/05/draw-9-patch.html">何謂draw9patch可以來這看</a><br />當然draw9patch並不適用所有的案例，<br />甚至連根據dpi的不同，放圖片在不同的資料夾，<br />這方法我也覺得不適用所有案例，<br />我大多都還是去取得螢幕大小，自己去做到裁切圖片的動作，<br />個人覺得這樣是最精準的(畢竟android device實在太多..................)。<br /><br /><br />網路上有些解法是，<br />在做重新裁切或者取得圖片的動作時，<br />把圖片品質設小一點。<br />當然這也是一種解法啦。<br />但個人看法，認為這解法治標不治本，<br />怎麼說呢? 畢竟如果圖片一多，<br />OOM的問題還是會發生。<br /><br /><br />所以最根本的解法在於recycle!<br />但是recycle的時機很重要，<br />畢竟如果圖片還在使用中就進行recycle的話，<br />可是會發生crash的。<br /><br />我的建議是在Android Life Cycle中的onDestroy中進行recycle，<br />此時最為保險。當然如果你能保證你的圖片用不到了，就可以進行recycle了。<br />不一定要照我的建議而做。<br /><br /><br />這裡有個情境，假設我有4個畫面，A,B,C,D。<br />A有按鈕跳到B<br />B有按鈕跳到C<br />C有按鈕跳到D<br />每個畫面都有一張不同的背景圖，<br />怎麼設背景圖呢?<br />大部分人會在layout.xml中去做設定，<br />或者會在程式中設定，<br />如下：<br /><pre class="brush: java">linearLayout.setBackgroundDrawable(getResources().getDrawable(R.drawable.bg_normal));<br /></pre>這樣看似沒有甚麼問題，<br />但如果ABCD畫面換來換去，經過多次換來換去以後，<br />這時候heapSize就會越來越小....<br />最後就會發生OOM!<br /><br />所以較好的做法就是在lifecycle中的onCreate中，<br />去做init的動作，<br />先宣告二個全域的變數<br />一個是用來存圖片的BitmapDrawable<br />一個是放置圖片的LinearLayout，如下：<br /><pre class="brush: java">private LinearLayout llBackgroundPanel = null;<br />private BitmapDrawable bmpDrawImg  = null;<br /><br /></pre><br />接著在onCreate中去呼叫一個自己寫好的函數（fnSetBackground)<br />這個函數就是用來設背景圖片的，如下:<br /><pre class="brush: java">@Override<br />public void onCreate(Bundle savedInstanceState) {<br />    super.onCreate(savedInstanceState);<br />    setContentView(R.layout.a);<br />    fnSetBackground(); // 呼叫函數<br />}<br /><br /></pre><br />而函數內容如下：<br /><pre class="brush: java">public void fnSetBackground(){<br />    // 先取得LinearLayout<br />    llBackgroundPanel = (LinearLayout) findViewById(R.id.llBackgroundPanelChangePwd);<br />    // 取得該張圖片，並放置在變數bmpDrawImg中<br />    bmpDrawImg = new BitmapDrawable(getResources().openRawResource(R.drawable.bg_normal));<br />    // 最後就是設定圖片<br />    llBackgroundPanel.setBackgroundDrawable(bmpDrawImg);<br />}<br /></pre><br />完成上面步驟，只是設置圖片而已，<br />還是無法解決OOM的問題，下面才是解決的方式，<br />在lifecycle中的onDestroy中去進行清空，<br /><pre class="brush: java">@Override<br />protected void onDestroy() {<br />    super.onDestroy();<br />    // 每個Drawable被加到VIEW上面都會產生一個callback，所以在recycle圖片之前，必須先把callback設成null<br />    // 設成null以後，背景圖片自然就會不見，就會變成黑的背景。bmpDrawImg的狀態就會是沒有被使用中。<br />    llBackgroundPanel.getBackground().setCallback(null); <br /> <br />    // 先判斷bmpDrawImg 是否為null，如果不是null，且bmpDrawImg 還沒有被recycle的話就進行recycle<br />    if (null != bmpDrawImg &amp;&amp; !bmpDrawImg.getBitmap().isRecycled()){<br />        bmpDrawImg.getBitmap().recycle();<br />    }<br />    System.gc();<br />}<br /></pre><br /><br />照著上面的方法實作就能避免掉OOM的問題，<br />我寫在destroy的原因在於，<br />android lifecycle的特性，<br />當你A按下按鈕到B，<br />這時候在B畫面中按下返回按鈕(back)，<br />是不是就回到A了呢?<br />第一次按下返回按鈕，B會去調用onDestroy這個method，<br />如果這時候沒有進行recycle，那麼那塊記憶體空間就不會被釋放，<br />就會被占用著....<br />如果沒有進行RECYCLE，<br />久而久之，你持續返回A，又跳到B，重複著這動作好幾次，<br />圖片就被產生好幾次，<br />很快就會發生OOM，至於多快，就視你的圖片大小瞜!<br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
+    </div>
+
+    
+
+  
+    <ul class="tag_box inline">
+      <li><i class="glyphicon glyphicon-tags"></i></li>
+      
+      
+
+
+  
+     
+    	<li><a href="/tags.html#oom-ref">oom <span>1</span></a></li>
+     
+    	<li><a href="/tags.html#bitmap-ref">bitmap <span>2</span></a></li>
+     
+    	<li><a href="/tags.html#lifecycle-ref">lifecycle <span>1</span></a></li>
+     
+    	<li><a href="/tags.html#android-ref">android <span>64</span></a></li>
+    
+  
+
+
+
+    </ul>
+    
+  
+    <hr>
+    <ul class="pagination">
+    
+      <li class="prev"><a href="/2012/01/09/java" title="Java 物件複製的問題">&laquo; Previous</a></li>
+    
+      <li><a href="/archive.html">Archive</a></li>
+    
+      <li class="next"><a href="/2012/03/04/c-webcam-using-emgu" title="C# 控制 Webcam 【using Emgu】">Next &raquo;</a></li>
+    
+    </ul>
+    <hr>
+    
+
+
+  <div id="disqus_thread"></div>
+<script type="text/javascript">
+    
+    var disqus_developer = 1;
+    var disqus_shortname = 'jekyllbootstrap'; // required: replace example with your forum shortname
+    
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+
+
+  </div>
+</div>
+
+
+      </div>
+
+    </div>
+
+    <div id="footer">
+      <div class="container">
+        <p>&copy; 2015 Name Lastname
+          with help from <a href="http://jekyllbootstrap.com" target="_blank" title="The Definitive Jekyll Blogging Framework">Jekyll Bootstrap</a>
+          and <a href="http://getbootstrap.com" target="_blank">Bootstrap</a>
+        </p>
+      </div>
+    </div>
+
+    
+
+
+
+
+
+    <!-- Latest compiled and minified JavaScript, requires jQuery 1.x (2.x not supported in IE8) -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="/assets/themes//bootstrap/js/bootstrap.min.js"></script>
+  </body>
+</html>
+

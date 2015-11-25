@@ -1,0 +1,229 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>Setting up a High-Availability(HA) environment with Keepalived</title>
+    
+    <meta name="author" content="Name Lastname">
+
+    <!-- Enable responsive viewport -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Bootstrap styles -->
+    <link href="/assets/themes//bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Optional theme -->
+    <link href="/assets/themes//bootstrap/css/bootstrap-theme.min.css" rel="stylesheet">
+    <!-- Sticky Footer -->
+    <link href="/assets/themes//bootstrap/css/bs-sticky-footer.css" rel="stylesheet">
+    
+    <!-- Custom styles -->
+    <link href="/assets/themes//css/style.css?body=1" rel="stylesheet" type="text/css" media="all">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Fav and touch icons -->
+    <!-- Update these with your own images
+      <link rel="shortcut icon" href="images/favicon.ico">
+      <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+      <link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-72x72.png">
+      <link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png">
+    -->
+
+    <!-- atom & rss feed -->
+    <link href="/atom.xml" type="application/atom+xml" rel="alternate" title="Sitewide ATOM Feed">
+    <link href="/rss.xml" type="application/rss+xml" rel="alternate" title="Sitewide RSS Feed">
+
+  </head>
+
+  <body>
+    <div id="wrap">
+      <nav class="navbar navbar-default" role="navigation">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#jb-navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/">Jekyll Bootstrap</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="jb-navbar-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+            
+
+
+  
+    
+      
+      	
+      	<li><a href="/archive">Archive</a></li>
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/categories">Categories</a></li>
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/pages">Pages</a></li>
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/tags">Tags</a></li>
+      	
+      
+    
+  
+
+
+
+          </ul>
+          <form class="navbar-form navbar-right" role="search">
+            <div class="form-group">
+              <input type="text" class="form-control" placeholder="Search">
+            </div>
+            <button type="submit" class="btn btn-default">Submit</button>
+          </form>
+        </div><!-- /.navbar-collapse -->
+      </nav>
+
+      <div class="container">
+        
+<div class="page-header">
+  <h1>Setting up a High-Availability(HA) environment with Keepalived </h1>
+</div>
+
+<div class="row post-full">
+  <div class="col-xs-12">
+    <div class="date">
+      <span>06 July 2014</span>
+    </div>
+    <div class="content">
+      <div style="font-size: 15px; line-height: 22px;">Keepalived是一個routing software，<br />它可以做到load balancing和high-availability，<br />load balancing會倚靠lvs (linux virtual server, ipvsadm)來做到（但這篇只會做HA，下篇再講怎麼做load balancing），<br />而high-availability是靠VRRP protocol來達成，<br />那什麼是<a href="http://en.wikipedia.org/wiki/Virtual_Router_Redundancy_Protocol" target="_blank">VRRP</a>（Virtual Router Redundancy Protocol ）？<br />簡單的說，就是為了當某個router故障，然後可以快速的failover，<br />Keepalivied就是利用這protocol來達到HA．<br /><br />假設我們有兩檯web server，<br />IP分別為<br />&nbsp;&nbsp;1. 10.1.190.142<br />&nbsp;&nbsp;2. 10.1.190.143<br /><br />在兩檯都安裝好keepalived的情況下，<br />被設定為"MASTER"的那檯機器，會去binding 一個我們所指定的virtual ip！<br />這裡先假設virtual ip為10.1.190.150<br /><br /><span style="color: #e06666; font-size: 18px;">1. Install the packages </span><br /><br />首先先ssh到第一檯和第二檯上，安裝等等會用到的幾個packages，<br />&nbsp;&nbsp;1. keepalived<br />&nbsp;&nbsp;2. nginx: 你也可以選擇你想要用的web server<br />&nbsp;&nbsp;3. postfix: optional, 安裝postfix的目的在於，server壞掉時，會寄信通知你<br /><pre class="brush: bash">apt-get install keepalived nginx postfix<br /></pre><br /><br /><span style="color: #e06666; font-size: 18px;">2. Set up environment </span><br /><br />安裝好以後，先確認你的nginx是有起來的，<br />開browser去打一下web server就可以簡單確認！<br /><br />接著先到第一檯機器上去進行keepalived的config設定 <br /><pre class="brush: bash">vim /etc/keepalived/keepalived.conf<br /></pre><br />內容如下：<br /><pre class="brush: bash">global_defs {<br />  notification_email {<br />    kenyang@xxx.com<br />  }<br />  notification_email_from xxxx@example.com<br />  smtp_server 127.0.0.1<br />  smtp_connect_timeout 30<br />  router_id host1      # 用來識別是哪檯機器，如果postfix有安裝，在寄信的時候，title就會跟你說是哪檯機器有問題<br />}<br /><br />vrrp_instance VI_1 {   # VI_1 可以改成自己想要的string<br /><br />  state MASTER         # MASTER意思是這檯為主要的機器<br /><br />  interface eth0       # 把virtual ip binding在eht0上<br /><br />  virtual_router_id 1  # 0~255之間，用來識別是哪一個instance<br />  priority 100         <br /><br />  virtual_ipaddress {<br />    10.1.190.150/24<br />  }<br /><br />  smtp_alert           # 當有問題時要發信通知<br />}<br /></pre><br /><br />接著就到第二檯上去進行設定，<br />其實內容大致上和第一檯一模一樣，<br />只有router_id, state, priority需要變動<br />內容如下，<br /><pre class="brush: bash">global_defs {<br />  ... same with host1 ...<br />  router_id host2  <br />}<br /><br />vrrp_instance VI_1 {   # VI_1 可以改成自己想要的string<br />  ... same with host 1 ....<br />  state BACKUP<br />  priority 50         <br />}<br /></pre><br />完成設定以後，分別在兩檯機器上打開keepalived，<br /><pre class="brush: bash">service keepalived start<br /></pre><br /><br /><span style="color: #e06666; font-size: 18px;">3. Verify </span><br /><br />最後就來驗證ha是work的，<br />先到第一檯上去，因為第一檯設定為MASTER，<br />因此理論上第一檯除了自己的IP (10.1.190.142)以外，<br />還要拿到這個virtual ip (10.1.190.150)，<br />打下面的指令可以驗證，<br /><pre class="brush: bash">root@host1:~$ ip a | grep eth0 | grep inet<br />    inet 10.1.190.142/24 brd 10.1.190.255 scope global eth0<br />    inet 10.1.190.150/24 scope global secondary eth0<br /></pre><br />接著打開web browser去連virtual ip (10.1.190.150)，<br />都會導到第一檯的nginx去！<br />這時候把第一檯關機！<br /><pre class="brush: bash">root@host1:~$ shutdown now<br /></pre><br />此時第二檯應該要拿到virtual ip，<br />一樣打下面的指令做驗證<br /><pre class="brush: bash">root@host2:~$ ip a | grep eth0 | grep inet<br />    inet 10.1.190.143/24 brd 10.1.190.255 scope global eth0<br />    inet 10.1.190.150/24 scope global secondary eth0<br /></pre><br />然後再打開web browser去連virtual ip (10.1.190.150)，<br />此時看到的內容會是第二檯nginx上的內容！<br /><br /><br />除此之外，如果postfix有設定成功，<br />應該是會收到mail跟你說host2進入了MASTER模式，<br />標題是：[host2] VRRP Instance VI_1 - Entering MASTER state<br />內容是：=> VRRP Instance is now owning VRRP VIPs <=   下一篇再教怎麼用keepalived做load balance.           </div><br />
+    </div>
+
+    
+
+  
+    <ul class="tag_box inline">
+      <li><i class="glyphicon glyphicon-tags"></i></li>
+      
+      
+
+
+  
+     
+    	<li><a href="/tags.html#HA-ref">HA <span>1</span></a></li>
+     
+    	<li><a href="/tags.html#keepalived-ref">keepalived <span>2</span></a></li>
+    
+  
+
+
+
+    </ul>
+    
+  
+    <hr>
+    <ul class="pagination">
+    
+      <li class="prev"><a href="/2014/05/06/getting-started-with-amazon-ec2-api" title="Getting started with Amazon EC2 API Tools">&laquo; Previous</a></li>
+    
+      <li><a href="/archive.html">Archive</a></li>
+    
+      <li class="next"><a href="/2014/07/07/setting-up-load-balancing-with" title="Setting up load balancing with Keepalived">Next &raquo;</a></li>
+    
+    </ul>
+    <hr>
+    
+
+
+  <div id="disqus_thread"></div>
+<script type="text/javascript">
+    
+    var disqus_developer = 1;
+    var disqus_shortname = 'jekyllbootstrap'; // required: replace example with your forum shortname
+    
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+
+
+  </div>
+</div>
+
+
+      </div>
+
+    </div>
+
+    <div id="footer">
+      <div class="container">
+        <p>&copy; 2015 Name Lastname
+          with help from <a href="http://jekyllbootstrap.com" target="_blank" title="The Definitive Jekyll Blogging Framework">Jekyll Bootstrap</a>
+          and <a href="http://getbootstrap.com" target="_blank">Bootstrap</a>
+        </p>
+      </div>
+    </div>
+
+    
+
+
+
+
+
+    <!-- Latest compiled and minified JavaScript, requires jQuery 1.x (2.x not supported in IE8) -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="/assets/themes//bootstrap/js/bootstrap.min.js"></script>
+  </body>
+</html>
+

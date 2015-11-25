@@ -1,0 +1,231 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>Getting started with Amazon EC2 API Tools</title>
+    
+    <meta name="author" content="Name Lastname">
+
+    <!-- Enable responsive viewport -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Bootstrap styles -->
+    <link href="/assets/themes//bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Optional theme -->
+    <link href="/assets/themes//bootstrap/css/bootstrap-theme.min.css" rel="stylesheet">
+    <!-- Sticky Footer -->
+    <link href="/assets/themes//bootstrap/css/bs-sticky-footer.css" rel="stylesheet">
+    
+    <!-- Custom styles -->
+    <link href="/assets/themes//css/style.css?body=1" rel="stylesheet" type="text/css" media="all">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Fav and touch icons -->
+    <!-- Update these with your own images
+      <link rel="shortcut icon" href="images/favicon.ico">
+      <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+      <link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-72x72.png">
+      <link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png">
+    -->
+
+    <!-- atom & rss feed -->
+    <link href="/atom.xml" type="application/atom+xml" rel="alternate" title="Sitewide ATOM Feed">
+    <link href="/rss.xml" type="application/rss+xml" rel="alternate" title="Sitewide RSS Feed">
+
+  </head>
+
+  <body>
+    <div id="wrap">
+      <nav class="navbar navbar-default" role="navigation">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#jb-navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/">Jekyll Bootstrap</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="jb-navbar-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+            
+
+
+  
+    
+      
+      	
+      	<li><a href="/archive">Archive</a></li>
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/categories">Categories</a></li>
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/pages">Pages</a></li>
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/tags">Tags</a></li>
+      	
+      
+    
+  
+
+
+
+          </ul>
+          <form class="navbar-form navbar-right" role="search">
+            <div class="form-group">
+              <input type="text" class="form-control" placeholder="Search">
+            </div>
+            <button type="submit" class="btn btn-default">Submit</button>
+          </form>
+        </div><!-- /.navbar-collapse -->
+      </nav>
+
+      <div class="container">
+        
+<div class="page-header">
+  <h1>Getting started with Amazon EC2 API Tools </h1>
+</div>
+
+<div class="row post-full">
+  <div class="col-xs-12">
+    <div class="date">
+      <span>06 May 2014</span>
+    </div>
+    <div class="content">
+      <div style="font-size: 15px; line-height: 22px;"><a href="https://aws.amazon.com/ec2/" target="_blank">Amazon EC2</a>是什麼東西，這裡就不多做介紹了，<br />這裡主要介紹 Amazon EC2 API Tools，這個tool讓developer用來管理EC2上的instances，<br />不管是create, terminate, stop, create key等等之類的操作都可以透過API tool來完成，<br />那什麼時候需要用到這個tool? 像是automation啊，或者如果你想要customize自己的AMI時，<br />還是得先安裝 Amazon EC2 API Tools以及<a href="http://aws.amazon.com/developertools/368">AMI Tools</a>，不過AMI就是另外一個課題了，有機會的話再開另一篇來講吧！<br />這裡就focus在下面兩個主題：<br />&nbsp;&nbsp;&nbsp;&nbsp;1. how to <span style="color: red;">setup</span> API tools?<br />&nbsp;&nbsp;&nbsp;&nbsp;2. how to <span style="color: red;">create</span> EC2 instance using API command line?<br />&nbsp;&nbsp;&nbsp;&nbsp;3. how to <span style="color: red;">grant permissions</span> to instance using API command line?<br />&nbsp;&nbsp;&nbsp;&nbsp;4. how to <span style="color: red;">terminate</span> instance using API command line?<br /><br />在開始之前，記得先去註冊AWS的帳號啊！（有一張信用卡就可以註冊了）<br /><br /><br /><span style="color: #e06666; font-size: 18px;">1. Get certificate and Private key </span><br /><br />因為tools需要先拿到cert and private key，才可以讓developer對自己的account做操作，<br />所以得先拿到！<br />怎麼拿呢？<br />先到<a href="https://console.aws.amazon.com/iam/home?#security_credential">Security credentials</a>的頁面，<br />進去以後，請點選紅色框框中的按鈕『Create new certificate』（如下圖），<br /><div class="separator" style="clear: both; text-align: center;"><a href="http://4.bp.blogspot.com/-canxBzIKYD8/U2iwOCeE_SI/AAAAAAAAFK0/QT56bsjEeUc/s1600/Screen+Shot+2014-05-06+at+4.50.31+PM.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="http://4.bp.blogspot.com/-canxBzIKYD8/U2iwOCeE_SI/AAAAAAAAFK0/QT56bsjEeUc/s1600/Screen+Shot+2014-05-06+at+4.50.31+PM.png" height="246" width="640" /></a></div><div class="separator" style="clear: both; text-align: center;"><br /></div>按下按鈕就建立好cert and private key了！就把cert and private key下載到『桌面』．<br />記得！！！一定要先下載private key！因為只有一次的機會！錯過就無法重新下載了！<br />cert也要一併下載下來．<br /><br /><br /><br /><span style="color: #e06666; font-size: 18px;">2. Download the API tools</span><br /><br />接著就去下載API tools，<br />先在home目錄底下建立一個.ec2的folder，<br />這folder會存放cert and private key，以及api tools，<br /><pre class="brush: bash">cd <br />mkdir .ec2  # create folder<br />cd .ec2 <br />wget http://s3.amazonaws.com/ec2-downloads/ec2-api-tools.zip # download tools<br />unzip ec2-api-tools.zip<br />mv ~/Desktop/*.pem . # move cert and private key<br /></pre><br /><br /><br /><span style="color: #e06666; font-size: 18px;">3. Environment setup</span><br /><br />接著要設定環境變數，<br />打開你的.bash_profile<br /><pre class="brush: java">vim ~/.bash_profile<br /></pre><br />並且insert下列的內容，<br /><pre class="brush: java">export EC2_HOME=~/.ec2    <br />export PATH=$PATH:$EC2_HOME/bin<br />export EC2_PRIVATE_KEY=$EC2_HOME/pk-xxxxxxxxxx.pem   # remember to replace xxxx to your file name<br />export EC2_CERT=$EC2_HOME/cert-xxxxxxxxxxx.pem       # remember to replace xxxx to your file name<br />export JAVA_HOME=/System/Library/Frameworks/JavaVM.framework/Home/    # because API tools are written in java<br />export EC2_URL=https://ec2.us-west-2.amazonaws.com   <br /></pre><br />其實設定都還蠻淺顯易懂的，<br />EC2_URL比較需要特別說明，<br />這個超重要！為什麼呢？<br />因為你不設的話，你待會下某些指令都會找不到東西！指令還得帶上--region option才行！<br />為了省下麻煩，就在bash_profile設定吧！當然你可以把us-west-2改成你想要的region！<br /><br />最後記得要讓bash_profile生效！<br /><pre class="brush: java">source ~/.bash_profile<br /></pre><br /><br /><span style="color: #e06666; font-size: 18px;">4. Gen key</span><br /><br />接著先建立key，這key是等等用來ssh連線到你的instance的！<br /><pre class="brush: java">ec2-add-keypair ec2-keypair<br /></pre>這指令會幫你gen key，gen完以後會顯示在console上，<br />請把它複製起來！（從-----BEGIN RSA PRIVATE KEY-----開始複製，一直到-----END RSA PRIVATE KEY-----）<br />然後建立一個ec2-keypair的檔案，把內容貼在裡面！<br /><pre class="brush: java">cd ~/.ec2<br />vim ec2-keypair<br /></pre><br /><br /><span style="color: #e06666; font-size: 18px;">5. Create instance</span><br /><br />在create之前，你應該要知道你想要create哪一類型的instance！像是ubuntu, centos, amazon linux....etc.<br />所以要透過下面的指令去查有哪些instance，<br /><pre class="brush: java">ec2-describe-images -a --filter architecture=x86_64 &gt;&gt; ~/image_list<br /></pre>-a意思就是show all<br />然後--filter出architecture是x86_64的image！<br />因為其實資料蠻亂的，建議你還是output到一個file來看你想要create哪一種instance！<br />這裡我選擇了ami-6ac2a85a，這個是ubuntu14.04的instance！<br /><br />接著就可以create了！下面的option應該就不用多作說明了，有玩ec2的應該都知道<br /><pre class="brush: java">ec2-run-instances  ami-6ac2a85a  --key ec2-keypair  --region us-west-2  --instance-type t1.micro<br /></pre><br /><br /><span style="color: #e06666; font-size: 18px;">6. Connect to instance</span><br /><br />一開始你想要ssh進去instance，一定是不行的！<br />因為預設的group permission是沒有開22 port的！<br />所以要用下面的指令去打開！<br /><pre class="brush: java">ec2-authorize default -p 22<br /></pre><br />打開以後就可以ssh進去了！<br /><pre class="brush: java">ssh -i ec2-keypair ec2-xxx-xxx-xxx-xxx.us-west-2.compute.amazonaws.com<br /></pre><br />喔！對了！如果你忘記自己instance的ip或者相關資訊，<br />可以透過下面指令來查！<br /><pre class="brush: java">ec2-describe-instances<br /></pre><br /><br /><br /><span style="color: #e06666; font-size: 18px;">7. Terminate instance</span><br /><br />要terminate一個instance非常簡單！<br />你只要知道自己的instance id就好了！（如果忘記id是什麼，一樣用ec2-describe-instances去查！）<br /><pre class="brush: java">ec2-terminate-instances i-xxxxxxx<br /></pre><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /></div>
+    </div>
+
+    
+
+  
+    <ul class="tag_box inline">
+      <li><i class="glyphicon glyphicon-tags"></i></li>
+      
+      
+
+
+  
+     
+    	<li><a href="/tags.html#ec2-ref">ec2 <span>6</span></a></li>
+     
+    	<li><a href="/tags.html#tools-ref">tools <span>1</span></a></li>
+     
+    	<li><a href="/tags.html#amazon-ref">amazon <span>8</span></a></li>
+    
+  
+
+
+
+    </ul>
+    
+  
+    <hr>
+    <ul class="pagination">
+    
+      <li class="prev"><a href="/2014/03/10/build-deb-package-from-source" title="Build a deb package from source">&laquo; Previous</a></li>
+    
+      <li><a href="/archive.html">Archive</a></li>
+    
+      <li class="next"><a href="/2014/07/06/setting-up-high-availabilityha" title="Setting up a High-Availability(HA) environment with Keepalived">Next &raquo;</a></li>
+    
+    </ul>
+    <hr>
+    
+
+
+  <div id="disqus_thread"></div>
+<script type="text/javascript">
+    
+    var disqus_developer = 1;
+    var disqus_shortname = 'jekyllbootstrap'; // required: replace example with your forum shortname
+    
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+
+
+  </div>
+</div>
+
+
+      </div>
+
+    </div>
+
+    <div id="footer">
+      <div class="container">
+        <p>&copy; 2015 Name Lastname
+          with help from <a href="http://jekyllbootstrap.com" target="_blank" title="The Definitive Jekyll Blogging Framework">Jekyll Bootstrap</a>
+          and <a href="http://getbootstrap.com" target="_blank">Bootstrap</a>
+        </p>
+      </div>
+    </div>
+
+    
+
+
+
+
+
+    <!-- Latest compiled and minified JavaScript, requires jQuery 1.x (2.x not supported in IE8) -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="/assets/themes//bootstrap/js/bootstrap.min.js"></script>
+  </body>
+</html>
+
