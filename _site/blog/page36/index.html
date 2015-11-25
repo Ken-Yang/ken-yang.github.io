@@ -223,54 +223,76 @@
 
       <div class="container">
         <body>
-<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<!-- ken on github -->
+    <div>
+        <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- id10t_top -->
 <ins class="adsbygoogle"
-     style="display:block"
-     data-ad-client="ca-pub-3783438370424072"
-     data-ad-slot="1516206098"
-     data-ad-format="auto"></ins>
+style="display:block"
+data-ad-client="ca-pub-7586970907106458"
+data-ad-slot="1161208442"
+data-ad-format="auto"></ins>
 <script>
-(adsbygoogle = window.adsbygoogle || []).push({});
+    (adsbygoogle = window.adsbygoogle || []).push({});
 </script>
 
-<!-- This loops through the paginated posts -->
+    </div>
+    <!-- This loops through the paginated posts -->
+    
+      <h1><a style="color: #F22430" href="/2010/12/08/chrome-app">如何撰寫一個Chrome App</a></h1>
+      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
+      <p class="author">
+        <span class="date">2010-12-08 10:16:00 +0800</span>
+      </p>
+      <div class="content">
+        今早才看到<a href="https://chrome.google.com/webstore">Chrome Web Store</a>的Chrome App<br /><br />就覺得這個跟 Chrome Extension一樣<br /><br />先做先贏，<br /><br />就想說趕緊來做一個，<br /><br />去看了一下API，<br /><br />其實我對Chrome App有點失望...<br /><br />我覺得根本就只是轉址而已(個人愚見)<br /><br />爆發點應該會是在Google TV上的應用!<br /><br />不過對廠商來說，的確是多了一個管道銷售。(更何況是Google幫它銷售)<br /><br />對廠商來說，有利無弊。<br /><br />但是對我這種開發者而言，似乎沒有什麼太大意義。<br /><br />畢竟你還是得先有一個服務(不管是game、小工具)<br /><br />然後透過Chorme App轉址過去....<br /><br />好吧，費話不多說，<br /><br />就直接教學了，<br /><br />其實Chrome App和Chrome Extension差不多<br /><br />都是利用json來部屬。<br /><br />我這裡就直接PO範例了<br /><br /><pre class="brush: jscript">{<br />  "name": "App的名稱",<br />  "version": "2",<br />  "description": "打你要描述的內容.",<br />  "app": {<br />    "launch": {<br />      "web_url": "http://www.google.com.tw/"<br />    }<br />  },<br />  "icons": {<br />     "128": "icon.png"<br />  }<br />  <br />}<br /><br /></pre><br /><br />而上傳方式就跟上傳Chrome Extension一樣，<br /><br />大家可以去參考<a href="http://blog.kenyang.net/2010/07/chrome-app.html">這篇</a><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
+      </div>
+      <hr>
+    
+      <h1><a style="color: #F22430" href="/2010/12/07/android-connect-to-msn-jml">Android connect to MSN (JML)</a></h1>
+      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
+      <p class="author">
+        <span class="date">2010-12-07 16:25:00 +0800</span>
+      </p>
+      <div class="content">
+        Android connect to MSN (JML)<br /><br />在Android用Java MSN Messenger Library(JML)登入<br /><br />其實JML是一個很好用的lib，<br /><br />在J2SE的環境下使用非常好整合，<br /><br />BUT...要整合至ANDROID中會有幾個小問題。<br /><br />第一：會少了一個GetPropertyAction的CLASS<br /><br />第二：JML裡用的SSL是採取SSLv3，但是android只能支援TLS<br /><br />第三：一樣會少了一個DatatypeFactory這個CLASS<br /><br />解決方法就是<br /><br />直接去找到JML的source code，<br /><br />直接拿它來做修改，而不是直接去拿jar來用。<br /><br />為了解決第一部，<br /><br />我們可以在網路上找到人家寫好的這個class（GetPropertyAction）<br /><br /><a href="http://jcs.mobile-utopia.com/jcs/2154_GetPropertyAction.java">來這下載</a><br /><br />下載好以後，記得放在package名稱為sun.security.action的底下<br /><br /><br /><br />解決第二個方法就是<br /><br />去下載JML的SOURCE CODE<br /><br /><a href="http://sourceforge.net/projects/java-jml/files/java-jml/jml-1.0b4/">來這下載</a>　（是載.ZIP檔案喔，這樣才會有SOURCE CODE）<br /><br />下載完成後，把src資料夾底下的net通通拉進來我們的project裡面<br /><br />拉進來後，畫面會如下<br /><br /><div class="separator" style="clear: both; text-align: center;"><a href="http://4.bp.blogspot.com/_6SxqtkJQECI/TP3tUVeF0VI/AAAAAAAAAPw/kYI6uJ-n4mk/s1600/%25E6%259C%25AA%25E5%2591%25BD%25E5%2590%258D.png" imageanchor="1" style="clear: left; float: left; margin-bottom: 1em; margin-right: 1em;"><img border="0" height="320" src="http://4.bp.blogspot.com/_6SxqtkJQECI/TP3tUVeF0VI/AAAAAAAAAPw/kYI6uJ-n4mk/s320/%25E6%259C%25AA%25E5%2591%25BD%25E5%2590%258D.png" width="217" /></a></div><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />拉進來以後，<br /><br />找到package名稱為net.sf.jml.protocol.soap，<br /><br />點兩下展開以後，<br /><br />點選class名稱為ContactList的class<br /><br />打開以後找到下面那行CODE<br /><br /><pre class="brush: java">    SSLContext sc = SSLContext.getInstance("SSLv3");<br /></pre><br /><br />把它改成下面那行CODE<br /><br /><br /><pre class="brush: java">    SSLContext sc = SSLContext.getInstance("TLS");<br /></pre><br /><br />這樣第二部就解決了。<br /><br />至於第三個解決方式，<br /><br />目前是先把ANDROID SDK設為2.2，<br /><br />2.2就有支援DatatypeFactory，<br /><br /><br /><br />接著來寫連結至msn的code了。<br /><br />其實很簡單，你只要克服上面的問題，<br /><br />CODE應該就難不倒你，<br /><br /><pre class="brush: java">    try {<br />        final String email = "msn帳號";<br />        final String password = "您的密碼";<br />        final MsnMessenger messenger = MsnMessengerFactory.createMsnMessenger(email,<br />                 password);<br /><br />        messenger.getOwner().setInitStatus(MsnUserStatus.ONLINE);<br /><br />        //這邊一定要用thread去執行登入<br />        Thread thread = new Thread(new Runnable() {<br />                public void run() {<br />                    messenger.login();<br />                }<br />        });<br /> <br />        thread.start();  <br /><br />         <br />    } catch (Exception e) {<br />        Log.d("msn",e.toString());<br />    }<br /><br /></pre><br /><br /><br /><br />這樣就完成了MSN登入了。<br /><br />至於怎麼截取聯絡人清單，只要您解決上面那三個問題<br /><br />則擷取連絡人，就不是問題了。<br /><br /><br /><br />
+      </div>
+      <hr>
+    
+      <h1><a style="color: #F22430" href="/2010/12/07/android-23-sdk-released">Android 2.3 SDK released!!!</a></h1>
+      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
+      <p class="author">
+        <span class="date">2010-12-07 01:02:00 +0800</span>
+      </p>
+      <div class="content">
+        等了好久<br /><br />Android 2.3 SDK 終於釋放了<br /><br /><a href="http://android-developers.blogspot.com/2010/12/android-23-platform-and-updated-sdk.html">來這看相關說明!!!</a><br /><br />看說明影片，不知道裡面那隻手機是不是Nexus 2....<br /><br />希望不要啊!!<br /><br />好醜!!<br /><br /><br /><br /><br />然後2.3還有新增ProGuard的支援!!!<br /><br />真的是太棒了，我在想應該是想解決前陣子一直被人詬病的破解問題!<br /><br />至少可以提高一些門檻了!<br /><br /><br /><br /><br />快去更新來玩玩吧!
+      </div>
+      <hr>
+    
 
-  <h1><a style="color: #F22430" href="/2010/12/08/chrome-app">如何撰寫一個Chrome App</a></h1>
-  <p class="author">
-    <span class="date">2010-12-08 10:16:00 +0800</span>
-  </p>
-  <div class="content">
-    今早才看到<a href="https://chrome.google.com/webstore">Chrome Web Store</a>的Chrome App<br /><br />就覺得這個跟 Chrome Extension一樣<br /><br />先做先贏，<br /><br />就想說趕緊來做一個，<br /><br />去看了一下API，<br /><br />其實我對Chrome App有點失望...<br /><br />我覺得根本就只是轉址而已(個人愚見)<br /><br />爆發點應該會是在Google TV上的應用!<br /><br />不過對廠商來說，的確是多了一個管道銷售。(更何況是Google幫它銷售)<br /><br />對廠商來說，有利無弊。<br /><br />但是對我這種開發者而言，似乎沒有什麼太大意義。<br /><br />畢竟你還是得先有一個服務(不管是game、小工具)<br /><br />然後透過Chorme App轉址過去....<br /><br />好吧，費話不多說，<br /><br />就直接教學了，<br /><br />其實Chrome App和Chrome Extension差不多<br /><br />都是利用json來部屬。<br /><br />我這裡就直接PO範例了<br /><br /><pre class="brush: jscript">{<br />  "name": "App的名稱",<br />  "version": "2",<br />  "description": "打你要描述的內容.",<br />  "app": {<br />    "launch": {<br />      "web_url": "http://www.google.com.tw/"<br />    }<br />  },<br />  "icons": {<br />     "128": "icon.png"<br />  }<br />  <br />}<br /><br /></pre><br /><br />而上傳方式就跟上傳Chrome Extension一樣，<br /><br />大家可以去參考<a href="http://blog.kenyang.net/2010/07/chrome-app.html">這篇</a><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
-  </div>
+    <!-- Pagination links -->
+    <div class="pagination">
+      
+        <a href="/blog/page35" class="previous">Previous</a>
+      
+      <span class="page_number ">Page: 36 of 53</span>
+      
+        <a href="/blog/page37" class="next">Next</a>
+      
+    </div>
 
-  <h1><a style="color: #F22430" href="/2010/12/07/android-connect-to-msn-jml">Android connect to MSN (JML)</a></h1>
-  <p class="author">
-    <span class="date">2010-12-07 16:25:00 +0800</span>
-  </p>
-  <div class="content">
-    Android connect to MSN (JML)<br /><br />在Android用Java MSN Messenger Library(JML)登入<br /><br />其實JML是一個很好用的lib，<br /><br />在J2SE的環境下使用非常好整合，<br /><br />BUT...要整合至ANDROID中會有幾個小問題。<br /><br />第一：會少了一個GetPropertyAction的CLASS<br /><br />第二：JML裡用的SSL是採取SSLv3，但是android只能支援TLS<br /><br />第三：一樣會少了一個DatatypeFactory這個CLASS<br /><br />解決方法就是<br /><br />直接去找到JML的source code，<br /><br />直接拿它來做修改，而不是直接去拿jar來用。<br /><br />為了解決第一部，<br /><br />我們可以在網路上找到人家寫好的這個class（GetPropertyAction）<br /><br /><a href="http://jcs.mobile-utopia.com/jcs/2154_GetPropertyAction.java">來這下載</a><br /><br />下載好以後，記得放在package名稱為sun.security.action的底下<br /><br /><br /><br />解決第二個方法就是<br /><br />去下載JML的SOURCE CODE<br /><br /><a href="http://sourceforge.net/projects/java-jml/files/java-jml/jml-1.0b4/">來這下載</a>　（是載.ZIP檔案喔，這樣才會有SOURCE CODE）<br /><br />下載完成後，把src資料夾底下的net通通拉進來我們的project裡面<br /><br />拉進來後，畫面會如下<br /><br /><div class="separator" style="clear: both; text-align: center;"><a href="http://4.bp.blogspot.com/_6SxqtkJQECI/TP3tUVeF0VI/AAAAAAAAAPw/kYI6uJ-n4mk/s1600/%25E6%259C%25AA%25E5%2591%25BD%25E5%2590%258D.png" imageanchor="1" style="clear: left; float: left; margin-bottom: 1em; margin-right: 1em;"><img border="0" height="320" src="http://4.bp.blogspot.com/_6SxqtkJQECI/TP3tUVeF0VI/AAAAAAAAAPw/kYI6uJ-n4mk/s320/%25E6%259C%25AA%25E5%2591%25BD%25E5%2590%258D.png" width="217" /></a></div><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />拉進來以後，<br /><br />找到package名稱為net.sf.jml.protocol.soap，<br /><br />點兩下展開以後，<br /><br />點選class名稱為ContactList的class<br /><br />打開以後找到下面那行CODE<br /><br /><pre class="brush: java">    SSLContext sc = SSLContext.getInstance("SSLv3");<br /></pre><br /><br />把它改成下面那行CODE<br /><br /><br /><pre class="brush: java">    SSLContext sc = SSLContext.getInstance("TLS");<br /></pre><br /><br />這樣第二部就解決了。<br /><br />至於第三個解決方式，<br /><br />目前是先把ANDROID SDK設為2.2，<br /><br />2.2就有支援DatatypeFactory，<br /><br /><br /><br />接著來寫連結至msn的code了。<br /><br />其實很簡單，你只要克服上面的問題，<br /><br />CODE應該就難不倒你，<br /><br /><pre class="brush: java">    try {<br />        final String email = "msn帳號";<br />        final String password = "您的密碼";<br />        final MsnMessenger messenger = MsnMessengerFactory.createMsnMessenger(email,<br />                 password);<br /><br />        messenger.getOwner().setInitStatus(MsnUserStatus.ONLINE);<br /><br />        //這邊一定要用thread去執行登入<br />        Thread thread = new Thread(new Runnable() {<br />                public void run() {<br />                    messenger.login();<br />                }<br />        });<br /> <br />        thread.start();  <br /><br />         <br />    } catch (Exception e) {<br />        Log.d("msn",e.toString());<br />    }<br /><br /></pre><br /><br /><br /><br />這樣就完成了MSN登入了。<br /><br />至於怎麼截取聯絡人清單，只要您解決上面那三個問題<br /><br />則擷取連絡人，就不是問題了。<br /><br /><br /><br />
-  </div>
+    <div>
+        <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- id10t_top -->
+<ins class="adsbygoogle"
+style="display:block"
+data-ad-client="ca-pub-7586970907106458"
+data-ad-slot="1161208442"
+data-ad-format="auto"></ins>
+<script>
+    (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
 
-  <h1><a style="color: #F22430" href="/2010/12/07/android-23-sdk-released">Android 2.3 SDK released!!!</a></h1>
-  <p class="author">
-    <span class="date">2010-12-07 01:02:00 +0800</span>
-  </p>
-  <div class="content">
-    等了好久<br /><br />Android 2.3 SDK 終於釋放了<br /><br /><a href="http://android-developers.blogspot.com/2010/12/android-23-platform-and-updated-sdk.html">來這看相關說明!!!</a><br /><br />看說明影片，不知道裡面那隻手機是不是Nexus 2....<br /><br />希望不要啊!!<br /><br />好醜!!<br /><br /><br /><br /><br />然後2.3還有新增ProGuard的支援!!!<br /><br />真的是太棒了，我在想應該是想解決前陣子一直被人詬病的破解問題!<br /><br />至少可以提高一些門檻了!<br /><br /><br /><br /><br />快去更新來玩玩吧!
-  </div>
-
-
-<!-- Pagination links -->
-<div class="pagination">
-  
-    <a href="/blog/page35" class="previous">Previous</a>
-  
-  <span class="page_number ">Page: 36 of 53</span>
-  
-    <a href="/blog/page37" class="next">Next</a>
-  
-</div>
+    </div>
 </body>
 
       </div>

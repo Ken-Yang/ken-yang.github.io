@@ -223,54 +223,76 @@
 
       <div class="container">
         <body>
-<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<!-- ken on github -->
+    <div>
+        <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- id10t_top -->
 <ins class="adsbygoogle"
-     style="display:block"
-     data-ad-client="ca-pub-3783438370424072"
-     data-ad-slot="1516206098"
-     data-ad-format="auto"></ins>
+style="display:block"
+data-ad-client="ca-pub-7586970907106458"
+data-ad-slot="1161208442"
+data-ad-format="auto"></ins>
 <script>
-(adsbygoogle = window.adsbygoogle || []).push({});
+    (adsbygoogle = window.adsbygoogle || []).push({});
 </script>
 
-<!-- This loops through the paginated posts -->
+    </div>
+    <!-- This loops through the paginated posts -->
+    
+      <h1><a style="color: #F22430" href="/2010/10/10/myisam-innodb">MyISAM 與 InnoDB 的筆記</a></h1>
+      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
+      <p class="author">
+        <span class="date">2010-10-10 13:13:00 +0800</span>
+      </p>
+      <div class="content">
+        &nbsp;MyISAM 與 InnoDB 誰較快?誰安全性較高?<br /><br />最近都在玩GAE，好久沒有碰MySQL<br /><br />再把新nb裝起來，正在重灌，<br /><br />就看到了MyISAM 與 InnoDB 選項<br /><br />一時想不起來兩者差別，忘記哪個快，哪個有支援transaction?<br /><br />查了一下資料才想起來，年紀大了，還是做筆記把他記下來吧!<br /><br /><br /><br />InnoDB&nbsp;是不支援全文索引，如果資料量大，建議用InnoDB ，<br /><br />大量的insert語法在MyISAM會比較快一點，但update在InnoDB會比較快，<br /><br />count不適用於InnoDB（等等會說明），MyISAM是不支援foreign key的喔<br /><br />因為設計上MyISAM比InnoDB簡單，因此效能上也較好一點，小型的應用使用MyISAM可能會較好一點<br /><br />InnoDB不會紀錄table的行數，因此當使用者下select count(*) from xxxx，InnoDB會去掃描整張table，但MyISAM就只是讀取記錄好的行數即可，<br /><br />但是!!當你的count後面有下where條件時，InnoDB和MyISAM都會去掃描整張table<br /><br /><br />以上是我的筆記，如有誤，請指教<br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
+      </div>
+      <hr>
+    
+      <h1><a style="color: #F22430" href="/2010/10/09/android-camera">android 取得camera的照片</a></h1>
+      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
+      <p class="author">
+        <span class="date">2010-10-09 12:27:00 +0800</span>
+      </p>
+      <div class="content">
+        android 取得camera的照片<br /><br />其實想在android裡面實現照相的功能，大致上分成兩種，<br /><br />第一種是自己去implement一個camera介面出來（不難但複雜，較具有彈性）<br /><br />第二種是直接利用android內部的預設介面（簡單，就只有單單的拍照功能）<br /><br /><br />第一種通常會用到的時機，可能是你要作一個類似信義房屋先前作的app，<br /><br />你可以需要開啟相機，並拿著手機看看周圍，並在你的view上顯示出來這個方向有沒有房子<br /><br />這種方式要實作，並不困難，只是比較複雜。改天在po code上來教學。<br /><br />今天是要教學第二種！！<br /><br />第二種就非常簡單了！<br /><br />但相對的就沒有什麼彈性，就只有單單的開起android的照相界面，<br /><br />然後取得照片罷了！<br /><br />步驟<br /><br />1.先利用intent去開啟照相的介面<br /><br />2.在本身的activity去等待回傳的 result<br /><br /><br /><br /><br /><pre class="brush: java">Intent intent =  new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);//利用intent去開啟android本身的照相介面<br /><br /><br />//設定圖片的儲存位置，以及檔名<br />File tmpFile = new File(<br />               Environment.getExternalStorageDirectory(), <br />        "image.jpg");<br />Uri outputFileUri　= Uri.fromFile(tmpFile);<br />   <br />/*<br /> * 把上述的設定put進去！然後startActivityForResult,<br /> * 記住，因為是有ForResult，所以在本身自己的acitivy裡面等等要複寫onActivityResult<br /> * 稍後再說明onActivityResult<br /> */    <br />intent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri); <br />startActivityForResult(intent, 0); <br /><br /></pre><br /><br /><br />接著就來說明<span class="Apple-style-span" style="font-family: monospace; white-space: pre;">onActivityResult</span><br /><br /><br /><pre class="brush: java">@Override<br /> protected void onActivityResult(int requestCode, int resultCode, Intent data) {  <br />  super.onActivityResult(requestCode, resultCode, data);<br />  <br />  if (resultCode == RESULT_OK) {<br />   Bitmap bmp = BitmapFactory.decodeFile(outputFileUri.getPath()); //利用BitmapFactory去取得剛剛拍照的圖像<br />   ImageView ivTest = (ImageView)findViewById(R.id.ivTest);<br />   ivTest.setImageBitmap(bmp);<br />  }<br /> }<br /><br /></pre><br /><br />最後還得在AndroidManifest.xml上加上下面幾個permission，<br /><pre class="brush: xml">  &lt;!-- CAMERA --&gt;<br />   &lt;uses-permission android:name=&quot;android.permission.CAMERA&quot; /&gt;<br />   &lt;uses-permission android:name=&quot;android.permission.WRITE_EXTERNAL_STORAGE&quot; /&gt;<br />   &lt;uses-feature android:name=&quot;android.hardware.camera&quot; /&gt;<br />  &lt;uses-feature android:name=&quot;android.hardware.camera.autofocus&quot; /&gt;   <br /><br /></pre><br /><br />這樣就完成一個簡單的照相功能！！<br /><br /><br /><br /><br />
+      </div>
+      <hr>
+    
+      <h1><a style="color: #F22430" href="/2010/10/09/byebye">我的好夥伴byebye【不是教學文】</a></h1>
+      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
+      <p class="author">
+        <span class="date">2010-10-09 12:07:00 +0800</span>
+      </p>
+      <div class="content">
+        <div class="separator" style="clear: both; text-align: center;"><a href="http://2.bp.blogspot.com/_6SxqtkJQECI/TK_pX4XQCHI/AAAAAAAAAJ4/iZO4uyxDMSs/s1600/IMG_20101009_011122.jpg" imageanchor="1" style="clear: left; float: left; margin-bottom: 1em; margin-right: 1em;"><img border="0" height="240" src="http://2.bp.blogspot.com/_6SxqtkJQECI/TK_pX4XQCHI/AAAAAAAAAJ4/iZO4uyxDMSs/s320/IMG_20101009_011122.jpg" width="320" /></a></div><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />這台notebook，是用我第一次賺的錢所買的，<br /><br />因此對我意義非凡，第一次用自己賺的錢買東西，這種感覺很奇妙，<br /><br />買他的時間大概是去年八月。<br /><br />但昨天買了thinkpad t410，今天即將去取貨。<br /><br />要換NB的原因主要是因為這台太大了，<br /><br />身為個研究生，還得帶著他東跑西跑，實在有點累!<br /><br />所以才打算換一台thinkpad...<br /><br />心裡有點感傷XDD<br /><br />畢竟陪伴了我一年多!!<br /><br />陪我去過很多地方，接了幾個案子，去了Yahoo Hack Day、Google DevFest。<br /><br />幫我賺了大概有9萬塊！！<br /><br />真是不捨啊！<br /><br />但是我也幫他找到了好主人，我的一位好朋友！<br /><br />相信他會好好對待他的！<br /><br /><br /><br />掰掰！等我有錢再把你贖回來！<br /><br /><br /><br />5738G<br /><br />CPU: P8700<br /><br />HD: 500G 7200rpm<br /><br />Memory: 4G<br /><br />Graphic: ATI4500 512m<br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
+      </div>
+      <hr>
+    
 
-  <h1><a style="color: #F22430" href="/2010/10/10/myisam-innodb">MyISAM 與 InnoDB 的筆記</a></h1>
-  <p class="author">
-    <span class="date">2010-10-10 13:13:00 +0800</span>
-  </p>
-  <div class="content">
-    &nbsp;MyISAM 與 InnoDB 誰較快?誰安全性較高?<br /><br />最近都在玩GAE，好久沒有碰MySQL<br /><br />再把新nb裝起來，正在重灌，<br /><br />就看到了MyISAM 與 InnoDB 選項<br /><br />一時想不起來兩者差別，忘記哪個快，哪個有支援transaction?<br /><br />查了一下資料才想起來，年紀大了，還是做筆記把他記下來吧!<br /><br /><br /><br />InnoDB&nbsp;是不支援全文索引，如果資料量大，建議用InnoDB ，<br /><br />大量的insert語法在MyISAM會比較快一點，但update在InnoDB會比較快，<br /><br />count不適用於InnoDB（等等會說明），MyISAM是不支援foreign key的喔<br /><br />因為設計上MyISAM比InnoDB簡單，因此效能上也較好一點，小型的應用使用MyISAM可能會較好一點<br /><br />InnoDB不會紀錄table的行數，因此當使用者下select count(*) from xxxx，InnoDB會去掃描整張table，但MyISAM就只是讀取記錄好的行數即可，<br /><br />但是!!當你的count後面有下where條件時，InnoDB和MyISAM都會去掃描整張table<br /><br /><br />以上是我的筆記，如有誤，請指教<br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
-  </div>
+    <!-- Pagination links -->
+    <div class="pagination">
+      
+        <a href="/blog/page41" class="previous">Previous</a>
+      
+      <span class="page_number ">Page: 42 of 53</span>
+      
+        <a href="/blog/page43" class="next">Next</a>
+      
+    </div>
 
-  <h1><a style="color: #F22430" href="/2010/10/09/android-camera">android 取得camera的照片</a></h1>
-  <p class="author">
-    <span class="date">2010-10-09 12:27:00 +0800</span>
-  </p>
-  <div class="content">
-    android 取得camera的照片<br /><br />其實想在android裡面實現照相的功能，大致上分成兩種，<br /><br />第一種是自己去implement一個camera介面出來（不難但複雜，較具有彈性）<br /><br />第二種是直接利用android內部的預設介面（簡單，就只有單單的拍照功能）<br /><br /><br />第一種通常會用到的時機，可能是你要作一個類似信義房屋先前作的app，<br /><br />你可以需要開啟相機，並拿著手機看看周圍，並在你的view上顯示出來這個方向有沒有房子<br /><br />這種方式要實作，並不困難，只是比較複雜。改天在po code上來教學。<br /><br />今天是要教學第二種！！<br /><br />第二種就非常簡單了！<br /><br />但相對的就沒有什麼彈性，就只有單單的開起android的照相界面，<br /><br />然後取得照片罷了！<br /><br />步驟<br /><br />1.先利用intent去開啟照相的介面<br /><br />2.在本身的activity去等待回傳的 result<br /><br /><br /><br /><br /><pre class="brush: java">Intent intent =  new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);//利用intent去開啟android本身的照相介面<br /><br /><br />//設定圖片的儲存位置，以及檔名<br />File tmpFile = new File(<br />               Environment.getExternalStorageDirectory(), <br />        "image.jpg");<br />Uri outputFileUri　= Uri.fromFile(tmpFile);<br />   <br />/*<br /> * 把上述的設定put進去！然後startActivityForResult,<br /> * 記住，因為是有ForResult，所以在本身自己的acitivy裡面等等要複寫onActivityResult<br /> * 稍後再說明onActivityResult<br /> */    <br />intent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri); <br />startActivityForResult(intent, 0); <br /><br /></pre><br /><br /><br />接著就來說明<span class="Apple-style-span" style="font-family: monospace; white-space: pre;">onActivityResult</span><br /><br /><br /><pre class="brush: java">@Override<br /> protected void onActivityResult(int requestCode, int resultCode, Intent data) {  <br />  super.onActivityResult(requestCode, resultCode, data);<br />  <br />  if (resultCode == RESULT_OK) {<br />   Bitmap bmp = BitmapFactory.decodeFile(outputFileUri.getPath()); //利用BitmapFactory去取得剛剛拍照的圖像<br />   ImageView ivTest = (ImageView)findViewById(R.id.ivTest);<br />   ivTest.setImageBitmap(bmp);<br />  }<br /> }<br /><br /></pre><br /><br />最後還得在AndroidManifest.xml上加上下面幾個permission，<br /><pre class="brush: xml">  &lt;!-- CAMERA --&gt;<br />   &lt;uses-permission android:name=&quot;android.permission.CAMERA&quot; /&gt;<br />   &lt;uses-permission android:name=&quot;android.permission.WRITE_EXTERNAL_STORAGE&quot; /&gt;<br />   &lt;uses-feature android:name=&quot;android.hardware.camera&quot; /&gt;<br />  &lt;uses-feature android:name=&quot;android.hardware.camera.autofocus&quot; /&gt;   <br /><br /></pre><br /><br />這樣就完成一個簡單的照相功能！！<br /><br /><br /><br /><br />
-  </div>
+    <div>
+        <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- id10t_top -->
+<ins class="adsbygoogle"
+style="display:block"
+data-ad-client="ca-pub-7586970907106458"
+data-ad-slot="1161208442"
+data-ad-format="auto"></ins>
+<script>
+    (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
 
-  <h1><a style="color: #F22430" href="/2010/10/09/byebye">我的好夥伴byebye【不是教學文】</a></h1>
-  <p class="author">
-    <span class="date">2010-10-09 12:07:00 +0800</span>
-  </p>
-  <div class="content">
-    <div class="separator" style="clear: both; text-align: center;"><a href="http://2.bp.blogspot.com/_6SxqtkJQECI/TK_pX4XQCHI/AAAAAAAAAJ4/iZO4uyxDMSs/s1600/IMG_20101009_011122.jpg" imageanchor="1" style="clear: left; float: left; margin-bottom: 1em; margin-right: 1em;"><img border="0" height="240" src="http://2.bp.blogspot.com/_6SxqtkJQECI/TK_pX4XQCHI/AAAAAAAAAJ4/iZO4uyxDMSs/s320/IMG_20101009_011122.jpg" width="320" /></a></div><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />這台notebook，是用我第一次賺的錢所買的，<br /><br />因此對我意義非凡，第一次用自己賺的錢買東西，這種感覺很奇妙，<br /><br />買他的時間大概是去年八月。<br /><br />但昨天買了thinkpad t410，今天即將去取貨。<br /><br />要換NB的原因主要是因為這台太大了，<br /><br />身為個研究生，還得帶著他東跑西跑，實在有點累!<br /><br />所以才打算換一台thinkpad...<br /><br />心裡有點感傷XDD<br /><br />畢竟陪伴了我一年多!!<br /><br />陪我去過很多地方，接了幾個案子，去了Yahoo Hack Day、Google DevFest。<br /><br />幫我賺了大概有9萬塊！！<br /><br />真是不捨啊！<br /><br />但是我也幫他找到了好主人，我的一位好朋友！<br /><br />相信他會好好對待他的！<br /><br /><br /><br />掰掰！等我有錢再把你贖回來！<br /><br /><br /><br />5738G<br /><br />CPU: P8700<br /><br />HD: 500G 7200rpm<br /><br />Memory: 4G<br /><br />Graphic: ATI4500 512m<br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
-  </div>
-
-
-<!-- Pagination links -->
-<div class="pagination">
-  
-    <a href="/blog/page41" class="previous">Previous</a>
-  
-  <span class="page_number ">Page: 42 of 53</span>
-  
-    <a href="/blog/page43" class="next">Next</a>
-  
-</div>
+    </div>
 </body>
 
       </div>

@@ -223,54 +223,76 @@
 
       <div class="container">
         <body>
-<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<!-- ken on github -->
+    <div>
+        <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- id10t_top -->
 <ins class="adsbygoogle"
-     style="display:block"
-     data-ad-client="ca-pub-3783438370424072"
-     data-ad-slot="1516206098"
-     data-ad-format="auto"></ins>
+style="display:block"
+data-ad-client="ca-pub-7586970907106458"
+data-ad-slot="1161208442"
+data-ad-format="auto"></ins>
 <script>
-(adsbygoogle = window.adsbygoogle || []).push({});
+    (adsbygoogle = window.adsbygoogle || []).push({});
 </script>
 
-<!-- This loops through the paginated posts -->
+    </div>
+    <!-- This loops through the paginated posts -->
+    
+      <h1><a style="color: #F22430" href="/2011/12/08/android-listview-cachecolorhint">Android ListView cacheColorHint</a></h1>
+      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
+      <p class="author">
+        <span class="date">2011-12-08 17:04:00 +0800</span>
+      </p>
+      <div class="content">
+        <br />在Android中實作ListView的時候，<br />如果要customize一個畫面比較漂亮的ListView，<br />可能會用到Background，如下圖（圖一）<br /><br /><table cellpadding="0" cellspacing="0" class="tr-caption-container" style="float: left; margin-right: 1em; text-align: left;"><tbody><tr><td style="text-align: center;"><a href="http://3.bp.blogspot.com/-GDs-YW3SsIo/Tt6rsL-FQMI/AAAAAAAAAYE/JKRq0y4sLek/s1600/p1.png" imageanchor="1" style="clear: left; margin-bottom: 1em; margin-left: auto; margin-right: auto; text-align: left;"><img border="0" height="400" src="http://3.bp.blogspot.com/-GDs-YW3SsIo/Tt6rsL-FQMI/AAAAAAAAAYE/JKRq0y4sLek/s400/p1.png" width="240" /></a></td></tr><tr><td class="tr-caption" style="text-align: center;">圖一</td></tr></tbody></table><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />但是如果再做上下滾動的時候你會發現，背景圖片不見了!<br />背景會變成黑色!　且還會有點卡卡的感覺。<br />如下圖（圖二）。<br /><br /><br /><table cellpadding="0" cellspacing="0" class="tr-caption-container" style="float: left; margin-right: 1em; text-align: left;"><tbody><tr><td style="text-align: center;"><a href="http://4.bp.blogspot.com/-3JAqS4L3IQc/Tt6rtFwR9CI/AAAAAAAAAYI/ueVgGYgFiSg/s1600/p2.png" imageanchor="1" style="clear: left; margin-bottom: 1em; margin-left: auto; margin-right: auto;"><img border="0" height="400" src="http://4.bp.blogspot.com/-3JAqS4L3IQc/Tt6rtFwR9CI/AAAAAAAAAYI/ueVgGYgFiSg/s400/p2.png" width="240" /></a></td></tr><tr><td class="tr-caption" style="text-align: center;">圖二</td></tr></tbody></table><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />原因在於Android在ListView 的Background會做一個Optimization的動作，<br />就是利用一個attributes，<span class="Apple-style-span" style="background-color: white; color: #007000; font-family: monospace; font-size: 13px; line-height: 13px;">android:cacheColorHint</span><br />default值就是現在的顏色dark，<br />為了要關掉這個Optimization，只要把<span class="Apple-style-span" style="background-color: white; color: #007000; font-family: monospace; font-size: 13px; line-height: 13px;">android:cacheColorHint</span>改成如下，<br /><span class="Apple-style-span" style="background-color: white; color: #007000; font-family: monospace; font-size: 13px; line-height: 13px;">android:cacheColorHint="#00000000"</span><br />這樣就不會發生上述的問題了。<br /><br /><br /><br /><br /><br /><br />
+      </div>
+      <hr>
+    
+      <h1><a style="color: #F22430" href="/2011/11/22/android-lifecycle">Android Lifecycle （一）入門講解</a></h1>
+      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
+      <p class="author">
+        <span class="date">2011-11-22 20:30:00 +0800</span>
+      </p>
+      <div class="content">
+        每次都會有點忘記這個lifecycle，<br />總是只記得大概，詳細都會忘記==<br />然後就要自己用LOG來看甚麼情況下會進到這些狀態。<br />這次就乾脆整理一下記錄起來。<br /><br />當activity進行換頁時，會先進入 &nbsp; &nbsp; &nbsp;onPause() -&gt; onStop()<br />按下手機上返回按鈕時，會先進入&nbsp;onPause()&nbsp;-&gt; onStop()&nbsp;-&gt; onDestroy()<br />按下手機HOME按鈕時，會先進入&nbsp;onPause()&nbsp;-&gt; onStop()<br /><br />當先前已經按過HOME鈕，再次點APP，會進入到 &nbsp;onRestart()<br />當先前換頁，再按下返回鈕，也會進入到&nbsp;onRestart()<br />當先前按下返回鈕，再點APP，則會進入到 onCreate()<br /><br />其實GOOGLE有一張自己的流程圖拉，<br />只是我覺得光看流程圖，還是無法知道實際情況發生時，會進到那些狀態。<br />但就搭配著圖看瞜!<br /><br />這篇是比較基本的，想看Activity在Memory中的流程可以看這篇，<a href="http://blog.kenyang.net/2011/12/android-life-cycle.html">點我點我點我</a><br /><br /><div class="separator" style="clear: both; text-align: center;"><a href="http://4.bp.blogspot.com/-HX46mAOTqII/Tsq4Bh4g6BI/AAAAAAAAAX8/QvddYPeG8fA/s1600/Untitled.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="http://4.bp.blogspot.com/-HX46mAOTqII/Tsq4Bh4g6BI/AAAAAAAAAX8/QvddYPeG8fA/s1600/Untitled.png" /></a></div><br />
+      </div>
+      <hr>
+    
+      <h1><a style="color: #F22430" href="/2011/11/18/java-thread-run-vs-start">Java Thread: run() vs start()</a></h1>
+      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
+      <p class="author">
+        <span class="date">2011-11-18 04:11:00 +0800</span>
+      </p>
+      <div class="content">
+        Java Thread: run() vs start()<br /><br />剛在寫ANDROID，在使用到 audioRecord，所以用到了thread!<br />突然忘記要用run呢? 還是要用start?<br />查了一下資料，才找出差異性。<br /><br /><br />使用run呢，他是循序性的，也就是說他會跑完run裡面的程式，才會跳脫。<br />而start不是。<br />用個簡單的範例說明一下：<br /><pre class="brush: java">Thread t1 = new Thread(new Runnable() {<br /> @Override<br /> public void run() {<br />  for (int i = 0; i &lt; 1000; i++) {<br />   System.out.println("t1");<br />  }<br />});<br /><br />Thread t2 = new Thread(new Runnable() {<br /> @Override<br /> public void run() {<br />  for (int i = 0; i &lt; 1000; i++) {<br />   System.out.println("t2");<br />  }<br /> }<br />});<br /><br /></pre>上面我們宣告了2個thread，一個是t1，一個是t2。<br />都做完一千次才會停止。<br />他們分別會去印出自己是t1還是t2。<br />&nbsp;如果我們是使用run，如下： <br /><pre class="brush: java">t1.run();<br />t2.run();<br /></pre><br />那麼印出來的值一定是像下面一樣<br />&nbsp;<span class="Apple-style-span" style="color: red;">t1 -&gt; t1</span><span class="Apple-style-span" style="color: red;">&nbsp;</span><span class="Apple-style-span" style="color: red;">-&gt; t1 -&gt; .........t1 -&gt; </span><span class="Apple-style-span" style="color: blue;">&nbsp;t2 -&gt; t2 -&gt; ......t2</span><span class="Apple-style-span" style="color: red;">　</span><br />會先印完1000次的t1，才開始印1000次的t2。    但如果我們是使用start，如下：<br /><pre class="brush: java">t1.start();<br />t2.start();<br /></pre><br />結果就會相互交叉，<br />可能是<span class="Apple-style-span" style="color: red;">t1</span>-&gt;<span class="Apple-style-span" style="color: red;">t1</span>-&gt;<span class="Apple-style-span" style="color: blue;">t2</span>-&gt;<span class="Apple-style-span" style="color: red;">t1</span>-&gt;<span class="Apple-style-span" style="color: blue;">t2</span>..........<br />以此類推。<br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
+      </div>
+      <hr>
+    
 
-  <h1><a style="color: #F22430" href="/2011/12/08/android-listview-cachecolorhint">Android ListView cacheColorHint</a></h1>
-  <p class="author">
-    <span class="date">2011-12-08 17:04:00 +0800</span>
-  </p>
-  <div class="content">
-    <br />在Android中實作ListView的時候，<br />如果要customize一個畫面比較漂亮的ListView，<br />可能會用到Background，如下圖（圖一）<br /><br /><table cellpadding="0" cellspacing="0" class="tr-caption-container" style="float: left; margin-right: 1em; text-align: left;"><tbody><tr><td style="text-align: center;"><a href="http://3.bp.blogspot.com/-GDs-YW3SsIo/Tt6rsL-FQMI/AAAAAAAAAYE/JKRq0y4sLek/s1600/p1.png" imageanchor="1" style="clear: left; margin-bottom: 1em; margin-left: auto; margin-right: auto; text-align: left;"><img border="0" height="400" src="http://3.bp.blogspot.com/-GDs-YW3SsIo/Tt6rsL-FQMI/AAAAAAAAAYE/JKRq0y4sLek/s400/p1.png" width="240" /></a></td></tr><tr><td class="tr-caption" style="text-align: center;">圖一</td></tr></tbody></table><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />但是如果再做上下滾動的時候你會發現，背景圖片不見了!<br />背景會變成黑色!　且還會有點卡卡的感覺。<br />如下圖（圖二）。<br /><br /><br /><table cellpadding="0" cellspacing="0" class="tr-caption-container" style="float: left; margin-right: 1em; text-align: left;"><tbody><tr><td style="text-align: center;"><a href="http://4.bp.blogspot.com/-3JAqS4L3IQc/Tt6rtFwR9CI/AAAAAAAAAYI/ueVgGYgFiSg/s1600/p2.png" imageanchor="1" style="clear: left; margin-bottom: 1em; margin-left: auto; margin-right: auto;"><img border="0" height="400" src="http://4.bp.blogspot.com/-3JAqS4L3IQc/Tt6rtFwR9CI/AAAAAAAAAYI/ueVgGYgFiSg/s400/p2.png" width="240" /></a></td></tr><tr><td class="tr-caption" style="text-align: center;">圖二</td></tr></tbody></table><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />原因在於Android在ListView 的Background會做一個Optimization的動作，<br />就是利用一個attributes，<span class="Apple-style-span" style="background-color: white; color: #007000; font-family: monospace; font-size: 13px; line-height: 13px;">android:cacheColorHint</span><br />default值就是現在的顏色dark，<br />為了要關掉這個Optimization，只要把<span class="Apple-style-span" style="background-color: white; color: #007000; font-family: monospace; font-size: 13px; line-height: 13px;">android:cacheColorHint</span>改成如下，<br /><span class="Apple-style-span" style="background-color: white; color: #007000; font-family: monospace; font-size: 13px; line-height: 13px;">android:cacheColorHint="#00000000"</span><br />這樣就不會發生上述的問題了。<br /><br /><br /><br /><br /><br /><br />
-  </div>
+    <!-- Pagination links -->
+    <div class="pagination">
+      
+        <a href="/blog/page26" class="previous">Previous</a>
+      
+      <span class="page_number ">Page: 27 of 53</span>
+      
+        <a href="/blog/page28" class="next">Next</a>
+      
+    </div>
 
-  <h1><a style="color: #F22430" href="/2011/11/22/android-lifecycle">Android Lifecycle （一）入門講解</a></h1>
-  <p class="author">
-    <span class="date">2011-11-22 20:30:00 +0800</span>
-  </p>
-  <div class="content">
-    每次都會有點忘記這個lifecycle，<br />總是只記得大概，詳細都會忘記==<br />然後就要自己用LOG來看甚麼情況下會進到這些狀態。<br />這次就乾脆整理一下記錄起來。<br /><br />當activity進行換頁時，會先進入 &nbsp; &nbsp; &nbsp;onPause() -&gt; onStop()<br />按下手機上返回按鈕時，會先進入&nbsp;onPause()&nbsp;-&gt; onStop()&nbsp;-&gt; onDestroy()<br />按下手機HOME按鈕時，會先進入&nbsp;onPause()&nbsp;-&gt; onStop()<br /><br />當先前已經按過HOME鈕，再次點APP，會進入到 &nbsp;onRestart()<br />當先前換頁，再按下返回鈕，也會進入到&nbsp;onRestart()<br />當先前按下返回鈕，再點APP，則會進入到 onCreate()<br /><br />其實GOOGLE有一張自己的流程圖拉，<br />只是我覺得光看流程圖，還是無法知道實際情況發生時，會進到那些狀態。<br />但就搭配著圖看瞜!<br /><br />這篇是比較基本的，想看Activity在Memory中的流程可以看這篇，<a href="http://blog.kenyang.net/2011/12/android-life-cycle.html">點我點我點我</a><br /><br /><div class="separator" style="clear: both; text-align: center;"><a href="http://4.bp.blogspot.com/-HX46mAOTqII/Tsq4Bh4g6BI/AAAAAAAAAX8/QvddYPeG8fA/s1600/Untitled.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="http://4.bp.blogspot.com/-HX46mAOTqII/Tsq4Bh4g6BI/AAAAAAAAAX8/QvddYPeG8fA/s1600/Untitled.png" /></a></div><br />
-  </div>
+    <div>
+        <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- id10t_top -->
+<ins class="adsbygoogle"
+style="display:block"
+data-ad-client="ca-pub-7586970907106458"
+data-ad-slot="1161208442"
+data-ad-format="auto"></ins>
+<script>
+    (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
 
-  <h1><a style="color: #F22430" href="/2011/11/18/java-thread-run-vs-start">Java Thread: run() vs start()</a></h1>
-  <p class="author">
-    <span class="date">2011-11-18 04:11:00 +0800</span>
-  </p>
-  <div class="content">
-    Java Thread: run() vs start()<br /><br />剛在寫ANDROID，在使用到 audioRecord，所以用到了thread!<br />突然忘記要用run呢? 還是要用start?<br />查了一下資料，才找出差異性。<br /><br /><br />使用run呢，他是循序性的，也就是說他會跑完run裡面的程式，才會跳脫。<br />而start不是。<br />用個簡單的範例說明一下：<br /><pre class="brush: java">Thread t1 = new Thread(new Runnable() {<br /> @Override<br /> public void run() {<br />  for (int i = 0; i &lt; 1000; i++) {<br />   System.out.println("t1");<br />  }<br />});<br /><br />Thread t2 = new Thread(new Runnable() {<br /> @Override<br /> public void run() {<br />  for (int i = 0; i &lt; 1000; i++) {<br />   System.out.println("t2");<br />  }<br /> }<br />});<br /><br /></pre>上面我們宣告了2個thread，一個是t1，一個是t2。<br />都做完一千次才會停止。<br />他們分別會去印出自己是t1還是t2。<br />&nbsp;如果我們是使用run，如下： <br /><pre class="brush: java">t1.run();<br />t2.run();<br /></pre><br />那麼印出來的值一定是像下面一樣<br />&nbsp;<span class="Apple-style-span" style="color: red;">t1 -&gt; t1</span><span class="Apple-style-span" style="color: red;">&nbsp;</span><span class="Apple-style-span" style="color: red;">-&gt; t1 -&gt; .........t1 -&gt; </span><span class="Apple-style-span" style="color: blue;">&nbsp;t2 -&gt; t2 -&gt; ......t2</span><span class="Apple-style-span" style="color: red;">　</span><br />會先印完1000次的t1，才開始印1000次的t2。    但如果我們是使用start，如下：<br /><pre class="brush: java">t1.start();<br />t2.start();<br /></pre><br />結果就會相互交叉，<br />可能是<span class="Apple-style-span" style="color: red;">t1</span>-&gt;<span class="Apple-style-span" style="color: red;">t1</span>-&gt;<span class="Apple-style-span" style="color: blue;">t2</span>-&gt;<span class="Apple-style-span" style="color: red;">t1</span>-&gt;<span class="Apple-style-span" style="color: blue;">t2</span>..........<br />以此類推。<br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
-  </div>
-
-
-<!-- Pagination links -->
-<div class="pagination">
-  
-    <a href="/blog/page26" class="previous">Previous</a>
-  
-  <span class="page_number ">Page: 27 of 53</span>
-  
-    <a href="/blog/page28" class="next">Next</a>
-  
-</div>
+    </div>
 </body>
 
       </div>

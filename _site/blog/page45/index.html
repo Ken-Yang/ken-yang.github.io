@@ -223,54 +223,76 @@
 
       <div class="container">
         <body>
-<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<!-- ken on github -->
+    <div>
+        <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- id10t_top -->
 <ins class="adsbygoogle"
-     style="display:block"
-     data-ad-client="ca-pub-3783438370424072"
-     data-ad-slot="1516206098"
-     data-ad-format="auto"></ins>
+style="display:block"
+data-ad-client="ca-pub-7586970907106458"
+data-ad-slot="1161208442"
+data-ad-format="auto"></ins>
 <script>
-(adsbygoogle = window.adsbygoogle || []).push({});
+    (adsbygoogle = window.adsbygoogle || []).push({});
 </script>
 
-<!-- This loops through the paginated posts -->
+    </div>
+    <!-- This loops through the paginated posts -->
+    
+      <h1><a style="color: #F22430" href="/2010/09/02/android-asynctask-sample">android AsyncTask sample</a></h1>
+      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
+      <p class="author">
+        <span class="date">2010-09-02 09:24:00 +0800</span>
+      </p>
+      <div class="content">
+        android 的AsyncTask<br /><br />如果你可能要去download、request一個蠻龐大的網頁或者檔案時，<br /><br />如果是在主要的activity、widget或其他中去作，<br /><br />那麼想必你的activity、widget或其他的UI會像是被lock住!<br /><br />很LAG的感覺!<br /><br />那麼就使用AsyncTask吧!<br /><br />顧名思義，就是非同步排程(應該可以這樣翻)==<br /><br />AsyncTask的好處就是可以在background執行，<br /><br />並不影響前端的UI<br /><br />下面就是實作方法<br /><br />先去new一個class並繼承AsyncTask<br /><br /><pre class="brush: java">public class downloadTask extends AsyncTask&lt;String, Void , String&gt;{<br /> <br /> public static int iFileSize   = 0;<br /> public static double dReadSum   = 0;<br /> public static boolean bIsDownload = false;<br /> <br /> @Override<br /> protected void onProgressUpdate(Void... values) {<br />  <br />  //此method是在呼叫publishProgress()時的才會trigger到的<br />  //可以當配progressBar來使用，這裡不多作說明。<br />  <br />  super.onProgressUpdate(values);<br /><br /> }<br /><br /> <br /> @Override<br /> protected void onPreExecute() {<br />  //此method是在執行doInBackground以前，才會呼叫的<br />  super.onPreExecute();<br /> }<br /> <br /> @Override<br /> protected void onPostExecute(String result) {<br />  //此method是在doInBackground完成以後，才會呼叫的<br />  super.onPostExecute(result);<br />  if (iFileSize == dReadSum){<br />   Log.d("main","下載完成");<br />  }<br />  <br /> }<br /><br />  /*<br />  *注意!strUrlFile是一個array..代表著在呼叫此class時<br />  *可以帶入很多個參數(strUrlFile)，<br />  *如:new downloadTask().execute("http://www.xxx","http://www.xxx");<br />  */ <br /> protected String doInBackground(String... strUrlFile) {<br />     URL urlFileLocation = null;<br />   HttpURLConnection connFile = null;<br />   try {<br />    int iUrlCount = strUrlFile.length;<br />   for (int i =0 ; i &lt; iUrlCount ; i++){<br />    urlFileLocation  = new URL(strUrlFile[i]);   <br />    connFile    = (HttpURLConnection) urlFileLocation.openConnection();   <br />    connFile.setDoInput(true);<br />    <br />    InputStream is = connFile.getInputStream();<br />    iFileSize  = connFile.getContentLength();    //取得檔案大小<br />    <br />    byte[] buffer = new byte[1024];<br />    int len1 = 0;<br />    dReadSum  = 0;<br />    <br />    while ( (len1 = is.read(buffer)) != -1) {<br />     dReadSum += len1;<br />     publishProgress(dReadSum*100/iFileSize);<br />    }<br />   }<br />    <br />    <br />   } catch (Exception e) {<br />    Log.d("main","download---" + e.toString());<br />   }<br />   <br />        return "";<br />     }<br /><br />   <br /> }<br /></pre><br /><br /><br />呼叫此Class就只要一行:<br /><br /><pre class="brush: java"> new downloadTask().execute("http://www.xxx"); <br />/*<br />*注意，參數其實是可以很多個，如下<br />*new downloadTask().execute("http://www.xxx","http://www.xxx");<br />*這樣子此task就會去download兩次<br />*/<br /></pre><br /><br /><br /><br /><br /><br /><br /><br /><br />
+      </div>
+      <hr>
+    
+      <h1><a style="color: #F22430" href="/2010/09/01/android-parse-xml">android parse xml</a></h1>
+      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
+      <p class="author">
+        <span class="date">2010-09-01 07:02:00 +0800</span>
+      </p>
+      <div class="content">
+        android parse xml<br /><br />在anroid parse xml其實有蠻多方法的<br /><br />例如SAX(Simple API for XML)、DOM...<br /><br />大家都知道用SAX來parse會較省記憶體。<br /><br />但用SAX的麻煩就是必須自己去寫content handler...<br /><br />但如果您的XML檔並不大，且去讀取的次數沒有很頻繁，<br /><br />那麼還是建議您用DOM吧!較簡單!<br /><br />實作方法如下:<br /><br /><pre class="brush: java"> private static DocumentBuilder documentBuilder  = null;  <br /> private static Document document        = null;<br /> private static NodeList elements        = null;<br /> private static int iElementLength= 0;<br /><br /> @Override<br /> public void onStart(Intent intent, int startId) {<br />  super.onStart(intent, startId);<br />  try{<br />   <br />   URL urlUpdate = new URL("http://www.xxx.xxx/xxx.xml");<br />   documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();  <br />   document = documentBuilder.parse(urlUpdate.openStream());      <br />   document.getDocumentElement().normalize();  <br />   <br />   /*<br />   *其實簡單到我也不知該怎麼寫註解了，<br />   *先get到你要的tag吧，記得回傳型態是NodeList，<br />   *不要看我命名為elements，就以為他是Element<br />   */<br />   elements  = document.getElementsByTagName("update_images");<br />   iElementLength=elements.getLength();<br />   if (iElementLength ==0 )<br />    return;<br />    <br />   for (int i = 0; i &lt; iElementLength ; i++) {<br />    Element element = (Element) elements.item(i);<br />    Log.d("main",element.getAttribute("pic_name"));<br />   }<br />  }catch (Exception e) {<br />   Log.d("main",String.valueOf(e.toString()));<br />  }<br />   <br /> }<br /></pre><br /><br />大概就是這樣!<br /><br />
+      </div>
+      <hr>
+    
+      <h1><a style="color: #F22430" href="/2010/08/31/android-service-keep-alive-or-another">android service keep alive or another way??</a></h1>
+      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
+      <p class="author">
+        <span class="date">2010-08-31 04:26:00 +0800</span>
+      </p>
+      <div class="content">
+        android service crashed (restart)<br /><br />如果你有支APP有個SERVICE是可能每隔一段時間去做一次的!<br /><br />那麼我建議你改用AlarmManager。<br /><br />最近發現自己寫的某支APP裡面的service會被android os restart!<br /><br />大概知道是因為是background service的關係，<br /><br />想要讓一個service keep alive。<br /><br />當然有解決方法，在2.0以前的device，<br /><br />可以使用setForeground(true);<br /><br />但是2.0以上，這個method，失效了。<br /><br />改成startForeground(id, notification)。<br /><br />但我改用了AlarmManager<br /><br />原因當然有很多，像是其實啟動一個service，就是啟動一個process。<br /><br />想必就消耗掉一點memory...<br /><br />當然還有其他原因，大家可以去Google一下。<br /><br />實作方法如下:<br /><br /><pre class="brush: java">public void onUpdate(Context context, AppWidgetManager appWidgetManager,int[] appWidgetIds) {<br />   Intent intent = new Intent(context, receiverChange.class);  //放入你每隔一段時間要執行的class<br />   PendingIntent pendingIntent   = PendingIntent.getBroadcast(context, 0, intent, 0);<br />   AlarmManager alarmManager  = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);<br />   //接著就是set一個repeat，這裡是設定每隔一分鐘去執行<br />   alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,  System.currentTimeMillis() , (60*1000), pendingIntent);<br /> }<br /></pre><br /><br />然後您每隔一段時間要做的事情就寫在一個BroadcastReceiver裡面<br /><br /><pre class="brush: java">public class receiverChangePicture extends BroadcastReceiver {<br /> @Override<br /> public void onReceive(Context context, Intent intent) {<br />  Log.d("main","hi I receive message every minutes..");<br /> }<br /><br />}<br /></pre><br /><br /><br />這樣就完成了，但是注意此實作方法只限定於有週期性要執行的code才適用!!!!<br /><br />如果今天你是要偵測sd card的狀態，那麼建議你還是用service!(就如同我上篇文章所說的)<br /><br />以alarmManager來實作，只是節省一點成本罷了!<br /><br /><br /><br /><br /><br /><br /><br />
+      </div>
+      <hr>
+    
 
-  <h1><a style="color: #F22430" href="/2010/09/02/android-asynctask-sample">android AsyncTask sample</a></h1>
-  <p class="author">
-    <span class="date">2010-09-02 09:24:00 +0800</span>
-  </p>
-  <div class="content">
-    android 的AsyncTask<br /><br />如果你可能要去download、request一個蠻龐大的網頁或者檔案時，<br /><br />如果是在主要的activity、widget或其他中去作，<br /><br />那麼想必你的activity、widget或其他的UI會像是被lock住!<br /><br />很LAG的感覺!<br /><br />那麼就使用AsyncTask吧!<br /><br />顧名思義，就是非同步排程(應該可以這樣翻)==<br /><br />AsyncTask的好處就是可以在background執行，<br /><br />並不影響前端的UI<br /><br />下面就是實作方法<br /><br />先去new一個class並繼承AsyncTask<br /><br /><pre class="brush: java">public class downloadTask extends AsyncTask&lt;String, Void , String&gt;{<br /> <br /> public static int iFileSize   = 0;<br /> public static double dReadSum   = 0;<br /> public static boolean bIsDownload = false;<br /> <br /> @Override<br /> protected void onProgressUpdate(Void... values) {<br />  <br />  //此method是在呼叫publishProgress()時的才會trigger到的<br />  //可以當配progressBar來使用，這裡不多作說明。<br />  <br />  super.onProgressUpdate(values);<br /><br /> }<br /><br /> <br /> @Override<br /> protected void onPreExecute() {<br />  //此method是在執行doInBackground以前，才會呼叫的<br />  super.onPreExecute();<br /> }<br /> <br /> @Override<br /> protected void onPostExecute(String result) {<br />  //此method是在doInBackground完成以後，才會呼叫的<br />  super.onPostExecute(result);<br />  if (iFileSize == dReadSum){<br />   Log.d("main","下載完成");<br />  }<br />  <br /> }<br /><br />  /*<br />  *注意!strUrlFile是一個array..代表著在呼叫此class時<br />  *可以帶入很多個參數(strUrlFile)，<br />  *如:new downloadTask().execute("http://www.xxx","http://www.xxx");<br />  */ <br /> protected String doInBackground(String... strUrlFile) {<br />     URL urlFileLocation = null;<br />   HttpURLConnection connFile = null;<br />   try {<br />    int iUrlCount = strUrlFile.length;<br />   for (int i =0 ; i &lt; iUrlCount ; i++){<br />    urlFileLocation  = new URL(strUrlFile[i]);   <br />    connFile    = (HttpURLConnection) urlFileLocation.openConnection();   <br />    connFile.setDoInput(true);<br />    <br />    InputStream is = connFile.getInputStream();<br />    iFileSize  = connFile.getContentLength();    //取得檔案大小<br />    <br />    byte[] buffer = new byte[1024];<br />    int len1 = 0;<br />    dReadSum  = 0;<br />    <br />    while ( (len1 = is.read(buffer)) != -1) {<br />     dReadSum += len1;<br />     publishProgress(dReadSum*100/iFileSize);<br />    }<br />   }<br />    <br />    <br />   } catch (Exception e) {<br />    Log.d("main","download---" + e.toString());<br />   }<br />   <br />        return "";<br />     }<br /><br />   <br /> }<br /></pre><br /><br /><br />呼叫此Class就只要一行:<br /><br /><pre class="brush: java"> new downloadTask().execute("http://www.xxx"); <br />/*<br />*注意，參數其實是可以很多個，如下<br />*new downloadTask().execute("http://www.xxx","http://www.xxx");<br />*這樣子此task就會去download兩次<br />*/<br /></pre><br /><br /><br /><br /><br /><br /><br /><br /><br />
-  </div>
+    <!-- Pagination links -->
+    <div class="pagination">
+      
+        <a href="/blog/page44" class="previous">Previous</a>
+      
+      <span class="page_number ">Page: 45 of 53</span>
+      
+        <a href="/blog/page46" class="next">Next</a>
+      
+    </div>
 
-  <h1><a style="color: #F22430" href="/2010/09/01/android-parse-xml">android parse xml</a></h1>
-  <p class="author">
-    <span class="date">2010-09-01 07:02:00 +0800</span>
-  </p>
-  <div class="content">
-    android parse xml<br /><br />在anroid parse xml其實有蠻多方法的<br /><br />例如SAX(Simple API for XML)、DOM...<br /><br />大家都知道用SAX來parse會較省記憶體。<br /><br />但用SAX的麻煩就是必須自己去寫content handler...<br /><br />但如果您的XML檔並不大，且去讀取的次數沒有很頻繁，<br /><br />那麼還是建議您用DOM吧!較簡單!<br /><br />實作方法如下:<br /><br /><pre class="brush: java"> private static DocumentBuilder documentBuilder  = null;  <br /> private static Document document        = null;<br /> private static NodeList elements        = null;<br /> private static int iElementLength= 0;<br /><br /> @Override<br /> public void onStart(Intent intent, int startId) {<br />  super.onStart(intent, startId);<br />  try{<br />   <br />   URL urlUpdate = new URL("http://www.xxx.xxx/xxx.xml");<br />   documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();  <br />   document = documentBuilder.parse(urlUpdate.openStream());      <br />   document.getDocumentElement().normalize();  <br />   <br />   /*<br />   *其實簡單到我也不知該怎麼寫註解了，<br />   *先get到你要的tag吧，記得回傳型態是NodeList，<br />   *不要看我命名為elements，就以為他是Element<br />   */<br />   elements  = document.getElementsByTagName("update_images");<br />   iElementLength=elements.getLength();<br />   if (iElementLength ==0 )<br />    return;<br />    <br />   for (int i = 0; i &lt; iElementLength ; i++) {<br />    Element element = (Element) elements.item(i);<br />    Log.d("main",element.getAttribute("pic_name"));<br />   }<br />  }catch (Exception e) {<br />   Log.d("main",String.valueOf(e.toString()));<br />  }<br />   <br /> }<br /></pre><br /><br />大概就是這樣!<br /><br />
-  </div>
+    <div>
+        <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- id10t_top -->
+<ins class="adsbygoogle"
+style="display:block"
+data-ad-client="ca-pub-7586970907106458"
+data-ad-slot="1161208442"
+data-ad-format="auto"></ins>
+<script>
+    (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
 
-  <h1><a style="color: #F22430" href="/2010/08/31/android-service-keep-alive-or-another">android service keep alive or another way??</a></h1>
-  <p class="author">
-    <span class="date">2010-08-31 04:26:00 +0800</span>
-  </p>
-  <div class="content">
-    android service crashed (restart)<br /><br />如果你有支APP有個SERVICE是可能每隔一段時間去做一次的!<br /><br />那麼我建議你改用AlarmManager。<br /><br />最近發現自己寫的某支APP裡面的service會被android os restart!<br /><br />大概知道是因為是background service的關係，<br /><br />想要讓一個service keep alive。<br /><br />當然有解決方法，在2.0以前的device，<br /><br />可以使用setForeground(true);<br /><br />但是2.0以上，這個method，失效了。<br /><br />改成startForeground(id, notification)。<br /><br />但我改用了AlarmManager<br /><br />原因當然有很多，像是其實啟動一個service，就是啟動一個process。<br /><br />想必就消耗掉一點memory...<br /><br />當然還有其他原因，大家可以去Google一下。<br /><br />實作方法如下:<br /><br /><pre class="brush: java">public void onUpdate(Context context, AppWidgetManager appWidgetManager,int[] appWidgetIds) {<br />   Intent intent = new Intent(context, receiverChange.class);  //放入你每隔一段時間要執行的class<br />   PendingIntent pendingIntent   = PendingIntent.getBroadcast(context, 0, intent, 0);<br />   AlarmManager alarmManager  = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);<br />   //接著就是set一個repeat，這裡是設定每隔一分鐘去執行<br />   alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,  System.currentTimeMillis() , (60*1000), pendingIntent);<br /> }<br /></pre><br /><br />然後您每隔一段時間要做的事情就寫在一個BroadcastReceiver裡面<br /><br /><pre class="brush: java">public class receiverChangePicture extends BroadcastReceiver {<br /> @Override<br /> public void onReceive(Context context, Intent intent) {<br />  Log.d("main","hi I receive message every minutes..");<br /> }<br /><br />}<br /></pre><br /><br /><br />這樣就完成了，但是注意此實作方法只限定於有週期性要執行的code才適用!!!!<br /><br />如果今天你是要偵測sd card的狀態，那麼建議你還是用service!(就如同我上篇文章所說的)<br /><br />以alarmManager來實作，只是節省一點成本罷了!<br /><br /><br /><br /><br /><br /><br /><br />
-  </div>
-
-
-<!-- Pagination links -->
-<div class="pagination">
-  
-    <a href="/blog/page44" class="previous">Previous</a>
-  
-  <span class="page_number ">Page: 45 of 53</span>
-  
-    <a href="/blog/page46" class="next">Next</a>
-  
-</div>
+    </div>
 </body>
 
       </div>
