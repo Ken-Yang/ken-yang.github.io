@@ -1,0 +1,14 @@
+---
+layout: post
+title: Android EditText remove focus
+date: '2012-01-07T01:34:00.000+08:00'
+author: Ken Yang
+tags:
+- edittext
+- android
+modified_time: '2012-01-08T18:39:04.151+08:00'
+blogger_id: tag:blogger.com,1999:blog-866973865356001297.post-6698172694939587130
+blogger_orig_url: http://blog.kenyang.net/2012/01/android-edittext-remove-focus.html
+---
+
+只要頁面中有用到EditText&nbsp;<edittext>的，</edittext><br />只要跑到那個頁面，一定會被自動focus，也就是說鍵盤會自動彈開!<br />要取消focus，只要在你layout中的root element加上下面兩個屬性，<br />(root element就是最外圍的那個element，預設都是LinearLayout）<br /><br /><br />android:focusable="true"<br />android:focusableInTouchMode="true"<br /><br /><br /><br /><br /><br />

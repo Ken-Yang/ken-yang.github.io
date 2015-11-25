@@ -1,0 +1,16 @@
+---
+layout: post
+title: Create local package repository on Ubuntu
+date: '2014-10-23T17:14:00.001+08:00'
+author: Ken Yang
+tags:
+- ubuntu
+- repository
+- deb
+- debian
+modified_time: '2014-10-23T17:14:54.567+08:00'
+blogger_id: tag:blogger.com,1999:blog-866973865356001297.post-5441754468669070490
+blogger_orig_url: http://blog.kenyang.net/2014/10/create-local-package-repository-on.html
+---
+
+<div style="font-size: 15px; line-height: 22px;"><br />先前有講過<a href="http://blog.kenyang.net/2014/09/how-to-build-your-own-debian-package.html">如何建立自己的debian package</a>，<br />這裡要講怎麼建立一個local的repository，<br />讓這repository可以在internet上供人使用．<br />其實這概念跟apt-mirror有點像，只不過deb source是來自於自己罷了．<br /><br /><span style="color: #e06666; font-size: 18px;">1. Create your debian package</span><br /><br />這一步驟就去參考<a href="http://blog.kenyang.net/2014/09/how-to-build-your-own-debian-package.html">這篇文章吧</a>，<br />當然你也可以用ubuntu既有的debian package．（只不過我覺得那不如就用apt-mirror就好）<br /><br /><br /><span style="color: #e06666; font-size: 18px;">2. Install apache</span><br /><br />既然你要成為一個repository server，<br />那麼就要安裝web server，這裡就選apache吧．<br /><pre class="brush: bash">apt-get install apache2<br /></pre><br /><br /><span style="color: #e06666; font-size: 18px;">3. Setup</span><br /><br />先create一個folder在apache default目錄下（ex: /var/www)，<br /><pre class="brush: bash">mkdir -p /var/www/debian<br /></pre><br />把你要給人使用的debian package搬到上面建立的目錄下，<br /><pre class="brush: bash">mv *.deb /var/www/debian<br /></pre><br />接著就替你的debian package建立index，<br /><pre class="brush: bash">cd /var/www<br />dpkg-scanpackages debian /dev/null | gzip -9c > debian/Packages.gz<br /></pre><br />這樣就完成了！<br /><br /><span style="color: #e06666; font-size: 18px;">4. Test</span><br /><br />接著就把你的repo加到list裡面去吧，如果要給別人用，或者在別檯機器上用，<br />記得把127.0.0.1換成public ip．<br /><pre class="brush: bash">echo "deb http://127.0.0.1 debian/" >> /etc/apt/sources.list<br />apt-update<br />apt-install your-deb-package<br /></pre><br /><br /></div><br /><br /><br />

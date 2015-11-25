@@ -1,0 +1,14 @@
+---
+layout: post
+title: RequestDispatcher和springmvc的差別
+date: '2010-11-19T15:06:00.000+08:00'
+author: Ken Yang
+tags:
+- jsp
+- springmvc
+modified_time: '2010-11-19T15:06:37.401+08:00'
+blogger_id: tag:blogger.com,1999:blog-866973865356001297.post-7734306963612713414
+blogger_orig_url: http://blog.kenyang.net/2010/11/requestdispatcherspringmvc.html
+---
+
+<br />今天就在想RequestDispatcher和springmvc的差別<br /><br />通常會用springmvc，是因為想要做到MVC的架構，<br /><br />如果單單透過servlet，是無法達到該效果。<br /><br />但是如果透過servlet的RequestDispatcher是可以的!<br /><br />我就突然想到，那這樣我通通用RequestDispatcher不就好了<br /><br />但再仔細想想兩者間的差別，大概的想法如下<br /><br /><br />如果透過RequestDispatcher<br /><br />譬如說我要看會員列表(/action/member/list)<br /><br />就得在web.xml中部屬一個mapping<br /><br />mapping到某隻 servlet（讀取會員清單的操作）<br /><br />再透過RequestDispatcher把會員清單資料傳到應對應到的頁面<br /><br /><br />如果要新增一個會員(/action/member/insert)<br /><br />一樣得在web.xml中mapping到某個servlet<br /><br />這時候在web.xml會有2個serlvet mapping<br /><br /><br /><br />如果是透過springmvc<br /><br />是先透過在web.xml中springmvc設定的DispatcherServlet<br /><br />然後再透過該DispatcherServlet定義的config檔案<br /><br />看要Dispatch到哪個Controller<br /><br />看到這，似乎兩者之間看起來差不多?<br /><br />但是如果我們同樣需要兩個功能<br /><br />一個是新增會員，一個是讀取會員列表<br /><br />我們不需要像上面一樣定義到兩個servlet<br /><br />我們只需要定義一個專門在處理會員的controller<br /><br />然後透過controller去控制<br /><br />該controller裡面就會有兩個method<br /><br />public ModelAndView <span class="Apple-style-span" style="color: red;">list</span>(HttpServletRequest req, HttpServletResponse resp)<br />public ModelAndView <span class="Apple-style-span" style="color: red;">insert</span>(HttpServletRequest req, HttpServletResponse resp)<br /><br /><br /><br />這是我想到的地方，<br /><br />如果有誤，歡迎更正。謝謝<br /><br /><br /><br /><br /><br />

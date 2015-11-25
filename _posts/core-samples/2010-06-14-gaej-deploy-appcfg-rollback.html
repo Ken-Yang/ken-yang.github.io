@@ -1,0 +1,16 @@
+---
+layout: post
+title: GAE/J deploy 失敗，使用appcfg rollback
+date: '2010-06-14T19:42:00.000+08:00'
+author: Ken Yang
+tags:
+- rollback
+- appcfg
+- GAE
+- deploy error
+modified_time: '2010-06-14T19:43:46.338+08:00'
+blogger_id: tag:blogger.com,1999:blog-866973865356001297.post-5746287807357343366
+blogger_orig_url: http://blog.kenyang.net/2010/06/gaej-deploy-appcfg-rollback.html
+---
+
+GAE/J deploy 失敗<br /><br />今天一直在上傳，但也因為邊看世足!<br /><br />就沒有去注意錯誤訊息!<br /><br />只知道後來是不能上傳的!<br /><br />後來想說新增一個version，然後上傳上去!<br /><br />再把舊的version刪掉!<br /><br />但發現也不能!<br /><br />GAE一直叫我rollback!<br /><br />沒辦法啦!<br /><br />只好打開cmd了~<br /><br />找到你app engine的sdk目錄，/bin底下有個command，"appcfg.cmd"這個!<br /><br />不是.sh的，.sh是for mac osX的!<br /><br /><br /><br />指令：<span class="Apple-style-span" style="color: red;">appcfg.cmd rollback </span><span class="Apple-style-span" style="color: blue;">你project的war路徑</span><br /><br />就可以解除封鎖!<br /><br />就可以繼續update你的project了喔~<br /><br /><br /><br /><br /><br /><br /><br /><br /><br />

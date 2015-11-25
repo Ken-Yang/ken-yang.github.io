@@ -1,0 +1,14 @@
+---
+layout: post
+title: Android Lifecycle （一）入門講解
+date: '2011-11-22T20:30:00.000+08:00'
+author: Ken Yang
+tags:
+- android
+modified_time: '2011-12-17T23:47:20.081+08:00'
+thumbnail: http://4.bp.blogspot.com/-HX46mAOTqII/Tsq4Bh4g6BI/AAAAAAAAAX8/QvddYPeG8fA/s72-c/Untitled.png
+blogger_id: tag:blogger.com,1999:blog-866973865356001297.post-2683103423884522050
+blogger_orig_url: http://blog.kenyang.net/2011/11/android-lifecycle.html
+---
+
+每次都會有點忘記這個lifecycle，<br />總是只記得大概，詳細都會忘記==<br />然後就要自己用LOG來看甚麼情況下會進到這些狀態。<br />這次就乾脆整理一下記錄起來。<br /><br />當activity進行換頁時，會先進入 &nbsp; &nbsp; &nbsp;onPause() -&gt; onStop()<br />按下手機上返回按鈕時，會先進入&nbsp;onPause()&nbsp;-&gt; onStop()&nbsp;-&gt; onDestroy()<br />按下手機HOME按鈕時，會先進入&nbsp;onPause()&nbsp;-&gt; onStop()<br /><br />當先前已經按過HOME鈕，再次點APP，會進入到 &nbsp;onRestart()<br />當先前換頁，再按下返回鈕，也會進入到&nbsp;onRestart()<br />當先前按下返回鈕，再點APP，則會進入到 onCreate()<br /><br />其實GOOGLE有一張自己的流程圖拉，<br />只是我覺得光看流程圖，還是無法知道實際情況發生時，會進到那些狀態。<br />但就搭配著圖看瞜!<br /><br />這篇是比較基本的，想看Activity在Memory中的流程可以看這篇，<a href="http://blog.kenyang.net/2011/12/android-life-cycle.html">點我點我點我</a><br /><br /><div class="separator" style="clear: both; text-align: center;"><a href="http://4.bp.blogspot.com/-HX46mAOTqII/Tsq4Bh4g6BI/AAAAAAAAAX8/QvddYPeG8fA/s1600/Untitled.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="http://4.bp.blogspot.com/-HX46mAOTqII/Tsq4Bh4g6BI/AAAAAAAAAX8/QvddYPeG8fA/s1600/Untitled.png" /></a></div><br />

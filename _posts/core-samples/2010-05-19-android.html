@@ -1,0 +1,17 @@
+---
+layout: post
+title: android 移除狀態列、移除標題
+date: '2010-05-19T20:37:00.000+08:00'
+author: Ken Yang
+tags:
+- 狀態列
+- 標題
+- android
+- android全螢幕
+modified_time: '2010-05-25T09:40:38.745+08:00'
+thumbnail: http://3.bp.blogspot.com/_6SxqtkJQECI/S_PZv2SGn1I/AAAAAAAAAHg/4UFD6tUr54s/s72-c/1.png
+blogger_id: tag:blogger.com,1999:blog-866973865356001297.post-7322294134723819323
+blogger_orig_url: http://blog.kenyang.net/2010/05/android.html
+---
+
+一般android程式預設會有系統的狀態列和app的標題列。<br /><br />如下圖。<br /><br /><a href="http://3.bp.blogspot.com/_6SxqtkJQECI/S_PZv2SGn1I/AAAAAAAAAHg/4UFD6tUr54s/s1600/1.png" imageanchor="1" style="clear: left; float: left; margin-bottom: 1em; margin-right: 1em;"><img border="0" src="http://3.bp.blogspot.com/_6SxqtkJQECI/S_PZv2SGn1I/AAAAAAAAAHg/4UFD6tUr54s/s320/1.png" /></a><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />如果想要移除狀態列就<br /><br />輸入下段code<br /><br /><br /><pre class="brush: java;"><br />this.getWindow().setFlags(<br />                   WindowManager.LayoutParams.FLAG_FULLSCREEN,<br />                   WndowManager.LayoutParams.FLAG_FULLSCREEN<br />                          );<br /></pre><br /><br />呈現結果如下圖<br /><br /><div class="separator" style="clear: both; text-align: center;"><a href="http://2.bp.blogspot.com/_6SxqtkJQECI/S_Papn7uINI/AAAAAAAAAHo/ixaFc4ISNuE/s1600/2.png" imageanchor="1" style="clear: left; float: left; margin-bottom: 1em; margin-right: 1em;"><img border="0" height="320" src="http://2.bp.blogspot.com/_6SxqtkJQECI/S_Papn7uINI/AAAAAAAAAHo/ixaFc4ISNuE/s320/2.png" width="212" /></a></div><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />如果要移除標題列就輸入下段CODE<br /><br /><br /><pre class="brush: java;"><br />requestWindowFeature(Window.FEATURE_NO_TITLE); &nbsp;<br /></pre><br /><br /><br />結果如下圖<br /><br /><div class="separator" style="clear: both; text-align: center;"><a href="http://4.bp.blogspot.com/_6SxqtkJQECI/S_PbX2mTW3I/AAAAAAAAAHw/Wuoo3XaBMjY/s1600/3.png" imageanchor="1" style="clear: left; float: left; margin-bottom: 1em; margin-right: 1em;"><img border="0" src="http://4.bp.blogspot.com/_6SxqtkJQECI/S_PbX2mTW3I/AAAAAAAAAHw/Wuoo3XaBMjY/s320/3.png" /></a></div><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />如果想要同時消失狀態列和標題，那就兩段CODE都填入就OK啦!<br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />

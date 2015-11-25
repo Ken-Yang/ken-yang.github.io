@@ -1,0 +1,14 @@
+---
+layout: post
+title: android file.mkdir()
+date: '2010-08-07T04:54:00.000+08:00'
+author: Ken Yang
+tags:
+- sdcard
+- android
+modified_time: '2010-11-06T16:53:50.768+08:00'
+blogger_id: tag:blogger.com,1999:blog-866973865356001297.post-5917654623360845667
+blogger_orig_url: http://blog.kenyang.net/2010/08/android-filemkdir.html
+---
+
+<br />今天在實作在 sdcard裡面建立一個檔案!<br /><br />其實這沒什麼難度!<br /><br /><pre class="brush: java">File file = new File("/sdcard/tmp/tmp.db");<br />file.createNewFile();<br /></pre><br /><br />這樣乍看之下是沒甚麼問題<br /><br />但如果沒有tmp此目錄的話!<br /><br />則會出現exception<br /><br />當然! 要建立一個目錄也很簡單!!只要用mkdir即可!<br /><br /><pre class="brush: java">file.mkdir();<br /></pre><br /><br />但是!<br /><br />必須加入一個權限才可以建立目錄!<br /><br /><pre class="brush: java">&lt;uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"&gt;&lt;/uses-permission&gt;<br /><br /></pre><br /><br />但是建立檔案就不用了!

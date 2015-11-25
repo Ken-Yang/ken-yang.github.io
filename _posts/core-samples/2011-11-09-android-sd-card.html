@@ -1,0 +1,13 @@
+---
+layout: post
+title: Android 強制安裝至 sd card
+date: '2011-11-09T12:59:00.000+08:00'
+author: Ken Yang
+tags:
+- android
+modified_time: '2011-11-09T13:02:24.866+08:00'
+blogger_id: tag:blogger.com,1999:blog-866973865356001297.post-3581004324481302839
+blogger_orig_url: http://blog.kenyang.net/2011/11/android-sd-card.html
+---
+
+下指令讓"所有"&nbsp;android app強制安裝到sd card中，<br />其實這個指令我還蠻常用到的，蠻常幫朋友下的。<br />但是每次都會稍微忘記!<br />所以記錄一下。<br /><br />首先要先下載<a href="http://dl.google.com/android/android-sdk_r15-windows.zip">android sdk</a>，<br />下載以後，解壓縮放置您要放的目錄，<br />這裡假設放置在C槽，假設目錄名稱為android-sdk，<br />然後將手機插上USB線!<br />接著打開cmd (命令提示字元)，<br />cd到C槽底下的android sdk目錄，在cd到platform-tools底下，<br />完整指令為<br /><pre class="brush: java">cd android-sdk/platform-tools<br /></pre><br />接著利用底下的adb.exe去執行強制安裝至sd card的指令，<br />指令如下：<br /><pre class="brush: java">adb shell pm setInstallLocation 2<br /></pre><br />2：代表讓所有app可以安裝至sd card<br />0：就是初始值，可以自己選擇<br />1：強制安裝在ROM裡面<br /><br />所以如果要恢復初始值的話，指令如下：<br /><pre class="brush: java">adb shell pm setInstallLocation 0<br /></pre><br />

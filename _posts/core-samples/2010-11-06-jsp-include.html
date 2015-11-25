@@ -1,0 +1,13 @@
+---
+layout: post
+title: JSP 兩種include 的差別
+date: '2010-11-06T13:22:00.000+08:00'
+author: Ken Yang
+tags:
+- jsp
+modified_time: '2010-11-06T16:47:52.086+08:00'
+blogger_id: tag:blogger.com,1999:blog-866973865356001297.post-5108116083765706778
+blogger_orig_url: http://blog.kenyang.net/2010/11/jsp-include.html
+---
+
+在JSP中，<br /><br />include有分兩種<br /><br /><pre class="brush: xml">&lt;%@include file="/footer.jsp" %&gt;&lt;!-- 第一種 --&gt;<br /><br /><br />&lt;jsp:include page="/footer.jsp"&gt;&lt;/jsp:include&gt;&lt;!-- 第二種 --&gt;<br /><br /><br /><br /></pre><br /><br />第一種稱為<span class="Apple-style-span" style="color: red;">指令元素</span><br /><br />第二種稱為<span class="Apple-style-span" style="color: red;">動作元素</span><br /><br />差別在於<br /><br />第一種的include會在編譯時期（轉換成servlet）就將file include進來，<br /><br />而第二種在編譯時期並不會被編譯，是在client request時，才會動態的去載入在去編譯。<br /><br /><br />且第一種最後只會有一個.class檔案，<br /><br />因為他會在被轉換成servlet之前就把include的file融合至原本的內容中<br /><br />最後才轉換成servlet，故只有一個.class檔案<br /><br />而第二種就會有兩種。<br /><br /><br />總結<br /><br />第一種是在編譯時期就去include<br /><br />第二種是在run time時期去include（這個效能似乎較差一點點，但較靈活）<br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />

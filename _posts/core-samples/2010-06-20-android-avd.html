@@ -1,0 +1,14 @@
+---
+layout: post
+title: android avd 無法開啟(中文路徑的問題)
+date: '2010-06-20T15:39:00.000+08:00'
+author: Ken Yang
+tags:
+- avd
+- android
+modified_time: '2010-06-20T15:39:08.977+08:00'
+blogger_id: tag:blogger.com,1999:blog-866973865356001297.post-424088878328092612
+blogger_orig_url: http://blog.kenyang.net/2010/06/android-avd.html
+---
+
+幫人解決了好幾次這樣的問題!<br /><br />好幾次avd都無法開啟!<br /><br />都卡在ANDROID這樣的字樣畫面!!<br /><br />是因為avd是不能建立在中文目錄底下的!!!<br /><br />有些人的C曹會以中文姓名命名!<br /><br />但可惜的是，android是不允許這樣的事情發生的!<br /><br />因此我們必須手動移動我們的avd至英文目錄底下去!<br /><br /><br />android move avd -n <span class="Apple-style-span" style="color: red;">avd名稱</span> -p <span class="Apple-style-span" style="color: red;">要移至的路徑，記得要是英文路徑</span>

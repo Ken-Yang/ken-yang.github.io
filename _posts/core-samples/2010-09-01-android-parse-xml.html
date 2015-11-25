@@ -1,0 +1,15 @@
+---
+layout: post
+title: android parse xml
+date: '2010-09-01T07:02:00.000+08:00'
+author: Ken Yang
+tags:
+- dom
+- xml
+- android
+modified_time: '2010-09-01T07:02:43.670+08:00'
+blogger_id: tag:blogger.com,1999:blog-866973865356001297.post-6183771953398763157
+blogger_orig_url: http://blog.kenyang.net/2010/08/android-parse-xml.html
+---
+
+android parse xml<br /><br />在anroid parse xml其實有蠻多方法的<br /><br />例如SAX(Simple API for XML)、DOM...<br /><br />大家都知道用SAX來parse會較省記憶體。<br /><br />但用SAX的麻煩就是必須自己去寫content handler...<br /><br />但如果您的XML檔並不大，且去讀取的次數沒有很頻繁，<br /><br />那麼還是建議您用DOM吧!較簡單!<br /><br />實作方法如下:<br /><br /><pre class="brush: java"> private static DocumentBuilder documentBuilder  = null;  <br /> private static Document document        = null;<br /> private static NodeList elements        = null;<br /> private static int iElementLength= 0;<br /><br /> @Override<br /> public void onStart(Intent intent, int startId) {<br />  super.onStart(intent, startId);<br />  try{<br />   <br />   URL urlUpdate = new URL("http://www.xxx.xxx/xxx.xml");<br />   documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();  <br />   document = documentBuilder.parse(urlUpdate.openStream());      <br />   document.getDocumentElement().normalize();  <br />   <br />   /*<br />   *其實簡單到我也不知該怎麼寫註解了，<br />   *先get到你要的tag吧，記得回傳型態是NodeList，<br />   *不要看我命名為elements，就以為他是Element<br />   */<br />   elements  = document.getElementsByTagName("update_images");<br />   iElementLength=elements.getLength();<br />   if (iElementLength ==0 )<br />    return;<br />    <br />   for (int i = 0; i &lt; iElementLength ; i++) {<br />    Element element = (Element) elements.item(i);<br />    Log.d("main",element.getAttribute("pic_name"));<br />   }<br />  }catch (Exception e) {<br />   Log.d("main",String.valueOf(e.toString()));<br />  }<br />   <br /> }<br /></pre><br /><br />大概就是這樣!<br /><br />

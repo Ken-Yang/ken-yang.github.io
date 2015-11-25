@@ -1,0 +1,13 @@
+---
+layout: post
+title: Chrome 防範XSS機制
+date: '2011-12-12T06:31:00.001+08:00'
+author: Ken Yang
+tags:
+- chrome
+modified_time: '2011-12-13T00:57:27.914+08:00'
+blogger_id: tag:blogger.com,1999:blog-866973865356001297.post-7556462586220192804
+blogger_orig_url: http://blog.kenyang.net/2011/12/chrome-xss.html
+---
+
+<span class="Apple-style-span" style="background-color: white; color: red; font-family: Consolas, 'Lucida Console', monospace; font-size: 12px; white-space: pre-wrap;">Refused to execute a JavaScript script. Source code of script found within request.</span><br /><br /><br />恩，今天再做一個準備Demo何謂XSS攻擊的網頁，<br />發現用Chrome開啟該網頁時，所有的攻擊都無效!!!!!!<br />去看了一下Console，發現出現了下列的訊息<br /><br /><span class="Apple-style-span" style="background-color: white; color: red; font-family: Consolas, 'Lucida Console', monospace; font-size: 12px; white-space: pre-wrap;">Refused to execute a JavaScript script. Source code of script found within request.</span><br /><div>才知道原來在Chrome裡面，只要request裡面含有JS code的，且只要有print出來的，都會被擋掉!!!</div><div><br /></div><div>不知道是在第幾版才有的，感覺Chrome太聰明也不是好事，</div><div>認為還是有些事情是developer該懂的，</div><div>當然!!! 這樣的機制對end user來說是好事! 至少不會被攻擊!<br /><br /><br /><br /><br /><br /><br /><br /><br /><br /></div>

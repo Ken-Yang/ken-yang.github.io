@@ -1,0 +1,16 @@
+---
+layout: post
+title: 用SSH免key連線至Amazon EC2
+date: '2012-04-06T13:51:00.000+08:00'
+author: Ken Yang
+tags:
+- ec2
+- linux
+- amazon
+modified_time: '2012-04-06T13:53:04.671+08:00'
+thumbnail: http://2.bp.blogspot.com/-qMhbdGHZlO4/T36EB23MRsI/AAAAAAAAAoI/phZ3fQRlV7Q/s72-c/9.png
+blogger_id: tag:blogger.com,1999:blog-866973865356001297.post-3498379758077128373
+blogger_orig_url: http://blog.kenyang.net/2012/04/sshkeyamazon-ec2.html
+---
+
+<br />有用過EC2的應該都知道，<br />一定要有key才能使用SSH連線!<br />就算你有帳號, 密碼都會被拒絕連線!<br /><br />這篇要教大家不用使用key!<br />直接輸入帳號、密碼就可以登入!<br /><br /><br />首先先使用SSH連線至EC2上去，<br />如果不知道怎麼連線的，可以去我<a href="http://blog.kenyang.net/2012/04/puttyamazon-ec2.html">上一篇教學</a>看!<br />連線以後，建立一個新的使用者!<br />指令如下:<br /><pre class="brush: java">sudo adduser kenyang<br /></pre><br />輸入完，會要你輸入密碼以及一些相關資訊!<br />接著如果你想要讓kenyang這個帳號也可以使用sudo的話!<br />就要輸入下列指令<br /><pre class="brush: java">sudo visudo<br /></pre>接著，就去修改裡面的設定檔案，<br />請加入下列指令，<br /><pre class="brush: java">kenyang ALL=(ALL) ALL<br /></pre>儲存以後就離開!<br /><br />然後接著就是要設定ssh可以使用帳密登入了!<br />請先使用vim開啟設定檔案!<br />指令如下：<br /><pre class="brush: java">sudo vim /etc/ssh/sshd_config<br /></pre>打開以後，找到下圖中的那一行！(PasswordAuthentication)<br />將它改成yes!<br />接著儲存離開！<br /><div class="separator" style="clear: both; text-align: center;"><a href="http://2.bp.blogspot.com/-qMhbdGHZlO4/T36EB23MRsI/AAAAAAAAAoI/phZ3fQRlV7Q/s1600/9.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="251" src="http://2.bp.blogspot.com/-qMhbdGHZlO4/T36EB23MRsI/AAAAAAAAAoI/phZ3fQRlV7Q/s400/9.png" width="400" /></a></div><br />然後就重開ssh，指令如下：<br /><pre class="brush: java">sudo /etc/init.d/ssh restart<br /></pre><br /><br />完成以後，你就能使用帳號、密碼登入了！<br />不用每次都要附上Key這麼麻煩！！！<br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />

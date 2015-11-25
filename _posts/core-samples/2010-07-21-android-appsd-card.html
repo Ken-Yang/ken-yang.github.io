@@ -1,0 +1,15 @@
+---
+layout: post
+title: 讓android app安裝在SD card
+date: '2010-07-21T05:08:00.000+08:00'
+author: Ken Yang
+tags:
+- 安裝位置
+- android
+- installLocation
+modified_time: '2010-07-21T05:08:06.583+08:00'
+blogger_id: tag:blogger.com,1999:blog-866973865356001297.post-7471434903179315377
+blogger_orig_url: http://blog.kenyang.net/2010/07/android-appsd-card.html
+---
+
+怎麼讓android app安裝在SDcard裡面去?<br /><br />這個問題我研究了一陣子==<br /><br />一直以為是上傳至MARKET有個選項讓我們勾(Application can be copied from the device)<br /><br />以為勾了就可以使那隻APP能夠安裝到記憶卡裡去==<br /><br />原來不是!<br /><br />是要在AndroidManifest.xml裡面插入一個attributes<br /><br />如下<br /><br /><pre class="brush: xml">&lt;manifest <br />      xmlns:android="http://schemas.android.com/apk/res/android"<br />      android:installLocation="preferExternal"&gt;<br /><br /></pre><br />使用<span class="Apple-style-span" style="font-family: monospace; white-space: pre;">android:installLocation此屬性即可，有三個選項</span><br /><span class="Apple-style-span" style="font-family: monospace; white-space: pre;"><br /></span><br /><span class="Apple-style-span" style="font-family: monospace; white-space: pre;">1.internalOnly(只能安裝在手機裡)</span><br /><span class="Apple-style-span" style="font-family: monospace; white-space: pre;"><br /></span><br /><span class="Apple-style-span" style="font-family: monospace; white-space: pre;">2.</span><span class="Apple-style-span" style="font-family: monospace; white-space: pre;">preferExternal(自動安裝至記憶卡裡)</span><br /><span class="Apple-style-span" style="font-family: monospace; white-space: pre;"><br /></span><br /><span class="Apple-style-span" style="font-family: monospace; white-space: pre;">3.auto(就是讓使用者自己選啦)</span><br /><br /><br /><br /><br />

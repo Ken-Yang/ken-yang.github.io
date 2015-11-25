@@ -1,0 +1,14 @@
+---
+layout: post
+title: android 取得camera的照片
+date: '2010-10-09T12:27:00.000+08:00'
+author: Ken Yang
+tags:
+- camera
+- android
+modified_time: '2011-12-27T19:56:17.925+08:00'
+blogger_id: tag:blogger.com,1999:blog-866973865356001297.post-8504828828187858043
+blogger_orig_url: http://blog.kenyang.net/2010/10/android-camera.html
+---
+
+android 取得camera的照片<br /><br />其實想在android裡面實現照相的功能，大致上分成兩種，<br /><br />第一種是自己去implement一個camera介面出來（不難但複雜，較具有彈性）<br /><br />第二種是直接利用android內部的預設介面（簡單，就只有單單的拍照功能）<br /><br /><br />第一種通常會用到的時機，可能是你要作一個類似信義房屋先前作的app，<br /><br />你可以需要開啟相機，並拿著手機看看周圍，並在你的view上顯示出來這個方向有沒有房子<br /><br />這種方式要實作，並不困難，只是比較複雜。改天在po code上來教學。<br /><br />今天是要教學第二種！！<br /><br />第二種就非常簡單了！<br /><br />但相對的就沒有什麼彈性，就只有單單的開起android的照相界面，<br /><br />然後取得照片罷了！<br /><br />步驟<br /><br />1.先利用intent去開啟照相的介面<br /><br />2.在本身的activity去等待回傳的 result<br /><br /><br /><br /><br /><pre class="brush: java">Intent intent =  new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);//利用intent去開啟android本身的照相介面<br /><br /><br />//設定圖片的儲存位置，以及檔名<br />File tmpFile = new File(<br />               Environment.getExternalStorageDirectory(), <br />        "image.jpg");<br />Uri outputFileUri　= Uri.fromFile(tmpFile);<br />   <br />/*<br /> * 把上述的設定put進去！然後startActivityForResult,<br /> * 記住，因為是有ForResult，所以在本身自己的acitivy裡面等等要複寫onActivityResult<br /> * 稍後再說明onActivityResult<br /> */    <br />intent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri); <br />startActivityForResult(intent, 0); <br /><br /></pre><br /><br /><br />接著就來說明<span class="Apple-style-span" style="font-family: monospace; white-space: pre;">onActivityResult</span><br /><br /><br /><pre class="brush: java">@Override<br /> protected void onActivityResult(int requestCode, int resultCode, Intent data) {  <br />  super.onActivityResult(requestCode, resultCode, data);<br />  <br />  if (resultCode == RESULT_OK) {<br />   Bitmap bmp = BitmapFactory.decodeFile(outputFileUri.getPath()); //利用BitmapFactory去取得剛剛拍照的圖像<br />   ImageView ivTest = (ImageView)findViewById(R.id.ivTest);<br />   ivTest.setImageBitmap(bmp);<br />  }<br /> }<br /><br /></pre><br /><br />最後還得在AndroidManifest.xml上加上下面幾個permission，<br /><pre class="brush: xml">  &lt;!-- CAMERA --&gt;<br />   &lt;uses-permission android:name=&quot;android.permission.CAMERA&quot; /&gt;<br />   &lt;uses-permission android:name=&quot;android.permission.WRITE_EXTERNAL_STORAGE&quot; /&gt;<br />   &lt;uses-feature android:name=&quot;android.hardware.camera&quot; /&gt;<br />  &lt;uses-feature android:name=&quot;android.hardware.camera.autofocus&quot; /&gt;   <br /><br /></pre><br /><br />這樣就完成一個簡單的照相功能！！<br /><br /><br /><br /><br />

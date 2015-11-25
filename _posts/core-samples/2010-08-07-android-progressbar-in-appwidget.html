@@ -1,0 +1,15 @@
+---
+layout: post
+title: android ProgressBar in AppWidget
+date: '2010-08-07T05:18:00.000+08:00'
+author: Ken Yang
+tags:
+- widget
+- progress bar
+- android
+modified_time: '2010-11-06T16:52:45.432+08:00'
+blogger_id: tag:blogger.com,1999:blog-866973865356001297.post-6935098891356790841
+blogger_orig_url: http://blog.kenyang.net/2010/08/android-progressbar-in-appwidget.html
+---
+
+android ProgressBar in AppWidget<br /><br />會產生一些問題!<br /><br />基本上在顯示，或者設定目前progress都是沒問題的!!<br /><br />但是當你要把ProgressBar 設為Invisible的時候就會產生BUG!<br /><br />目前看來似乎是android本身的bug...<br /><br />至少找資料找到現在...蠻多人都說這樣的!<br /><br /><pre class="brush: java">Views.setViewVisibility(R.id.TextView01, View.VISIBLE);<br /></pre><br />以往只要打這行code就能把某個元件Invisible或者GONE掉<br /><br />但是如果元件是Progress Bar的話!<br /><br />會無法動作!!<br /><br />所以在這建議大家使用兩個layout<br /><br />一個是有progress bar，一個沒有!<br /><br />如下!<br /><br /><br /><pre class="brush: java">RemoteViews withProgressViews= new RemoteViews(this.getPackageName(),R.layout.progress_layout);//這個是有Progress的<br /><br />RemoteViews withoutProgressViews= new RemoteViews(this.getPackageName(),R.layout.init_layout);//這沒有Progress的<br /><br />app_manager.updateAppWidget(appWidgetId, withProgressViews/withoutProgressViews);//在透過app_manager去更新妳widget的layout樣式<br /><br /></pre><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />

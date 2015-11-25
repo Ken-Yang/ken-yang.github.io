@@ -1,0 +1,14 @@
+---
+layout: post
+title: Apache 限制目錄瀏覽
+date: '2010-11-06T16:39:00.000+08:00'
+author: Ken Yang
+tags:
+- apache
+- index
+modified_time: '2010-11-06T16:47:14.555+08:00'
+blogger_id: tag:blogger.com,1999:blog-866973865356001297.post-1083744692176536254
+blogger_orig_url: http://blog.kenyang.net/2010/11/apache.html
+---
+
+前天去看了社群網站<br /><br />片頭有講到哈佛裡面的有些宿舍網站的apache 沒有拿掉index，<br /><br />因此有目錄瀏覽的功能，這樣該目錄底下所有的檔案都會被使用者看見，<br /><br />那該怎麼關掉呢?<br /><br />打開httpd.conf<br /><br />找到這行<br /><b><br /></b><br /><b>Options Indexes FollowSymLinks</b><br /><br />然後把<b>Indexes </b>拿掉<br /><br />然後重開apache，該目錄底下的檔案就不會被顯示出來!<br /><br />且會response 403 Forbidden。<br /><br />如果你要有些特定目錄是允許使用者看見的，<br /><br />那麼就在該目錄底下，把index放上去即可。<br /><br />假設<br /><br />test1底下的/images是允許被看見的<br /><br />test2底下是不允許的<br /><br />那麼設置就如下<br /><br /><br /><br /><br /><pre class="brush: xml">&lt;Directory "D:/test1/images"&gt; <br />     .....<br />     # 可以被看見的<br />     Options Indexes FollowSymLinks<br />     .....<br />&lt;/Directory&gt;<br />&lt;Directory "D:/test2/images"&gt; <br />     .....<br />     # 不可以被看見的<br />     Options FollowSymLinks<br />     .....<br />&lt;/Directory&gt;<br /><br /></pre><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
