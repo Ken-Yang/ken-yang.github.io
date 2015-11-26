@@ -239,10 +239,20 @@ data-ad-format="auto"></ins>
     </div>
     <!-- This loops through the paginated posts -->
     
+      <h1><a style="color: #F22430" href="/2010/08/07/android-filemkdir">android file.mkdir()</a></h1>
+      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
+      <p class="author">
+        <span class="date">07 August 2010</span>
+      </p>
+      <div class="content">
+        <br />今天在實作在 sdcard裡面建立一個檔案!<br /><br />其實這沒什麼難度!<br /><br /><pre class="brush: java">File file = new File("/sdcard/tmp/tmp.db");<br />file.createNewFile();<br /></pre><br /><br />這樣乍看之下是沒甚麼問題<br /><br />但如果沒有tmp此目錄的話!<br /><br />則會出現exception<br /><br />當然! 要建立一個目錄也很簡單!!只要用mkdir即可!<br /><br /><pre class="brush: java">file.mkdir();<br /></pre><br /><br />但是!<br /><br />必須加入一個權限才可以建立目錄!<br /><br /><pre class="brush: java">&lt;uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"&gt;&lt;/uses-permission&gt;<br /><br /></pre><br /><br />但是建立檔案就不用了!
+      </div>
+      <hr>
+    
       <h1><a style="color: #F22430" href="/2010/08/01/drawable-bitmap">Drawable 轉換 Bitmap</a></h1>
       <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
       <p class="author">
-        <span class="date">2010-08-01 18:06:00 +0800</span>
+        <span class="date">01 August 2010</span>
       </p>
       <div class="content">
         在實做widget的時候，<br /><br />要在前景把圖片換掉<br /><br />發現只有<br /><br />setImageViewBitmap<br />setImageViewResource<br />setImageViewUri<br /><br />這三個method可以用<br /><br />但是我的圖片是從sqllite中抓出來的!<br /><br />只能先存成drawable!!<br /><br /><pre class="brush: java">ByteArrayInputStream stream = new ByteArrayInputStream( cursor.getBlob(1)); <br />Drawable p_pic              = Drawable.createFromStream(stream, "p_pic"); <br />//fnCastToBitmap是等等自己撰寫的function..<br />Bitmap bitmapTmp = fnCastToBitmap(p_pic);<br /></pre><br /><br /><br />但是這樣的drawable根本沒有id，無法使用setImageViewResource來抓圖!<br /><br />所以只好把它轉成bitmap..<br /><br />如下段CODE:<br /><br /><pre class="brush: java"><br />public Bitmap fnCastToBitmap(Drawable drawable){<br /><br />     //先設定一個config給等等要產生的bitmap，先判斷他的透明度，在判斷他的格式 <br />     Bitmap.Config config =<br />      drawable.getOpacity() != PixelFormat.OPAQUE <br />      ? Bitmap.Config.ARGB_8888 <br />      : Bitmap.Config.RGB_565;<br /><br />     //產生一個bitmap...寬跟高如原來圖的一樣  <br />     Bitmap bitmap = Bitmap.createBitmap( drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(),  config );<br /><br />     //在建立一個canvas，並把圖畫在上面去即可!!!<br />     Canvas canvas = new Canvas(bitmap);<br />     drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());<br />     drawable.draw(canvas);<br />            <br /> <br />     return bitmap;<br />}<br /><br /></pre><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
@@ -252,20 +262,10 @@ data-ad-format="auto"></ins>
       <h1><a style="color: #F22430" href="/2010/07/26/android-tab-activity">Android tab activity</a></h1>
       <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
       <p class="author">
-        <span class="date">2010-07-26 01:41:00 +0800</span>
+        <span class="date">26 July 2010</span>
       </p>
       <div class="content">
         今天來介紹一下Android tab activity好了!<br /><br />其實最近實作了不少東西，但一直沒有時間記錄下來<br /><br />Tab Actity倒是蠻久之前的，拿出來溫習一下吧!<br /><br />先新增一個class吧!<br /><br />但要繼承的是TabActivity!<br /><br />如果要做到Tab變換時，會有所動作時，<br /><br />要記得implements OnTabChangeListener<br /><br />如下:<br /><br /><pre class="brush: java">public class main extends TabActivity implements OnTabChangeListener {<br /><br />}<br /></pre><br /><br />接著就來部屬Tab的長相了!<br /><br />這邊先預設兩個Tab(tab1、tab2)，其實tab裡的東西可以重複使用，這裡只是為了清楚定義<br /><br />而宣告兩個!<br /><br /><br /><pre class="brush: xml">&lt;?xml version="1.0" encoding="utf-8"?&gt;<br />&lt;FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"<br /> android:orientation="vertical" android:layout_width="fill_parent"<br /> android:layout_height="fill_parent"&gt;<br /> &lt;LinearLayout <br />  android:id="@+id/tab1" <br />  android:layout_width="fill_parent"<br />  android:layout_height="fill_parent" <br />  androidrientation="vertical"<br />  android:background="#ffffff"<br /> &gt;<br /> &lt;/LinearLayout&gt;<br /><br /> &lt;LinearLayout <br />  android:id="@+id/tab2" <br />  android:layout_width="fill_parent"<br />  android:layout_height="fill_parent" <br />  androidrientation="vertical"<br />  android:background="#ff0000"<br /> &gt;<br /> &lt;/LinearLayout&gt;<br />&lt;/FrameLayout&gt;<br /></pre><br /><br />接著來撰寫主要的CODE了!<br /><br /><br /><pre class="brush: java"> <br />public class main extends TabActivity implements OnTabChangeListener {<br /> private TabHost tabHost;  //宣告一個TabHost，主機的意思。所有的TAB都要被加在裡面<br /> private TabSpec tab1, tab2;  //先宣告兩個tab<br /><br /> @Override<br /> public void onCreate(Bundle savedInstanceState) {<br />  super.onCreate(savedInstanceState);<br />  tabHost = this.getTabHost(); //先取得TabHost<br />  <br />  //利用Inflater來渲染版變<br />  LayoutInflater.from(this).inflate(R.layout.main,tabHost.getTabContentView(), true);<br />  <br />  //接著就利用newTabSpec新增一個TAB，setIndicator是設定TITLE和背景圖，setContent是設定這個TAB裡面的樣式<br />  tab1 = tabHost.newTabSpec("Id1")<br />      .setIndicator("Tab1",this.getResources().getDrawable(R.drawable.icon2))<br />      .setContent(R.id.tab1);<br />  //加入至tabHost<br />  tabHost.addTab(tab1);<br />  <br />  tab2 = tabHost.newTabSpec("Id2")<br />      .setIndicator("Tab2",this.getResources().getDrawable(R.drawable.icon))<br />      .setContent(R.id.tab2);<br />  tabHost.addTab(tab2);<br />  tabHost.setOnTabChangedListener(this);<br /> }<br /><br /> @Override<br /> public void onTabChanged(String tabId) {<br />  new AlertDialog.Builder(this).setTitle("Hint").setMessage(tabId)<br />    .setPositiveButton("OK", null).show();<br /> }<br />}<br /></pre><br /><br /><br /><br />基本上這樣就大功告成了!<br /><br /><br /><br /><br /><br /><br /><br />
-      </div>
-      <hr>
-    
-      <h1><a style="color: #F22430" href="/2010/07/21/android-appsd-card">讓android app安裝在SD card</a></h1>
-      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
-      <p class="author">
-        <span class="date">2010-07-21 05:08:00 +0800</span>
-      </p>
-      <div class="content">
-        怎麼讓android app安裝在SDcard裡面去?<br /><br />這個問題我研究了一陣子==<br /><br />一直以為是上傳至MARKET有個選項讓我們勾(Application can be copied from the device)<br /><br />以為勾了就可以使那隻APP能夠安裝到記憶卡裡去==<br /><br />原來不是!<br /><br />是要在AndroidManifest.xml裡面插入一個attributes<br /><br />如下<br /><br /><pre class="brush: xml">&lt;manifest <br />      xmlns:android="http://schemas.android.com/apk/res/android"<br />      android:installLocation="preferExternal"&gt;<br /><br /></pre><br />使用<span class="Apple-style-span" style="font-family: monospace; white-space: pre;">android:installLocation此屬性即可，有三個選項</span><br /><span class="Apple-style-span" style="font-family: monospace; white-space: pre;"><br /></span><br /><span class="Apple-style-span" style="font-family: monospace; white-space: pre;">1.internalOnly(只能安裝在手機裡)</span><br /><span class="Apple-style-span" style="font-family: monospace; white-space: pre;"><br /></span><br /><span class="Apple-style-span" style="font-family: monospace; white-space: pre;">2.</span><span class="Apple-style-span" style="font-family: monospace; white-space: pre;">preferExternal(自動安裝至記憶卡裡)</span><br /><span class="Apple-style-span" style="font-family: monospace; white-space: pre;"><br /></span><br /><span class="Apple-style-span" style="font-family: monospace; white-space: pre;">3.auto(就是讓使用者自己選啦)</span><br /><br /><br /><br /><br />
       </div>
       <hr>
     

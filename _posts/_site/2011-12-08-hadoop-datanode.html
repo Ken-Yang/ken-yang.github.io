@@ -1,0 +1,1 @@
+好久沒碰Hadoop，今天要重新跑一次project，<br />發現怪怪的，怎麼連都連不上，<br />就連到server上，<br />下了指令jps，看一下是否都正常啟動，<br />發現DataNode沒有啟動!<br /><br />找了一下解決方式，<br />把預設的hadoop.tmr.dir資料夾先砍掉，假設我放在/appKen/hadoop/tmp<br />那就下指令：rm -rf tmp (rf意思是底下所有資料都砍掉)<br /><br />再來就是重新format NameNode，<br />指令：hadoop namenode -format<br /><br />接著就在啟動一次，<br />指令：start-all.sh<br /><br /><br /><br />

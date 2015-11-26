@@ -11,7 +11,7 @@ layout: default
       <h1><a style="color: #F22430" href="{{ post.url }}">{{ post.title }}</a></h1>
       <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
       <p class="author">
-        <span class="date">{{ post.date }}</span>
+        <span class="date">{{ post.date | date_to_long_string }}</span>
       </p>
       <div class="content">
         {{ post.excerpt }}
