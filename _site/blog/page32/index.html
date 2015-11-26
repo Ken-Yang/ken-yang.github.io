@@ -223,7 +223,50 @@
       </nav>
 
       <div class="container">
-        <body>
+        <style>
+.myButton {
+    -moz-box-shadow:inset 0px 1px 0px 0px #ffffff;
+    -webkit-box-shadow:inset 0px 1px 0px 0px #ffffff;
+    box-shadow:inset 0px 1px 0px 0px #ffffff;
+    background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #f9f9f9), color-stop(1, #e9e9e9));
+    background:-moz-linear-gradient(top, #f9f9f9 5%, #e9e9e9 100%);
+    background:-webkit-linear-gradient(top, #f9f9f9 5%, #e9e9e9 100%);
+    background:-o-linear-gradient(top, #f9f9f9 5%, #e9e9e9 100%);
+    background:-ms-linear-gradient(top, #f9f9f9 5%, #e9e9e9 100%);
+    background:linear-gradient(to bottom, #f9f9f9 5%, #e9e9e9 100%);
+    filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#f9f9f9', endColorstr='#e9e9e9',GradientType=0);
+    background-color:#f9f9f9;
+    -moz-border-radius:6px;
+    -webkit-border-radius:6px;
+    border-radius:6px;
+    border:1px solid #dcdcdc;
+    display:inline-block;
+    cursor:pointer;
+    color:#666666;
+    font-family:Arial;
+    font-size:15px;
+    font-weight:bold;
+    padding:6px 24px;
+    text-decoration:none;
+    text-shadow:0px 1px 0px #ffffff;
+}
+.myButton:hover {
+    background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #e9e9e9), color-stop(1, #f9f9f9));
+    background:-moz-linear-gradient(top, #e9e9e9 5%, #f9f9f9 100%);
+    background:-webkit-linear-gradient(top, #e9e9e9 5%, #f9f9f9 100%);
+    background:-o-linear-gradient(top, #e9e9e9 5%, #f9f9f9 100%);
+    background:-ms-linear-gradient(top, #e9e9e9 5%, #f9f9f9 100%);
+    background:linear-gradient(to bottom, #e9e9e9 5%, #f9f9f9 100%);
+    filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#e9e9e9', endColorstr='#f9f9f9',GradientType=0);
+    background-color:#e9e9e9;
+}
+.myButton:active {
+    position:relative;
+    top:1px;
+}
+</style>
+
+<body>
     <div>
         <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 <!-- id10t_top -->
@@ -242,31 +285,85 @@ data-ad-format="auto"></ins>
       <h1><a style="color: #F22430" href="/2011/04/28/jstl-problem-of-import-with-param">JSTL problem of Import with param</a></h1>
       <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
       <p class="author">
-        <span class="date">28 April 2011</span>
+      <div class="date">
+        <span>28 April 2011</span>
+      </div>
       </p>
-      <div class="content">
+      <div class="content" style="line-height: 28px;">
         我有一個set of entity，<br />我想要把這entity的資料，redirect到另一個page（footer.jsp），<br />我用了JSTL的<c:import></c:import><br />如下：<br /><pre class="brush: html"> <br />&lt;c:import url = "/footer.jsp"  charEncoding="utf-8"&gt;<br /> &lt;c:param name="com"&gt;${requestScope.company }&lt;/c:param&gt;<br />&lt;/c:import&gt;<br /><br /></pre><br />但是http在request&nbsp;parameters時會當作string來對待，<br />但在這個例子中，我傳的是一個object，<br />所以在接收頁時會有錯誤，因為該object已經被轉成string，<br />所以會找不到該property，<br />因為在<c:param>會自行把value轉換成string，</c:param><br />如同String.valueOf()。<br /><br />所以我改用另一個方法，如下<br /><pre class="brush: html">&lt;c:set var="com" value="${requestScope.company}" scope="request" /&gt;    <br />&lt;c:import url = "/footer.jsp"  charEncoding="utf-8" /&gt;<br /><br /></pre><br /><br /><br /><br /><br /><br />
       </div>
+      <footer>
+        <p><a class="myButton" href="/2011/04/28/jstl-problem-of-import-with-param">read more &raquo;</a></p>
+        <div>
+          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- id10t_top -->
+<ins class="adsbygoogle"
+style="display:block"
+data-ad-client="ca-pub-7586970907106458"
+data-ad-slot="1161208442"
+data-ad-format="auto"></ins>
+<script>
+    (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+        </div>
+      </footer>
       <hr>
     
       <h1><a style="color: #F22430" href="/2011/03/31/ubuntu-install-vsftpd">ubuntu install vsftpd</a></h1>
       <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
       <p class="author">
-        <span class="date">31 March 2011</span>
+      <div class="date">
+        <span>31 March 2011</span>
+      </div>
       </p>
-      <div class="content">
+      <div class="content" style="line-height: 28px;">
         今天剛灌好ubuntu server，順便把vsftpd裝起來，<br />但是發現一直找不到該package，<br />結果發現其實只是沒有更新sources.list，<br />只要下<br /><div style="background: #E3F0FA; border: 1px dashed #89A6C6; margin-left: 10px; margin-top: 10px; padding-left: 10px; width: 200px;">sudo apt-get update </div><br />更新完以後，就可以找到了。<br />只要下<br /><div style="background: #E3F0FA; border: 1px dashed #89A6C6; margin-left: 10px; margin-top: 10px; padding-left: 10px; width: 200px;">sudo apt-get install vsftpd </div>就可以安裝起來。<br />安裝完成以後，就針對設定檔進行一些微調<br />像是我不希望我的ftp server可以匿名登入，<br />那麼我就要去設定檔把匿名登入關掉，<br />首先先用編輯器開啟設定檔<br /><div style="background: #E3F0FA; border: 1px dashed #89A6C6; margin-left: 10px; margin-top: 10px; padding-left: 10px; width: 200px;">sudo vim /etc/vsftpd.conf</div>打開以後，把<br /><br />anonymous_enable=YES<br />改成<br /><br />anonymous_enable=no<br /><br />接著存檔離開。<br />並重新啟動<br /><div style="background: #E3F0FA; border: 1px dashed #89A6C6; margin-left: 10px; margin-top: 10px; padding-left: 10px; width: 300px;">sudo /etc/init.d/vsftpd restart</div><br />這樣即可。<br />詳細設定檔可以去鳥哥看<br /><br />
       </div>
+      <footer>
+        <p><a class="myButton" href="/2011/03/31/ubuntu-install-vsftpd">read more &raquo;</a></p>
+        <div>
+          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- id10t_top -->
+<ins class="adsbygoogle"
+style="display:block"
+data-ad-client="ca-pub-7586970907106458"
+data-ad-slot="1161208442"
+data-ad-format="auto"></ins>
+<script>
+    (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+        </div>
+      </footer>
       <hr>
     
       <h1><a style="color: #F22430" href="/2011/03/18/gaej-datastoreneedindexexception-no">GAE/J DatastoreNeedIndexException: no matching index found解決方式</a></h1>
       <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
       <p class="author">
-        <span class="date">18 March 2011</span>
+      <div class="date">
+        <span>18 March 2011</span>
+      </div>
       </p>
-      <div class="content">
+      <div class="content" style="line-height: 28px;">
         今天在實作一對多的relation，<br /><br />在部署上去以後，一直覺得出錯，<br /><br />錯誤訊息是：<b>com.google.appengine.api.datastore.DatastoreNeedIndexException: no matching index found..</b><br /><br />原因當然是因為沒有建立index，可是覺得很怪，<br /><br />因為之前記得會自動幫我建立index，<br /><br />找了一下solution，<br /><br />發現只要在local端run一次，就會自動幫我建立好index，<br /><br />並且會放在project_path\war\WEB-INF\appengine-generated資料夾底下，<br /><br />檔名為datastore-indexes-auto.xml<br /><br />裡面就是幫你建立相關的index語法。<br /><br />當然你也可以自己建立index。<br /><br /><br /><br /><br /><br />
       </div>
+      <footer>
+        <p><a class="myButton" href="/2011/03/18/gaej-datastoreneedindexexception-no">read more &raquo;</a></p>
+        <div>
+          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- id10t_top -->
+<ins class="adsbygoogle"
+style="display:block"
+data-ad-client="ca-pub-7586970907106458"
+data-ad-slot="1161208442"
+data-ad-format="auto"></ins>
+<script>
+    (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+        </div>
+      </footer>
       <hr>
     
 

@@ -223,7 +223,50 @@
       </nav>
 
       <div class="container">
-        <body>
+        <style>
+.myButton {
+    -moz-box-shadow:inset 0px 1px 0px 0px #ffffff;
+    -webkit-box-shadow:inset 0px 1px 0px 0px #ffffff;
+    box-shadow:inset 0px 1px 0px 0px #ffffff;
+    background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #f9f9f9), color-stop(1, #e9e9e9));
+    background:-moz-linear-gradient(top, #f9f9f9 5%, #e9e9e9 100%);
+    background:-webkit-linear-gradient(top, #f9f9f9 5%, #e9e9e9 100%);
+    background:-o-linear-gradient(top, #f9f9f9 5%, #e9e9e9 100%);
+    background:-ms-linear-gradient(top, #f9f9f9 5%, #e9e9e9 100%);
+    background:linear-gradient(to bottom, #f9f9f9 5%, #e9e9e9 100%);
+    filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#f9f9f9', endColorstr='#e9e9e9',GradientType=0);
+    background-color:#f9f9f9;
+    -moz-border-radius:6px;
+    -webkit-border-radius:6px;
+    border-radius:6px;
+    border:1px solid #dcdcdc;
+    display:inline-block;
+    cursor:pointer;
+    color:#666666;
+    font-family:Arial;
+    font-size:15px;
+    font-weight:bold;
+    padding:6px 24px;
+    text-decoration:none;
+    text-shadow:0px 1px 0px #ffffff;
+}
+.myButton:hover {
+    background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #e9e9e9), color-stop(1, #f9f9f9));
+    background:-moz-linear-gradient(top, #e9e9e9 5%, #f9f9f9 100%);
+    background:-webkit-linear-gradient(top, #e9e9e9 5%, #f9f9f9 100%);
+    background:-o-linear-gradient(top, #e9e9e9 5%, #f9f9f9 100%);
+    background:-ms-linear-gradient(top, #e9e9e9 5%, #f9f9f9 100%);
+    background:linear-gradient(to bottom, #e9e9e9 5%, #f9f9f9 100%);
+    filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#e9e9e9', endColorstr='#f9f9f9',GradientType=0);
+    background-color:#e9e9e9;
+}
+.myButton:active {
+    position:relative;
+    top:1px;
+}
+</style>
+
+<body>
     <div>
         <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 <!-- id10t_top -->
@@ -242,31 +285,85 @@ data-ad-format="auto"></ins>
       <h1><a style="color: #F22430" href="/2011/12/24/android-c2dm_22">Android C2DM (二)：流程</a></h1>
       <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
       <p class="author">
-        <span class="date">24 December 2011</span>
+      <div class="date">
+        <span>24 December 2011</span>
+      </div>
       </p>
-      <div class="content">
+      <div class="content" style="line-height: 28px;">
         <span style="font-size: large;"><b>前一篇在講<a href="http://blog.kenyang.net/2011/12/android-c2dm.html">參數說明</a></b></span><br /><span style="font-size: large;"><b>這篇專注於流程說明</b></span><br /><span style="font-size: large;"><b>第三篇在講<a href="http://blog.kenyang.net/2012/03/android-c2dm-sever.html">Server端的實作</a></b></span><br /><span style="font-size: large;"><b>第四篇在講<a href="http://blog.kenyang.net/2012/03/android-c2dm-android.html">Android端的實作</a></b></span><br /><br />Android C2DM的實作步驟大概分為下列三項：<br /><ul><li><b>Enabling C2DM </b>：在Android Device上啟動C2DM準備receive訊息。</li><li><b>Sending a message</b>：Server傳遞訊息至Device</li><li><b>Receiving a message</b>：Android上收來自C2DM Server的訊息</li></ul><div>下面是個三項的說明流程，</div><div><br /></div><div><b><span style="font-size: large;">1. Enabling C2DM</span></b></div><div><ol><li>首先要先啟動一個registration Intent到C2DM的SERVER (com.google.android.c2dm.intent.REGISTER)，且這Intent必須但兩個參數，第一個是<span style="color: red;">SENDER ID</span>，第二個是<span style="color: red;">application ID</span>。<a href="http://blog.kenyang.net/2011/12/android-c2dm.html">參數說明請看這。</a></li><li>如果這個registration成功了，C2DM的Server會回傳(broadcast)一個<span style="color: red;">registration ID</span>，這時候Android applicaiton要把這<span style="color: red;">registration ID</span>先存起來，待會用。(Google可能會一段時間就去refresh這個registration ID）</li><li>完成註冊以及取得<span style="color: red;">resgistration ID</span>以後，Android App必須把此ID傳到自己的server上去。Server一樣得把這ID存起來。</li></ol></div>註：register ID會存活直到你unregister，或者直到Google refresh為止。<br /><br /><br /><br /><div><span style="font-size: large;"><b>2. Sending a message</b></span></div><div><ol><li>在send a message之前，必須確認<b>Android app</b>和<b>Sever</b>上已經有<span style="color: red;"> resgistration&nbsp;&nbsp;ID</span>了，以及Sever必須有<span style="color: red;">ClientLogin authorization token</span>. 至於怎麼取得這個token，可以去看<a href="http://code.google.com/apis/accounts/docs/AuthForInstalledApps.html">Google官網說明</a></li><li>完成上面的以後，首先，Sever必須先send訊息至C2DM Sever上</li><li>Google收到以後，會先存起來，以免Android device是inactive的狀態。</li><li>當Device是online的狀態，Google就會send訊息至device上。</li></ol><div><br /></div></div><br /><br /><div><span style="font-size: large;"><b>3. Receiving a Message</b></span></div><div><ol><li>首先Android OS會先收到這則Message， </li><li>接著Android OS會把這則訊息，會根據package name發送到含有註冊com.google.android.c2dm.intent.RECEIVE的app上去</li><li>最後，該app就會從自己註冊的RECEIVER的Intent裡收到message，就可以處理資料了。</li></ol><br /><br /><span style="font-size: large;"><br /></span></div><span style="font-size: large;"><b>下一篇會講如何去實作。</b></span><br /><span style="font-size: large;"><b><br /></b></span><br /><span style="font-size: large;"><b><br /></b></span><br /><span style="font-size: large;"><b><br /></b></span><br /><br /><br /><br /><br />
       </div>
+      <footer>
+        <p><a class="myButton" href="/2011/12/24/android-c2dm_22">read more &raquo;</a></p>
+        <div>
+          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- id10t_top -->
+<ins class="adsbygoogle"
+style="display:block"
+data-ad-client="ca-pub-7586970907106458"
+data-ad-slot="1161208442"
+data-ad-format="auto"></ins>
+<script>
+    (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+        </div>
+      </footer>
       <hr>
     
       <h1><a style="color: #F22430" href="/2011/12/24/android-c2dm">Android C2DM (一)：元件參數說明</a></h1>
       <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
       <p class="author">
-        <span class="date">24 December 2011</span>
+      <div class="date">
+        <span>24 December 2011</span>
+      </div>
       </p>
-      <div class="content">
+      <div class="content" style="line-height: 28px;">
         <b><span style="font-size: large;">這篇為參數說明!</span></b><br /><b><span style="font-size: large;">下一篇為<a href="http://blog.kenyang.net/2011/12/android-c2dm_22.html">流程說明</a></span></b><br /><span style="font-size: large;"><b>第三篇在講<a href="http://blog.kenyang.net/2012/03/android-c2dm-sever.html">Server端的實作</a></b>&nbsp;</span><br /><span style="font-size: large;"><b>第四篇在講<a href="http://blog.kenyang.net/2012/03/android-c2dm-android.html">Android端的實作</a></b></span><br /><br /><br /><style type="text/css">table.sample {  width: 600px;  border-width: 1px;  border-spacing: 2px;  border-style: solid;  border-color: black;  border-collapse: collapse;  background-color: white; } table.sample .header {  width: 150px;  text-align: left;  border-width: 1px;  padding: 1px;  border-style: solid;  border-color: black;  background-color: white; } table.sample .content {  border-width: 1px;  padding: 1px;  border-style: solid;  border-color: black;  background-color: white; } </style><br />Android <a href="http://code.google.com/android/c2dm/">C2DM </a>(Android Cloud to Device Messaging)<br />C2DM是一個framework，用來負責做messaging的，<br />讓開發者可以從自己的web server傳遞訊息至Android的device上，<br />是一種push的概念!<br />詳細介紹就去官網看吧!<br />這邊主要介紹如何實作，因為發現網路上幾乎都是大陸人在教學，<br />沒有甚麼台灣人在PO教學，所以來PO一下。<br /><br />先介紹三個元件(腳色)<br /><table border="1" cellpadding="4" class="sample"><tbody><tr> <th bgcolor="#99CCFF" colspan="2">Component</th> </tr><tr> <td class="header">Mobile Device</td>      <td class="content">搭載著android 2.2以上的手機</td> </tr><tr> <td class="header">Third-Party Application Server</td>      <td class="content">開發者自己建立的server，它將傳遞訊息給C2DM Server，C2DM再傳遞給Mobile Device。必須建立一個與C2DM Server溝通的管道</td> </tr><tr> <td class="header">C2DM Servers </td>      <td class="content">屬於Mobile Device與Third-Party Application Server之間的中間腳色，負責與這兩個溝通</td> </tr></tbody></table><br />所需的憑證 <br /><table border="1" cellpadding="4" class="sample"><tbody><tr> <th bgcolor="#99CCFF" colspan="2">Credentials</th> </tr><tr> <td class="header">Sender ID</td>      <td class="content">開發者的email帳號，這個email帳號會用來註冊一個C2DM的process</td> </tr><tr> <td class="header">Application ID</td>      <td class="content">簡單的說是package name</td> </tr><tr> <td class="header">Registration ID</td>      <td class="content">由C2DM servers所發行給device，device拿到此id，必須再傳給Third-Party Application Server(就是我們自己建立的)，server會根據此id判斷是否被認可。</td> </tr><tr> <td class="header">Google User Account</td>      <td class="content">每隻device上，必須登入Google 帳號</td> </tr><tr> <td class="header">Sender Auth Token</td>      <td class="content">上面四項都是和device相關的，這個是和server相關的，server必須存有ClientLogin Auth token，用來存取Google的service，至於怎麼取得token很簡單，只要向Google的server發出request，就會回傳給你，可以去<a href="http://code.google.com/apis/accounts/docs/AuthForInstalledApps.html#Using">Google ClientLogin的官網</a>看，或者可以去我<a href="http://blog.kenyang.net/2011/12/telnet-post.html">之前發的文</a>看怎麼用telen發出一個request。這篇將不多做說明。</td> </tr></tbody></table><br /><br /><br /><span style="font-size: x-large;"><b>詳細的流程說明請看<a href="http://blog.kenyang.net/2011/12/android-c2dm_22.html">下一篇</a>。</b></span><br /><br /><br /><br /><br /><br /><br />
       </div>
+      <footer>
+        <p><a class="myButton" href="/2011/12/24/android-c2dm">read more &raquo;</a></p>
+        <div>
+          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- id10t_top -->
+<ins class="adsbygoogle"
+style="display:block"
+data-ad-client="ca-pub-7586970907106458"
+data-ad-slot="1161208442"
+data-ad-format="auto"></ins>
+<script>
+    (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+        </div>
+      </footer>
       <hr>
     
       <h1><a style="color: #F22430" href="/2011/12/17/android-life-cycle">Android Life Cycle （二）詳細講解</a></h1>
       <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
       <p class="author">
-        <span class="date">17 December 2011</span>
+      <div class="date">
+        <span>17 December 2011</span>
+      </div>
       </p>
-      <div class="content">
+      <div class="content" style="line-height: 28px;">
         <a href="http://blog.kenyang.net/2011/11/android-lifecycle.html">前一篇</a>已經簡略的說明Android Activity Life Cycle，<br />這篇將詳細說明Activity在Android 裡記憶體life cycle的呈現，<br /><br /><br /><br />假設我有2個 Activity&nbsp;，分別是A(主畫面)、B(子畫面)，<br />A中有一個按鈕，可以換頁面到B<br /><pre class="brush: java">startActivity(new Intent(A.this, B.class));</pre><br /><br />B中有一個按鈕，可以換頁面到A<br /><pre class="brush: java">startActivity(new Intent(B.this, A.class));</pre><br /><br /><br />且A為app進入點<br /><pre class="brush: java">&lt;intent-filter &gt;<br />  &lt;action android:name="android.intent.action.MAIN" /&gt;<br />  &lt;category android:name="android.intent.category.LAUNCHER" /&gt;<br />&lt;/intent-filter&gt;<br /><br /></pre><br /><br />執行此app時，記憶體的表現會如下圖： <br /><div class="separator" style="clear: both; text-align: center;"><a href="http://4.bp.blogspot.com/-dlbPjhqBxWg/TuubZRYATLI/AAAAAAAAAaQ/fGxJXl8DYm8/s1600/a4.png" imageanchor="1" style="clear: left; float: left; margin-bottom: 1em; margin-right: 1em;"><img border="0" height="320" src="http://4.bp.blogspot.com/-dlbPjhqBxWg/TuubZRYATLI/AAAAAAAAAaQ/fGxJXl8DYm8/s320/a4.png" width="281" /></a></div><br /><br /><div class="separator" style="clear: both; text-align: center;"><a href="http://3.bp.blogspot.com/-pNjJbp9rEKM/TuuawgdQ18I/AAAAAAAAAZ4/KlNmWLLs2Wg/s1600/a1.png" imageanchor="1" style="clear: left; float: left; margin-bottom: 1em; margin-right: 1em;"><br /></a><a href="http://3.bp.blogspot.com/-pNjJbp9rEKM/TuuawgdQ18I/AAAAAAAAAZ4/KlNmWLLs2Wg/s1600/a1.png" imageanchor="1" style="clear: left; float: left; margin-bottom: 1em; margin-right: 1em;"><br /></a><a href="http://3.bp.blogspot.com/-pNjJbp9rEKM/TuuawgdQ18I/AAAAAAAAAZ4/KlNmWLLs2Wg/s1600/a1.png" imageanchor="1" style="clear: left; float: left; margin-bottom: 1em; margin-right: 1em;"><br /></a><a href="http://3.bp.blogspot.com/-pNjJbp9rEKM/TuuawgdQ18I/AAAAAAAAAZ4/KlNmWLLs2Wg/s1600/a1.png" imageanchor="1" style="clear: left; float: left; margin-bottom: 1em; margin-right: 1em;"><img border="0" height="326" src="http://3.bp.blogspot.com/-pNjJbp9rEKM/TuuawgdQ18I/AAAAAAAAAZ4/KlNmWLLs2Wg/s400/a1.png" width="400" /></a></div><br />如果這時候在A畫面按下換頁面至B的按鈕，<br />則記憶體的狀態如下圖<br />A會先去call onPause-&gt;onStop<br />注意!!! 並沒有onDestroy，A這個物件是還存在的<br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />如果這時候在B畫面按下手機上的"【返回】按鈕，<br />則記憶體的狀態如下圖<br />B會先去call onPause -&gt; onStop -&gt; <span style="color: blue;">onDestroy</span><br />注意!!! 這裡有onDestroy，此時B物件是被銷毀的，<br />這個情況應該是正常的life cycle，<br />可是有些人會用換頁的方式(startActivity)回到上一個畫面，<br />在我的觀念裡，會不建議這樣的行為，繼續往下看!<br /><br /><br /><div class="separator" style="clear: both; text-align: center;"><a href="http://1.bp.blogspot.com/-qoMJj_xRCBc/TuuaxIEhKqI/AAAAAAAAAZ8/DCLpAMb1RSQ/s1600/a2.png" imageanchor="1" style="clear: left; float: left; margin-bottom: 1em; margin-right: 1em;"><img border="0" height="276" src="http://1.bp.blogspot.com/-qoMJj_xRCBc/TuuaxIEhKqI/AAAAAAAAAZ8/DCLpAMb1RSQ/s400/a2.png" width="400" /></a></div><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />如果這時候在B畫面，而且想要回到A畫面，<br />B畫面(下圖)中左上角，有一個自己做的返回按鈕，<br />則此時這返回按鈕的code為<br /><pre class="brush: java">startActivity(new Intent(B.this, A.class));</pre><br />當使用者按下這個按鈕時！<br /><br /><br /><div class="separator" style="clear: both; text-align: center;"></div><div class="separator" style="clear: both; text-align: center;"><a href="http://4.bp.blogspot.com/-GIwwGSk0eqI/TuueLiXlvBI/AAAAAAAAAaY/eVsiQXL-Lqk/s1600/device-2011-12-17-033450.png" imageanchor="1" style="clear: left; float: left; margin-bottom: 1em; margin-right: 1em;"><img border="0" height="400" src="http://4.bp.blogspot.com/-GIwwGSk0eqI/TuueLiXlvBI/AAAAAAAAAaY/eVsiQXL-Lqk/s400/device-2011-12-17-033450.png" width="240" /></a></div><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />則此時記憶體的狀態如下圖！<br />B會進入到onStop的狀態！<br />且會有一個新的A畫面（橘色）!!!<br />則此時舊的A畫面（藍色）就會存在記憶體裡，暫時無法回收....<br /><br /><br /><div class="separator" style="clear: both; text-align: center;"><a href="http://1.bp.blogspot.com/-SjVEDlL6_8o/Tuuax056yzI/AAAAAAAAAaE/lgui8Dzhe0Y/s1600/a3.png" imageanchor="1" style="clear: left; float: left; margin-bottom: 1em; margin-right: 1em;"><img border="0" height="281" src="http://1.bp.blogspot.com/-SjVEDlL6_8o/Tuuax056yzI/AAAAAAAAAaE/lgui8Dzhe0Y/s400/a3.png" width="400" /></a></div><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />因此不建議用這種方式回到上一個畫面，<br />會講這篇的原因，是為了稍後的另一篇，<br />要講解Bitmap recycle和 Out of Memory (OOM)的問題！<br />在做recycle時，得去考慮到整體life cycle的問題才行！<br /><br /><br /><br /><br /><br /><br />
       </div>
+      <footer>
+        <p><a class="myButton" href="/2011/12/17/android-life-cycle">read more &raquo;</a></p>
+        <div>
+          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- id10t_top -->
+<ins class="adsbygoogle"
+style="display:block"
+data-ad-client="ca-pub-7586970907106458"
+data-ad-slot="1161208442"
+data-ad-format="auto"></ins>
+<script>
+    (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+        </div>
+      </footer>
       <hr>
     
 

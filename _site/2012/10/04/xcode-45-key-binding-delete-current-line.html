@@ -223,7 +223,78 @@
       </nav>
 
       <div class="container">
-        
+        <style>
+/* Adjusted to give override background and text colour */
+.highlight pre, pre, .highlight .hll {
+    background-color: #49483E;
+    border: 1px solid #ccc;
+    padding: 6px 10px;
+    border-radius: 3px;
+    color: #FFFFFF;
+}
+/* Highlights taken from https://gist.github.com/asaaki/1007420  for Monokai theme */
+.c                 { color: #75715e }               /* Comment                     */
+.err               { color: #960050;
+                     background-color: #1e0010 }    /* Error                       */
+.k                 { color: #66d9ef }               /* Keyword                     */
+.l                 { color: #ae81ff }               /* Literal                     */
+.n                 { color: #f8f8f2 }               /* Name                        */
+.o                 { color: #f92672 }               /* Operator                    */
+.p                 { color: #f8f8f2 }               /* Punctuation                 */
+.cm                { color: #75715e }               /* Comment.Multiline           */
+.cp                { color: #75715e }               /* Comment.Preproc             */
+.c1                { color: #75715e }               /* Comment.Single              */
+.cs                { color: #75715e }               /* Comment.Special             */
+.ge                { font-style: italic }           /* Generic.Emph                */
+.gs                { font-weight: bold }            /* Generic.Strong              */
+.kc                { color: #66d9ef }               /* Keyword.Constant            */
+.kd                { color: #66d9ef }               /* Keyword.Declaration         */
+.kn                { color: #f92672 }               /* Keyword.Namespace           */
+.kp                { color: #66d9ef }               /* Keyword.Pseudo              */
+.kr                { color: #66d9ef }               /* Keyword.Reserved            */
+.kt                { color: #66d9ef }               /* Keyword.Type                */
+.ld                { color: #e6db74 }               /* Literal.Date                */
+.m                 { color: #ae81ff }               /* Literal.Number              */
+.s                 { color: #e6db74 }               /* Literal.String              */
+.na                { color: #a6e22e }               /* Name.Attribute              */
+.nb                { color: #f8f8f2 }               /* Name.Builtin                */
+.nc                { color: #a6e22e }               /* Name.Class                  */
+.no                { color: #66d9ef }               /* Name.Constant               */
+.nd                { color: #a6e22e }               /* Name.Decorator              */
+.ni                { color: #f8f8f2 }               /* Name.Entity                 */
+.ne                { color: #a6e22e }               /* Name.Exception              */
+.nf                { color: #a6e22e }               /* Name.Function               */
+.nl                { color: #f8f8f2 }               /* Name.Label                  */
+.nn                { color: #f8f8f2 }               /* Name.Namespace              */
+.nx                { color: #a6e22e }               /* Name.Other                  */
+.py                { color: #f8f8f2 }               /* Name.Property               */
+.nt                { color: #f92672 }               /* Name.Tag                    */
+.nv                { color: #f8f8f2 }               /* Name.Variable               */
+.ow                { color: #f92672 }               /* Operator.Word               */
+.w                 { color: #f8f8f2 }               /* Text.Whitespace             */
+.mf                { color: #ae81ff }               /* Literal.Number.Float        */
+.mh                { color: #ae81ff }               /* Literal.Number.Hex          */
+.mi                { color: #ae81ff }               /* Literal.Number.Integer      */
+.mo                { color: #ae81ff }               /* Literal.Number.Oct          */
+.sb                { color: #e6db74 }               /* Literal.String.Backtick     */
+.sc                { color: #e6db74 }               /* Literal.String.Char         */
+.sd                { color: #e6db74 }               /* Literal.String.Doc          */
+.s2                { color: #e6db74 }               /* Literal.String.Double       */
+.se                { color: #ae81ff }               /* Literal.String.Escape       */
+.sh                { color: #e6db74 }               /* Literal.String.Heredoc      */
+.si                { color: #e6db74 }               /* Literal.String.Interpol     */
+.sx                { color: #e6db74 }               /* Literal.String.Other        */
+.sr                { color: #e6db74 }               /* Literal.String.Regex        */
+.s1                { color: #e6db74 }               /* Literal.String.Single       */
+.ss                { color: #e6db74 }               /* Literal.String.Symbol       */
+.bp                { color: #f8f8f2 }               /* Name.Builtin.Pseudo         */
+.vc                { color: #f8f8f2 }               /* Name.Variable.Class         */
+.vg                { color: #f8f8f2 }               /* Name.Variable.Global        */
+.vi                { color: #f8f8f2 }               /* Name.Variable.Instance      */
+.il                { color: #ae81ff }               /* Literal.Number.Integer.Long */
+</style>
+
+
 <div class="page-header">
   <h1>Xcode 4.5 key binding (delete current line) </h1>
 </div>
@@ -257,7 +328,7 @@ data-ad-format="auto"></ins>
     <div class="date">
       <span>04 October 2012</span>
     </div>
-    <div class="content">
+    <div class="content" style="line-height: 28px;">
       最近剛拿到了mba, 開始在進行ios &amp; mac的study！<br />所以一定要用到xcode！<br />xcode真的是蠻強大的，像是analysis memory leak的工具！<br />但一直用習慣eclipse的我，還是有點點小小不習慣，<br />例如在eclispe可以刪除目前游標所在的一整行或者是複製一整行！<br />在eclispe可以透過hot key去操作！很方便！ 在Eclipse裡面就有這些選項可以讓開發者設定！<br /><br />但是在Xcode沒有預設的hot key可以“直接”做到！<br />得透過一連串的hot key去做到，例如先按下cmd+d -&gt; cmd+x (隨便舉例的）<br />簡單的說無法透過一個步驟就去做到（例如cmd+d)<br /><br />但好險我們可以自行設定一個combine的組合鍵來完成上述的動作！<br /><br />首先先開啓terminal！<br />然後切換到下面的目錄<br /><pre class="brush: java">cd /Applications/Xcode.app/Contents/Frameworks/IDEKit.framework/<br /></pre><br />然後可以下ls -al看一下該目錄底下的目錄結構，<br />你會看到如下圖的結構！<br />你會發現有兩個Link指向Versions這個資料夾！<br />你的資料夾的權限應該是r--r--r--x！<br />只有讀的權限！<br />但我們等等要修改該目錄底下的檔案，所以先把權限設777吧！<br /><div class="separator" style="clear: both; text-align: center;"><a href="http://3.bp.blogspot.com/-QGMemXTaciw/UG0hjhyKxMI/AAAAAAAAA40/Do8-tulYvUw/s1600/Screen+Shot+2012-10-04+at+1.43.40+PM.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="158" src="http://3.bp.blogspot.com/-QGMemXTaciw/UG0hjhyKxMI/AAAAAAAAA40/Do8-tulYvUw/s640/Screen+Shot+2012-10-04+at+1.43.40+PM.png" width="640" /></a></div><div class="separator" style="clear: both; text-align: center;"><br /></div><div class="separator" style="clear: both; text-align: left;"><br /></div><div class="separator" style="clear: both; text-align: left;">指令如下：</div><div class="separator" style="clear: both; text-align: left;"></div><pre class="brush: java">chmod 777 Versions<br /></pre><div class="separator" style="clear: both; text-align: left;"><br /></div><div class="separator" style="clear: both; text-align: left;"><br /></div><div class="separator" style="clear: both; text-align: left;">改變以後我們在進到裡面的目錄！</div><div class="separator" style="clear: both; text-align: left;">如下：</div><div class="separator" style="clear: both; text-align: left;"></div><pre class="brush: java">cd ./Current/Resources<br /></pre><div class="separator" style="clear: both; text-align: left;"><br /></div><div class="separator" style="clear: both; text-align: left;"><br /></div><div class="separator" style="clear: both; text-align: left;">然後Xcode的預設key binding設定檔就在該目錄底下</div><div class="separator" style="clear: both; text-align: left;">接著就用vim去修改設定檔案吧！</div><div class="separator" style="clear: both; text-align: left;"></div><pre class="brush: java">sudo vim ./IDETextKeyBindingSet.plist <br /></pre><div class="separator" style="clear: both; text-align: left;"><br /></div><div class="separator" style="clear: both; text-align: left;"><br /></div><div class="separator" style="clear: both; text-align: left;">打開以後會看到一大串的xml格式，基本上只要在下面dist中間加入入即可！</div><div class="separator" style="clear: both; text-align: left;"></div><pre class="brush: xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;<br />&lt;!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd"&gt;<br />&lt;plist version="1.0"&gt;<br />&lt;dict&gt;<br /><br />&lt;/dict&gt;<br />&lt;/plist&gt;<br /></pre><div class="separator" style="clear: both; text-align: left;"><br /></div><div class="separator" style="clear: both; text-align: left;">所以加入以後，就會變成下面的樣子！</div><div class="separator" style="clear: both; text-align: left;"></div><pre class="brush: xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;<br />&lt;!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd"&gt;<br />&lt;plist version="1.0"&gt;<br />&lt;dict&gt;<br />        &lt;dict&gt;<br />                &lt;key&gt;DeleteCurrentLine&lt;/key&gt;<br />                &lt;string&gt;moveToBeginningOfLine:, deleteToEndOfLine:&lt;/string&gt;<br />        &lt;/dict&gt;<br /><br />&lt;/dict&gt;<br />&lt;/plist&gt;<br /></pre><div class="separator" style="clear: both; text-align: left;"><br /></div><div class="separator" style="clear: both; text-align: left;"><br /></div><div class="separator" style="clear: both; text-align: left;">這個例子是刪除目前游標行，</div><div class="separator" style="clear: both; text-align: left;"><key>裡面就是這個指令的名稱 （別亂取，待會 要在Xcode裡面進行這個指令的快捷鍵）</key></div><div class="separator" style="clear: both; text-align: left;"><string>裡面就是這個指令的一連串指令，我們可以看到有下面兩個</string></div><div class="separator" style="clear: both; text-align: left;"></div><br /><ul><li>moveToBeginningOfLine（意思是移到這行的最前面）</li><li>deleteToEndOfLine（意思是從游標位置開始刪除，刪除到這行的最後面）</li></ul><br /><br /><div class="separator" style="clear: both; text-align: left;">透過上述的指令就可以進行刪除一整行，</div><div class="separator" style="clear: both; text-align: left;">接著就打開Xcode吧！</div><div class="separator" style="clear: both; text-align: left;">1) 先進到Preferences裡面！</div><div class="separator" style="clear: both; text-align: left;">2) 選擇Key Binding！</div><div class="separator" style="clear: both; text-align: left;">3) 然後在搜尋筐中輸入你剛剛上面xml檔案中填入的key名稱</div><div class="separator" style="clear: both; text-align: left;">4) 基本上你就可以找到你剛剛設定的檔案！就可以修改他的快捷鍵了！像下圖的案例就是以cmd+d來進行刪除一整行</div><div class="separator" style="clear: both; text-align: left;"><br /></div><div class="separator" style="clear: both; text-align: left;"><br /></div><div class="separator" style="clear: both; text-align: left;"><br /></div><div class="separator" style="clear: both; text-align: center;"><a href="http://3.bp.blogspot.com/-yMPP_tk9GHk/UG0neA6heoI/AAAAAAAAA5I/4ba3gfFjV4o/s1600/Screen+Shot+2012-10-04+at+2.06.51+PM.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="244" src="http://3.bp.blogspot.com/-yMPP_tk9GHk/UG0neA6heoI/AAAAAAAAA5I/4ba3gfFjV4o/s640/Screen+Shot+2012-10-04+at+2.06.51+PM.png" width="640" /></a></div><div class="separator" style="clear: both; text-align: left;"><br /></div><div class="separator" style="clear: both; text-align: left;"><br /></div><div class="separator" style="clear: both; text-align: left;"><br /></div><div class="separator" style="clear: both; text-align: left;"><br /></div><div class="separator" style="clear: both; text-align: left;"><br /></div><div class="separator" style="clear: both; text-align: left;"><br /></div><div class="separator" style="clear: both; text-align: left;"><br /></div><div class="separator" style="clear: both; text-align: left;"><br /></div>
     </div>
 

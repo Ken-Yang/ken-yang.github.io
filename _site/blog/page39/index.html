@@ -223,7 +223,50 @@
       </nav>
 
       <div class="container">
-        <body>
+        <style>
+.myButton {
+    -moz-box-shadow:inset 0px 1px 0px 0px #ffffff;
+    -webkit-box-shadow:inset 0px 1px 0px 0px #ffffff;
+    box-shadow:inset 0px 1px 0px 0px #ffffff;
+    background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #f9f9f9), color-stop(1, #e9e9e9));
+    background:-moz-linear-gradient(top, #f9f9f9 5%, #e9e9e9 100%);
+    background:-webkit-linear-gradient(top, #f9f9f9 5%, #e9e9e9 100%);
+    background:-o-linear-gradient(top, #f9f9f9 5%, #e9e9e9 100%);
+    background:-ms-linear-gradient(top, #f9f9f9 5%, #e9e9e9 100%);
+    background:linear-gradient(to bottom, #f9f9f9 5%, #e9e9e9 100%);
+    filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#f9f9f9', endColorstr='#e9e9e9',GradientType=0);
+    background-color:#f9f9f9;
+    -moz-border-radius:6px;
+    -webkit-border-radius:6px;
+    border-radius:6px;
+    border:1px solid #dcdcdc;
+    display:inline-block;
+    cursor:pointer;
+    color:#666666;
+    font-family:Arial;
+    font-size:15px;
+    font-weight:bold;
+    padding:6px 24px;
+    text-decoration:none;
+    text-shadow:0px 1px 0px #ffffff;
+}
+.myButton:hover {
+    background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #e9e9e9), color-stop(1, #f9f9f9));
+    background:-moz-linear-gradient(top, #e9e9e9 5%, #f9f9f9 100%);
+    background:-webkit-linear-gradient(top, #e9e9e9 5%, #f9f9f9 100%);
+    background:-o-linear-gradient(top, #e9e9e9 5%, #f9f9f9 100%);
+    background:-ms-linear-gradient(top, #e9e9e9 5%, #f9f9f9 100%);
+    background:linear-gradient(to bottom, #e9e9e9 5%, #f9f9f9 100%);
+    filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#e9e9e9', endColorstr='#f9f9f9',GradientType=0);
+    background-color:#e9e9e9;
+}
+.myButton:active {
+    position:relative;
+    top:1px;
+}
+</style>
+
+<body>
     <div>
         <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 <!-- id10t_top -->
@@ -242,31 +285,85 @@ data-ad-format="auto"></ins>
       <h1><a style="color: #F22430" href="/2010/11/06/jsp-include">JSP 兩種include 的差別</a></h1>
       <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
       <p class="author">
-        <span class="date">06 November 2010</span>
+      <div class="date">
+        <span>06 November 2010</span>
+      </div>
       </p>
-      <div class="content">
+      <div class="content" style="line-height: 28px;">
         在JSP中，<br /><br />include有分兩種<br /><br /><pre class="brush: xml">&lt;%@include file="/footer.jsp" %&gt;&lt;!-- 第一種 --&gt;<br /><br /><br />&lt;jsp:include page="/footer.jsp"&gt;&lt;/jsp:include&gt;&lt;!-- 第二種 --&gt;<br /><br /><br /><br /></pre><br /><br />第一種稱為<span class="Apple-style-span" style="color: red;">指令元素</span><br /><br />第二種稱為<span class="Apple-style-span" style="color: red;">動作元素</span><br /><br />差別在於<br /><br />第一種的include會在編譯時期（轉換成servlet）就將file include進來，<br /><br />而第二種在編譯時期並不會被編譯，是在client request時，才會動態的去載入在去編譯。<br /><br /><br />且第一種最後只會有一個.class檔案，<br /><br />因為他會在被轉換成servlet之前就把include的file融合至原本的內容中<br /><br />最後才轉換成servlet，故只有一個.class檔案<br /><br />而第二種就會有兩種。<br /><br /><br />總結<br /><br />第一種是在編譯時期就去include<br /><br />第二種是在run time時期去include（這個效能似乎較差一點點，但較靈活）<br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
       </div>
+      <footer>
+        <p><a class="myButton" href="/2010/11/06/jsp-include">read more &raquo;</a></p>
+        <div>
+          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- id10t_top -->
+<ins class="adsbygoogle"
+style="display:block"
+data-ad-client="ca-pub-7586970907106458"
+data-ad-slot="1161208442"
+data-ad-format="auto"></ins>
+<script>
+    (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+        </div>
+      </footer>
       <hr>
     
       <h1><a style="color: #F22430" href="/2010/11/04/imac">非常不專業之iMAC開箱文</a></h1>
       <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
       <p class="author">
-        <span class="date">04 November 2010</span>
+      <div class="date">
+        <span>04 November 2010</span>
+      </div>
       </p>
-      <div class="content">
+      <div class="content" style="line-height: 28px;">
         <br /><div style="color: #333333; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; line-height: 1.5em; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px; text-align: left;">恩，因緣際會下，</div><div style="color: #333333; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; line-height: 1.5em; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px; text-align: left;"><br /></div><div style="color: #333333; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; line-height: 1.5em; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px; text-align: left;">有人送我一台iMac，</div><div style="color: #333333; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; line-height: 1.5em; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px; text-align: left;"><br /></div><div style="color: #333333; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; line-height: 1.5em; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px; text-align: left;">當然不是平白無故的，</div><div style="color: #333333; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; line-height: 1.5em; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px; text-align: left;"><br /></div><div style="color: #333333; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; line-height: 1.5em; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px; text-align: left;">天底下沒有白吃的午餐!!</div><div style="color: #333333; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; line-height: 1.5em; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px; text-align: left;"><br /></div><div style="color: #333333; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; line-height: 1.5em; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px; text-align: left;">條件是要我part-time，寫iPhone app..</div><div style="color: #333333; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; line-height: 1.5em; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px; text-align: left;"><br /></div><div style="color: #333333; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; line-height: 1.5em; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px; text-align: left;">其實對我來說，沒有甚麼損失，多碰點東西!</div><div style="color: #333333; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; line-height: 1.5em; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px; text-align: left;"><br /></div><div style="color: #333333; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; line-height: 1.5em; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px; text-align: left;">之前一直局限於設備，雖然說可以用vmware來灌os x，</div><div style="color: #333333; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; line-height: 1.5em; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px; text-align: left;"><br /></div><div style="color: #333333; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; line-height: 1.5em; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px; text-align: left;">但一直沒動力，不過竟然有人要提供給我mac了，</div><div style="color: #333333; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; line-height: 1.5em; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px; text-align: left;"><br /></div><div style="color: #333333; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; line-height: 1.5em; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px; text-align: left;">我就順便接下來阿~~~~~</div><div style="color: #333333; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; line-height: 1.5em; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px; text-align: left;"><br /></div><div style="color: #333333; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; line-height: 1.5em; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px; text-align: left;">從一開始的mac book pro→mac mini→iMac</div><div style="color: #333333; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; line-height: 1.5em; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px; text-align: left;"><br /></div><div style="color: #333333; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; line-height: 1.5em; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px; text-align: left;">最後是拿到iMac</div><div style="color: #333333; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; line-height: 1.5em; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px; text-align: left;"><br /></div><div style="color: #333333; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; line-height: 1.5em; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px; text-align: left;">不過並不是全新的啦!</div><div style="color: #333333; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; line-height: 1.5em; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px; text-align: left;"><br /></div><div style="color: #333333; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; line-height: 1.5em; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px; text-align: left;">不過至少規格也不差!!!</div><div style="color: #333333; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; line-height: 1.5em; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px; text-align: left;"><br /></div><div style="color: #333333; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; line-height: 1.5em; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px; text-align: left;">至少比我目前的桌機好!</div><div style="color: #333333; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; line-height: 1.5em; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px; text-align: left;"><br /></div><div style="color: #333333; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; line-height: 1.5em; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px; text-align: left;"><br /></div><div style="color: #333333; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; line-height: 1.5em; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px; text-align: left;">今天用了一下的心得就是</div><div style="color: #333333; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; line-height: 1.5em; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px; text-align: left;"><br /></div><div style="color: #333333; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; line-height: 1.5em; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px; text-align: left;">apple的滑鼠(magic mouse)真的很好用!!!!!</div><div style="color: #333333; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; line-height: 1.5em; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px; text-align: left;"><br /></div><div style="color: #333333; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; line-height: 1.5em; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px; text-align: left;">鍵盤也好打!!!!!!!</div><div style="color: #333333; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; line-height: 1.5em; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px; text-align: left;"><br /></div><div style="color: #333333; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; line-height: 1.5em; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px; text-align: left;">大螢幕也真的很爽(可惜不是27吋)</div><div style="color: #333333; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; line-height: 1.5em; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px; text-align: left;"><br /></div><div style="color: #333333; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; line-height: 1.5em; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px; text-align: left;">btw, 我今天一直找不到開機扭在哪裡(我好俗喔!!!)</div><div style="color: #333333; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; line-height: 1.5em; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px; text-align: left;"><br /></div><div style="color: #333333; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; line-height: 1.5em; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px; text-align: left;"><br /></div><div style="color: #333333; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; line-height: 1.5em; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px; text-align: left;">底下是圖片~~~</div><div style="color: #333333; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; line-height: 1.5em; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px; text-align: left;"><br /></div><div class="separator" style="clear: both; text-align: center;"><a href="http://1.bp.blogspot.com/_6SxqtkJQECI/TNLRoL7esYI/AAAAAAAAALQ/IK0oRlmRiSE/s1600/IMG_20101104_230122.jpg" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="240" src="http://1.bp.blogspot.com/_6SxqtkJQECI/TNLRoL7esYI/AAAAAAAAALQ/IK0oRlmRiSE/s320/IMG_20101104_230122.jpg" width="320" /></a></div><br /><table align="center" cellpadding="0" cellspacing="0" class="tr-caption-container" style="margin-left: auto; margin-right: auto; text-align: center;"><tbody><tr><td style="text-align: center;"><a href="http://3.bp.blogspot.com/_6SxqtkJQECI/TNLRsqF-8BI/AAAAAAAAALU/901xwvIZNG4/s1600/IMG_20101104_230133.jpg" imageanchor="1" style="margin-left: auto; margin-right: auto;"><img border="0" height="240" src="http://3.bp.blogspot.com/_6SxqtkJQECI/TNLRsqF-8BI/AAAAAAAAALU/901xwvIZNG4/s320/IMG_20101104_230133.jpg" width="320" /></a></td></tr><tr><td class="tr-caption" style="text-align: center;">magic mouse，好用!</td></tr></tbody></table><br /><div class="separator" style="clear: both; text-align: center;"><a href="http://3.bp.blogspot.com/_6SxqtkJQECI/TNLRzfBw5BI/AAAAAAAAALY/TS2AQs3G64k/s1600/IMG_20101104_230137.jpg" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="240" src="http://3.bp.blogspot.com/_6SxqtkJQECI/TNLRzfBw5BI/AAAAAAAAALY/TS2AQs3G64k/s320/IMG_20101104_230137.jpg" width="320" /></a></div><br /><table align="center" cellpadding="0" cellspacing="0" class="tr-caption-container" style="margin-left: auto; margin-right: auto; text-align: center;"><tbody><tr><td style="text-align: center;"><a href="http://3.bp.blogspot.com/_6SxqtkJQECI/TNLR3MwcNYI/AAAAAAAAALc/PsdXt2pGMaI/s1600/IMG_20101104_230441.jpg" imageanchor="1" style="margin-left: auto; margin-right: auto;"><img border="0" height="240" src="http://3.bp.blogspot.com/_6SxqtkJQECI/TNLR3MwcNYI/AAAAAAAAALc/PsdXt2pGMaI/s320/IMG_20101104_230441.jpg" width="320" /></a></td></tr><tr><td class="tr-caption" style="text-align: center;">漂亮的螢幕</td></tr></tbody></table><br /><div class="separator" style="clear: both; text-align: center;"><a href="http://2.bp.blogspot.com/_6SxqtkJQECI/TNLR76eORgI/AAAAAAAAALg/ZuJja0PamU0/s1600/IMG_20101104_230512.jpg" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="240" src="http://2.bp.blogspot.com/_6SxqtkJQECI/TNLR76eORgI/AAAAAAAAALg/ZuJja0PamU0/s320/IMG_20101104_230512.jpg" width="320" /></a></div><div style="color: #333333; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; line-height: 1.5em; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px; text-align: left;"><br /></div><div style="color: #333333; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; line-height: 1.5em; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px; text-align: left;"><br /></div><div style="color: #333333; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; line-height: 1.5em; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px; text-align: left;"><br /></div><div style="color: #333333; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; line-height: 1.5em; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px; text-align: left;"><br /></div><div style="color: #333333; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; line-height: 1.5em; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px; text-align: left;"><br /></div><div style="color: #333333; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; line-height: 1.5em; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px; text-align: left;"><br /></div><div style="color: #333333; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; line-height: 1.5em; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px; text-align: left;"><br /></div>
       </div>
+      <footer>
+        <p><a class="myButton" href="/2010/11/04/imac">read more &raquo;</a></p>
+        <div>
+          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- id10t_top -->
+<ins class="adsbygoogle"
+style="display:block"
+data-ad-client="ca-pub-7586970907106458"
+data-ad-slot="1161208442"
+data-ad-format="auto"></ins>
+<script>
+    (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+        </div>
+      </footer>
       <hr>
     
       <h1><a style="color: #F22430" href="/2010/11/01/android-detect-screen-on-and-screen-off">android detect screen on and screen off</a></h1>
       <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
       <p class="author">
-        <span class="date">01 November 2010</span>
+      <div class="date">
+        <span>01 November 2010</span>
+      </div>
       </p>
-      <div class="content">
+      <div class="content" style="line-height: 28px;">
         android detect screen on and screen off<br /><br />android偵測螢幕的關閉與開啟，<br /><br />和偵測sd card一樣，<br /><br />Intent.ACTION_SCREEN_OFF和Intent.ACTION_SCREEN_ON是不能在AndroidManifest.xml裡面宣告的<br /><br />如:<br /><br /><pre class="brush: xml">&lt;receiver android:name="receiverScreen"&gt; <br />    &lt;intent-filter&gt;  <br />        &lt;action android:name="android.intent.action.SCREEN_ON" /&gt;<br />        &lt;action android:name="android.intent.action.SCREEN_OFF" /&gt;<br />    &lt;/intent-filter&gt;  <br />&lt;/receiver&gt;  <br /></pre><br /><br />這樣子的宣告<span class="Apple-style-span" style="color: red;"><b>沒有用</b></span>，你永遠都receive不到任何action<br /><br />詳細原因我也不知道，但是可以透過registerReceiver去實作，<br /><br />這裡舉個例子，先啟動一個service，由這個service去registerReceiver<br /><br />由service啟動的好處是，service可以常駐，<br /><br />如果你用acitivity去registerReceiver<br /><br />這個acitivity關閉以後，你一樣receive不到任何action<br /><br />且如果你只是想偵測acitivity的關閉與否的話，可以直接利用onResume和onPause去偵測即可<br /><br />不用特地去registerReceiver<br /><br /><br />但是如果今天你有一個widget在桌面，<br /><br />且我們是無法透過widget去registerReceiver，<br /><br />會出現exception（ReceiverCallNotAllowedException）<br /><br />所以一定得透過service去啟動。<br /><br />service的code如下:<br /><br /><pre class="brush: java">public class serviceScreen extends Service {<br /><br /> @Override<br /> public IBinder onBind(Intent intent) {<br />  // TODO Auto-generated method stub<br />  return null;<br /> }<br /> <br /> @Override<br /> public void onStart(Intent intent, int startId) {<br />     super.onStart(intent, startId);<br />     try {<br />          IntentFilter filter = new IntentFilter(Intent.ACTION_SCREEN_ON);<br />    <br />          filter.addAction(Intent.ACTION_SCREEN_OFF);<br />    <br />          BroadcastReceiver mReceiver = new receiverScreen();<br />   <br />          registerReceiver(mReceiver, filter);<br />     } catch (Exception e) {<br />          Log.d("main",e.toString());<br />     }<br /> }<br /><br />}<br /><br /><br /></pre><br /><br />receiver的code如下：<br /><br /><pre class="brush: java">public class receiverScreen extends BroadcastReceiver {<br /><br /> @Override<br /> public void onReceive(Context context, Intent intent) {<br />  <br />     if (intent.getAction().equals(Intent.ACTION_SCREEN_ON)){<br />          //收到螢幕開啟的通知<br />     }else{<br />          //收到螢幕關閉的通知<br />     }<br />  <br /> }<br /><br />}<br /><br /><br /></pre><br /><br /><br />接著就是在widget中去startService<br /><br />如下：<br /><br /><pre class="brush: java">public class widgetSmall extends AppWidgetProvider {<br /> <br /><br /> @SuppressWarnings("static-access")<br /> @Override<br /> public void onUpdate(Context context, AppWidgetManager appWidgetManager,int[] appWidgetIds) {<br />     super.onUpdate(context, appWidgetManager, appWidgetIds);<br />            <br />    //啟動一個service<br />     context.startService(new Intent(context, serviceScreen.class));<br />  <br />  <br /> }<br /> <br /><br /> @SuppressWarnings("static-access")<br /> @Override<br /> public void onDeleted(Context context, int[] appWidgetIds) {<br />     super.onDeleted(context, appWidgetIds);<br /><br /><br />    //當這個widget被刪除時，就stopService<br />      context.stopService(new Intent(context, serviceScreen.class) );<br />   <br />      android.os.Process.killProcess(android.os.Process.myPid());<br />  <br /> <br /> }<br /> <br /><br />}<br /><br /><br /></pre><br /><br /><br /><br /><br /><br /><br />
       </div>
+      <footer>
+        <p><a class="myButton" href="/2010/11/01/android-detect-screen-on-and-screen-off">read more &raquo;</a></p>
+        <div>
+          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- id10t_top -->
+<ins class="adsbygoogle"
+style="display:block"
+data-ad-client="ca-pub-7586970907106458"
+data-ad-slot="1161208442"
+data-ad-format="auto"></ins>
+<script>
+    (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+        </div>
+      </footer>
       <hr>
     
 

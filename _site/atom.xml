@@ -4,7 +4,7 @@
  <title>Ken Yang筆記</title>
  <link href="http://blog.kenyang.net/atom.xml" rel="self"/>
  <link href="http://blog.kenyang.net"/>
- <updated>2015-11-26T13:24:43+08:00</updated>
+ <updated>2015-11-26T20:33:44+08:00</updated>
  <id>http://blog.kenyang.net</id>
  <author>
    <name>Ken Yang</name>
@@ -13,27 +13,32 @@
 
  
  <entry>
-   <title>如何把blogger搬到github pages</title>
+   <title>如何把Google Blogger搬到Github pages</title>
    <link href="http://blog.kenyang.net/2015/11/26/move-blogger-to-github"/>
    <updated>2015-11-26T00:00:00+08:00</updated>
    <id>http://blog.kenyang.net/2015/11/26/move-blogger-to-github</id>
-   <content type="html">&lt;p&gt;最近一直很想從Google Blogger中離家出走，因為在blogger寫筆記實在太麻煩了，&lt;br&gt;
+   <content type="html">&lt;p&gt;&lt;font size=3&gt;
+最近一直很想從Google Blogger中離家出走，因為在blogger寫筆記實在太麻煩了，&lt;br&gt;
 每一個筆記的format每次都調得好累，&lt;br&gt;
 且我很常在local寫一份markdown，&lt;br&gt;
-這樣等於我要寫二次..&lt;br&gt;
-所以就動起了念頭要搬到一個支援markdown格式的地方。&lt;br&gt;
+這樣等於我要寫二次..  &lt;/p&gt;
+
+&lt;p&gt;所以就動起了念頭要搬到一個支援markdown格式的地方。&lt;br&gt;
 那我選的是github pages，然後搭配著jekyll這個tool去做publish。&lt;br&gt;
 所以這篇會圍繞在下面的主題，&lt;/p&gt;
 
 &lt;ol&gt;
 &lt;li&gt;建立github repo&lt;/li&gt;
 &lt;li&gt;用jekyll-bootstrap建立一個template&lt;/li&gt;
-&lt;li&gt;用jekyll-import把blogger資料轉出來&lt;/li&gt;
+&lt;li&gt;用jekyll-import把blogger資料匯出與匯入&lt;/li&gt;
 &lt;li&gt;安裝jekyll&lt;/li&gt;
-&lt;li&gt;安裝paginator&lt;/li&gt;
-&lt;li&gt;整合Adsense&lt;/li&gt;
+&lt;li&gt;安裝jekyll-paginate&lt;/li&gt;
+&lt;li&gt;整合Google Adsense&lt;/li&gt;
 &lt;li&gt;整合comment system&lt;/li&gt;
+&lt;li&gt;整合Google Analytics&lt;/li&gt;
 &lt;/ol&gt;
+
+&lt;!--more--&gt;
 
 &lt;h2 id=&quot;1-建立github-repo&quot;&gt;1. 建立github repo&lt;/h2&gt;
 
@@ -45,16 +50,207 @@ repo名稱為&lt;code&gt;your_name.github.io&lt;/code&gt;，&lt;br&gt;
 
 &lt;h2 id=&quot;2-jekyll-bootstrap&quot;&gt;2. jekyll-bootstrap&lt;/h2&gt;
 
-&lt;p&gt;然後使用&lt;a href=&quot;http://jekyllbootstrap.com/usage/jekyll-quick-start.html&quot;&gt;jekyll-bootstrap&lt;/a&gt;來快速地建立一個template，&lt;br&gt;
-這個template是以boostrap為基底。&lt;br&gt;
-使用方式如下（記得把&lt;code&gt;ken-yang&lt;/code&gt;換成你的&lt;code&gt;your_name&lt;/code&gt;)：&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-mysql&quot; data-lang=&quot;mysql&quot;&gt;&lt;span class=&quot;n&quot;&gt;mysql&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;uroot&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;psafesync&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;osdp&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;e&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;select * from users&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;select&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;users&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;ifconfig&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;eth0&lt;/span&gt;  
-&lt;span class=&quot;n&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;hi&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;s&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;JavaScript syntax highlighting&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;nx&quot;&gt;alert&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;s&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</content>
+&lt;p&gt;&lt;a href=&quot;http://jekyllbootstrap.com/usage/jekyll-quick-start.html&quot;&gt;jekyll-bootstrap&lt;/a&gt;是一個線上工具，&lt;br&gt;
+可以讓你快速地建立一個template，&lt;br&gt;
+然後這個template是以boostrap為基底。&lt;br&gt;
+使用方式如下（記得把&lt;code&gt;USERNAME&lt;/code&gt;換成你的&lt;code&gt;your_name&lt;/code&gt;)：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git clone https://github.com/plusjade/jekyll-bootstrap.git USERNAME.github.io
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cd &lt;/span&gt;USERNAME.github.io
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git remote &lt;span class=&quot;nb&quot;&gt;set&lt;/span&gt;-url origin git@github.com:USERNAME/USERNAME.github.ui.git
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git push origin master
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;接著你就可以去&lt;code&gt;USERNAME.github.io&lt;/code&gt;看看，應該會有default的index。&lt;/p&gt;
+
+&lt;p&gt;&lt;/br&gt; &lt;/p&gt;
+
+&lt;h2 id=&quot;3-jekyll-import-（匯出與匯入）&quot;&gt;3. jekyll-import （匯出與匯入）&lt;/h2&gt;
+
+&lt;p&gt;接著我們要把原本在google blogger上的資料轉出來，&lt;br&gt;
+這裡使用&lt;a href=&quot;http://import.jekyllrb.com/docs/installation/&quot;&gt;jekyll-import&lt;/a&gt;這個tool。
+安裝&lt;a href=&quot;http://import.jekyllrb.com/docs/installation/&quot;&gt;jekyll-import&lt;/a&gt;之前，&lt;br&gt;
+如果你是用MAC，請先安裝xcode，&lt;br&gt;
+如果是用linux，請先安裝make。&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;gem install -n jekyll-import
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;安裝成功以後，去google blogger的後台把文章通通export出來。&lt;br&gt;
+然後再terminal執行下面的指令，&lt;br&gt;
+記得把&lt;code&gt;/path/to/blog-MM-DD-YYYY.xml&lt;/code&gt;換成對應的位置。&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;ruby -rubygems -e &lt;span class=&quot;s1&quot;&gt;&amp;#39;require &amp;quot;jekyll-import&amp;quot;;&lt;/span&gt;
+&lt;span class=&quot;s1&quot;&gt;    JekyllImport::Importers::Blogger.run({&lt;/span&gt;
+&lt;span class=&quot;s1&quot;&gt;      &amp;quot;source&amp;quot;                =&amp;gt; &amp;quot;/path/to/blog-MM-DD-YYYY.xml&amp;quot;,&lt;/span&gt;
+&lt;span class=&quot;s1&quot;&gt;      &amp;quot;no-blogger-info&amp;quot;       =&amp;gt; false, # not to leave blogger-URL info (id and old URL) in the front matter&lt;/span&gt;
+&lt;span class=&quot;s1&quot;&gt;      &amp;quot;replace-internal-link&amp;quot; =&amp;gt; false, # replace internal links using the post_url liquid tag.&lt;/span&gt;
+&lt;span class=&quot;s1&quot;&gt;    })&amp;#39;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;接著會產生二個資料夾，分別為&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;_posts&lt;/code&gt; 放文章的地方&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;_draft&lt;/code&gt; 放草稿的地方&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;接著就把_posts底下的資料搬移至剛剛的git project底下，&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;cp _posts/* USERNAME.github.ui.git/_posts/
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;/br&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;4-安裝jekyll&quot;&gt;4. 安裝jekyll&lt;/h2&gt;
+
+&lt;p&gt;接著安裝&lt;a href=&quot;https://jekyllrb.com/&quot;&gt;jekyll&lt;/a&gt;，&lt;br&gt;
+jekyll主要功用為:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;在local preview你的post&lt;/li&gt;
+&lt;li&gt;render post&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;安裝方式一樣是透過gem，&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;gem install -n /usr/local/bin jekyll
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;安裝成功就可以用jekyll去preview你的posts，&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cd &lt;/span&gt;USERNAME.github.io
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;jekyll serve
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;然後會在你的local起一個web server，&lt;br&gt;
+網址是&lt;code&gt;http://localhost:4000&lt;/code&gt;，&lt;br&gt;
+在執行&lt;code&gt;serve&lt;/code&gt;的當下就會幫我們render post了，&lt;br&gt;
+接著就可以把所有的changed push回去github上。  &lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git add . 
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git cm -m &lt;span class=&quot;s1&quot;&gt;&amp;#39;add posts&amp;#39;&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git push origin master
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;然後一樣去&lt;code&gt;USERNAME.github.io&lt;/code&gt;看看，會有原本在blogger上的posts了！&lt;/p&gt;
+
+&lt;p&gt;&lt;/br&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;5-安裝jekyll-paginate&quot;&gt;5. 安裝jekyll-paginate&lt;/h2&gt;
+
+&lt;p&gt;jekyll-paginate功用就是分頁，如果你不想要你的首頁就把所有的post通通列出來，&lt;br&gt;
+那麼就可以安裝這個plugin，  &lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;gem install -n /usr/local/bin jekyll-paginate
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;接著打開&lt;code&gt;_config.yml&lt;/code&gt;，然後加入下面三行，&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;gems: [jekyll-paginate]
+paginate: 3
+paginate_path: &amp;quot;/blog/page:num&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;然後有一個比較tricky的地方，&lt;br&gt;
+如果你的首頁是index.md，pagenate是無法幫你gen出來，&lt;br&gt;
+必須是index.html，但很簡單，你只要把&lt;code&gt;mv index.md  index.html&lt;/code&gt;即可，&lt;br&gt;
+mv完成以後，接著打開&lt;code&gt;index.html&lt;/code&gt;，&lt;br&gt;
+然後把下面的code貼入。&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-html&quot; data-lang=&quot;html&quot;&gt;{% for post in paginator.posts %}
+  &lt;span class=&quot;nt&quot;&gt;&amp;lt;h1&amp;gt;&amp;lt;a&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;style=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;color: #F22430&amp;quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;href=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;{{ post.url }}&amp;quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;{{ post.title }}&lt;span class=&quot;nt&quot;&gt;&amp;lt;/a&amp;gt;&amp;lt;/h1&amp;gt;&lt;/span&gt;
+  &lt;span class=&quot;nt&quot;&gt;&amp;lt;div&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;style=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;width: 100%; border-bottom: 1px solid #E7E7E7;&amp;quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&amp;lt;/div&amp;gt;&lt;/span&gt;
+  &lt;span class=&quot;nt&quot;&gt;&amp;lt;p&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;class=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;author&amp;quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;&amp;lt;span&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;class=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;date&amp;quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;{{ post.date | date_to_long_string }}&lt;span class=&quot;nt&quot;&gt;&amp;lt;/span&amp;gt;&lt;/span&gt;
+  &lt;span class=&quot;nt&quot;&gt;&amp;lt;/p&amp;gt;&lt;/span&gt;
+  &lt;span class=&quot;nt&quot;&gt;&amp;lt;div&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;class=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;content&amp;quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
+    {{ post.excerpt }}
+  &lt;span class=&quot;nt&quot;&gt;&amp;lt;/div&amp;gt;&lt;/span&gt;
+  &lt;span class=&quot;nt&quot;&gt;&amp;lt;footer&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;&amp;lt;p&amp;gt;&amp;lt;a&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;class=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;myButton&amp;quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;href=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;{{ post.url | prepend: site.baseurl }}&amp;quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;{{ site.more }} &lt;span class=&quot;ni&quot;&gt;&amp;amp;raquo;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;lt;/a&amp;gt;&amp;lt;/p&amp;gt;&lt;/span&gt;
+  &lt;span class=&quot;nt&quot;&gt;&amp;lt;/footer&amp;gt;&lt;/span&gt;
+  &lt;span class=&quot;nt&quot;&gt;&amp;lt;hr&amp;gt;&lt;/span&gt;
+{% endfor %}
+&lt;span class=&quot;c&quot;&gt;&amp;lt;!-- Pagination links --&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;div&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;class=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;pagination&amp;quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
+  {% if paginator.previous_page %}
+    &lt;span class=&quot;nt&quot;&gt;&amp;lt;a&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;href=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;{{ paginator.previous_page_path }}&amp;quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;class=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;previous&amp;quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;Previous&lt;span class=&quot;nt&quot;&gt;&amp;lt;/a&amp;gt;&lt;/span&gt;
+  {% else %}
+    &lt;span class=&quot;nt&quot;&gt;&amp;lt;span&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;class=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;previous&amp;quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;Previous&lt;span class=&quot;nt&quot;&gt;&amp;lt;/span&amp;gt;&lt;/span&gt;
+  {% endif %}
+    &lt;span class=&quot;nt&quot;&gt;&amp;lt;span&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;class=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;page_number &amp;quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;Page: {{ paginator.page }} of {{ paginator.total_pages }}&lt;span class=&quot;nt&quot;&gt;&amp;lt;/span&amp;gt;&lt;/span&gt;
+  {% if paginator.next_page %}
+    &lt;span class=&quot;nt&quot;&gt;&amp;lt;a&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;href=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;{{ paginator.next_page_path }}&amp;quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;class=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;next&amp;quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;Next&lt;span class=&quot;nt&quot;&gt;&amp;lt;/a&amp;gt;&lt;/span&gt;
+  {% else %}
+    &lt;span class=&quot;nt&quot;&gt;&amp;lt;span&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;class=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;next &amp;quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;Next&lt;span class=&quot;nt&quot;&gt;&amp;lt;/span&amp;gt;&lt;/span&gt;
+  {% endif %}
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;/div&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;接著就在重新render一次。&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;jekyll serve
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;完成以後，在&lt;code&gt;_site/blog/&lt;/code&gt;底下，就會有很多&lt;code&gt;pageX&lt;/code&gt;的資料夾，&lt;br&gt;
+接著就可以通通在push回去github上。&lt;/p&gt;
+
+&lt;p&gt;&lt;/br&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;6-整合adsense&quot;&gt;6. 整合Adsense&lt;/h2&gt;
+
+&lt;p&gt;這裡用adsense當作廣告source，&lt;br&gt;
+首先先去adsense網站上申請，這裡就不教怎麼申請了，&lt;br&gt;
+申請完以後，會給你一串javascript，&lt;br&gt;
+把它複製起來，然後建立一個新的html檔案。&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;vim _includes/adsense.html
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;然後把剛剛adsense給的那串javascript貼進去，如下，&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-html&quot; data-lang=&quot;html&quot;&gt;&lt;span class=&quot;nt&quot;&gt;&amp;lt;script &lt;/span&gt;&lt;span class=&quot;na&quot;&gt;async&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;src=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js&amp;quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&amp;lt;/script&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;&amp;lt;!-- id10t_top --&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;ins&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;class=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;adsbygoogle&amp;quot;&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;style=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;display:block&amp;quot;&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;data-ad-client=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;ca-pub-xxxxxxxxxxxx&amp;quot;&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;data-ad-slot=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;1161208442&amp;quot;&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;data-ad-format=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;auto&amp;quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&amp;lt;/ins&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;script&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;adsbygoogle&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;window&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;adsbygoogle&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[]).&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;push&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;({});&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;/script&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;接著我們就可以在想要放廣告的page裡面，include &lt;code&gt;adsense.html&lt;/code&gt;這個file，&lt;br&gt;
+假設我們想要在首頁放廣告，那麼就是打開 &lt;code&gt;index.html&lt;/code&gt; ，&lt;br&gt;
+然後在適當的地方貼入下面的code，  &lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-html&quot; data-lang=&quot;html&quot;&gt;{% include adsense.html %}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;接著一樣重新render一次就完成了。&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;jekyll serve
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;/br&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;7-整合comment-system&quot;&gt;7. 整合Comment system&lt;/h2&gt;
+
+&lt;p&gt;jekyll裡面內建了很多的comment system，有disqus、facebook...etc.&lt;br&gt;
+這裡我選擇了&lt;a href=&quot;https://disqus.com/home/explore/&quot;&gt;disgus&lt;/a&gt;，因為預設也是使用它。&lt;br&gt;
+那首先要先去&lt;a href=&quot;https://disqus.com/home/explore/&quot;&gt;disgus&lt;/a&gt;上註冊，&lt;br&gt;
+註冊非常簡單，也不需要認證。&lt;br&gt;
+註冊完成以後就會取得一個&lt;code&gt;short name&lt;/code&gt;，&lt;br&gt;
+有了&lt;code&gt;short name&lt;/code&gt;以後，就打開&lt;code&gt;_config.yml&lt;/code&gt;，&lt;br&gt;
+然後找到&lt;code&gt;comments&lt;/code&gt;這個key，然後把你的&lt;code&gt;short name&lt;/code&gt;填入即可。&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;comments :
+  provider : disqus
+  disqus :
+    short_name : your_short_name
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;完成以後，一樣重新render就完成了。&lt;/p&gt;
+
+&lt;p&gt;&lt;/br&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;8-整合google-analytics&quot;&gt;8. 整合Google Analytics&lt;/h2&gt;
+
+&lt;p&gt;jekyll也有內建analytics的功能，其實跟上面的comment system差不多，&lt;br&gt;
+一樣填入analytics id即可。&lt;br&gt;
+但我發現jekyll的analytics 好像比較舊。&lt;br&gt;
+所以我就不用它內建的，我就用與adsense的方式一樣，&lt;br&gt;
+先create一個&lt;code&gt;analytics.html&lt;/code&gt;，接著把下面的code貼入，&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-html&quot; data-lang=&quot;html&quot;&gt;&lt;span class=&quot;nt&quot;&gt;&amp;lt;script&amp;gt;&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;s&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;o&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;g&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;r&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;m&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;){&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;GoogleAnalyticsObject&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;r&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;r&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;r&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;||&lt;/span&gt;&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(){&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;r&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;].&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;q&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;r&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;].&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;q&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;||&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[]).&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;push&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;arguments&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)},&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;r&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;].&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;l&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;Date&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;s&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;createElement&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;o&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;
+  &lt;span class=&quot;nx&quot;&gt;m&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;s&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;getElementsByTagName&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;o&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;async&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;src&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;g&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;m&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;parentNode&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;insertBefore&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;m&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;})(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;window&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;document&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;script&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;//www.google-analytics.com/analytics.js&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;ga&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+  &lt;span class=&quot;nx&quot;&gt;ga&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;create&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;UA-xxxxxx-1&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;auto&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+  &lt;span class=&quot;nx&quot;&gt;ga&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;send&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;pageview&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;/script&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;然後在我想要track的地方，貼入下面的code，&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-html&quot; data-lang=&quot;html&quot;&gt;{% include analytics.html %}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;然後在重新render就完成了！&lt;br&gt;
+最後只要把你的cname指向username.github.io，&lt;br&gt;
+以及在目錄底下建立一個名稱為&lt;code&gt;CNAME&lt;/code&gt;的file，填入你的domain就好了。&lt;/p&gt;
+
+&lt;p&gt;&lt;/font&gt;&lt;/p&gt;
+</content>
  </entry>
  
  <entry>

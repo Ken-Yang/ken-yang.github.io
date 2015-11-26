@@ -223,7 +223,50 @@
       </nav>
 
       <div class="container">
-        <body>
+        <style>
+.myButton {
+    -moz-box-shadow:inset 0px 1px 0px 0px #ffffff;
+    -webkit-box-shadow:inset 0px 1px 0px 0px #ffffff;
+    box-shadow:inset 0px 1px 0px 0px #ffffff;
+    background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #f9f9f9), color-stop(1, #e9e9e9));
+    background:-moz-linear-gradient(top, #f9f9f9 5%, #e9e9e9 100%);
+    background:-webkit-linear-gradient(top, #f9f9f9 5%, #e9e9e9 100%);
+    background:-o-linear-gradient(top, #f9f9f9 5%, #e9e9e9 100%);
+    background:-ms-linear-gradient(top, #f9f9f9 5%, #e9e9e9 100%);
+    background:linear-gradient(to bottom, #f9f9f9 5%, #e9e9e9 100%);
+    filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#f9f9f9', endColorstr='#e9e9e9',GradientType=0);
+    background-color:#f9f9f9;
+    -moz-border-radius:6px;
+    -webkit-border-radius:6px;
+    border-radius:6px;
+    border:1px solid #dcdcdc;
+    display:inline-block;
+    cursor:pointer;
+    color:#666666;
+    font-family:Arial;
+    font-size:15px;
+    font-weight:bold;
+    padding:6px 24px;
+    text-decoration:none;
+    text-shadow:0px 1px 0px #ffffff;
+}
+.myButton:hover {
+    background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #e9e9e9), color-stop(1, #f9f9f9));
+    background:-moz-linear-gradient(top, #e9e9e9 5%, #f9f9f9 100%);
+    background:-webkit-linear-gradient(top, #e9e9e9 5%, #f9f9f9 100%);
+    background:-o-linear-gradient(top, #e9e9e9 5%, #f9f9f9 100%);
+    background:-ms-linear-gradient(top, #e9e9e9 5%, #f9f9f9 100%);
+    background:linear-gradient(to bottom, #e9e9e9 5%, #f9f9f9 100%);
+    filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#e9e9e9', endColorstr='#f9f9f9',GradientType=0);
+    background-color:#e9e9e9;
+}
+.myButton:active {
+    position:relative;
+    top:1px;
+}
+</style>
+
+<body>
     <div>
         <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 <!-- id10t_top -->
@@ -242,31 +285,85 @@ data-ad-format="auto"></ins>
       <h1><a style="color: #F22430" href="/2012/01/08/androidfacebook-login-api">Android：Facebook Login API  (v2.0)</a></h1>
       <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
       <p class="author">
-        <span class="date">08 January 2012</span>
+      <div class="date">
+        <span>08 January 2012</span>
+      </div>
       </p>
-      <div class="content">
+      <div class="content" style="line-height: 28px;">
         <span style="color: red; font-size: large;"><u>(此篇為舊版的2.0 SDK，不建議使用了！<a href="http://blog.kenyang.net/2013/02/android-facebook-login-v30.html">請看這篇使用最新的3.0 SDK</a>)</u></span><br /><br /><br />前面有介紹過怎麼在<a href="http://blog.kenyang.net/2012/01/facebook-login.html">網站上，導入Facebook Login</a>，<br /><div>這篇要介紹如何在Android 裝置上，實作Facebook Login!!</div><div><b><br /></b></div><div><span style="font-size: large;">【<b>第一步】</b></span></div><div>首先先來到<a href="https://developers.facebook.com/apps">FB Developer後台</a>，並點選Create New App(右上角)，</div><div><br /></div><div><b><span style="font-size: large;">【第二步】</span></b></div><div><a href="https://github.com/facebook/facebook-android-sdk/downloads">下載Facebook SDK</a></div><div><br /></div><div><b><span style="font-size: large;">【第三步】</span></b></div><div>這步驟主要是在你的project中，include Facebook的lib，這裡大概分兩種方式，</div><div>第一種，就是在你已經create好的project上，點右鍵→點properties→選擇Android，</div><div>然後最下方有一個Library，然後就可以點選add，再去第二步驟下載的Facebook SDK中找到lib即可。</div><div>第二種就是在第二步驟下載的SDK中，</div><div>找到 &nbsp;SDK\\facebook\src，</div><div>底下應該有一個com資料夾，把資料夾拉進去你的project即可，</div><div>（我比較喜歡第二種）</div><div>第二種的，你拉進去以後，會看到下面的畫面！（圖一）<br /><br /><div class="separator" style="clear: both; text-align: center;"><a href="http://2.bp.blogspot.com/-vFuxNuVQx6g/TwmBkQlhEXI/AAAAAAAAAk0/K2yBv6TaRjw/s1600/Capture.JPG" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="335" src="http://2.bp.blogspot.com/-vFuxNuVQx6g/TwmBkQlhEXI/AAAAAAAAAk0/K2yBv6TaRjw/s400/Capture.JPG" width="400" /></a></div><br /><br /><br /><br /></div><div><br /></div><div><b><span style="font-size: large;">【第四步】</span></b> </div><div>先去下載<a href="http://sourceforge.net/projects/gnuwin32/files/openssl/0.9.8h-1/">OpenSSL</a>，因為待會會用到它來encode hash key，</div><div>下載以後解壓縮出來。</div><div><br /></div><div><b><span style="font-size: large;">【第五步】</span></b></div><div>記得之前有教過大家，怎麼用keytool產生key吧?(在<a href="http://blog.kenyang.net/2010/05/android-map-key.html">教學map</a>的時候有講到)</div><div>這裡一樣得利用keytool工具，</div><div>大家先打開cmd，</div><div>並且切換目錄至你的java sdk資料夾底下的bin!!! (是java sdk唷)</div><div>底下就會有一個keytool.exe</div><div><br /></div><div><br /></div><div><b><span style="font-size: large;">【第六步】 </span></b></div><div>先看到下面的指令範例以及說明，</div><div><br /></div><div>指令範例：</div><div>keytool -exportcert -alias <span style="color: red;">your_key_alias</span> -keystore<span style="color: red;">&nbsp;path_of_keystore</span>&nbsp;| <span style="color: red;">path_of_OpenSSL</span>&nbsp;sha1 -binary |&nbsp; <span style="color: red;">path_of_OpenSSL</span>&nbsp;&nbsp;base64 </div><div><br /></div><div>指令說明：</div><div><div><span style="color: red;">your_key_alias</span>&nbsp;：是你key的alias</div><div><span style="color: red;">path_of_keystore</span>&nbsp;：是你keystore的位置，如果這裡你是用.android底下預設的debug.keystore，那如果你Export Sign一個Android App時，是用另一把keystore，到時候如果上傳至market，你的FB登入可能就不能使用，所以必須用同一把，以Android App為主。</div><div>(但是!!!! 如果你是在本機開發測試，尚未上傳至market之前，大部分人應該都是直接點選eclipse上的綠色箭頭，然後部屬到Android裝置上吧? 如果是這樣，你的key，還是得用.android底下的預設keystore，因為按下Eclipse上的綠色箭頭，就是用預設的keystore打包的!!! 也就是說你得有兩把keysotre，一把是測試用，一把是正式上線用)</div><div><span style="color: red;">path_of_OpenSSL</span>&nbsp;：剛剛下載的OpenSSL位置</div></div><div><br /></div><div><br /></div><div>真實指令（這是我的喔，你複製貼上是沒用的，要改成自己的）</div><div>keytool -exportcert -alias <span style="color: red;">helloKen</span> -keystore <span style="color: red;">E:\myProject\M@C\key.keystore</span> | <span style="color: red;">C:\openssl-0.9.8h-1-bin\bin\openssl</span> sha1 -binary | <span style="color: red;">C:\openssl-0.9.8h-1-bin\bin\openssl</span> base64</div><div><br /></div><div>完成上面以後，你應該會得到2個key，一個是測試用，一個是正式上線時用的！</div><div><br /></div><div><br /></div><div><br /></div><div><br /></div><div><b><span style="font-size: large;">【第七步】</span></b> </div><div>去Facebook Developer後台，輸入上面的2把key，</div><div>如下圖中的紅色框框，請於Native Android App中填入喔（圖二）</div><div><div class="separator" style="clear: both; text-align: center;"><a href="http://3.bp.blogspot.com/-TZRDzSaDacc/TwmBj-0c62I/AAAAAAAAAkw/tMRZeBopk-4/s1600/Captur2e.JPG" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="515" src="http://3.bp.blogspot.com/-TZRDzSaDacc/TwmBj-0c62I/AAAAAAAAAkw/tMRZeBopk-4/s640/Captur2e.JPG" width="640" /></a></div><br /></div><div><br /></div><div><br /></div><div><br /></div><div><b><span style="font-size: large;">【第八步】</span></b> </div><div>開始寫程式了!!</div><div>首先必須加入一個permission，</div><div>如下</div><div><pre class="brush: xml">&lt;uses-permission android:name="android.permission.INTERNET"/&gt;<br /></pre></div><div><br /></div><div>接著宣告一個Facebook的物件!<br />且必須是global的喔!<br />如下：<br /><pre class="brush: java">Facebook facebook = new Facebook("YOUR_APP_ID");<br /></pre><br /><br />下面就是登入的code，看你要寫在哪，例如：按下按鈕去登入（btn.setOnClickListener)，或者一進畫面就登入（onCreate）<br /><pre class="brush: java">facebook.authorize(this, new DialogListener() {  <br />       @Override<br />       public void onComplete(Bundle values) {} //登入成功會返回至此method<br /><br />       @Override<br />       public void onFacebookError(FacebookError error) {}<br /><br />       @Override<br />       public void onError(DialogError e) {}<br /><br />       @Override<br />       public void onCancel() {}<br />});<br /><br /></pre><br /><br /><br /><br />最後還有一個步驟！因為上面的code會去trigger一個視窗出來，也就是換畫面，<br />執行完，還會再返回，所以在原本的Actitivy中的onActivityResult中，必須加入下段code，<br /><br /><pre class="brush: java">@Override<br />    public void onActivityResult(int requestCode, int resultCode, Intent data) {<br />        super.onActivityResult(requestCode, resultCode, data);<br /><br />        facebook.authorizeCallback(requestCode, resultCode, data);<br />    }<br /><br /></pre><br /><br /></div><div><br /></div><div><br /></div><div>這樣就完成了一個在Android上實作Facebook Login！</div><div><br /></div><div><br /></div><div><br /></div><div><br /></div><div><br /></div><div><br /></div><div><br /></div><div><br /></div><div><br /></div><div><br /></div><div><br /></div><div><br /></div><div><br /></div><div><br /></div><div><br /></div><div><br /><br /></div>
       </div>
+      <footer>
+        <p><a class="myButton" href="/2012/01/08/androidfacebook-login-api">read more &raquo;</a></p>
+        <div>
+          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- id10t_top -->
+<ins class="adsbygoogle"
+style="display:block"
+data-ad-client="ca-pub-7586970907106458"
+data-ad-slot="1161208442"
+data-ad-format="auto"></ins>
+<script>
+    (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+        </div>
+      </footer>
       <hr>
     
       <h1><a style="color: #F22430" href="/2012/01/07/android-edittext-remove-focus">Android EditText remove focus</a></h1>
       <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
       <p class="author">
-        <span class="date">07 January 2012</span>
+      <div class="date">
+        <span>07 January 2012</span>
+      </div>
       </p>
-      <div class="content">
+      <div class="content" style="line-height: 28px;">
         只要頁面中有用到EditText&nbsp;<edittext>的，</edittext><br />只要跑到那個頁面，一定會被自動focus，也就是說鍵盤會自動彈開!<br />要取消focus，只要在你layout中的root element加上下面兩個屬性，<br />(root element就是最外圍的那個element，預設都是LinearLayout）<br /><br /><br />android:focusable="true"<br />android:focusableInTouchMode="true"<br /><br /><br /><br /><br /><br />
       </div>
+      <footer>
+        <p><a class="myButton" href="/2012/01/07/android-edittext-remove-focus">read more &raquo;</a></p>
+        <div>
+          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- id10t_top -->
+<ins class="adsbygoogle"
+style="display:block"
+data-ad-client="ca-pub-7586970907106458"
+data-ad-slot="1161208442"
+data-ad-format="auto"></ins>
+<script>
+    (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+        </div>
+      </footer>
       <hr>
     
       <h1><a style="color: #F22430" href="/2012/01/06/facebook-login">實作Facebook Login 【新版】</a></h1>
       <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
       <p class="author">
-        <span class="date">06 January 2012</span>
+      <div class="date">
+        <span>06 January 2012</span>
+      </div>
       </p>
-      <div class="content">
+      <div class="content" style="line-height: 28px;">
         今天發現前陣子有使用到Facebook登入的案子，<br />突然掛了! 不能使用Facebook登入了....<br />去查了一下，原來Facebook API改版....<br />老實說，我覺得這樣機制很差....應該也保留舊有機制，而不是連通知都沒有就改版了!<br /><br />Ok, fine! 其實也沒有太大差別!<br />主要是改一些參數名稱!<br />至於前面的註冊手續都相同! 可以來<a href="http://blog.kenyang.net/2011/02/implement-facebook-login.html">前一篇</a>看!<br /><br /><br />至於coding實作如下，<br />一樣得嵌入js檔，<br /><pre class="brush: html">&lt;script src="http://connect.facebook.net/en_US/all.js"&gt;&lt;/script&gt;<br /></pre><br />接著一樣要init，但是多了一個參數，就是oauth，以及從以前的response.session改成response.authResponse<br /><pre class="brush: javascript">&lt;script&gt;<br /> //先做init的動作，輸入自己的app id<br /> FB.init({ <br />    appId:'你自己的app id', <br />    cookie:true, <br />    status:true, <br />    xfbml:true,<br />    oauth : true // 多了這個參數<br /> });<br /> <br /><br /><br /><br /> //下面是實作一個登入的function<br />function fnLoginFb(){<br />    FB.login(function(response) {<br />        //先判斷是否已經登入了，如果是，就直接<br />        if (response.authResponse){  <br />            FB.api('/me', function(response) {<br />                alert(response.email);<br />            });<br />        //下面是沒有登入時才會做的，會去subscribe一個event，就是去監聽一個login event（也就是說login成功以後，會接收到訊息）<br />        }else{<br />            FB.Event.subscribe('auth.login', function(response) {<br />                if (response.authResponse) {<br />                    FB.api('/me', function(response) {<br />                        alert(response.email);<br />                    });          <br />                }<br />            }); <br />        }<br /><br />    }, {scope:'email'});<br /><br />} <br /><br /><br /><br />&lt;/script&gt;<br /></pre><br />然後下面就是實作FB登入的按鈕了!<br /><pre class="brush: html"><div id="fb-root"><br /></div><br /><a href="http://www.blogger.com/blogger.g?blogID=866973865356001297#"><img src="/images/fb_login.jpg" /></a> <br /><br /></pre><br /><br />
       </div>
+      <footer>
+        <p><a class="myButton" href="/2012/01/06/facebook-login">read more &raquo;</a></p>
+        <div>
+          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- id10t_top -->
+<ins class="adsbygoogle"
+style="display:block"
+data-ad-client="ca-pub-7586970907106458"
+data-ad-slot="1161208442"
+data-ad-format="auto"></ins>
+<script>
+    (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+        </div>
+      </footer>
       <hr>
     
 

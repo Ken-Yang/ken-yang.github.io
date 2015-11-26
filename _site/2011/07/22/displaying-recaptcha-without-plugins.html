@@ -223,7 +223,78 @@
       </nav>
 
       <div class="container">
-        
+        <style>
+/* Adjusted to give override background and text colour */
+.highlight pre, pre, .highlight .hll {
+    background-color: #49483E;
+    border: 1px solid #ccc;
+    padding: 6px 10px;
+    border-radius: 3px;
+    color: #FFFFFF;
+}
+/* Highlights taken from https://gist.github.com/asaaki/1007420  for Monokai theme */
+.c                 { color: #75715e }               /* Comment                     */
+.err               { color: #960050;
+                     background-color: #1e0010 }    /* Error                       */
+.k                 { color: #66d9ef }               /* Keyword                     */
+.l                 { color: #ae81ff }               /* Literal                     */
+.n                 { color: #f8f8f2 }               /* Name                        */
+.o                 { color: #f92672 }               /* Operator                    */
+.p                 { color: #f8f8f2 }               /* Punctuation                 */
+.cm                { color: #75715e }               /* Comment.Multiline           */
+.cp                { color: #75715e }               /* Comment.Preproc             */
+.c1                { color: #75715e }               /* Comment.Single              */
+.cs                { color: #75715e }               /* Comment.Special             */
+.ge                { font-style: italic }           /* Generic.Emph                */
+.gs                { font-weight: bold }            /* Generic.Strong              */
+.kc                { color: #66d9ef }               /* Keyword.Constant            */
+.kd                { color: #66d9ef }               /* Keyword.Declaration         */
+.kn                { color: #f92672 }               /* Keyword.Namespace           */
+.kp                { color: #66d9ef }               /* Keyword.Pseudo              */
+.kr                { color: #66d9ef }               /* Keyword.Reserved            */
+.kt                { color: #66d9ef }               /* Keyword.Type                */
+.ld                { color: #e6db74 }               /* Literal.Date                */
+.m                 { color: #ae81ff }               /* Literal.Number              */
+.s                 { color: #e6db74 }               /* Literal.String              */
+.na                { color: #a6e22e }               /* Name.Attribute              */
+.nb                { color: #f8f8f2 }               /* Name.Builtin                */
+.nc                { color: #a6e22e }               /* Name.Class                  */
+.no                { color: #66d9ef }               /* Name.Constant               */
+.nd                { color: #a6e22e }               /* Name.Decorator              */
+.ni                { color: #f8f8f2 }               /* Name.Entity                 */
+.ne                { color: #a6e22e }               /* Name.Exception              */
+.nf                { color: #a6e22e }               /* Name.Function               */
+.nl                { color: #f8f8f2 }               /* Name.Label                  */
+.nn                { color: #f8f8f2 }               /* Name.Namespace              */
+.nx                { color: #a6e22e }               /* Name.Other                  */
+.py                { color: #f8f8f2 }               /* Name.Property               */
+.nt                { color: #f92672 }               /* Name.Tag                    */
+.nv                { color: #f8f8f2 }               /* Name.Variable               */
+.ow                { color: #f92672 }               /* Operator.Word               */
+.w                 { color: #f8f8f2 }               /* Text.Whitespace             */
+.mf                { color: #ae81ff }               /* Literal.Number.Float        */
+.mh                { color: #ae81ff }               /* Literal.Number.Hex          */
+.mi                { color: #ae81ff }               /* Literal.Number.Integer      */
+.mo                { color: #ae81ff }               /* Literal.Number.Oct          */
+.sb                { color: #e6db74 }               /* Literal.String.Backtick     */
+.sc                { color: #e6db74 }               /* Literal.String.Char         */
+.sd                { color: #e6db74 }               /* Literal.String.Doc          */
+.s2                { color: #e6db74 }               /* Literal.String.Double       */
+.se                { color: #ae81ff }               /* Literal.String.Escape       */
+.sh                { color: #e6db74 }               /* Literal.String.Heredoc      */
+.si                { color: #e6db74 }               /* Literal.String.Interpol     */
+.sx                { color: #e6db74 }               /* Literal.String.Other        */
+.sr                { color: #e6db74 }               /* Literal.String.Regex        */
+.s1                { color: #e6db74 }               /* Literal.String.Single       */
+.ss                { color: #e6db74 }               /* Literal.String.Symbol       */
+.bp                { color: #f8f8f2 }               /* Name.Builtin.Pseudo         */
+.vc                { color: #f8f8f2 }               /* Name.Variable.Class         */
+.vg                { color: #f8f8f2 }               /* Name.Variable.Global        */
+.vi                { color: #f8f8f2 }               /* Name.Variable.Instance      */
+.il                { color: #ae81ff }               /* Literal.Number.Integer.Long */
+</style>
+
+
 <div class="page-header">
   <h1>Integrate CAPTCHA to your site (without plugin)-【2】 </h1>
 </div>
@@ -257,7 +328,7 @@ data-ad-format="auto"></ins>
     <div class="date">
       <span>22 July 2011</span>
     </div>
-    <div class="content">
+    <div class="content" style="line-height: 28px;">
       在前一篇<a href="http://blog.kenyang.net/2011/05/integrate-captcha-to-your-site-using.html">筆記</a>有提到如何利用plugin去顯示一個驗證碼(captcha)的功能，<br /><br />而這篇是要教導大家如何用另一種方法(AJAX API)去顯示驗證碼，<br /><br />***記得*** 一樣要去申請api key，至於如何申請，請至<a href="http://blog.kenyang.net/2011/05/integrate-captcha-to-your-site-using.html">前一篇</a>檢閱。<br /><br />而使用AJAX API的優點，簡單來說，你在你的.jsp, .asp, .php....etc的頁面中，<br /><br />不會看到該language的語法，例如：&lt;% %&gt; ＜？　？＞, ...等等之類的。<br /><br />我們只要用簡單的javascript語法就可以顯示一個驗證碼。<br />首先我們得在我們頁面中，這裡假設是captcha.html中，<br /><br />【第一步】加入 Google的js檔案，如下:<br /><pre class="brush: js">&lt;script type="text/javascript" src="http://www.google.com/recaptcha/api/js/recaptcha_ajax.js"&gt;&lt;/script&gt;<br /></pre><br /><br /><br />【第二步】在captcha.html中加入一個div的element，如下:<br /><pre class="brush: html">&lt;div id="captcha"&gt;&lt;/div&gt;<br /></pre><br /><br /><br />【第三步】開始create一個驗證碼，請加入下列javascript語法：<br /><pre class="brush: js">&lt;script&gt;<br />     window.onload = function() {<br />          Recaptcha.create(<br />                   "xxxxxxx",  //你的api key<br />                   "captcha",  //第二步驟中div的id<br />                   {<br />                        theme: "red",<br />                        callback: Recaptcha.focus_response_field<br />                   }<br />          );<br />  <br />     }<br />&lt;/script&gt;<br /><br /></pre><br /><br />這樣就大功告成，至於如何驗證，<br />其實驗證方式也是有兩種，<br />兩種都是透過ajax，<br />第一種是寫一隻程式，這隻程式是用來接收參數並且驗證資料<br />並且用ajax向這隻程式傳遞參數。可以參考我前一篇的<a href="http://blog.kenyang.net/2011/05/integrate-captcha-to-your-site-using.html">驗證方法</a><br /><br />而第二種是直接向此連結<span class="Apple-style-span" style="font-family: Helvetica, Arial, sans-serif; font-size: x-small; line-height: 16px;">http://www.google.com/recaptcha/api/verify</span>發出request，<br />但是大概懂ajax的人都知道""基本上""是無法跨domain進行request，<br />當然有其他solution，但因為我先前已經有寫好上個方法的驗證方法，<br />所以我就直接用第一種方式，也較簡易!<br />但是還是建議大家直接用第二種方式，不然使用ajax api就失去了意義!<br /><br />而這篇是教導大家如何using ajax api去顯示一個驗證碼。<br />所以就不詳細說明如何利用ajax去進行驗證。(反正用jQuery的ajax api很簡單，就不贅述了!）<br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
     </div>
 

@@ -223,7 +223,78 @@
       </nav>
 
       <div class="container">
-        
+        <style>
+/* Adjusted to give override background and text colour */
+.highlight pre, pre, .highlight .hll {
+    background-color: #49483E;
+    border: 1px solid #ccc;
+    padding: 6px 10px;
+    border-radius: 3px;
+    color: #FFFFFF;
+}
+/* Highlights taken from https://gist.github.com/asaaki/1007420  for Monokai theme */
+.c                 { color: #75715e }               /* Comment                     */
+.err               { color: #960050;
+                     background-color: #1e0010 }    /* Error                       */
+.k                 { color: #66d9ef }               /* Keyword                     */
+.l                 { color: #ae81ff }               /* Literal                     */
+.n                 { color: #f8f8f2 }               /* Name                        */
+.o                 { color: #f92672 }               /* Operator                    */
+.p                 { color: #f8f8f2 }               /* Punctuation                 */
+.cm                { color: #75715e }               /* Comment.Multiline           */
+.cp                { color: #75715e }               /* Comment.Preproc             */
+.c1                { color: #75715e }               /* Comment.Single              */
+.cs                { color: #75715e }               /* Comment.Special             */
+.ge                { font-style: italic }           /* Generic.Emph                */
+.gs                { font-weight: bold }            /* Generic.Strong              */
+.kc                { color: #66d9ef }               /* Keyword.Constant            */
+.kd                { color: #66d9ef }               /* Keyword.Declaration         */
+.kn                { color: #f92672 }               /* Keyword.Namespace           */
+.kp                { color: #66d9ef }               /* Keyword.Pseudo              */
+.kr                { color: #66d9ef }               /* Keyword.Reserved            */
+.kt                { color: #66d9ef }               /* Keyword.Type                */
+.ld                { color: #e6db74 }               /* Literal.Date                */
+.m                 { color: #ae81ff }               /* Literal.Number              */
+.s                 { color: #e6db74 }               /* Literal.String              */
+.na                { color: #a6e22e }               /* Name.Attribute              */
+.nb                { color: #f8f8f2 }               /* Name.Builtin                */
+.nc                { color: #a6e22e }               /* Name.Class                  */
+.no                { color: #66d9ef }               /* Name.Constant               */
+.nd                { color: #a6e22e }               /* Name.Decorator              */
+.ni                { color: #f8f8f2 }               /* Name.Entity                 */
+.ne                { color: #a6e22e }               /* Name.Exception              */
+.nf                { color: #a6e22e }               /* Name.Function               */
+.nl                { color: #f8f8f2 }               /* Name.Label                  */
+.nn                { color: #f8f8f2 }               /* Name.Namespace              */
+.nx                { color: #a6e22e }               /* Name.Other                  */
+.py                { color: #f8f8f2 }               /* Name.Property               */
+.nt                { color: #f92672 }               /* Name.Tag                    */
+.nv                { color: #f8f8f2 }               /* Name.Variable               */
+.ow                { color: #f92672 }               /* Operator.Word               */
+.w                 { color: #f8f8f2 }               /* Text.Whitespace             */
+.mf                { color: #ae81ff }               /* Literal.Number.Float        */
+.mh                { color: #ae81ff }               /* Literal.Number.Hex          */
+.mi                { color: #ae81ff }               /* Literal.Number.Integer      */
+.mo                { color: #ae81ff }               /* Literal.Number.Oct          */
+.sb                { color: #e6db74 }               /* Literal.String.Backtick     */
+.sc                { color: #e6db74 }               /* Literal.String.Char         */
+.sd                { color: #e6db74 }               /* Literal.String.Doc          */
+.s2                { color: #e6db74 }               /* Literal.String.Double       */
+.se                { color: #ae81ff }               /* Literal.String.Escape       */
+.sh                { color: #e6db74 }               /* Literal.String.Heredoc      */
+.si                { color: #e6db74 }               /* Literal.String.Interpol     */
+.sx                { color: #e6db74 }               /* Literal.String.Other        */
+.sr                { color: #e6db74 }               /* Literal.String.Regex        */
+.s1                { color: #e6db74 }               /* Literal.String.Single       */
+.ss                { color: #e6db74 }               /* Literal.String.Symbol       */
+.bp                { color: #f8f8f2 }               /* Name.Builtin.Pseudo         */
+.vc                { color: #f8f8f2 }               /* Name.Variable.Class         */
+.vg                { color: #f8f8f2 }               /* Name.Variable.Global        */
+.vi                { color: #f8f8f2 }               /* Name.Variable.Instance      */
+.il                { color: #ae81ff }               /* Literal.Number.Integer.Long */
+</style>
+
+
 <div class="page-header">
   <h1>Android Out of Memory (OOM) </h1>
 </div>
@@ -257,7 +328,7 @@ data-ad-format="auto"></ins>
     <div class="date">
       <span>20 February 2012</span>
     </div>
-    <div class="content">
+    <div class="content" style="line-height: 28px;">
       呼，這篇文章放在我的草稿已經有兩個月了，<br />一直遲遲沒有完成，<br />一來是家裡太忙，<br />一來也是因為最近都在搞Kinect和Nxt Robot的應用(千百個不願意)<br />今天決定花點時間把這篇文章修完，<br />其實有很多篇都在草稿，有十幾篇要寫完，但先挑選這篇，<br />畢竟OOM是個很嚴重的問題。<br /><br /><b style="font-size: x-large;">【</b><span style="font-size: large;"><b>何謂OOM呢?</b></span><b style="font-size: x-large;">】</b><br />OOM (Out of Memory)，就是溢存的意思，<br />白話點就是超出記憶體大小了，<br />每個APP，都會有配置一定大小的heap size，<br />但這個heap size在每支設備上都不同，<br />像在Nexus one就是24mb，HTC Sensation只有16mb，<br />大小都不一定的，所以我們在寫app時，<br />必須做好記憶體的控管，<br /><br />有些人可能會納悶，不是用JAVA寫的嗎?<br />JAVA無法對記憶體有更進一步的操作(配置、釋放)阿，<br />怎麼做好記憶體的控管呢?<br />恩，沒有錯。<br /><br /><span style="font-size: large;"><b>【那OOM的問題會發生在哪?】</b></span><br />就是在圖片的使用!!!!!!<br />你每調用一張圖片，在android上都會做到auto scale的動作，<br />在做auto scale的動作是用C去配置記憶體的，<br />因此就會占用記憶體，<br />如果沒有做好控管，就會發生溢存!<br />那怎麼做好控管呢?<br /><br /><br />你們有時會發現有些APP好大喔，<br />有部分原因可能是引用其他外部的lib，<br />很少是因為程式碼寫太多....<br />大部分的問題就是在圖片太多，且太大，<br />沒有好好善用draw9patch，<a href="http://blog.kenyang.net/2010/05/draw-9-patch.html">何謂draw9patch可以來這看</a><br />當然draw9patch並不適用所有的案例，<br />甚至連根據dpi的不同，放圖片在不同的資料夾，<br />這方法我也覺得不適用所有案例，<br />我大多都還是去取得螢幕大小，自己去做到裁切圖片的動作，<br />個人覺得這樣是最精準的(畢竟android device實在太多..................)。<br /><br /><br />網路上有些解法是，<br />在做重新裁切或者取得圖片的動作時，<br />把圖片品質設小一點。<br />當然這也是一種解法啦。<br />但個人看法，認為這解法治標不治本，<br />怎麼說呢? 畢竟如果圖片一多，<br />OOM的問題還是會發生。<br /><br /><br />所以最根本的解法在於recycle!<br />但是recycle的時機很重要，<br />畢竟如果圖片還在使用中就進行recycle的話，<br />可是會發生crash的。<br /><br />我的建議是在Android Life Cycle中的onDestroy中進行recycle，<br />此時最為保險。當然如果你能保證你的圖片用不到了，就可以進行recycle了。<br />不一定要照我的建議而做。<br /><br /><br />這裡有個情境，假設我有4個畫面，A,B,C,D。<br />A有按鈕跳到B<br />B有按鈕跳到C<br />C有按鈕跳到D<br />每個畫面都有一張不同的背景圖，<br />怎麼設背景圖呢?<br />大部分人會在layout.xml中去做設定，<br />或者會在程式中設定，<br />如下：<br /><pre class="brush: java">linearLayout.setBackgroundDrawable(getResources().getDrawable(R.drawable.bg_normal));<br /></pre>這樣看似沒有甚麼問題，<br />但如果ABCD畫面換來換去，經過多次換來換去以後，<br />這時候heapSize就會越來越小....<br />最後就會發生OOM!<br /><br />所以較好的做法就是在lifecycle中的onCreate中，<br />去做init的動作，<br />先宣告二個全域的變數<br />一個是用來存圖片的BitmapDrawable<br />一個是放置圖片的LinearLayout，如下：<br /><pre class="brush: java">private LinearLayout llBackgroundPanel = null;<br />private BitmapDrawable bmpDrawImg  = null;<br /><br /></pre><br />接著在onCreate中去呼叫一個自己寫好的函數（fnSetBackground)<br />這個函數就是用來設背景圖片的，如下:<br /><pre class="brush: java">@Override<br />public void onCreate(Bundle savedInstanceState) {<br />    super.onCreate(savedInstanceState);<br />    setContentView(R.layout.a);<br />    fnSetBackground(); // 呼叫函數<br />}<br /><br /></pre><br />而函數內容如下：<br /><pre class="brush: java">public void fnSetBackground(){<br />    // 先取得LinearLayout<br />    llBackgroundPanel = (LinearLayout) findViewById(R.id.llBackgroundPanelChangePwd);<br />    // 取得該張圖片，並放置在變數bmpDrawImg中<br />    bmpDrawImg = new BitmapDrawable(getResources().openRawResource(R.drawable.bg_normal));<br />    // 最後就是設定圖片<br />    llBackgroundPanel.setBackgroundDrawable(bmpDrawImg);<br />}<br /></pre><br />完成上面步驟，只是設置圖片而已，<br />還是無法解決OOM的問題，下面才是解決的方式，<br />在lifecycle中的onDestroy中去進行清空，<br /><pre class="brush: java">@Override<br />protected void onDestroy() {<br />    super.onDestroy();<br />    // 每個Drawable被加到VIEW上面都會產生一個callback，所以在recycle圖片之前，必須先把callback設成null<br />    // 設成null以後，背景圖片自然就會不見，就會變成黑的背景。bmpDrawImg的狀態就會是沒有被使用中。<br />    llBackgroundPanel.getBackground().setCallback(null); <br /> <br />    // 先判斷bmpDrawImg 是否為null，如果不是null，且bmpDrawImg 還沒有被recycle的話就進行recycle<br />    if (null != bmpDrawImg &amp;&amp; !bmpDrawImg.getBitmap().isRecycled()){<br />        bmpDrawImg.getBitmap().recycle();<br />    }<br />    System.gc();<br />}<br /></pre><br /><br />照著上面的方法實作就能避免掉OOM的問題，<br />我寫在destroy的原因在於，<br />android lifecycle的特性，<br />當你A按下按鈕到B，<br />這時候在B畫面中按下返回按鈕(back)，<br />是不是就回到A了呢?<br />第一次按下返回按鈕，B會去調用onDestroy這個method，<br />如果這時候沒有進行recycle，那麼那塊記憶體空間就不會被釋放，<br />就會被占用著....<br />如果沒有進行RECYCLE，<br />久而久之，你持續返回A，又跳到B，重複著這動作好幾次，<br />圖片就被產生好幾次，<br />很快就會發生OOM，至於多快，就視你的圖片大小瞜!<br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
     </div>
 

@@ -223,7 +223,78 @@
       </nav>
 
       <div class="container">
-        
+        <style>
+/* Adjusted to give override background and text colour */
+.highlight pre, pre, .highlight .hll {
+    background-color: #49483E;
+    border: 1px solid #ccc;
+    padding: 6px 10px;
+    border-radius: 3px;
+    color: #FFFFFF;
+}
+/* Highlights taken from https://gist.github.com/asaaki/1007420  for Monokai theme */
+.c                 { color: #75715e }               /* Comment                     */
+.err               { color: #960050;
+                     background-color: #1e0010 }    /* Error                       */
+.k                 { color: #66d9ef }               /* Keyword                     */
+.l                 { color: #ae81ff }               /* Literal                     */
+.n                 { color: #f8f8f2 }               /* Name                        */
+.o                 { color: #f92672 }               /* Operator                    */
+.p                 { color: #f8f8f2 }               /* Punctuation                 */
+.cm                { color: #75715e }               /* Comment.Multiline           */
+.cp                { color: #75715e }               /* Comment.Preproc             */
+.c1                { color: #75715e }               /* Comment.Single              */
+.cs                { color: #75715e }               /* Comment.Special             */
+.ge                { font-style: italic }           /* Generic.Emph                */
+.gs                { font-weight: bold }            /* Generic.Strong              */
+.kc                { color: #66d9ef }               /* Keyword.Constant            */
+.kd                { color: #66d9ef }               /* Keyword.Declaration         */
+.kn                { color: #f92672 }               /* Keyword.Namespace           */
+.kp                { color: #66d9ef }               /* Keyword.Pseudo              */
+.kr                { color: #66d9ef }               /* Keyword.Reserved            */
+.kt                { color: #66d9ef }               /* Keyword.Type                */
+.ld                { color: #e6db74 }               /* Literal.Date                */
+.m                 { color: #ae81ff }               /* Literal.Number              */
+.s                 { color: #e6db74 }               /* Literal.String              */
+.na                { color: #a6e22e }               /* Name.Attribute              */
+.nb                { color: #f8f8f2 }               /* Name.Builtin                */
+.nc                { color: #a6e22e }               /* Name.Class                  */
+.no                { color: #66d9ef }               /* Name.Constant               */
+.nd                { color: #a6e22e }               /* Name.Decorator              */
+.ni                { color: #f8f8f2 }               /* Name.Entity                 */
+.ne                { color: #a6e22e }               /* Name.Exception              */
+.nf                { color: #a6e22e }               /* Name.Function               */
+.nl                { color: #f8f8f2 }               /* Name.Label                  */
+.nn                { color: #f8f8f2 }               /* Name.Namespace              */
+.nx                { color: #a6e22e }               /* Name.Other                  */
+.py                { color: #f8f8f2 }               /* Name.Property               */
+.nt                { color: #f92672 }               /* Name.Tag                    */
+.nv                { color: #f8f8f2 }               /* Name.Variable               */
+.ow                { color: #f92672 }               /* Operator.Word               */
+.w                 { color: #f8f8f2 }               /* Text.Whitespace             */
+.mf                { color: #ae81ff }               /* Literal.Number.Float        */
+.mh                { color: #ae81ff }               /* Literal.Number.Hex          */
+.mi                { color: #ae81ff }               /* Literal.Number.Integer      */
+.mo                { color: #ae81ff }               /* Literal.Number.Oct          */
+.sb                { color: #e6db74 }               /* Literal.String.Backtick     */
+.sc                { color: #e6db74 }               /* Literal.String.Char         */
+.sd                { color: #e6db74 }               /* Literal.String.Doc          */
+.s2                { color: #e6db74 }               /* Literal.String.Double       */
+.se                { color: #ae81ff }               /* Literal.String.Escape       */
+.sh                { color: #e6db74 }               /* Literal.String.Heredoc      */
+.si                { color: #e6db74 }               /* Literal.String.Interpol     */
+.sx                { color: #e6db74 }               /* Literal.String.Other        */
+.sr                { color: #e6db74 }               /* Literal.String.Regex        */
+.s1                { color: #e6db74 }               /* Literal.String.Single       */
+.ss                { color: #e6db74 }               /* Literal.String.Symbol       */
+.bp                { color: #f8f8f2 }               /* Name.Builtin.Pseudo         */
+.vc                { color: #f8f8f2 }               /* Name.Variable.Class         */
+.vg                { color: #f8f8f2 }               /* Name.Variable.Global        */
+.vi                { color: #f8f8f2 }               /* Name.Variable.Instance      */
+.il                { color: #ae81ff }               /* Literal.Number.Integer.Long */
+</style>
+
+
 <div class="page-header">
   <h1>Android connect to MSN (JML) </h1>
 </div>
@@ -257,7 +328,7 @@ data-ad-format="auto"></ins>
     <div class="date">
       <span>07 December 2010</span>
     </div>
-    <div class="content">
+    <div class="content" style="line-height: 28px;">
       Android connect to MSN (JML)<br /><br />在Android用Java MSN Messenger Library(JML)登入<br /><br />其實JML是一個很好用的lib，<br /><br />在J2SE的環境下使用非常好整合，<br /><br />BUT...要整合至ANDROID中會有幾個小問題。<br /><br />第一：會少了一個GetPropertyAction的CLASS<br /><br />第二：JML裡用的SSL是採取SSLv3，但是android只能支援TLS<br /><br />第三：一樣會少了一個DatatypeFactory這個CLASS<br /><br />解決方法就是<br /><br />直接去找到JML的source code，<br /><br />直接拿它來做修改，而不是直接去拿jar來用。<br /><br />為了解決第一部，<br /><br />我們可以在網路上找到人家寫好的這個class（GetPropertyAction）<br /><br /><a href="http://jcs.mobile-utopia.com/jcs/2154_GetPropertyAction.java">來這下載</a><br /><br />下載好以後，記得放在package名稱為sun.security.action的底下<br /><br /><br /><br />解決第二個方法就是<br /><br />去下載JML的SOURCE CODE<br /><br /><a href="http://sourceforge.net/projects/java-jml/files/java-jml/jml-1.0b4/">來這下載</a>　（是載.ZIP檔案喔，這樣才會有SOURCE CODE）<br /><br />下載完成後，把src資料夾底下的net通通拉進來我們的project裡面<br /><br />拉進來後，畫面會如下<br /><br /><div class="separator" style="clear: both; text-align: center;"><a href="http://4.bp.blogspot.com/_6SxqtkJQECI/TP3tUVeF0VI/AAAAAAAAAPw/kYI6uJ-n4mk/s1600/%25E6%259C%25AA%25E5%2591%25BD%25E5%2590%258D.png" imageanchor="1" style="clear: left; float: left; margin-bottom: 1em; margin-right: 1em;"><img border="0" height="320" src="http://4.bp.blogspot.com/_6SxqtkJQECI/TP3tUVeF0VI/AAAAAAAAAPw/kYI6uJ-n4mk/s320/%25E6%259C%25AA%25E5%2591%25BD%25E5%2590%258D.png" width="217" /></a></div><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />拉進來以後，<br /><br />找到package名稱為net.sf.jml.protocol.soap，<br /><br />點兩下展開以後，<br /><br />點選class名稱為ContactList的class<br /><br />打開以後找到下面那行CODE<br /><br /><pre class="brush: java">    SSLContext sc = SSLContext.getInstance("SSLv3");<br /></pre><br /><br />把它改成下面那行CODE<br /><br /><br /><pre class="brush: java">    SSLContext sc = SSLContext.getInstance("TLS");<br /></pre><br /><br />這樣第二部就解決了。<br /><br />至於第三個解決方式，<br /><br />目前是先把ANDROID SDK設為2.2，<br /><br />2.2就有支援DatatypeFactory，<br /><br /><br /><br />接著來寫連結至msn的code了。<br /><br />其實很簡單，你只要克服上面的問題，<br /><br />CODE應該就難不倒你，<br /><br /><pre class="brush: java">    try {<br />        final String email = "msn帳號";<br />        final String password = "您的密碼";<br />        final MsnMessenger messenger = MsnMessengerFactory.createMsnMessenger(email,<br />                 password);<br /><br />        messenger.getOwner().setInitStatus(MsnUserStatus.ONLINE);<br /><br />        //這邊一定要用thread去執行登入<br />        Thread thread = new Thread(new Runnable() {<br />                public void run() {<br />                    messenger.login();<br />                }<br />        });<br /> <br />        thread.start();  <br /><br />         <br />    } catch (Exception e) {<br />        Log.d("msn",e.toString());<br />    }<br /><br /></pre><br /><br /><br /><br />這樣就完成了MSN登入了。<br /><br />至於怎麼截取聯絡人清單，只要您解決上面那三個問題<br /><br />則擷取連絡人，就不是問題了。<br /><br /><br /><br />
     </div>
 

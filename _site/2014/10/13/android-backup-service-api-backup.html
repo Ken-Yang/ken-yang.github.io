@@ -223,7 +223,78 @@
       </nav>
 
       <div class="container">
-        
+        <style>
+/* Adjusted to give override background and text colour */
+.highlight pre, pre, .highlight .hll {
+    background-color: #49483E;
+    border: 1px solid #ccc;
+    padding: 6px 10px;
+    border-radius: 3px;
+    color: #FFFFFF;
+}
+/* Highlights taken from https://gist.github.com/asaaki/1007420  for Monokai theme */
+.c                 { color: #75715e }               /* Comment                     */
+.err               { color: #960050;
+                     background-color: #1e0010 }    /* Error                       */
+.k                 { color: #66d9ef }               /* Keyword                     */
+.l                 { color: #ae81ff }               /* Literal                     */
+.n                 { color: #f8f8f2 }               /* Name                        */
+.o                 { color: #f92672 }               /* Operator                    */
+.p                 { color: #f8f8f2 }               /* Punctuation                 */
+.cm                { color: #75715e }               /* Comment.Multiline           */
+.cp                { color: #75715e }               /* Comment.Preproc             */
+.c1                { color: #75715e }               /* Comment.Single              */
+.cs                { color: #75715e }               /* Comment.Special             */
+.ge                { font-style: italic }           /* Generic.Emph                */
+.gs                { font-weight: bold }            /* Generic.Strong              */
+.kc                { color: #66d9ef }               /* Keyword.Constant            */
+.kd                { color: #66d9ef }               /* Keyword.Declaration         */
+.kn                { color: #f92672 }               /* Keyword.Namespace           */
+.kp                { color: #66d9ef }               /* Keyword.Pseudo              */
+.kr                { color: #66d9ef }               /* Keyword.Reserved            */
+.kt                { color: #66d9ef }               /* Keyword.Type                */
+.ld                { color: #e6db74 }               /* Literal.Date                */
+.m                 { color: #ae81ff }               /* Literal.Number              */
+.s                 { color: #e6db74 }               /* Literal.String              */
+.na                { color: #a6e22e }               /* Name.Attribute              */
+.nb                { color: #f8f8f2 }               /* Name.Builtin                */
+.nc                { color: #a6e22e }               /* Name.Class                  */
+.no                { color: #66d9ef }               /* Name.Constant               */
+.nd                { color: #a6e22e }               /* Name.Decorator              */
+.ni                { color: #f8f8f2 }               /* Name.Entity                 */
+.ne                { color: #a6e22e }               /* Name.Exception              */
+.nf                { color: #a6e22e }               /* Name.Function               */
+.nl                { color: #f8f8f2 }               /* Name.Label                  */
+.nn                { color: #f8f8f2 }               /* Name.Namespace              */
+.nx                { color: #a6e22e }               /* Name.Other                  */
+.py                { color: #f8f8f2 }               /* Name.Property               */
+.nt                { color: #f92672 }               /* Name.Tag                    */
+.nv                { color: #f8f8f2 }               /* Name.Variable               */
+.ow                { color: #f92672 }               /* Operator.Word               */
+.w                 { color: #f8f8f2 }               /* Text.Whitespace             */
+.mf                { color: #ae81ff }               /* Literal.Number.Float        */
+.mh                { color: #ae81ff }               /* Literal.Number.Hex          */
+.mi                { color: #ae81ff }               /* Literal.Number.Integer      */
+.mo                { color: #ae81ff }               /* Literal.Number.Oct          */
+.sb                { color: #e6db74 }               /* Literal.String.Backtick     */
+.sc                { color: #e6db74 }               /* Literal.String.Char         */
+.sd                { color: #e6db74 }               /* Literal.String.Doc          */
+.s2                { color: #e6db74 }               /* Literal.String.Double       */
+.se                { color: #ae81ff }               /* Literal.String.Escape       */
+.sh                { color: #e6db74 }               /* Literal.String.Heredoc      */
+.si                { color: #e6db74 }               /* Literal.String.Interpol     */
+.sx                { color: #e6db74 }               /* Literal.String.Other        */
+.sr                { color: #e6db74 }               /* Literal.String.Regex        */
+.s1                { color: #e6db74 }               /* Literal.String.Single       */
+.ss                { color: #e6db74 }               /* Literal.String.Symbol       */
+.bp                { color: #f8f8f2 }               /* Name.Builtin.Pseudo         */
+.vc                { color: #f8f8f2 }               /* Name.Variable.Class         */
+.vg                { color: #f8f8f2 }               /* Name.Variable.Global        */
+.vi                { color: #f8f8f2 }               /* Name.Variable.Instance      */
+.il                { color: #ae81ff }               /* Literal.Number.Integer.Long */
+</style>
+
+
 <div class="page-header">
   <h1>Android Backup service API  (backup internal database) </h1>
 </div>
@@ -257,7 +328,7 @@ data-ad-format="auto"></ins>
     <div class="date">
       <span>13 October 2014</span>
     </div>
-    <div class="content">
+    <div class="content" style="line-height: 28px;">
       <div style="font-size: 15px; line-height: 22px;">這篇要講Android自己的<a href="http://developer.android.com/training/cloudsync/backupapi.html">backup service</a>，<br />其實使用起來蠻簡單的，<br />主要分成下面4個步驟，<br /><br /><span style="color: #e06666; font-size: 18px;">1. Register for Android Backup Service</span>  <br /><br />首先要先去註冊一個API Key，先到這個<a href="https://developer.android.com/google/backup/signup.html?csw=1">網站</a>，<br />進去以後輸入你的package name，接著就會給你一組API key．<br />這樣就註冊完成．<br /><br /><span style="color: #e06666; font-size: 18px;">2. Configuration</span>  <br /><br />完成上面的註冊以後，接著要對你的project做configuration，<br />先開啟你的AndroidManifest.xml，<br />先在application element加上一個android:backupAgent這個attribute，<br />這個attribute的名字，就是待會你新增的class名稱，<br /><pre class="brush: java">&lt;application android:label=&quot;MyApp&quot;<br />             android:backupAgent=&quot;ExpenseBackupAgent&quot;&gt;<br /></pre><br />接著在application之中，加入下段的meta data，<br />記得把xxxxxxxxxx換成你剛剛註冊的API Key，<br /><pre class="brush: java">&lt;meta-data android:name=&quot;com.google.android.backup.api_key&quot;<br />android:value=&quot;xxxxxxxxxxxxxxxxxxx&quot; /&gt;<br /></pre><br /><span style="color: #e06666; font-size: 18px;">3. Backup internal database</span>  <br /><br />接著新增一個Class，這個Class要繼承BackupAgentHelper，<br />記得這Class名稱要跟你manifest.xml中的一樣！<br />這裡要題外話一下，其實你也可以繼承BackupAgent，<br />當你如果需要做到更複雜的backup時，<br />例如你不想backup整份file，你只想backup某個"部分"的data，<br />這時候你只能透過BackupAgent去做到，<br />而BackupAgentHelper其實也只是BackupAgent的一個wrapper，<br />讓你更輕易的backup和restore罷了．<br />回到主題，先新增一個class繼承BackupAgentHelper，內容如下，<br />在onCreate裡面用到了FileBackupHelper，<br />最原始的FileBackupHelper是真的用來backup某個file，<br />但因為我們這裡要backup db，<br />所以我們要override掉getFilesDir，<br />在getFilesDir中去拿db的路徑，<br />然後透過FileBackupHelper去做backup！<br />只要透過下面的code就可以幫你自動backup和restore了！<br /><br /><pre class="brush: java">public class ExpenseBackupAgent extends BackupAgentHelper {<br />    private static final String DB_NAME = "expense"; // db名稱<br />    private static final String TAG = ExpenseBackupAgent.class<br />            .getCanonicalName();<br /><br />    @Override<br />    public void onCreate() {<br />        Log.e(TAG, "backu db");<br />        FileBackupHelper dbs = new FileBackupHelper(this, DB_NAME);<br />        addHelper("dbs", dbs);<br />    }<br /><br />    @Override<br />    public File getFilesDir() {<br />        final File f = getDatabasePath(DB_NAME);<br />        return f.getParentFile();<br />    }<br />}<br /><br /></pre><br />雖然說backup和restore都是自動的，<br />那麼要怎麼主動的去request backup？<br />那就要用BackupManager了，<br />透過dataChanged，會去幫你queue這個backup的job，<br />為什麼是說queue呢？因為backup不會馬上執行的！<br />都是批次的執行！<br /><pre class="brush: java">BackupManager bm = new BackupManager(this);<br />bm.dataChanged();<br /></pre><br /><span style="color: #e06666; font-size: 18px;">4. Test</span>  <br /><br />上面說到了Backup都是批次執行，不是即時的，那我該怎測試呢？<br />要透過adb了，<br /><pre class="brush: bash">adb shell bmgr backup packagename  # 等於dataChanged<br />adb shell bmgr run                 # 立即去trigger backup job<br />adb uninstall packagename          # 先刪掉app<br /></pre>最後再安裝一次你的app，<br />打開以後應該會發現你的資料都還在！<br /><br /><br /><br /></div><br /><br /><br /><br /><br />
     </div>
 

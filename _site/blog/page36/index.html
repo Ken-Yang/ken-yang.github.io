@@ -223,7 +223,50 @@
       </nav>
 
       <div class="container">
-        <body>
+        <style>
+.myButton {
+    -moz-box-shadow:inset 0px 1px 0px 0px #ffffff;
+    -webkit-box-shadow:inset 0px 1px 0px 0px #ffffff;
+    box-shadow:inset 0px 1px 0px 0px #ffffff;
+    background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #f9f9f9), color-stop(1, #e9e9e9));
+    background:-moz-linear-gradient(top, #f9f9f9 5%, #e9e9e9 100%);
+    background:-webkit-linear-gradient(top, #f9f9f9 5%, #e9e9e9 100%);
+    background:-o-linear-gradient(top, #f9f9f9 5%, #e9e9e9 100%);
+    background:-ms-linear-gradient(top, #f9f9f9 5%, #e9e9e9 100%);
+    background:linear-gradient(to bottom, #f9f9f9 5%, #e9e9e9 100%);
+    filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#f9f9f9', endColorstr='#e9e9e9',GradientType=0);
+    background-color:#f9f9f9;
+    -moz-border-radius:6px;
+    -webkit-border-radius:6px;
+    border-radius:6px;
+    border:1px solid #dcdcdc;
+    display:inline-block;
+    cursor:pointer;
+    color:#666666;
+    font-family:Arial;
+    font-size:15px;
+    font-weight:bold;
+    padding:6px 24px;
+    text-decoration:none;
+    text-shadow:0px 1px 0px #ffffff;
+}
+.myButton:hover {
+    background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #e9e9e9), color-stop(1, #f9f9f9));
+    background:-moz-linear-gradient(top, #e9e9e9 5%, #f9f9f9 100%);
+    background:-webkit-linear-gradient(top, #e9e9e9 5%, #f9f9f9 100%);
+    background:-o-linear-gradient(top, #e9e9e9 5%, #f9f9f9 100%);
+    background:-ms-linear-gradient(top, #e9e9e9 5%, #f9f9f9 100%);
+    background:linear-gradient(to bottom, #e9e9e9 5%, #f9f9f9 100%);
+    filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#e9e9e9', endColorstr='#f9f9f9',GradientType=0);
+    background-color:#e9e9e9;
+}
+.myButton:active {
+    position:relative;
+    top:1px;
+}
+</style>
+
+<body>
     <div>
         <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 <!-- id10t_top -->
@@ -242,31 +285,85 @@ data-ad-format="auto"></ins>
       <h1><a style="color: #F22430" href="/2010/12/16/google-app-engine-gaej-picasa-api">Google App Engine (GAE/J) 使用 Picasa API 取得相簿列表</a></h1>
       <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
       <p class="author">
-        <span class="date">16 December 2010</span>
+      <div class="date">
+        <span>16 December 2010</span>
+      </div>
       </p>
-      <div class="content">
+      <div class="content" style="line-height: 28px;">
         不管你在哪裡(GAE、Java Application)要使用Picasa<br /><br />都一定要reference 4個jar檔，<br /><br /><br /><ol><li>gdata-core-1.0.jar</li><li>gdata-media-1.0.jar</li><li>gdata-photos-2.0.jar</li><li>google-collect-1.0-rc1.jar</li></ol><br /><br />可是Google Code的說明文件卻少說一個，<br /><br />文件上並沒有叫人家reference第四個，<br /><br />但是要reference進來才不會有錯<br /><br />reference進去以後就開始撰寫程式碼了<br /><br /><br /><br />這邊是以一個<b>固定帳號</b>去做登入<br /><br />跟之前<a href="http://blog.kenyang.net/search/label/google%20calendar">在GAE中使用行事曆</a>的例子<b>不一樣</b><br /><br />那個例子是會有Google登入畫面讓使用者輸入自己的帳號密碼，<br /><br />然後去存取使用者自己本身的行事曆<br /><br />不過這個例子不是，這個例子是用寫死的帳號密碼登入<br /><br />(<span class="Apple-style-span" style="font-size: x-small;">如果妳一樣要讓使用者填選，那麼也是要用<span class="Apple-style-span" style="font-family: Verdana, Arial, sans-serif; line-height: 16px;">AuthSub來認證，可以去行事曆那個例子看，差不</span></span><span class="Apple-style-span" style="font-family: Verdana, Arial, sans-serif; font-size: 13px; line-height: 16px;">多)</span><br /><span class="Apple-style-span" style="font-family: Verdana, Arial, sans-serif; font-size: 13px; line-height: 16px;"><br /></span><br />開始撰寫程式碼了<br /><br /><pre class="brush: java">package edu.chao.lab.servlet;<br /><br />import java.io.IOException;<br />import java.net.URL;<br />import java.util.List;<br /><br />import javax.servlet.ServletException;<br />import javax.servlet.http.HttpServlet;<br />import javax.servlet.http.HttpServletRequest;<br />import javax.servlet.http.HttpServletResponse;<br /><br />import com.google.gdata.client.photos.PicasawebService;<br />import com.google.gdata.data.photos.AlbumFeed;<br />import com.google.gdata.data.photos.GphotoEntry;<br />import com.google.gdata.util.ServiceException;<br /><br />public class test extends HttpServlet {<br /> <br /> @Override<br /> protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {<br />  super.doGet(req, resp);<br /> try {<br />  String strAcc = "你的帳號";<br />  String strPwd = "你的密碼";<br />  <br />  PicasawebService service = new PicasawebService("sample");<br />  service.setUserCredentials(strAcc, strPwd);    //登入<br />  URL feedUrl = new URL("https://picasaweb.google.com/data/feed/api/user/"+strAcc+"?kind=album");<br />  AlbumFeed myUserFeed = service.getFeed(feedUrl, AlbumFeed.class); //取得所有相簿烈表<br />  List&lt;GphotoEntry&gt; lAlbum = myUserFeed.getEntries();<br />  <br />  for (GphotoEntry myAlbum : lAlbum) {<br />   resp.getWriter().println(myAlbum.getTitle().getPlainText());//印出相簿名稱<br />   resp.getWriter().println(myAlbum.getGphotoId());   //印出相簿編號<br />   <br />   <br />  }<br /> } catch (ServiceException e) {<br />   // TODO Auto-generated catch block<br />   e.printStackTrace();<br /> }<br /> }<br />  <br />}<br /><br /><br /></pre><br /><span class="Apple-style-span" style="font-family: Verdana, Arial, sans-serif; font-size: 13px; line-height: 16px;"><br /></span><br /><span class="Apple-style-span" style="font-family: Verdana, Arial, sans-serif; font-size: 13px; line-height: 16px;"><br /></span><br />這樣就完成了讀取相簿列表<br /><br /><br /><br /><br /><br /><br /><br /><br />
       </div>
+      <footer>
+        <p><a class="myButton" href="/2010/12/16/google-app-engine-gaej-picasa-api">read more &raquo;</a></p>
+        <div>
+          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- id10t_top -->
+<ins class="adsbygoogle"
+style="display:block"
+data-ad-client="ca-pub-7586970907106458"
+data-ad-slot="1161208442"
+data-ad-format="auto"></ins>
+<script>
+    (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+        </div>
+      </footer>
       <hr>
     
       <h1><a style="color: #F22430" href="/2010/12/08/chrome-app">如何撰寫一個Chrome App</a></h1>
       <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
       <p class="author">
-        <span class="date">08 December 2010</span>
+      <div class="date">
+        <span>08 December 2010</span>
+      </div>
       </p>
-      <div class="content">
+      <div class="content" style="line-height: 28px;">
         今早才看到<a href="https://chrome.google.com/webstore">Chrome Web Store</a>的Chrome App<br /><br />就覺得這個跟 Chrome Extension一樣<br /><br />先做先贏，<br /><br />就想說趕緊來做一個，<br /><br />去看了一下API，<br /><br />其實我對Chrome App有點失望...<br /><br />我覺得根本就只是轉址而已(個人愚見)<br /><br />爆發點應該會是在Google TV上的應用!<br /><br />不過對廠商來說，的確是多了一個管道銷售。(更何況是Google幫它銷售)<br /><br />對廠商來說，有利無弊。<br /><br />但是對我這種開發者而言，似乎沒有什麼太大意義。<br /><br />畢竟你還是得先有一個服務(不管是game、小工具)<br /><br />然後透過Chorme App轉址過去....<br /><br />好吧，費話不多說，<br /><br />就直接教學了，<br /><br />其實Chrome App和Chrome Extension差不多<br /><br />都是利用json來部屬。<br /><br />我這裡就直接PO範例了<br /><br /><pre class="brush: jscript">{<br />  "name": "App的名稱",<br />  "version": "2",<br />  "description": "打你要描述的內容.",<br />  "app": {<br />    "launch": {<br />      "web_url": "http://www.google.com.tw/"<br />    }<br />  },<br />  "icons": {<br />     "128": "icon.png"<br />  }<br />  <br />}<br /><br /></pre><br /><br />而上傳方式就跟上傳Chrome Extension一樣，<br /><br />大家可以去參考<a href="http://blog.kenyang.net/2010/07/chrome-app.html">這篇</a><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
       </div>
+      <footer>
+        <p><a class="myButton" href="/2010/12/08/chrome-app">read more &raquo;</a></p>
+        <div>
+          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- id10t_top -->
+<ins class="adsbygoogle"
+style="display:block"
+data-ad-client="ca-pub-7586970907106458"
+data-ad-slot="1161208442"
+data-ad-format="auto"></ins>
+<script>
+    (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+        </div>
+      </footer>
       <hr>
     
       <h1><a style="color: #F22430" href="/2010/12/07/android-connect-to-msn-jml">Android connect to MSN (JML)</a></h1>
       <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
       <p class="author">
-        <span class="date">07 December 2010</span>
+      <div class="date">
+        <span>07 December 2010</span>
+      </div>
       </p>
-      <div class="content">
+      <div class="content" style="line-height: 28px;">
         Android connect to MSN (JML)<br /><br />在Android用Java MSN Messenger Library(JML)登入<br /><br />其實JML是一個很好用的lib，<br /><br />在J2SE的環境下使用非常好整合，<br /><br />BUT...要整合至ANDROID中會有幾個小問題。<br /><br />第一：會少了一個GetPropertyAction的CLASS<br /><br />第二：JML裡用的SSL是採取SSLv3，但是android只能支援TLS<br /><br />第三：一樣會少了一個DatatypeFactory這個CLASS<br /><br />解決方法就是<br /><br />直接去找到JML的source code，<br /><br />直接拿它來做修改，而不是直接去拿jar來用。<br /><br />為了解決第一部，<br /><br />我們可以在網路上找到人家寫好的這個class（GetPropertyAction）<br /><br /><a href="http://jcs.mobile-utopia.com/jcs/2154_GetPropertyAction.java">來這下載</a><br /><br />下載好以後，記得放在package名稱為sun.security.action的底下<br /><br /><br /><br />解決第二個方法就是<br /><br />去下載JML的SOURCE CODE<br /><br /><a href="http://sourceforge.net/projects/java-jml/files/java-jml/jml-1.0b4/">來這下載</a>　（是載.ZIP檔案喔，這樣才會有SOURCE CODE）<br /><br />下載完成後，把src資料夾底下的net通通拉進來我們的project裡面<br /><br />拉進來後，畫面會如下<br /><br /><div class="separator" style="clear: both; text-align: center;"><a href="http://4.bp.blogspot.com/_6SxqtkJQECI/TP3tUVeF0VI/AAAAAAAAAPw/kYI6uJ-n4mk/s1600/%25E6%259C%25AA%25E5%2591%25BD%25E5%2590%258D.png" imageanchor="1" style="clear: left; float: left; margin-bottom: 1em; margin-right: 1em;"><img border="0" height="320" src="http://4.bp.blogspot.com/_6SxqtkJQECI/TP3tUVeF0VI/AAAAAAAAAPw/kYI6uJ-n4mk/s320/%25E6%259C%25AA%25E5%2591%25BD%25E5%2590%258D.png" width="217" /></a></div><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />拉進來以後，<br /><br />找到package名稱為net.sf.jml.protocol.soap，<br /><br />點兩下展開以後，<br /><br />點選class名稱為ContactList的class<br /><br />打開以後找到下面那行CODE<br /><br /><pre class="brush: java">    SSLContext sc = SSLContext.getInstance("SSLv3");<br /></pre><br /><br />把它改成下面那行CODE<br /><br /><br /><pre class="brush: java">    SSLContext sc = SSLContext.getInstance("TLS");<br /></pre><br /><br />這樣第二部就解決了。<br /><br />至於第三個解決方式，<br /><br />目前是先把ANDROID SDK設為2.2，<br /><br />2.2就有支援DatatypeFactory，<br /><br /><br /><br />接著來寫連結至msn的code了。<br /><br />其實很簡單，你只要克服上面的問題，<br /><br />CODE應該就難不倒你，<br /><br /><pre class="brush: java">    try {<br />        final String email = "msn帳號";<br />        final String password = "您的密碼";<br />        final MsnMessenger messenger = MsnMessengerFactory.createMsnMessenger(email,<br />                 password);<br /><br />        messenger.getOwner().setInitStatus(MsnUserStatus.ONLINE);<br /><br />        //這邊一定要用thread去執行登入<br />        Thread thread = new Thread(new Runnable() {<br />                public void run() {<br />                    messenger.login();<br />                }<br />        });<br /> <br />        thread.start();  <br /><br />         <br />    } catch (Exception e) {<br />        Log.d("msn",e.toString());<br />    }<br /><br /></pre><br /><br /><br /><br />這樣就完成了MSN登入了。<br /><br />至於怎麼截取聯絡人清單，只要您解決上面那三個問題<br /><br />則擷取連絡人，就不是問題了。<br /><br /><br /><br />
       </div>
+      <footer>
+        <p><a class="myButton" href="/2010/12/07/android-connect-to-msn-jml">read more &raquo;</a></p>
+        <div>
+          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- id10t_top -->
+<ins class="adsbygoogle"
+style="display:block"
+data-ad-client="ca-pub-7586970907106458"
+data-ad-slot="1161208442"
+data-ad-format="auto"></ins>
+<script>
+    (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+        </div>
+      </footer>
       <hr>
     
 

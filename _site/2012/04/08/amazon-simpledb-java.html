@@ -223,7 +223,78 @@
       </nav>
 
       <div class="container">
-        
+        <style>
+/* Adjusted to give override background and text colour */
+.highlight pre, pre, .highlight .hll {
+    background-color: #49483E;
+    border: 1px solid #ccc;
+    padding: 6px 10px;
+    border-radius: 3px;
+    color: #FFFFFF;
+}
+/* Highlights taken from https://gist.github.com/asaaki/1007420  for Monokai theme */
+.c                 { color: #75715e }               /* Comment                     */
+.err               { color: #960050;
+                     background-color: #1e0010 }    /* Error                       */
+.k                 { color: #66d9ef }               /* Keyword                     */
+.l                 { color: #ae81ff }               /* Literal                     */
+.n                 { color: #f8f8f2 }               /* Name                        */
+.o                 { color: #f92672 }               /* Operator                    */
+.p                 { color: #f8f8f2 }               /* Punctuation                 */
+.cm                { color: #75715e }               /* Comment.Multiline           */
+.cp                { color: #75715e }               /* Comment.Preproc             */
+.c1                { color: #75715e }               /* Comment.Single              */
+.cs                { color: #75715e }               /* Comment.Special             */
+.ge                { font-style: italic }           /* Generic.Emph                */
+.gs                { font-weight: bold }            /* Generic.Strong              */
+.kc                { color: #66d9ef }               /* Keyword.Constant            */
+.kd                { color: #66d9ef }               /* Keyword.Declaration         */
+.kn                { color: #f92672 }               /* Keyword.Namespace           */
+.kp                { color: #66d9ef }               /* Keyword.Pseudo              */
+.kr                { color: #66d9ef }               /* Keyword.Reserved            */
+.kt                { color: #66d9ef }               /* Keyword.Type                */
+.ld                { color: #e6db74 }               /* Literal.Date                */
+.m                 { color: #ae81ff }               /* Literal.Number              */
+.s                 { color: #e6db74 }               /* Literal.String              */
+.na                { color: #a6e22e }               /* Name.Attribute              */
+.nb                { color: #f8f8f2 }               /* Name.Builtin                */
+.nc                { color: #a6e22e }               /* Name.Class                  */
+.no                { color: #66d9ef }               /* Name.Constant               */
+.nd                { color: #a6e22e }               /* Name.Decorator              */
+.ni                { color: #f8f8f2 }               /* Name.Entity                 */
+.ne                { color: #a6e22e }               /* Name.Exception              */
+.nf                { color: #a6e22e }               /* Name.Function               */
+.nl                { color: #f8f8f2 }               /* Name.Label                  */
+.nn                { color: #f8f8f2 }               /* Name.Namespace              */
+.nx                { color: #a6e22e }               /* Name.Other                  */
+.py                { color: #f8f8f2 }               /* Name.Property               */
+.nt                { color: #f92672 }               /* Name.Tag                    */
+.nv                { color: #f8f8f2 }               /* Name.Variable               */
+.ow                { color: #f92672 }               /* Operator.Word               */
+.w                 { color: #f8f8f2 }               /* Text.Whitespace             */
+.mf                { color: #ae81ff }               /* Literal.Number.Float        */
+.mh                { color: #ae81ff }               /* Literal.Number.Hex          */
+.mi                { color: #ae81ff }               /* Literal.Number.Integer      */
+.mo                { color: #ae81ff }               /* Literal.Number.Oct          */
+.sb                { color: #e6db74 }               /* Literal.String.Backtick     */
+.sc                { color: #e6db74 }               /* Literal.String.Char         */
+.sd                { color: #e6db74 }               /* Literal.String.Doc          */
+.s2                { color: #e6db74 }               /* Literal.String.Double       */
+.se                { color: #ae81ff }               /* Literal.String.Escape       */
+.sh                { color: #e6db74 }               /* Literal.String.Heredoc      */
+.si                { color: #e6db74 }               /* Literal.String.Interpol     */
+.sx                { color: #e6db74 }               /* Literal.String.Other        */
+.sr                { color: #e6db74 }               /* Literal.String.Regex        */
+.s1                { color: #e6db74 }               /* Literal.String.Single       */
+.ss                { color: #e6db74 }               /* Literal.String.Symbol       */
+.bp                { color: #f8f8f2 }               /* Name.Builtin.Pseudo         */
+.vc                { color: #f8f8f2 }               /* Name.Variable.Class         */
+.vg                { color: #f8f8f2 }               /* Name.Variable.Global        */
+.vi                { color: #f8f8f2 }               /* Name.Variable.Instance      */
+.il                { color: #ae81ff }               /* Literal.Number.Integer.Long */
+</style>
+
+
 <div class="page-header">
   <h1>Amazon SimpleDB 操作 (Java) </h1>
 </div>
@@ -257,7 +328,7 @@ data-ad-format="auto"></ins>
     <div class="date">
       <span>08 April 2012</span>
     </div>
-    <div class="content">
+    <div class="content" style="line-height: 28px;">
       <a href="http://aws.amazon.com/simpledb/">SimpleDB </a>是Amazon提供的一種NoSQL DATABASE!<br />詳細說明去官網看吧!<br /><br /><br />這篇主要會教大家如何<br />建立一張table，<br />新增資料<br />刪除資料<br />查詢資料<br /><br /><br />首先要先宣告一些必備的參數，<br /><pre class="brush: java">// 你的table name(在Relational Database叫做table，這裡叫做domain)<br />  final String DOMAIN_NAME = "member";<br />  <br />  // 取得憑證，這檔案預設在/src底下<br />  AWSCredentials credentials = new PropertiesCredentials(getClass().getClassLoader().getResourceAsStream("AwsCredentials.properties"));<br />  <br />  // 宣告一個SimpleDB<br />  AmazonSimpleDB sdb = new AmazonSimpleDBClient(credentials);<br />     <br /></pre><br />接著就建立一個table，<br /><pre class="brush: java">// 建立一個table(在Relational Database叫做table，這裡叫做domain)<br />  sdb.createDomain(new CreateDomainRequest(DOMAIN_NAME));<br /></pre><br /><br />在SimpleDB的新增分成兩種方式!<br />一種是一筆一筆的新增，<br />另一種是批次的新增!(一次新增多筆)<br />有玩過GAE的大概知道，其實GAE也是這樣!<br />多筆的話就是用一個list存放資料!<br /><br />在這邊先介紹一次新增多筆的!<br /><pre class="brush: java">// 先宣告一個List，List擺放的型態為ReplaceableItem，這型態意思是如果table裡面已經有一筆Ken的資料，那麼就取代掉那筆，不會多一筆<br />  List&lt;ReplaceableItem&gt; listAddData = new ArrayList&lt;ReplaceableItem&gt;();<br /><br /><br />  // 第一筆資料<br />  // 先new一個Item，Item Name是Ken，然後這個item有四個attribute!分別是Sex, Tel, Mail, Nickname<br />  listAddData.add(new ReplaceableItem("Ken").withAttributes(<br />       new ReplaceableAttribute("Sex", "boy", true),<br />       new ReplaceableAttribute("Tel", "09123456", true),<br />       new ReplaceableAttribute("Mail", "xxx@kenyang.net", true),<br />       new ReplaceableAttribute("Nickname", "KenYang", true)));<br /> <br />  // 第二筆<br />  listAddData.add(new ReplaceableItem("Sam").withAttributes(<br />       new ReplaceableAttribute("Sex", "boy", true),<br />       new ReplaceableAttribute("Tel", "09123456", true),<br />       new ReplaceableAttribute("Mail", "xxx@kenyang.net", true),<br />       new ReplaceableAttribute("Nickname", "SamYang", true)));<br /><br /><br />  // 接著就新增吧!記得要指定Domain name!<br />  sdb.batchPutAttributes(new BatchPutAttributesRequest(DOMAIN_NAME, listAddData));<br /><br /></pre><br /><br /><br />接著要介紹新增一筆的! 其實大同小異，只是要宣告一個PutAttributesRequest來擺放資料!<br />一個PutAttributeRequest就代表一筆資料!<br /><pre class="brush: java">PutAttributesRequest dataAttribute = new PutAttributesRequest().withDomainName(DOMAIN_NAME).withItemName("John"); <br />     <br />  dataAttribute.getAttributes().add(        <br />       new ReplaceableAttribute()<br />           .withName("Sex")<br />           .withValue("girl")<br />           .withReplace(true));<br />     <br />  dataAttribute.getAttributes().add(        <br />       new ReplaceableAttribute()<br />           .withName("Tel")<br />           .withValue("0987123")<br />           .withReplace(true));<br />  <br />  dataAttribute.getAttributes().add(        <br />       new ReplaceableAttribute()<br />           .withName("Mail")<br />           .withValue("xxx@gmail.com")<br />           .withReplace(true));<br />     <br />  dataAttribute.getAttributes().add(        <br />       new ReplaceableAttribute()<br />           .withName("Nickname")<br />           .withValue("JohnYang")<br />           .withReplace(true));     <br />     <br />  sdb.putAttributes(dataAttribute);     <br /><br /></pre><br /><br /><br />接下來要介紹刪除! 這邊是介紹一次刪除多筆的!<br />一樣是用一個List去存放要刪除的Item Name!<br />至於刪除單筆，也跟上述方法一樣! 這裡就不多作介紹!<br /><pre class="brush: java">List&lt;DeletableItem&gt; listDeleteData = new ArrayList&lt;DeletableItem&gt;();<br />  listDeleteData.add(new DeletableItem().withName("Ken"));<br />  listDeleteData.add(new DeletableItem().withName("Sam"));<br />  // 所以Ken和Sam這兩筆資料會被刪除<br />  sdb.batchDeleteAttributes(new BatchDeleteAttributesRequest(DOMAIN_NAME,listDeleteData));<br /><br /></pre><br /><br />最後要介紹查詢了!<br /><pre class="brush: java">// 注意，傳統的SQL指令，都是用單引號(')，但是這裡要用(`)<br />     String selectExpression = "select * from `" + DOMAIN_NAME + "` ";<br />     SelectRequest selectRequest = new SelectRequest(selectExpression);<br />     SelectResult sr = sdb.select(selectRequest);<br />  <br />     for (Item item : sr.getItems()) {<br />          response.getWriter().println(item.getName());<br />          response.getWriter().println(item.getAttributes().get(0).getValue());<br />     }<br /><br /></pre><br /><br /><br /><br /><br />
     </div>
 

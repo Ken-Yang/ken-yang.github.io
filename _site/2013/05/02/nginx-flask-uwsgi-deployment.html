@@ -223,7 +223,78 @@
       </nav>
 
       <div class="container">
-        
+        <style>
+/* Adjusted to give override background and text colour */
+.highlight pre, pre, .highlight .hll {
+    background-color: #49483E;
+    border: 1px solid #ccc;
+    padding: 6px 10px;
+    border-radius: 3px;
+    color: #FFFFFF;
+}
+/* Highlights taken from https://gist.github.com/asaaki/1007420  for Monokai theme */
+.c                 { color: #75715e }               /* Comment                     */
+.err               { color: #960050;
+                     background-color: #1e0010 }    /* Error                       */
+.k                 { color: #66d9ef }               /* Keyword                     */
+.l                 { color: #ae81ff }               /* Literal                     */
+.n                 { color: #f8f8f2 }               /* Name                        */
+.o                 { color: #f92672 }               /* Operator                    */
+.p                 { color: #f8f8f2 }               /* Punctuation                 */
+.cm                { color: #75715e }               /* Comment.Multiline           */
+.cp                { color: #75715e }               /* Comment.Preproc             */
+.c1                { color: #75715e }               /* Comment.Single              */
+.cs                { color: #75715e }               /* Comment.Special             */
+.ge                { font-style: italic }           /* Generic.Emph                */
+.gs                { font-weight: bold }            /* Generic.Strong              */
+.kc                { color: #66d9ef }               /* Keyword.Constant            */
+.kd                { color: #66d9ef }               /* Keyword.Declaration         */
+.kn                { color: #f92672 }               /* Keyword.Namespace           */
+.kp                { color: #66d9ef }               /* Keyword.Pseudo              */
+.kr                { color: #66d9ef }               /* Keyword.Reserved            */
+.kt                { color: #66d9ef }               /* Keyword.Type                */
+.ld                { color: #e6db74 }               /* Literal.Date                */
+.m                 { color: #ae81ff }               /* Literal.Number              */
+.s                 { color: #e6db74 }               /* Literal.String              */
+.na                { color: #a6e22e }               /* Name.Attribute              */
+.nb                { color: #f8f8f2 }               /* Name.Builtin                */
+.nc                { color: #a6e22e }               /* Name.Class                  */
+.no                { color: #66d9ef }               /* Name.Constant               */
+.nd                { color: #a6e22e }               /* Name.Decorator              */
+.ni                { color: #f8f8f2 }               /* Name.Entity                 */
+.ne                { color: #a6e22e }               /* Name.Exception              */
+.nf                { color: #a6e22e }               /* Name.Function               */
+.nl                { color: #f8f8f2 }               /* Name.Label                  */
+.nn                { color: #f8f8f2 }               /* Name.Namespace              */
+.nx                { color: #a6e22e }               /* Name.Other                  */
+.py                { color: #f8f8f2 }               /* Name.Property               */
+.nt                { color: #f92672 }               /* Name.Tag                    */
+.nv                { color: #f8f8f2 }               /* Name.Variable               */
+.ow                { color: #f92672 }               /* Operator.Word               */
+.w                 { color: #f8f8f2 }               /* Text.Whitespace             */
+.mf                { color: #ae81ff }               /* Literal.Number.Float        */
+.mh                { color: #ae81ff }               /* Literal.Number.Hex          */
+.mi                { color: #ae81ff }               /* Literal.Number.Integer      */
+.mo                { color: #ae81ff }               /* Literal.Number.Oct          */
+.sb                { color: #e6db74 }               /* Literal.String.Backtick     */
+.sc                { color: #e6db74 }               /* Literal.String.Char         */
+.sd                { color: #e6db74 }               /* Literal.String.Doc          */
+.s2                { color: #e6db74 }               /* Literal.String.Double       */
+.se                { color: #ae81ff }               /* Literal.String.Escape       */
+.sh                { color: #e6db74 }               /* Literal.String.Heredoc      */
+.si                { color: #e6db74 }               /* Literal.String.Interpol     */
+.sx                { color: #e6db74 }               /* Literal.String.Other        */
+.sr                { color: #e6db74 }               /* Literal.String.Regex        */
+.s1                { color: #e6db74 }               /* Literal.String.Single       */
+.ss                { color: #e6db74 }               /* Literal.String.Symbol       */
+.bp                { color: #f8f8f2 }               /* Name.Builtin.Pseudo         */
+.vc                { color: #f8f8f2 }               /* Name.Variable.Class         */
+.vg                { color: #f8f8f2 }               /* Name.Variable.Global        */
+.vi                { color: #f8f8f2 }               /* Name.Variable.Instance      */
+.il                { color: #ae81ff }               /* Literal.Number.Integer.Long */
+</style>
+
+
 <div class="page-header">
   <h1>Nginx + Flask + uWSGI Deployment </h1>
 </div>
@@ -257,7 +328,7 @@ data-ad-format="auto"></ins>
     <div class="date">
       <span>02 May 2013</span>
     </div>
-    <div class="content">
+    <div class="content" style="line-height: 28px;">
       <br /><div class="p1"></div><div>I am gonna to deploy a simple web server on my raspberry pi, cause the pi's resource has limitation.</div><div>So I use the following lightweight package:</div><ol><li>Flask is a microframework for Python</li><li>Nginx is a fast and lightweight web server for serving static files. (like image, html, css...etc)</li><li>uWSGI：Unfortunately Nginx can't not be used for serving dynamic language. (like php, python.) &nbsp;Therefore python needs to depend on uWSGI to interact with Nginx.</li></ol><div><br /></div><br /><span style="font-size: large;">1. Installation</span><br /><pre class="brush: perl">apt-get install nginx # install nginx<br />apt-get install uwsgi # instal uwsgi<br />apt-get install uwsgi-plugin-python # cause uwsgi can support many language so we need to indicate which lanague we want to use. <br />apt-get install python-flask # install flask<br /></pre><br /><br /><span style="font-size: large;">2. Configuration</span><br /><pre class="brush: perl"># config nginx<br />cd /etc/nginx/sites-available/<br />vim default<br /></pre><br />Please paste the following config to your config file.<br /><pre class="brush: perl">server {<br />    listen   80; ## listen for ipv4; this line is default and implied<br />    server_name ken;<br />    keepalive_timeout 300;<br />    location / { <br />        include         uwsgi_params;<br />        uwsgi_pass      unix:///tmp/uwsgi.sock;<br />        uwsgi_param         UWSGI_PYHOME    /var/www;   # your web application's path<br />        uwsgi_param         UWSGI_CHDIR     /var/www;   # your web application's path<br />        uwsgi_param         UWSGI_MODULE    api;        # Main dispatcher ( so we will have api.py )<br />        uwsgi_param         UWSGI_CALLABLE  app;<br />    }   <br />    error_page          404     /404.html;<br />}     <br /><br /></pre><br /><br /><pre class="brush: perl"># config uwsgi<br />cd /etc/uwsgi/apps-available/<br />vim uwsgi.conf<br /></pre><br />Please paste the following config to your config file.<br /><pre class="brush: java">[uwsgi]                                                                                                                    <br />plugins=python ; support python<br />vhost=true<br />socket=/tmp/uwsgi.sock <br />chmod-socket = 666  ; the socket permission<br />uid=root<br />gid=root<br /><br /></pre><br /><pre class="brush: perl"># make a soft link<br />ln -s /etc/uwsgi/apps-available/uwsgi.conf /etc/uwsgi/apps-enabled/uwsgi.ini<br /></pre><br /><br /><br /><br /><span style="font-size: large;">3. Implement the dispatcher </span><br /><br /><pre class="brush: perl">vim /var/www/api.py   # implement the dispatcher <br /></pre><br /><br />api.py <br /><pre class="brush: python">from flask import Flask,jsonify                                                                                            <br /><br />app = Flask(__name__)<br /><br />@app.route("/hello")<br />def hello():<br />    result = {'msg':'Hello World!'}<br />    return jsonify(result)<br /><br />@app.route("/")<br />def index():<br />    result = {'msg':'Index!'}<br />    return jsonify(result)<br /><br />if __name__ == "__main__":<br />    app.debug = True<br />    app.run('0.0.0.0', debug=True)<br /></pre><br /><pre class="brush: perl"># restart service<br />service nginx restart<br />service uwsgi restart<br /></pre><br /><br /><br /><span style="font-size: large;">4. verify </span><br /><br />1. open browser <br />2. key in your ip<br />&nbsp; &nbsp; &nbsp; ex: http:192.169.1.1/<br />3. your will see <br /><pre class="brush: xml">{<br />    "msg": "Index!"<br />}<br /></pre><br /><br /><br /><br /><br /><br /><br /><br />
     </div>
 

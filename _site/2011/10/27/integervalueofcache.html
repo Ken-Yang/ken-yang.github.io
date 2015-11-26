@@ -223,7 +223,78 @@
       </nav>
 
       <div class="container">
-        
+        <style>
+/* Adjusted to give override background and text colour */
+.highlight pre, pre, .highlight .hll {
+    background-color: #49483E;
+    border: 1px solid #ccc;
+    padding: 6px 10px;
+    border-radius: 3px;
+    color: #FFFFFF;
+}
+/* Highlights taken from https://gist.github.com/asaaki/1007420  for Monokai theme */
+.c                 { color: #75715e }               /* Comment                     */
+.err               { color: #960050;
+                     background-color: #1e0010 }    /* Error                       */
+.k                 { color: #66d9ef }               /* Keyword                     */
+.l                 { color: #ae81ff }               /* Literal                     */
+.n                 { color: #f8f8f2 }               /* Name                        */
+.o                 { color: #f92672 }               /* Operator                    */
+.p                 { color: #f8f8f2 }               /* Punctuation                 */
+.cm                { color: #75715e }               /* Comment.Multiline           */
+.cp                { color: #75715e }               /* Comment.Preproc             */
+.c1                { color: #75715e }               /* Comment.Single              */
+.cs                { color: #75715e }               /* Comment.Special             */
+.ge                { font-style: italic }           /* Generic.Emph                */
+.gs                { font-weight: bold }            /* Generic.Strong              */
+.kc                { color: #66d9ef }               /* Keyword.Constant            */
+.kd                { color: #66d9ef }               /* Keyword.Declaration         */
+.kn                { color: #f92672 }               /* Keyword.Namespace           */
+.kp                { color: #66d9ef }               /* Keyword.Pseudo              */
+.kr                { color: #66d9ef }               /* Keyword.Reserved            */
+.kt                { color: #66d9ef }               /* Keyword.Type                */
+.ld                { color: #e6db74 }               /* Literal.Date                */
+.m                 { color: #ae81ff }               /* Literal.Number              */
+.s                 { color: #e6db74 }               /* Literal.String              */
+.na                { color: #a6e22e }               /* Name.Attribute              */
+.nb                { color: #f8f8f2 }               /* Name.Builtin                */
+.nc                { color: #a6e22e }               /* Name.Class                  */
+.no                { color: #66d9ef }               /* Name.Constant               */
+.nd                { color: #a6e22e }               /* Name.Decorator              */
+.ni                { color: #f8f8f2 }               /* Name.Entity                 */
+.ne                { color: #a6e22e }               /* Name.Exception              */
+.nf                { color: #a6e22e }               /* Name.Function               */
+.nl                { color: #f8f8f2 }               /* Name.Label                  */
+.nn                { color: #f8f8f2 }               /* Name.Namespace              */
+.nx                { color: #a6e22e }               /* Name.Other                  */
+.py                { color: #f8f8f2 }               /* Name.Property               */
+.nt                { color: #f92672 }               /* Name.Tag                    */
+.nv                { color: #f8f8f2 }               /* Name.Variable               */
+.ow                { color: #f92672 }               /* Operator.Word               */
+.w                 { color: #f8f8f2 }               /* Text.Whitespace             */
+.mf                { color: #ae81ff }               /* Literal.Number.Float        */
+.mh                { color: #ae81ff }               /* Literal.Number.Hex          */
+.mi                { color: #ae81ff }               /* Literal.Number.Integer      */
+.mo                { color: #ae81ff }               /* Literal.Number.Oct          */
+.sb                { color: #e6db74 }               /* Literal.String.Backtick     */
+.sc                { color: #e6db74 }               /* Literal.String.Char         */
+.sd                { color: #e6db74 }               /* Literal.String.Doc          */
+.s2                { color: #e6db74 }               /* Literal.String.Double       */
+.se                { color: #ae81ff }               /* Literal.String.Escape       */
+.sh                { color: #e6db74 }               /* Literal.String.Heredoc      */
+.si                { color: #e6db74 }               /* Literal.String.Interpol     */
+.sx                { color: #e6db74 }               /* Literal.String.Other        */
+.sr                { color: #e6db74 }               /* Literal.String.Regex        */
+.s1                { color: #e6db74 }               /* Literal.String.Single       */
+.ss                { color: #e6db74 }               /* Literal.String.Symbol       */
+.bp                { color: #f8f8f2 }               /* Name.Builtin.Pseudo         */
+.vc                { color: #f8f8f2 }               /* Name.Variable.Class         */
+.vg                { color: #f8f8f2 }               /* Name.Variable.Global        */
+.vi                { color: #f8f8f2 }               /* Name.Variable.Instance      */
+.il                { color: #ae81ff }               /* Literal.Number.Integer.Long */
+</style>
+
+
 <div class="page-header">
   <h1>Integer.valueOf的Cache機制 </h1>
 </div>
@@ -257,7 +328,7 @@ data-ad-format="auto"></ins>
     <div class="date">
       <span>27 October 2011</span>
     </div>
-    <div class="content">
+    <div class="content" style="line-height: 28px;">
       <br /><br /><br />如果有一個Integer的物件要宣告，<br />大部分的人宣告方式會是如下<br /><pre class="brush: java">Integer a = new Integer(2);<br /></pre><br />但如果其value是介於-128~127之間，<br />某些時刻可以使用下面的宣告方式<br /><pre class="brush: java">Integer a = Integer.valueOf(2);<br /></pre><br />在<b><u>某些條件下</u></b>，速度較快一點點點!!<br />為什麼呢??  我們來看下面的例子!<br /><br /><pre class="brush: java">/*<br /> * 如果不是用new Integer()去賦予值，<br /> * 如果是下方的宣告方式，都會去call Integer.valueOf()這個method<br /> * 也就是說下方的宣告方式，a=2 如同 a=Integer.valueOf(2)<br /> */<br />Integer a = 3;<br />Integer b = 3;<br />System.out.println( a==b ); //印出來會是什麼? <br /></pre><br />如果你的答案是<span class="Apple-style-span" style="color: purple; font-size: x-large;">false</span>，只能說不完全錯<br />因為你的想法，可能是認為==是用來比較2個物件的位址是否相同。<br />如果你是這樣想，那你觀念對了，可是就是忽略掉了valueOf的cache機制。<br />這算是一個陷阱。<br /><br />如果你的答案是<span class="Apple-style-span" style="background-color: white;"><span class="Apple-style-span" style="color: purple; font-size: x-large;">true</span></span>，只能說不完全對<br />因為得取決於你的想法，<br /><br /><ol><li>如果你認為因為a是3，b也是3，3等於3阿，所以是true，那就大錯特錯了。你的觀念需要加強。因為==是比較2個物件的位置是否相同，也就說用來判斷是否為同個物件，並不是判斷value是否相同。</li><li>如果你是認為因為==是比較位置，且知道valueOf有cache機制，所以為true，那你答對了。</li></ol><br />因為在call valueOf這個method時，<br />此method裡面會有判斷是否要調用cache的code，<br />如下，<br /><pre class="brush: java">public static Integer valueOf(int i) {<br />    if(i &gt;= -128 &amp;&amp; i &lt;= IntegerCache.high)<br />        return IntegerCache.cache[i + 128];<br />    else<br />        return new Integer(i);<br />}<br /></pre><br />也就是說如果value是介於-128~127之間，<br />就會掉入到if裡面，而IntegerCache為一個class，<br />在使用這個class時就會去new 256個Integer的物件，並放入cache中，<br />所以在上面的例子a跟b的value都是3，<br />自然會調用同一塊cache，所以用==在比較時，他們的記憶體位置自然為同一塊。<br />因此答案為TRUE。<br /><br />最後!!!<br />或許有人會覺得奇怪，cache會去new 256個Integer物件耶!!<br />這樣用valueOf怎麼會比較快呢??<br />上面有說到<b style="text-decoration: underline;">某些條件下</b>，該條件就是，<br />如果是<span class="Apple-style-span" style="font-size: large;"><b>大量</b></span>宣告的話，此時調用valueOf比較快的條件就成立了。<br /><br /><br />我們可以寫一小段code來判斷執行時間，如下<br /><pre class="brush: java">long lStart = System.nanoTime();<br />for (int i = 0; i &lt; 1000000000 ; i++) {<br /> Integer a = new Integer(3);<br />}<br />long lEnd = System.nanoTime()-lStart;<br /><br />System.out.println((float) lEnd/1000000000);<br /><br />lStart = System.nanoTime();<br />for (int i = 0; i &lt; 1000000000 ; i++) {<br /> Integer a = Integer.valueOf(3);<br />}<br />lEnd = System.nanoTime()-lStart;<br />System.out.println((float) lEnd/1000000000);<br /></pre><br />可以發現上面的例子，<br />用new Integer的方法大概都快要1秒鐘，差不多為0.6秒，<br />但調用Integer.valueOf()的方法大概0.003秒，<br />當然其實人感覺不太到差異啦。<br />只是說硬要評比的話，valueOf的方法較為快。<br />但記得!! 必須符合大量資料的前提才成立。<br /><br /><br /><br /><br /><br />
     </div>
 

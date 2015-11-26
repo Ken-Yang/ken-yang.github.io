@@ -223,7 +223,78 @@
       </nav>
 
       <div class="container">
-        
+        <style>
+/* Adjusted to give override background and text colour */
+.highlight pre, pre, .highlight .hll {
+    background-color: #49483E;
+    border: 1px solid #ccc;
+    padding: 6px 10px;
+    border-radius: 3px;
+    color: #FFFFFF;
+}
+/* Highlights taken from https://gist.github.com/asaaki/1007420  for Monokai theme */
+.c                 { color: #75715e }               /* Comment                     */
+.err               { color: #960050;
+                     background-color: #1e0010 }    /* Error                       */
+.k                 { color: #66d9ef }               /* Keyword                     */
+.l                 { color: #ae81ff }               /* Literal                     */
+.n                 { color: #f8f8f2 }               /* Name                        */
+.o                 { color: #f92672 }               /* Operator                    */
+.p                 { color: #f8f8f2 }               /* Punctuation                 */
+.cm                { color: #75715e }               /* Comment.Multiline           */
+.cp                { color: #75715e }               /* Comment.Preproc             */
+.c1                { color: #75715e }               /* Comment.Single              */
+.cs                { color: #75715e }               /* Comment.Special             */
+.ge                { font-style: italic }           /* Generic.Emph                */
+.gs                { font-weight: bold }            /* Generic.Strong              */
+.kc                { color: #66d9ef }               /* Keyword.Constant            */
+.kd                { color: #66d9ef }               /* Keyword.Declaration         */
+.kn                { color: #f92672 }               /* Keyword.Namespace           */
+.kp                { color: #66d9ef }               /* Keyword.Pseudo              */
+.kr                { color: #66d9ef }               /* Keyword.Reserved            */
+.kt                { color: #66d9ef }               /* Keyword.Type                */
+.ld                { color: #e6db74 }               /* Literal.Date                */
+.m                 { color: #ae81ff }               /* Literal.Number              */
+.s                 { color: #e6db74 }               /* Literal.String              */
+.na                { color: #a6e22e }               /* Name.Attribute              */
+.nb                { color: #f8f8f2 }               /* Name.Builtin                */
+.nc                { color: #a6e22e }               /* Name.Class                  */
+.no                { color: #66d9ef }               /* Name.Constant               */
+.nd                { color: #a6e22e }               /* Name.Decorator              */
+.ni                { color: #f8f8f2 }               /* Name.Entity                 */
+.ne                { color: #a6e22e }               /* Name.Exception              */
+.nf                { color: #a6e22e }               /* Name.Function               */
+.nl                { color: #f8f8f2 }               /* Name.Label                  */
+.nn                { color: #f8f8f2 }               /* Name.Namespace              */
+.nx                { color: #a6e22e }               /* Name.Other                  */
+.py                { color: #f8f8f2 }               /* Name.Property               */
+.nt                { color: #f92672 }               /* Name.Tag                    */
+.nv                { color: #f8f8f2 }               /* Name.Variable               */
+.ow                { color: #f92672 }               /* Operator.Word               */
+.w                 { color: #f8f8f2 }               /* Text.Whitespace             */
+.mf                { color: #ae81ff }               /* Literal.Number.Float        */
+.mh                { color: #ae81ff }               /* Literal.Number.Hex          */
+.mi                { color: #ae81ff }               /* Literal.Number.Integer      */
+.mo                { color: #ae81ff }               /* Literal.Number.Oct          */
+.sb                { color: #e6db74 }               /* Literal.String.Backtick     */
+.sc                { color: #e6db74 }               /* Literal.String.Char         */
+.sd                { color: #e6db74 }               /* Literal.String.Doc          */
+.s2                { color: #e6db74 }               /* Literal.String.Double       */
+.se                { color: #ae81ff }               /* Literal.String.Escape       */
+.sh                { color: #e6db74 }               /* Literal.String.Heredoc      */
+.si                { color: #e6db74 }               /* Literal.String.Interpol     */
+.sx                { color: #e6db74 }               /* Literal.String.Other        */
+.sr                { color: #e6db74 }               /* Literal.String.Regex        */
+.s1                { color: #e6db74 }               /* Literal.String.Single       */
+.ss                { color: #e6db74 }               /* Literal.String.Symbol       */
+.bp                { color: #f8f8f2 }               /* Name.Builtin.Pseudo         */
+.vc                { color: #f8f8f2 }               /* Name.Variable.Class         */
+.vg                { color: #f8f8f2 }               /* Name.Variable.Global        */
+.vi                { color: #f8f8f2 }               /* Name.Variable.Instance      */
+.il                { color: #ae81ff }               /* Literal.Number.Integer.Long */
+</style>
+
+
 <div class="page-header">
   <h1>Setting up load balancing with Keepalived </h1>
 </div>
@@ -257,7 +328,7 @@ data-ad-format="auto"></ins>
     <div class="date">
       <span>07 July 2014</span>
     </div>
-    <div class="content">
+    <div class="content" style="line-height: 28px;">
       <div style="font-size: 15px; line-height: 22px;"><a href="http://blog.kenyang.net/2014/07/setting-up-high-availabilityha.html">前一篇</a>有講過了，<br />Keepalived是一個routing software，<br />它可以做到load balancing和high-availability，<br />而<a href="http://blog.kenyang.net/2014/07/setting-up-high-availabilityha.html">前一篇</a>也教怎麼set up HA，<br />這篇會講怎麼set up load balancing，<br /><b><strike>理論上</strike></b>架構應該要和下圖中一樣，才會比較合理，<br />有N檯load-balancer，專門做load balancing，<br />有N檯web！<br />而這些load balancer，都會裝keepalived，然後去binding Virtual IP！<br /><br /><div class="separator" style="clear: both; text-align: center;"><a href="http://4.bp.blogspot.com/-rxBME9e5d4g/U7fayrtLTzI/AAAAAAAAFMk/yOp-1IBSHaQ/s1600/Network+Diagram.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="http://4.bp.blogspot.com/-rxBME9e5d4g/U7fayrtLTzI/AAAAAAAAFMk/yOp-1IBSHaQ/s1600/Network+Diagram.png" /></a></div><br />但基於測試方便加上懶得安裝這麼多檯機器來說明，<br />先簡化成下圖，<br />每一檯server身兼load balancer和web server，<br /><br /><div class="separator" style="clear: both; text-align: center;"><a href="http://4.bp.blogspot.com/-HUzm7NOhTrQ/U7fcTr3Rh3I/AAAAAAAAFMw/c4HRt5LI6sE/s1600/Network+Diagram+(1).png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="http://4.bp.blogspot.com/-HUzm7NOhTrQ/U7fcTr3Rh3I/AAAAAAAAFMw/c4HRt5LI6sE/s1600/Network+Diagram+(1).png" /></a></div><br /><br /><br /><br /><br />和<a href="http://blog.kenyang.net/2014/07/setting-up-high-availabilityha.html">前一篇</a>一樣，假設我們有兩檯server，<br />IP分別為<br />&nbsp;&nbsp;1. 10.1.190.142<br />&nbsp;&nbsp;2. 10.1.190.143<br /><br />virtual ip：10.1.190.150<br /><br />在開始之前，請先去完成<a href="http://blog.kenyang.net/2014/07/setting-up-high-availabilityha.html">前一篇</a>的所有操作，<br /><br /><span style="color: #e06666; font-size: 18px;">1. Generate hash </span><br /><br />首先，先gen hash，<br />這hash是給load balancer用的，<br />原因是load balancer會去確認每一檯的web server是活著的，<br />確認時會帶著這個hash值！<br />因為有兩檯機器，所以要gen 2組，<br /><pre class="brush: bash">root@host1:~$ genhash -s 10.1.190.142 -p 80 -u /index.html<br />MD5SUM = 043e8a8eeaf59e7ef9c6b4cd6f71a7de<br /><br />root@host1:~$ genhash -s 10.1.190.143 -p 80 -u /index.html<br />MD5SUM = 66d84fe2b7e20944dd5d077e768b2cfb<br /><br /></pre><br /><span style="color: #e06666; font-size: 18px;">2. Write a script for handling iptables </span><br /><br />在這步驟，要寫一隻script，<br />負責add和delete rule的，<br />為什麼要add?<br />因為當如果沒有add virtual ip進去rule，<br />當load balancer把packet轉進來時，是送不進來的！<br /><pre class="brush: bash">#!/bin/bash                                                                                                                                                                 <br /><br />VIP=$2<br /><br />count=$(iptables -t nat -L| grep $VIP | wc -l)<br /><br />case "$1" in<br />  --add)<br />    if [[ $count == 0 ]]; then<br />        iptables -A PREROUTING -t nat -d $VIP -p tcp -j REDIRECT<br />    fi  <br />    ;;  <br />  --del)<br />    if [[ $count &gt; 0 ]]; then<br />        iptables -D PREROUTING -t nat -d $VIP -p tcp -j REDIRECT<br />    fi<br />    ;;  <br />esac<br /><br />exit 0<br /></pre><br /><span style="color: #e06666; font-size: 18px;">3. Configuration settings</span><br /><br />基本上設置跟第一篇沒有什麼太大差別，<br />首先只有第<span style="color: red;">26,27</span>行，多了兩個指令，<br />分別是當這檯機器進入master模式時，要把rule刪除<br />以及進入backup時，要把rule加進去!<br /><br />以及增加了<span style="color: red;">31~60</span>行的setting,<br />記得第一檯和第二檯都要進行設定，但一樣要把state,priority, router_id改成符合該host的設定！<br /><pre class="brush: bash">global_defs {<br />  notification_email {<br />    kenyang@xxx.com<br />  }<br />  notification_email_from xxxx@example.com<br />  smtp_server 127.0.0.1<br />  smtp_connect_timeout 30<br />  router_id host1      # 用來識別是哪檯機器，如果postfix有安裝，在寄信的時候，title就會跟你說是哪檯機器有問題<br />}<br /><br />vrrp_instance VI_1 {   # VI_1 可以改成自己想要的string<br /><br />  state MASTER         # MASTER意思是這檯為主要的機器<br /><br />  interface eth0       # 把virtual ip binding在eht0上<br /><br />  virtual_router_id 1  # 0~255之間，用來識別是哪一個instance<br />  priority 100         <br /><br />  virtual_ipaddress {<br />    10.1.190.150/24<br />  }<br /><br />  smtp_alert           # 當有問題時要發信通知<br /><br />  notify_master "/etc/keepalived/handle_iptable.sh --del 10.1.190.150" # 當這檯機器進入master模式時，要把rule刪除<br />  notify_backup "/etc/keepalived/handle_iptable.sh --add 10.1.190.150" # 當這檯機器進入backup模式時，要把rule加入<br />}<br /><br /># virtual web server<br />virtual_server 10.1.190.150 80 {<br />  delay_loop 10              # n秒確認底下的web一次<br />  lb_algo rr                 # 使用Round Robin的演算法做load balancing (rr, wrr, al, wlc, ......etc)<br />  lb_kind DR                 # Forwarding的方法 （dr, nat, tun)<br />  persistence_timeout 5      # timeout for persistent connection<br />  protocol TCP <br /><br />  real_server 10.1.190.142 80 {<br />    HTTP_GET {  # 使用HTTP_GET的方式進行確認web活著<br />      url {<br />        path /index.html<br />        digest 043e8a8eeaf59e7ef9c6b4cd6f71a7de   # 剛剛第一步驟gen的hash<br />      }   <br />      connect_timeout 3<br />      nb_get_retry 3<br />      delay_before_retry 2<br />    }   <br />  }<br />  real_server 10.1.190.143 80 {<br />    HTTP_GET { # 使用HTTP_GET的方式進行確認web活著<br />      url {<br />        path /index.html<br />        digest 66d84fe2b7e20944dd5d077e768b2cfb   # 剛剛第一步驟gen的hash<br />      }   <br />      connect_timeout 3<br />      nb_get_retry 3<br />      delay_before_retry 2<br />    }   <br />  }<br />}   <br /></pre><br /><br /><br /><span style="color: #e06666; font-size: 18px;">4. Verify</span><br /><br />完成上述設定以後，<br />先把keepalived reload，<br /><pre class="brush: bash">service keepalived reload<br /></pre><br />reload完成以後，<br />先在第一檯打下面的指令，<br />為什麼是在第一檯打？因為現在第一檯是master，它搶到virtual ip，<br />所以load balancing的工作是交由第一檯來做的！<br /><pre class="brush: bash">ipvsadm -ln<br /></pre><br />打完應該會看到下面的內容，<br />10.1.190.150這檯底下有兩檯主機，<br />分別是142, 143，<br />load balancer就是透過上述的HTTP_GET去確認web server是活著的，<br />比較特別的有兩個參數，<br />&nbsp;&nbsp;1. ActiveConn: 簡言之這檯機器目前有幾個人連上來<br />&nbsp;&nbsp;2. InActConn: 有幾檯機器的tcp status不是established<br /><pre class="brush: bash">Prot LocalAddress:Port Scheduler Flags<br />  -&gt; RemoteAddress:Port           Forward Weight ActiveConn InActConn<br />TCP  10.1.190.150:80 rr persistent 5<br />  -&gt; 10.1.190.142:80              Route   1      0          0         <br />  -&gt; 10.1.190.143:80              Route   1      0          0    <br /></pre><br />這時候在電腦上的browser瀏覽10.1.190.150，<br />然後在手機（或者其他檯電腦上）也瀏覽10.1.190.150<br />然後再馬上在第一檯機器打下面的指令<br /><pre class="brush: bash">ipvsadm -ln<br /></pre>應該會發現ActiveConn都變成1了！<br />如果你有第三檯機器，你可以試試看再連線10.1.190.150!<br />這時某一檯的ActiveConn會變成2！<br /><br /><br /><br /><br /><br /></div><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
     </div>
 

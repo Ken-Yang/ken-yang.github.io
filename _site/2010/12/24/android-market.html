@@ -223,7 +223,78 @@
       </nav>
 
       <div class="container">
-        
+        <style>
+/* Adjusted to give override background and text colour */
+.highlight pre, pre, .highlight .hll {
+    background-color: #49483E;
+    border: 1px solid #ccc;
+    padding: 6px 10px;
+    border-radius: 3px;
+    color: #FFFFFF;
+}
+/* Highlights taken from https://gist.github.com/asaaki/1007420  for Monokai theme */
+.c                 { color: #75715e }               /* Comment                     */
+.err               { color: #960050;
+                     background-color: #1e0010 }    /* Error                       */
+.k                 { color: #66d9ef }               /* Keyword                     */
+.l                 { color: #ae81ff }               /* Literal                     */
+.n                 { color: #f8f8f2 }               /* Name                        */
+.o                 { color: #f92672 }               /* Operator                    */
+.p                 { color: #f8f8f2 }               /* Punctuation                 */
+.cm                { color: #75715e }               /* Comment.Multiline           */
+.cp                { color: #75715e }               /* Comment.Preproc             */
+.c1                { color: #75715e }               /* Comment.Single              */
+.cs                { color: #75715e }               /* Comment.Special             */
+.ge                { font-style: italic }           /* Generic.Emph                */
+.gs                { font-weight: bold }            /* Generic.Strong              */
+.kc                { color: #66d9ef }               /* Keyword.Constant            */
+.kd                { color: #66d9ef }               /* Keyword.Declaration         */
+.kn                { color: #f92672 }               /* Keyword.Namespace           */
+.kp                { color: #66d9ef }               /* Keyword.Pseudo              */
+.kr                { color: #66d9ef }               /* Keyword.Reserved            */
+.kt                { color: #66d9ef }               /* Keyword.Type                */
+.ld                { color: #e6db74 }               /* Literal.Date                */
+.m                 { color: #ae81ff }               /* Literal.Number              */
+.s                 { color: #e6db74 }               /* Literal.String              */
+.na                { color: #a6e22e }               /* Name.Attribute              */
+.nb                { color: #f8f8f2 }               /* Name.Builtin                */
+.nc                { color: #a6e22e }               /* Name.Class                  */
+.no                { color: #66d9ef }               /* Name.Constant               */
+.nd                { color: #a6e22e }               /* Name.Decorator              */
+.ni                { color: #f8f8f2 }               /* Name.Entity                 */
+.ne                { color: #a6e22e }               /* Name.Exception              */
+.nf                { color: #a6e22e }               /* Name.Function               */
+.nl                { color: #f8f8f2 }               /* Name.Label                  */
+.nn                { color: #f8f8f2 }               /* Name.Namespace              */
+.nx                { color: #a6e22e }               /* Name.Other                  */
+.py                { color: #f8f8f2 }               /* Name.Property               */
+.nt                { color: #f92672 }               /* Name.Tag                    */
+.nv                { color: #f8f8f2 }               /* Name.Variable               */
+.ow                { color: #f92672 }               /* Operator.Word               */
+.w                 { color: #f8f8f2 }               /* Text.Whitespace             */
+.mf                { color: #ae81ff }               /* Literal.Number.Float        */
+.mh                { color: #ae81ff }               /* Literal.Number.Hex          */
+.mi                { color: #ae81ff }               /* Literal.Number.Integer      */
+.mo                { color: #ae81ff }               /* Literal.Number.Oct          */
+.sb                { color: #e6db74 }               /* Literal.String.Backtick     */
+.sc                { color: #e6db74 }               /* Literal.String.Char         */
+.sd                { color: #e6db74 }               /* Literal.String.Doc          */
+.s2                { color: #e6db74 }               /* Literal.String.Double       */
+.se                { color: #ae81ff }               /* Literal.String.Escape       */
+.sh                { color: #e6db74 }               /* Literal.String.Heredoc      */
+.si                { color: #e6db74 }               /* Literal.String.Interpol     */
+.sx                { color: #e6db74 }               /* Literal.String.Other        */
+.sr                { color: #e6db74 }               /* Literal.String.Regex        */
+.s1                { color: #e6db74 }               /* Literal.String.Single       */
+.ss                { color: #e6db74 }               /* Literal.String.Symbol       */
+.bp                { color: #f8f8f2 }               /* Name.Builtin.Pseudo         */
+.vc                { color: #f8f8f2 }               /* Name.Variable.Class         */
+.vg                { color: #f8f8f2 }               /* Name.Variable.Global        */
+.vi                { color: #f8f8f2 }               /* Name.Variable.Instance      */
+.il                { color: #ae81ff }               /* Literal.Number.Integer.Long */
+</style>
+
+
 <div class="page-header">
   <h1>Android Market改版內容 </h1>
 </div>
@@ -257,7 +328,7 @@ data-ad-format="auto"></ins>
     <div class="date">
       <span>24 December 2010</span>
     </div>
-    <div class="content">
+    <div class="content" style="line-height: 28px;">
       今天又收到android market的更新來信，<br /><br />內容大致如下：<br /><br /><br /><span class="Apple-style-span" style="border-collapse: collapse; font-family: arial, sans-serif;">* The purchase refund period is now 15 minutes, and the maximum size for .apk files is now 50MB.</span><br /><span class="Apple-style-span" style="border-collapse: collapse; font-family: arial, sans-serif;"></span><span class="Apple-style-span" style="border-collapse: collapse; font-family: arial, sans-serif;">以後charge back的時間從一天縮短為15分鐘，且上傳的.apk最大容量提升到50MB</span><br /><span class="Apple-style-span" style="border-collapse: collapse; font-family: arial, sans-serif;"><br /></span><span class="Apple-style-span" style="border-collapse: collapse; font-family: arial, sans-serif;">* The details page for every app now displays the app’s “Promotional Graphic” assets at the top.</span><br /><span class="Apple-style-span" style="border-collapse: collapse; font-family: arial, sans-serif;"></span><span class="Apple-style-span" style="border-collapse: collapse; font-family: arial, sans-serif;">然後如果您的APP有宣傳影片，則會在detail page上播放</span><br /><span class="Apple-style-span" style="border-collapse: collapse; font-family: arial, sans-serif;"></span><span class="Apple-style-span" style="border-collapse: collapse; font-family: arial, sans-serif;"><br /></span><span class="Apple-style-span" style="border-collapse: collapse; font-family: arial, sans-serif;">* Market is now capable of filtering based on screen sizes and densities. NOTE: Filtering based on GL texture compression formats is not active at this time, but will be available in early January 2011.</span><br /><span class="Apple-style-span" style="border-collapse: collapse; font-family: arial, sans-serif;"></span><span class="Apple-style-span" style="border-collapse: collapse; font-family: arial, sans-serif;">然後將來market會根據螢幕尺寸解析度來過濾內容。最快會在2011年一月實現。</span><br /><span class="Apple-style-span" style="border-collapse: collapse; font-family: arial, sans-serif;"></span><span class="Apple-style-span" style="border-collapse: collapse; font-family: arial, sans-serif;"><br /></span><span class="Apple-style-span" style="border-collapse: collapse; font-family: arial, sans-serif;">* Applications are now automatically added to new Live Wallpapers and Widgets categories, as appropriate.</span><br /><span class="Apple-style-span" style="border-collapse: collapse; font-family: arial, sans-serif;"></span><span class="Apple-style-span" style="border-collapse: collapse; font-family: arial, sans-serif;">然後以後App有牽涉到桌布或者widget的，會自動歸類到那兩個類別。</span><br /><span class="Apple-style-span" style="border-collapse: collapse; font-family: arial, sans-serif;"><br /></span><br /><span class="Apple-style-span" style="border-collapse: collapse; font-family: arial, sans-serif;">* The maximum size of the description field for an application is raised to 4000 characters.</span><br /><span class="Apple-style-span" style="border-collapse: collapse; font-family: arial, sans-serif;"></span><span class="Apple-style-span" style="border-collapse: collapse; font-family: arial, sans-serif;">以後app的描述可以達到四千字！！！</span><br /><span class="Apple-style-span" style="border-collapse: collapse; font-family: arial, sans-serif;"></span><span class="Apple-style-span" style="border-collapse: collapse; font-family: arial, sans-serif;"><br /></span><span class="Apple-style-span" style="border-collapse: collapse; font-family: arial, sans-serif;">* A minimum of two screen shots is now required for all applications. You can supply up to eight screenshots for each application.</span><br /><span class="Apple-style-span" style="border-collapse: collapse; font-family: arial, sans-serif;">每個app至少需要兩個screen shot，最高可以到八個！！</span><br /><span class="Apple-style-span" style="border-collapse: collapse; font-family: arial, sans-serif;"><br /></span><br /><span class="Apple-style-span" style="border-collapse: collapse; font-family: arial, sans-serif;"><br /></span><br /><span class="Apple-style-span" style="border-collapse: collapse; font-family: arial, sans-serif;"><br /></span><br /><span class="Apple-style-span" style="border-collapse: collapse; font-family: arial, sans-serif;"><br /></span><br /><span class="Apple-style-span" style="border-collapse: collapse; font-family: arial, sans-serif;"><br /></span><br /><span class="Apple-style-span" style="border-collapse: collapse; font-family: arial, sans-serif; font-size: 13px;"><br /></span><br /><span class="Apple-style-span" style="border-collapse: collapse; font-family: arial, sans-serif; font-size: 13px;"><br /></span>
     </div>
 

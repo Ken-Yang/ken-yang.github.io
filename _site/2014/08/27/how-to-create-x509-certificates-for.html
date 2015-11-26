@@ -223,7 +223,78 @@
       </nav>
 
       <div class="container">
-        
+        <style>
+/* Adjusted to give override background and text colour */
+.highlight pre, pre, .highlight .hll {
+    background-color: #49483E;
+    border: 1px solid #ccc;
+    padding: 6px 10px;
+    border-radius: 3px;
+    color: #FFFFFF;
+}
+/* Highlights taken from https://gist.github.com/asaaki/1007420  for Monokai theme */
+.c                 { color: #75715e }               /* Comment                     */
+.err               { color: #960050;
+                     background-color: #1e0010 }    /* Error                       */
+.k                 { color: #66d9ef }               /* Keyword                     */
+.l                 { color: #ae81ff }               /* Literal                     */
+.n                 { color: #f8f8f2 }               /* Name                        */
+.o                 { color: #f92672 }               /* Operator                    */
+.p                 { color: #f8f8f2 }               /* Punctuation                 */
+.cm                { color: #75715e }               /* Comment.Multiline           */
+.cp                { color: #75715e }               /* Comment.Preproc             */
+.c1                { color: #75715e }               /* Comment.Single              */
+.cs                { color: #75715e }               /* Comment.Special             */
+.ge                { font-style: italic }           /* Generic.Emph                */
+.gs                { font-weight: bold }            /* Generic.Strong              */
+.kc                { color: #66d9ef }               /* Keyword.Constant            */
+.kd                { color: #66d9ef }               /* Keyword.Declaration         */
+.kn                { color: #f92672 }               /* Keyword.Namespace           */
+.kp                { color: #66d9ef }               /* Keyword.Pseudo              */
+.kr                { color: #66d9ef }               /* Keyword.Reserved            */
+.kt                { color: #66d9ef }               /* Keyword.Type                */
+.ld                { color: #e6db74 }               /* Literal.Date                */
+.m                 { color: #ae81ff }               /* Literal.Number              */
+.s                 { color: #e6db74 }               /* Literal.String              */
+.na                { color: #a6e22e }               /* Name.Attribute              */
+.nb                { color: #f8f8f2 }               /* Name.Builtin                */
+.nc                { color: #a6e22e }               /* Name.Class                  */
+.no                { color: #66d9ef }               /* Name.Constant               */
+.nd                { color: #a6e22e }               /* Name.Decorator              */
+.ni                { color: #f8f8f2 }               /* Name.Entity                 */
+.ne                { color: #a6e22e }               /* Name.Exception              */
+.nf                { color: #a6e22e }               /* Name.Function               */
+.nl                { color: #f8f8f2 }               /* Name.Label                  */
+.nn                { color: #f8f8f2 }               /* Name.Namespace              */
+.nx                { color: #a6e22e }               /* Name.Other                  */
+.py                { color: #f8f8f2 }               /* Name.Property               */
+.nt                { color: #f92672 }               /* Name.Tag                    */
+.nv                { color: #f8f8f2 }               /* Name.Variable               */
+.ow                { color: #f92672 }               /* Operator.Word               */
+.w                 { color: #f8f8f2 }               /* Text.Whitespace             */
+.mf                { color: #ae81ff }               /* Literal.Number.Float        */
+.mh                { color: #ae81ff }               /* Literal.Number.Hex          */
+.mi                { color: #ae81ff }               /* Literal.Number.Integer      */
+.mo                { color: #ae81ff }               /* Literal.Number.Oct          */
+.sb                { color: #e6db74 }               /* Literal.String.Backtick     */
+.sc                { color: #e6db74 }               /* Literal.String.Char         */
+.sd                { color: #e6db74 }               /* Literal.String.Doc          */
+.s2                { color: #e6db74 }               /* Literal.String.Double       */
+.se                { color: #ae81ff }               /* Literal.String.Escape       */
+.sh                { color: #e6db74 }               /* Literal.String.Heredoc      */
+.si                { color: #e6db74 }               /* Literal.String.Interpol     */
+.sx                { color: #e6db74 }               /* Literal.String.Other        */
+.sr                { color: #e6db74 }               /* Literal.String.Regex        */
+.s1                { color: #e6db74 }               /* Literal.String.Single       */
+.ss                { color: #e6db74 }               /* Literal.String.Symbol       */
+.bp                { color: #f8f8f2 }               /* Name.Builtin.Pseudo         */
+.vc                { color: #f8f8f2 }               /* Name.Variable.Class         */
+.vg                { color: #f8f8f2 }               /* Name.Variable.Global        */
+.vi                { color: #f8f8f2 }               /* Name.Variable.Instance      */
+.il                { color: #ae81ff }               /* Literal.Number.Integer.Long */
+</style>
+
+
 <div class="page-header">
   <h1>How to create X.509 certificates for Amazon IAM user? </h1>
 </div>
@@ -257,7 +328,7 @@ data-ad-format="auto"></ins>
     <div class="date">
       <span>27 August 2014</span>
     </div>
-    <div class="content">
+    <div class="content" style="line-height: 28px;">
       <div style="font-size: 15px; line-height: 22px;">You will need X.509 certificates when you send a SOAP request to AWS or use command line tool.<br />There are two ways to create X.509 certificates.<br /><br />(1) If you are not using IAM account:<br />&nbsp;&nbsp;&nbsp;&nbsp;You can create certificate on <a href="https://console.aws.amazon.com/iam/home?nc1=h_m_sc#security_credential">AWS console</a>.<br />&nbsp;&nbsp;&nbsp;&nbsp;Each account only have a maximum of two certificates at a time.<br /><div class="separator" style="clear: both; text-align: center;"><a href="http://3.bp.blogspot.com/-rmeTV_n3DBc/U_2LJy60heI/AAAAAAAAFQI/lJt0rEcs3xY/s1600/Screen%2BShot%2B2014-08-27%2Bat%2B3.39.21%2BPM.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="http://3.bp.blogspot.com/-rmeTV_n3DBc/U_2LJy60heI/AAAAAAAAFQI/lJt0rEcs3xY/s400/Screen%2BShot%2B2014-08-27%2Bat%2B3.39.21%2BPM.png" /></a></div><br /><br />(2) If you are using IAM account:<br />&nbsp;&nbsp;&nbsp;&nbsp;You need to create certificate by yourself.<br /><br /><br /><br /><br /><span style="color: #e06666; font-size: 18px;">1. Create private key</span><br /><br />You need to create a private key first before create a certificate, <br />because you will use this private key to create a certificate.<br /><pre class="brush: bash">openssl genrsa 2048 > private-key.pem<br /></pre><br /><br /><span style="color: #e06666; font-size: 18px;">2. Create certificate</span><br /><br />Once you finished the step one, you can use the private key to create a certificate.<br /><pre class="brush: bash">openssl req -new -x509 -nodes -sha1 -days 99999 -key private-key.pem -outform PEM > cert.pem  <br /></pre><br /><br /><span style="color: #e06666; font-size: 18px;">3. Copy the content of certificate</span><br /><br />After you finished all the steps, just copy the content of the certificate.<br /><pre class="brush: bash">ken@build:~$ cat cert.pem <br />-----BEGIN CERTIFICATE-----<br />MIIDXzCCAkegAwIBAgIJAJxcjyc5F908MA0GCSqGSIb3DQEBBQUAMEUxCzAJBgNV<br />BAYTAkFVMRMwEQYDVQQIDApTb21lLVN0YXRlMSEwHwYDVQQKDBhJbnRlcm5ldCBX<br />aWRnaXRzIFB0eSBMdGQwIBcNMTQwODI3MDc1NDAyWhgPMjI4ODA2MTAwNzU0MDJa<br />MEUxCzAJBgNVBAYTAkFVMRMwEQYDVQQIDApTb21lLVN0YXRlMSEwHwYDVQQKDBhJ<br />bnRlcm5ldCBXaWRnaXRzIFB0eSBMdGQwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAw<br />ggEKAoIBAQCk8L/z2O84OcRno7YgGu0UkjnABuXhIM96RfZZKhqg74hga7nsLPLK<br />CzhtslDKAOEjxASo7L0Iq6/5kxJZp4cZakKacDOvnnv2HwQxCXGUEadXcmeknfAh<br />SvyRYS3FrKj4/oth+pwUm6nvd9fGYg01rJITUQupeADCqhSJUypZbQUypmPxf8Sg<br />ek7ZW5ErPuyZZ+WmL6TzZaQXfZqvPrN25hRg7AboB8SIKgusUrLK6WgnISlJ7fDh<br />kCpsy8qSD+Lu74h2hW6TiLy2qJbcTKn8sKb1C4XgWb1FBMzqfJQWtCMVWtDoyzZH<br />Vj07gzeTDkQ1EvUKHk26x6MEsOlcTV9XAgMBAAGjUDBOMB0GA1UdDgQWBBQOYnDF<br />FYz2o3+AlVHWwPIzlcFs4DAfBgNVHSMEGDAWgBQOYnDFFYz2o3+AlVHWwPIzlcFs<br />4DAMBgNVHRMEBTADAQH/MA0GCSqGSIb3DQEBBQUAA4IBAQBPE3ikbJ/vH6QfkwUK<br />qot+nU15keDSZ2c6itRnNuwjfF8lsZQCJ66w2H+HXCLBjnPymemcTPTMUqfovpFs<br />oNohRuQS6IoIrvgXAbb2X4BhygPDNSQPktGVo8qjKUyxYZa4Su8NFkb+OzZWDR4K<br />KN+OLFfaT6cx8o9o5M7cmNRokFisWynJ33EoKj1lW5YIwTwb1VKz4hXW+gKZFX7u<br />pgE1yzkOcoUW5EykNsGUaqLSdycxmDO866IFn6px9etxpIkQwUi+rb78tX6pNtpa<br />IBTsfPBqovXRdMe6mq5uO8x4Nrb47w8DZkrQSTMt1ll4t0bUL15o/6cQ5ajGaaGA<br />QVtO<br />-----END CERTIFICATE-----<br /></pre><br /><br /><span style="color: #e06666; font-size: 18px;">4. Upload the content of certificate</span><br /><br />Go to the <a href="https://console.aws.amazon.com/iam/home?#users">IAM management console</a>.<br />1. Select an IAM user <br />2. Click "User Actions" <br />3, Click "Manage Signing Certificates"<br />4. Click "Upload Signing Certificates"<br />5. Paste the content<br />6. Click "Upload Signing Certificates"<br /><br />Done. Now you can send a SOAP request to AWS or use the command line tools.<br /><br /><br /><br /></div><br /><br /><br /><br /><br /><br />
     </div>
 

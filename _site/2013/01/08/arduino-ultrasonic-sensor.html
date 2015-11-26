@@ -223,7 +223,78 @@
       </nav>
 
       <div class="container">
-        
+        <style>
+/* Adjusted to give override background and text colour */
+.highlight pre, pre, .highlight .hll {
+    background-color: #49483E;
+    border: 1px solid #ccc;
+    padding: 6px 10px;
+    border-radius: 3px;
+    color: #FFFFFF;
+}
+/* Highlights taken from https://gist.github.com/asaaki/1007420  for Monokai theme */
+.c                 { color: #75715e }               /* Comment                     */
+.err               { color: #960050;
+                     background-color: #1e0010 }    /* Error                       */
+.k                 { color: #66d9ef }               /* Keyword                     */
+.l                 { color: #ae81ff }               /* Literal                     */
+.n                 { color: #f8f8f2 }               /* Name                        */
+.o                 { color: #f92672 }               /* Operator                    */
+.p                 { color: #f8f8f2 }               /* Punctuation                 */
+.cm                { color: #75715e }               /* Comment.Multiline           */
+.cp                { color: #75715e }               /* Comment.Preproc             */
+.c1                { color: #75715e }               /* Comment.Single              */
+.cs                { color: #75715e }               /* Comment.Special             */
+.ge                { font-style: italic }           /* Generic.Emph                */
+.gs                { font-weight: bold }            /* Generic.Strong              */
+.kc                { color: #66d9ef }               /* Keyword.Constant            */
+.kd                { color: #66d9ef }               /* Keyword.Declaration         */
+.kn                { color: #f92672 }               /* Keyword.Namespace           */
+.kp                { color: #66d9ef }               /* Keyword.Pseudo              */
+.kr                { color: #66d9ef }               /* Keyword.Reserved            */
+.kt                { color: #66d9ef }               /* Keyword.Type                */
+.ld                { color: #e6db74 }               /* Literal.Date                */
+.m                 { color: #ae81ff }               /* Literal.Number              */
+.s                 { color: #e6db74 }               /* Literal.String              */
+.na                { color: #a6e22e }               /* Name.Attribute              */
+.nb                { color: #f8f8f2 }               /* Name.Builtin                */
+.nc                { color: #a6e22e }               /* Name.Class                  */
+.no                { color: #66d9ef }               /* Name.Constant               */
+.nd                { color: #a6e22e }               /* Name.Decorator              */
+.ni                { color: #f8f8f2 }               /* Name.Entity                 */
+.ne                { color: #a6e22e }               /* Name.Exception              */
+.nf                { color: #a6e22e }               /* Name.Function               */
+.nl                { color: #f8f8f2 }               /* Name.Label                  */
+.nn                { color: #f8f8f2 }               /* Name.Namespace              */
+.nx                { color: #a6e22e }               /* Name.Other                  */
+.py                { color: #f8f8f2 }               /* Name.Property               */
+.nt                { color: #f92672 }               /* Name.Tag                    */
+.nv                { color: #f8f8f2 }               /* Name.Variable               */
+.ow                { color: #f92672 }               /* Operator.Word               */
+.w                 { color: #f8f8f2 }               /* Text.Whitespace             */
+.mf                { color: #ae81ff }               /* Literal.Number.Float        */
+.mh                { color: #ae81ff }               /* Literal.Number.Hex          */
+.mi                { color: #ae81ff }               /* Literal.Number.Integer      */
+.mo                { color: #ae81ff }               /* Literal.Number.Oct          */
+.sb                { color: #e6db74 }               /* Literal.String.Backtick     */
+.sc                { color: #e6db74 }               /* Literal.String.Char         */
+.sd                { color: #e6db74 }               /* Literal.String.Doc          */
+.s2                { color: #e6db74 }               /* Literal.String.Double       */
+.se                { color: #ae81ff }               /* Literal.String.Escape       */
+.sh                { color: #e6db74 }               /* Literal.String.Heredoc      */
+.si                { color: #e6db74 }               /* Literal.String.Interpol     */
+.sx                { color: #e6db74 }               /* Literal.String.Other        */
+.sr                { color: #e6db74 }               /* Literal.String.Regex        */
+.s1                { color: #e6db74 }               /* Literal.String.Single       */
+.ss                { color: #e6db74 }               /* Literal.String.Symbol       */
+.bp                { color: #f8f8f2 }               /* Name.Builtin.Pseudo         */
+.vc                { color: #f8f8f2 }               /* Name.Variable.Class         */
+.vg                { color: #f8f8f2 }               /* Name.Variable.Global        */
+.vi                { color: #f8f8f2 }               /* Name.Variable.Instance      */
+.il                { color: #ae81ff }               /* Literal.Number.Integer.Long */
+</style>
+
+
 <div class="page-header">
   <h1>結合Arduino + ultrasonic sensor偵測距離 </h1>
 </div>
@@ -257,7 +328,7 @@ data-ad-format="auto"></ins>
     <div class="date">
       <span>08 January 2013</span>
     </div>
-    <div class="content">
+    <div class="content" style="line-height: 28px;">
       Arduino有很多有趣的擴充shield，<br /><div>像是ethernet, wifi, bluetooth, 溫度測量, 溼度測量等等之類的！</div><div><br /></div><div>這篇要講的是整合ultrasonic sensor，</div><div>透過這顆sensor去算出與前面障礙物的距離，</div><div>他的原理就是透過聲波去偵測，</div><div>發出一段聲波，然後根據<b>回傳回來的時間</b>來判斷出距離！</div><div><br /></div><div><br /></div><div>我使用的ultrasonic sensor是HC-SR04這顆，</div><div>這顆有4隻pin腳，</div><div>分別為</div><div><ul><li>VCC</li><li>Trig</li><li>Echo</li><li>GND</li></ul>VCC和GND就不需要多講了！就是正電與負電！自己接上去吧！</div><div>要講的是Trig和Echo這兩隻pin腳！</div><div>Trig的作用在於發出聲波，</div><div>Echo的作用就是取得回音的時間，</div><div>所以可以知道Trig作為output，</div><div>Echo作為Input！</div><div><br /></div><div>然後把這兩隻pin腳也接在arduino上去，</div><div>在我的範例中，我是把Trig接在pin4，</div><div>Echo接在pin3，</div><div><br /></div><div class="separator" style="clear: both; text-align: center;"><a href="http://1.bp.blogspot.com/-fISl2ety5_s/UOvpNtL7GVI/AAAAAAAAEik/0bQBDCRyG9Q/s1600/IMG_20130108_173350.jpg" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="480" src="http://1.bp.blogspot.com/-fISl2ety5_s/UOvpNtL7GVI/AAAAAAAAEik/0bQBDCRyG9Q/s640/IMG_20130108_173350.jpg" width="640" /></a></div><div><br /></div><div><br /></div><div><br /></div><div><br /></div><div><br /></div><div>下面為sample！</div><div><pre class="brush: java">int iOutputPin = 4; // trig<br />int iInputPin = 3;  // echo<br />long lCm;<br />void setup(){<br />  <br />  Serial.begin(9600);<br />  pinMode(iInputPin,INPUT);<br />  pinMode(iOutputPin,OUTPUT);<br />}<br /><br />void loop(){<br />  <br />  digitalWrite(iOutputPin, HIGH);<br />  delayMicroseconds(10); // 意思是發出訊號10microsecond，10是根據一個公式得出的．<br />  digitalWrite(iOutputPin, LOW);  <br />  <br />  int distance = pulseIn(iInputPin, HIGH);  <br />  if (distance &lt; 0) lCm = 0;<br />  else lCm = distance / 58; // 除以58也是根據一個公式而來，除58單位就會變成cm<br />  Serial.print(lCm);<br />  Serial.print("cm ");<br />  Serial.println("");<br />  delay(500);  <br />}<br /></pre></div><div><br /><br /><br /><br />deploy上去以後，打開console，應該可以看到下圖． <br />ＰＳ：如果你的ultrasonic senso只有三根pin腳...那就代表你的trig和echo都為同一隻，<br />只要在code中互換pinMode就一樣可以正常使用了！<br /><br /><div class="separator" style="clear: both; text-align: center;"><a href="http://1.bp.blogspot.com/-WK0qGO3aqHM/UOvr6T-OV8I/AAAAAAAAEjA/l5dmyUNw_WI/s1600/Screen+Shot+2013-01-08+at+5.51.52+PM.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="454" src="http://1.bp.blogspot.com/-WK0qGO3aqHM/UOvr6T-OV8I/AAAAAAAAEjA/l5dmyUNw_WI/s640/Screen+Shot+2013-01-08+at+5.51.52+PM.png" width="640" /></a></div><br /></div>
     </div>
 

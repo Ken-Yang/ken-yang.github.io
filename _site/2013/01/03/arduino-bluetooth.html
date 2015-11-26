@@ -223,7 +223,78 @@
       </nav>
 
       <div class="container">
-        
+        <style>
+/* Adjusted to give override background and text colour */
+.highlight pre, pre, .highlight .hll {
+    background-color: #49483E;
+    border: 1px solid #ccc;
+    padding: 6px 10px;
+    border-radius: 3px;
+    color: #FFFFFF;
+}
+/* Highlights taken from https://gist.github.com/asaaki/1007420  for Monokai theme */
+.c                 { color: #75715e }               /* Comment                     */
+.err               { color: #960050;
+                     background-color: #1e0010 }    /* Error                       */
+.k                 { color: #66d9ef }               /* Keyword                     */
+.l                 { color: #ae81ff }               /* Literal                     */
+.n                 { color: #f8f8f2 }               /* Name                        */
+.o                 { color: #f92672 }               /* Operator                    */
+.p                 { color: #f8f8f2 }               /* Punctuation                 */
+.cm                { color: #75715e }               /* Comment.Multiline           */
+.cp                { color: #75715e }               /* Comment.Preproc             */
+.c1                { color: #75715e }               /* Comment.Single              */
+.cs                { color: #75715e }               /* Comment.Special             */
+.ge                { font-style: italic }           /* Generic.Emph                */
+.gs                { font-weight: bold }            /* Generic.Strong              */
+.kc                { color: #66d9ef }               /* Keyword.Constant            */
+.kd                { color: #66d9ef }               /* Keyword.Declaration         */
+.kn                { color: #f92672 }               /* Keyword.Namespace           */
+.kp                { color: #66d9ef }               /* Keyword.Pseudo              */
+.kr                { color: #66d9ef }               /* Keyword.Reserved            */
+.kt                { color: #66d9ef }               /* Keyword.Type                */
+.ld                { color: #e6db74 }               /* Literal.Date                */
+.m                 { color: #ae81ff }               /* Literal.Number              */
+.s                 { color: #e6db74 }               /* Literal.String              */
+.na                { color: #a6e22e }               /* Name.Attribute              */
+.nb                { color: #f8f8f2 }               /* Name.Builtin                */
+.nc                { color: #a6e22e }               /* Name.Class                  */
+.no                { color: #66d9ef }               /* Name.Constant               */
+.nd                { color: #a6e22e }               /* Name.Decorator              */
+.ni                { color: #f8f8f2 }               /* Name.Entity                 */
+.ne                { color: #a6e22e }               /* Name.Exception              */
+.nf                { color: #a6e22e }               /* Name.Function               */
+.nl                { color: #f8f8f2 }               /* Name.Label                  */
+.nn                { color: #f8f8f2 }               /* Name.Namespace              */
+.nx                { color: #a6e22e }               /* Name.Other                  */
+.py                { color: #f8f8f2 }               /* Name.Property               */
+.nt                { color: #f92672 }               /* Name.Tag                    */
+.nv                { color: #f8f8f2 }               /* Name.Variable               */
+.ow                { color: #f92672 }               /* Operator.Word               */
+.w                 { color: #f8f8f2 }               /* Text.Whitespace             */
+.mf                { color: #ae81ff }               /* Literal.Number.Float        */
+.mh                { color: #ae81ff }               /* Literal.Number.Hex          */
+.mi                { color: #ae81ff }               /* Literal.Number.Integer      */
+.mo                { color: #ae81ff }               /* Literal.Number.Oct          */
+.sb                { color: #e6db74 }               /* Literal.String.Backtick     */
+.sc                { color: #e6db74 }               /* Literal.String.Char         */
+.sd                { color: #e6db74 }               /* Literal.String.Doc          */
+.s2                { color: #e6db74 }               /* Literal.String.Double       */
+.se                { color: #ae81ff }               /* Literal.String.Escape       */
+.sh                { color: #e6db74 }               /* Literal.String.Heredoc      */
+.si                { color: #e6db74 }               /* Literal.String.Interpol     */
+.sx                { color: #e6db74 }               /* Literal.String.Other        */
+.sr                { color: #e6db74 }               /* Literal.String.Regex        */
+.s1                { color: #e6db74 }               /* Literal.String.Single       */
+.ss                { color: #e6db74 }               /* Literal.String.Symbol       */
+.bp                { color: #f8f8f2 }               /* Name.Builtin.Pseudo         */
+.vc                { color: #f8f8f2 }               /* Name.Variable.Class         */
+.vg                { color: #f8f8f2 }               /* Name.Variable.Global        */
+.vi                { color: #f8f8f2 }               /* Name.Variable.Instance      */
+.il                { color: #ae81ff }               /* Literal.Number.Integer.Long */
+</style>
+
+
 <div class="page-header">
   <h1>Arduino bluetooth </h1>
 </div>
@@ -257,7 +328,7 @@ data-ad-format="auto"></ins>
     <div class="date">
       <span>03 January 2013</span>
     </div>
-    <div class="content">
+    <div class="content" style="line-height: 28px;">
       先前講過arduino的基本介紹，<br />這篇要講如何綁上bluetooth shield到arduino上面！<br /><br /><br />首先要先介紹bluetooth shield上的pin腳，<br />先看到下圖，下圖中右邊有一排pin腳，<br />主要會用到前面4隻pin腳，<br />而4隻pin腳依序為：<br /><br /><ol><li>5V：供電的(+)</li><li>TX：傳送訊號</li><li>RX：接收訊號</li><li>GND：接地線(-)</li></ol><br /><div class="separator" style="clear: both; text-align: center;"><a href="http://2.bp.blogspot.com/-myo8iSxgbSQ/UOAPRwyFaBI/AAAAAAAAEho/wkEGI3LJIjw/s1600/IMG_20121230_175016.jpg" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="480" src="http://2.bp.blogspot.com/-myo8iSxgbSQ/UOAPRwyFaBI/AAAAAAAAEho/wkEGI3LJIjw/s640/IMG_20121230_175016.jpg" width="640" /></a></div><br /><br /><br />而arduino板上也一定會有上述對應的pin腳，<br />基本上都插上去就可以，<br />不過有一點比較特別，<br />在於RX/TX的點，<br />Arduino板上的TX要接到Bluetooh shield上的RX，<br />Arduino板上的RX反而接到Bluetooth shield上的TX，<br /><br />可以看到參考下面的表，<br /><table border="1px"><tbody><tr> <td><br />Arduino</td> <td><br />Bluetooth Shield</td> </tr><tr> <td>RX</td> <td>TX</td> </tr><tr> <td>TX</td> <td>RX</td> </tr><tr> <td>5V</td> <td>5V</td> </tr><tr> <td>GND</td> <td>GND</td> </tr></tbody></table><br /><br />對了，基本上arduino板上的RX/TX都是預設pin0和pin1！<br />至少uno和duemilanove這兩塊板子上都是！<br />所以就差在對應上的pin0和pin1吧！<br />（當然你也可以插在別的pin腳上，但是在寫code時就得稍為設定）<br /><br /><br />差上去以後，基本上你的bluetooth shield會一直閃紅燈，<br />一直閃一直閃，直到有人連結上這台bluetooth上，紅燈才會恆亮！<br /><br />接著來寫個sample測試！<br /><br /><pre class="brush: java">int iLedPin        = 13;<br />void setup(){<br />  // define the PIN as OUTPUT <br />  pinMode(iLedPin        ,OUTPUT);  <br />  <br />  // using baud rate 9600 to listen.<br />  Serial.begin(9600);<br />}<br /><br />void loop(){<br />  while (Serial.available()){<br />    char cCmd = Serial.read();<br />    if (cCmd =='o'){<br />      digitalWrite(iLedPin,HIGH);<br />    }else if (cCmd == 'c'){<br />      digitalWrite(iLedPin,LOW);<br />    }<br />  }<br />}<br /></pre><br /><br /><br />把上述的code deploy進去arduino以後，<br />就可以用你的電腦來測試了！<br /><br /><br />不管你是windows,osx,linux，只要你的OS連接到藍牙以後，<br />都會被模擬成serial port！<br />所以如果你用的是linux或者mac，<br />你會發現在你的/dev/底下多了一個device，<br />像我的就是/dev/tty.KENarduino-DevB，<br />那麼就可以用下列的指令連結到你的藍牙了，<br /><pre class="brush: java">sudo cu -s 9600 -l /dev/tty.KENarduino-DevB <br /></pre><br /><br />如果連結成功應該會在你的terminal上看到下列字樣<br /><pre class="brush: java">Connected<br /></pre><br />那麼就代表你成功連結到藍牙裝置，就可以透過藍牙下指令給arduino了！<br />最後可以試著輸入o和c，然後觀察你的pin13那顆led有無變化！<br /><br /><br /><br /><br /><br /><br />ＰＳ：如果你用的是windows，直接去載putty吧！透過putty去連結藍芽，只要輸入你的藍牙是COM幾就可以連線！<br /><br /><br /><br />
     </div>
 

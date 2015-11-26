@@ -223,7 +223,78 @@
       </nav>
 
       <div class="container">
-        
+        <style>
+/* Adjusted to give override background and text colour */
+.highlight pre, pre, .highlight .hll {
+    background-color: #49483E;
+    border: 1px solid #ccc;
+    padding: 6px 10px;
+    border-radius: 3px;
+    color: #FFFFFF;
+}
+/* Highlights taken from https://gist.github.com/asaaki/1007420  for Monokai theme */
+.c                 { color: #75715e }               /* Comment                     */
+.err               { color: #960050;
+                     background-color: #1e0010 }    /* Error                       */
+.k                 { color: #66d9ef }               /* Keyword                     */
+.l                 { color: #ae81ff }               /* Literal                     */
+.n                 { color: #f8f8f2 }               /* Name                        */
+.o                 { color: #f92672 }               /* Operator                    */
+.p                 { color: #f8f8f2 }               /* Punctuation                 */
+.cm                { color: #75715e }               /* Comment.Multiline           */
+.cp                { color: #75715e }               /* Comment.Preproc             */
+.c1                { color: #75715e }               /* Comment.Single              */
+.cs                { color: #75715e }               /* Comment.Special             */
+.ge                { font-style: italic }           /* Generic.Emph                */
+.gs                { font-weight: bold }            /* Generic.Strong              */
+.kc                { color: #66d9ef }               /* Keyword.Constant            */
+.kd                { color: #66d9ef }               /* Keyword.Declaration         */
+.kn                { color: #f92672 }               /* Keyword.Namespace           */
+.kp                { color: #66d9ef }               /* Keyword.Pseudo              */
+.kr                { color: #66d9ef }               /* Keyword.Reserved            */
+.kt                { color: #66d9ef }               /* Keyword.Type                */
+.ld                { color: #e6db74 }               /* Literal.Date                */
+.m                 { color: #ae81ff }               /* Literal.Number              */
+.s                 { color: #e6db74 }               /* Literal.String              */
+.na                { color: #a6e22e }               /* Name.Attribute              */
+.nb                { color: #f8f8f2 }               /* Name.Builtin                */
+.nc                { color: #a6e22e }               /* Name.Class                  */
+.no                { color: #66d9ef }               /* Name.Constant               */
+.nd                { color: #a6e22e }               /* Name.Decorator              */
+.ni                { color: #f8f8f2 }               /* Name.Entity                 */
+.ne                { color: #a6e22e }               /* Name.Exception              */
+.nf                { color: #a6e22e }               /* Name.Function               */
+.nl                { color: #f8f8f2 }               /* Name.Label                  */
+.nn                { color: #f8f8f2 }               /* Name.Namespace              */
+.nx                { color: #a6e22e }               /* Name.Other                  */
+.py                { color: #f8f8f2 }               /* Name.Property               */
+.nt                { color: #f92672 }               /* Name.Tag                    */
+.nv                { color: #f8f8f2 }               /* Name.Variable               */
+.ow                { color: #f92672 }               /* Operator.Word               */
+.w                 { color: #f8f8f2 }               /* Text.Whitespace             */
+.mf                { color: #ae81ff }               /* Literal.Number.Float        */
+.mh                { color: #ae81ff }               /* Literal.Number.Hex          */
+.mi                { color: #ae81ff }               /* Literal.Number.Integer      */
+.mo                { color: #ae81ff }               /* Literal.Number.Oct          */
+.sb                { color: #e6db74 }               /* Literal.String.Backtick     */
+.sc                { color: #e6db74 }               /* Literal.String.Char         */
+.sd                { color: #e6db74 }               /* Literal.String.Doc          */
+.s2                { color: #e6db74 }               /* Literal.String.Double       */
+.se                { color: #ae81ff }               /* Literal.String.Escape       */
+.sh                { color: #e6db74 }               /* Literal.String.Heredoc      */
+.si                { color: #e6db74 }               /* Literal.String.Interpol     */
+.sx                { color: #e6db74 }               /* Literal.String.Other        */
+.sr                { color: #e6db74 }               /* Literal.String.Regex        */
+.s1                { color: #e6db74 }               /* Literal.String.Single       */
+.ss                { color: #e6db74 }               /* Literal.String.Symbol       */
+.bp                { color: #f8f8f2 }               /* Name.Builtin.Pseudo         */
+.vc                { color: #f8f8f2 }               /* Name.Variable.Class         */
+.vg                { color: #f8f8f2 }               /* Name.Variable.Global        */
+.vi                { color: #f8f8f2 }               /* Name.Variable.Instance      */
+.il                { color: #ae81ff }               /* Literal.Number.Integer.Long */
+</style>
+
+
 <div class="page-header">
   <h1>android detect screen on and screen off </h1>
 </div>
@@ -257,7 +328,7 @@ data-ad-format="auto"></ins>
     <div class="date">
       <span>01 November 2010</span>
     </div>
-    <div class="content">
+    <div class="content" style="line-height: 28px;">
       android detect screen on and screen off<br /><br />android偵測螢幕的關閉與開啟，<br /><br />和偵測sd card一樣，<br /><br />Intent.ACTION_SCREEN_OFF和Intent.ACTION_SCREEN_ON是不能在AndroidManifest.xml裡面宣告的<br /><br />如:<br /><br /><pre class="brush: xml">&lt;receiver android:name="receiverScreen"&gt; <br />    &lt;intent-filter&gt;  <br />        &lt;action android:name="android.intent.action.SCREEN_ON" /&gt;<br />        &lt;action android:name="android.intent.action.SCREEN_OFF" /&gt;<br />    &lt;/intent-filter&gt;  <br />&lt;/receiver&gt;  <br /></pre><br /><br />這樣子的宣告<span class="Apple-style-span" style="color: red;"><b>沒有用</b></span>，你永遠都receive不到任何action<br /><br />詳細原因我也不知道，但是可以透過registerReceiver去實作，<br /><br />這裡舉個例子，先啟動一個service，由這個service去registerReceiver<br /><br />由service啟動的好處是，service可以常駐，<br /><br />如果你用acitivity去registerReceiver<br /><br />這個acitivity關閉以後，你一樣receive不到任何action<br /><br />且如果你只是想偵測acitivity的關閉與否的話，可以直接利用onResume和onPause去偵測即可<br /><br />不用特地去registerReceiver<br /><br /><br />但是如果今天你有一個widget在桌面，<br /><br />且我們是無法透過widget去registerReceiver，<br /><br />會出現exception（ReceiverCallNotAllowedException）<br /><br />所以一定得透過service去啟動。<br /><br />service的code如下:<br /><br /><pre class="brush: java">public class serviceScreen extends Service {<br /><br /> @Override<br /> public IBinder onBind(Intent intent) {<br />  // TODO Auto-generated method stub<br />  return null;<br /> }<br /> <br /> @Override<br /> public void onStart(Intent intent, int startId) {<br />     super.onStart(intent, startId);<br />     try {<br />          IntentFilter filter = new IntentFilter(Intent.ACTION_SCREEN_ON);<br />    <br />          filter.addAction(Intent.ACTION_SCREEN_OFF);<br />    <br />          BroadcastReceiver mReceiver = new receiverScreen();<br />   <br />          registerReceiver(mReceiver, filter);<br />     } catch (Exception e) {<br />          Log.d("main",e.toString());<br />     }<br /> }<br /><br />}<br /><br /><br /></pre><br /><br />receiver的code如下：<br /><br /><pre class="brush: java">public class receiverScreen extends BroadcastReceiver {<br /><br /> @Override<br /> public void onReceive(Context context, Intent intent) {<br />  <br />     if (intent.getAction().equals(Intent.ACTION_SCREEN_ON)){<br />          //收到螢幕開啟的通知<br />     }else{<br />          //收到螢幕關閉的通知<br />     }<br />  <br /> }<br /><br />}<br /><br /><br /></pre><br /><br /><br />接著就是在widget中去startService<br /><br />如下：<br /><br /><pre class="brush: java">public class widgetSmall extends AppWidgetProvider {<br /> <br /><br /> @SuppressWarnings("static-access")<br /> @Override<br /> public void onUpdate(Context context, AppWidgetManager appWidgetManager,int[] appWidgetIds) {<br />     super.onUpdate(context, appWidgetManager, appWidgetIds);<br />            <br />    //啟動一個service<br />     context.startService(new Intent(context, serviceScreen.class));<br />  <br />  <br /> }<br /> <br /><br /> @SuppressWarnings("static-access")<br /> @Override<br /> public void onDeleted(Context context, int[] appWidgetIds) {<br />     super.onDeleted(context, appWidgetIds);<br /><br /><br />    //當這個widget被刪除時，就stopService<br />      context.stopService(new Intent(context, serviceScreen.class) );<br />   <br />      android.os.Process.killProcess(android.os.Process.myPid());<br />  <br /> <br /> }<br /> <br /><br />}<br /><br /><br /></pre><br /><br /><br /><br /><br /><br /><br />
     </div>
 

@@ -223,7 +223,78 @@
       </nav>
 
       <div class="container">
-        
+        <style>
+/* Adjusted to give override background and text colour */
+.highlight pre, pre, .highlight .hll {
+    background-color: #49483E;
+    border: 1px solid #ccc;
+    padding: 6px 10px;
+    border-radius: 3px;
+    color: #FFFFFF;
+}
+/* Highlights taken from https://gist.github.com/asaaki/1007420  for Monokai theme */
+.c                 { color: #75715e }               /* Comment                     */
+.err               { color: #960050;
+                     background-color: #1e0010 }    /* Error                       */
+.k                 { color: #66d9ef }               /* Keyword                     */
+.l                 { color: #ae81ff }               /* Literal                     */
+.n                 { color: #f8f8f2 }               /* Name                        */
+.o                 { color: #f92672 }               /* Operator                    */
+.p                 { color: #f8f8f2 }               /* Punctuation                 */
+.cm                { color: #75715e }               /* Comment.Multiline           */
+.cp                { color: #75715e }               /* Comment.Preproc             */
+.c1                { color: #75715e }               /* Comment.Single              */
+.cs                { color: #75715e }               /* Comment.Special             */
+.ge                { font-style: italic }           /* Generic.Emph                */
+.gs                { font-weight: bold }            /* Generic.Strong              */
+.kc                { color: #66d9ef }               /* Keyword.Constant            */
+.kd                { color: #66d9ef }               /* Keyword.Declaration         */
+.kn                { color: #f92672 }               /* Keyword.Namespace           */
+.kp                { color: #66d9ef }               /* Keyword.Pseudo              */
+.kr                { color: #66d9ef }               /* Keyword.Reserved            */
+.kt                { color: #66d9ef }               /* Keyword.Type                */
+.ld                { color: #e6db74 }               /* Literal.Date                */
+.m                 { color: #ae81ff }               /* Literal.Number              */
+.s                 { color: #e6db74 }               /* Literal.String              */
+.na                { color: #a6e22e }               /* Name.Attribute              */
+.nb                { color: #f8f8f2 }               /* Name.Builtin                */
+.nc                { color: #a6e22e }               /* Name.Class                  */
+.no                { color: #66d9ef }               /* Name.Constant               */
+.nd                { color: #a6e22e }               /* Name.Decorator              */
+.ni                { color: #f8f8f2 }               /* Name.Entity                 */
+.ne                { color: #a6e22e }               /* Name.Exception              */
+.nf                { color: #a6e22e }               /* Name.Function               */
+.nl                { color: #f8f8f2 }               /* Name.Label                  */
+.nn                { color: #f8f8f2 }               /* Name.Namespace              */
+.nx                { color: #a6e22e }               /* Name.Other                  */
+.py                { color: #f8f8f2 }               /* Name.Property               */
+.nt                { color: #f92672 }               /* Name.Tag                    */
+.nv                { color: #f8f8f2 }               /* Name.Variable               */
+.ow                { color: #f92672 }               /* Operator.Word               */
+.w                 { color: #f8f8f2 }               /* Text.Whitespace             */
+.mf                { color: #ae81ff }               /* Literal.Number.Float        */
+.mh                { color: #ae81ff }               /* Literal.Number.Hex          */
+.mi                { color: #ae81ff }               /* Literal.Number.Integer      */
+.mo                { color: #ae81ff }               /* Literal.Number.Oct          */
+.sb                { color: #e6db74 }               /* Literal.String.Backtick     */
+.sc                { color: #e6db74 }               /* Literal.String.Char         */
+.sd                { color: #e6db74 }               /* Literal.String.Doc          */
+.s2                { color: #e6db74 }               /* Literal.String.Double       */
+.se                { color: #ae81ff }               /* Literal.String.Escape       */
+.sh                { color: #e6db74 }               /* Literal.String.Heredoc      */
+.si                { color: #e6db74 }               /* Literal.String.Interpol     */
+.sx                { color: #e6db74 }               /* Literal.String.Other        */
+.sr                { color: #e6db74 }               /* Literal.String.Regex        */
+.s1                { color: #e6db74 }               /* Literal.String.Single       */
+.ss                { color: #e6db74 }               /* Literal.String.Symbol       */
+.bp                { color: #f8f8f2 }               /* Name.Builtin.Pseudo         */
+.vc                { color: #f8f8f2 }               /* Name.Variable.Class         */
+.vg                { color: #f8f8f2 }               /* Name.Variable.Global        */
+.vi                { color: #f8f8f2 }               /* Name.Variable.Instance      */
+.il                { color: #ae81ff }               /* Literal.Number.Integer.Long */
+</style>
+
+
 <div class="page-header">
   <h1>How to install Hadoop on Ubuntu (single-node cluster) </h1>
 </div>
@@ -257,7 +328,7 @@ data-ad-format="auto"></ins>
     <div class="date">
       <span>01 July 2011</span>
     </div>
-    <div class="content">
+    <div class="content" style="line-height: 28px;">
       這篇主要教導大家如何在ubuntu上架起single-node的hadoop。<br />會在其他篇教導大家如何架設multi-node。<br />因為架設multi-node的前提是先得架設single-node。<br />所以先教導大家如何架設。<br />至於如何執行一個MapReduce的project將在下一篇教導大家。<br /><br />我的環境如下：<br />ubuntu版本：10.10<br />hadoop：0.20.2<br /><br /><span class="Apple-style-span" style="font-size: large;"><br /></span><br /><b><span class="Apple-style-span" style="font-size: large;">【1】要架設hadoop起來的前提是必須安裝Sun的java-jdk</span></b><br />&nbsp; &nbsp; &nbsp;<b>【1.1】首先先增加Canonical Partner Repository到我們的repositories，語法如下：</b><br /><pre class="brush: java">sudo add-apt-repository "deb http://archive.canonical.com/ lucid partner"</pre>&nbsp; &nbsp; &nbsp;<b>【1.2】更新我們的source.list，語法如下：</b><br /><pre class="brush: java">sudo apt-get update</pre>&nbsp; &nbsp; &nbsp;<b>【1.3】安裝sun java sdk，語法如下：</b><br /><pre class="brush: java">sudo apt-get install sun-java6-jdk</pre>&nbsp; &nbsp; &nbsp;<b>【1.4】因為linux的jdk預設為open-jdk，所以語法如下：</b><br /><br /><br /><b><span class="Apple-style-span" style="font-size: large;">【2】建立一個Hadoop系統的專屬使用者</span></b><br /><pre class="brush: java">sudo addgroup hadoop<br />sudo adduser --ingroup hadoop hadoop<br /></pre><br /><br /><b><span class="Apple-style-span" style="font-size: large;">【3】設定SSH，因為hadoop利用ssh去管理node</span></b><br />&nbsp; &nbsp; &nbsp;<b>【3.1】首先先產生一個SSH key給hadoop user，語法如下：</b><br /><pre class="brush: java">su - hadoop<br />ssh-keygen -t rsa -P "" &nbsp;</pre>&nbsp; &nbsp; &nbsp;<b>【3.2】利用新產生的key去accees本機上的機器，語法如下：</b><br /><pre class="brush: java">su - hadoop<br />cat $HOME/.ssh/id_rsa.pub &gt;&gt; $HOME/.ssh/authorized_keys<br /></pre><br /><br /><b><span class="Apple-style-span" style="font-size: large;">【4】關閉IPv6</span></b><br />&nbsp; &nbsp; &nbsp;<b>【4.1】利用vim去開啟設定檔，語法如下：</b><br /><pre class="brush: java">vim /etc/sysctl.conf&nbsp;</pre>&nbsp; &nbsp; &nbsp;<b>【4.2】將檔案中的設定改</b><b>如下：</b><br /><pre class="brush: java">#disable ipv6<br />net.ipv6.conf.all.disable_ipv6 = 1<br />net.ipv6.conf.default.disable_ipv6 = 1<br />net.ipv6.conf.lo.disable_ipv6 = 1<br /></pre><br /><br /><br /><b>上面都是為了安裝Hadoop的先前作業</b><br /><b>下面是正式進行下載以及安裝Hadoop</b><br /><br /><br /><b><span class="Apple-style-span" style="font-size: large;">【5】下載Hadoop並且解壓縮</span></b><br /><pre class="brush: java">cd /usr/local<br />wget http://apache.ntu.edu.tw/hadoop/core/hadoop-0.20.2/hadoop-0.20.2.tar.gz<br />tar zxvf hadoop-0.20.2.tar.gz<br />sudo mv hadoop-0.20.2 hadoop<br />sudo chown -R hadoop:hadoop hadoop<br /></pre><br /><br /><b><span class="Apple-style-span" style="font-size: large;">【6】更新$HOME/.bashrc(注意!是以hadoop身分執行語法)</span></b><br />&nbsp; &nbsp; &nbsp;<b>【6.1】利用vim去開啟.bashrc，語法如下：</b><br /><pre class="brush: java">sudo vim $HOME/.bashrc&nbsp;</pre>&nbsp; &nbsp; &nbsp;<b>【6.2】將檔案中的設定更改成如下：</b><br /><pre class="brush: java"># Set Hadoop-related environment variables<br />export HADOOP_HOME=/usr/local/hadoop<br /><br /># Add Hadoop bin/ directory to PATH<br />export PATH=$PATH:$HADOOP_HOME/bin<br /></pre><br /><br /><b><span class="Apple-style-span" style="font-size: large;">【7】Hadoop的設定</span></b><br />&nbsp; &nbsp; &nbsp;<b>&nbsp;接著是一連串的Hadoop設定檔，設定檔的位置都位於/usr/local/hadoop/conf/底下，</b><br />&nbsp; &nbsp; &nbsp;<b>&nbsp;都是先利用vim去開啟設定檔案做編輯，故下面就省略vim的語法</b><br />&nbsp; &nbsp; &nbsp;<b>【7.1】hadoop-env.sh，語法如下：</b><br />&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp;把預設的JAVA_HOME位置更改掉<br /><pre class="brush: java"># The java implementation to use.  Required.<br />export JAVA_HOME=/usr/lib/jvm/java-6-sun&nbsp;</pre>&nbsp; &nbsp; &nbsp;<b>【7.2】core-site.xml，語法如下：</b><br />&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp;紀錄Hadoop將資料存在哪<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp;先建立一個Hadoop的暫存資料夾，並設定權限及擁有人<br /><pre class="brush: java">sudo mkdir /app/hadoop/tmp<br />sudo chown hadoop:hadoop /app/hadoop/tmp<br />sudo chmod 750 /app/hadoop/tmp&nbsp;</pre>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp;接著就是打開設定檔更改設定，注意!請填自己的ip，改成如下:<br /><pre class="brush: xml"><property><br />  <name>hadoop.tmp.dir</name><br />  <value>/app/hadoop/tmp</value><br />  <description>A base for other temporary directories.</description><br /></property><br /><br /><property><br />  <name>fs.default.name</name><br />  <value>hdfs://140.133.xxx.xxx:54310</value><br />  <description>The name of the default file system.  A URI whose<br />  scheme and authority determine the FileSystem implementation.  The<br />  uri's scheme determines the config property (fs.SCHEME.impl) naming<br />  the FileSystem implementation class.  The uri's authority is used to<br />  determine the host, port, etc. for a filesystem.</description><br /></property><br /></pre><br />&nbsp; &nbsp; &nbsp; <b>【7.3】mapred-site.xml，語法如下：</b><br />&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;打開設定檔更改設定，注意!請填自己的ip，改成如下:<br /><pre class="brush: xml"><property><br />  <name>mapred.job.tracker</name><br />  <value>140.133.xxx.xxx:54311</value><br />  <description>The host and port that the MapReduce job tracker runs<br />  at.  If "local", then jobs are run in-process as a single map<br />  and reduce task.<br />  </description><br /></property><br /></pre><br />&nbsp; &nbsp; &nbsp;<span class="Apple-style-span" style="font-weight: bold;">【7.4】hdfs-site.xml，語法如下：</span><br />&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp;打開設定檔更改設定，此檔案紀錄著檔案被複製的數量，改成如下:<br /><pre class="brush: xml"><property><br />  <name>dfs.replication</name><br />  <value>1</value><br />  <description>Default block replication.<br />  The actual number of replications can be specified when the file is created.<br />  The default is used if replication is not specified in create time.<br />  </description><br /></property><br /></pre><br /><br /><br /><b><span class="Apple-style-span" style="font-size: large;">【8】對我們的namenode格式化</span></b><br /><pre class="brush: xml">/usr/local/hadoop/bin/hadoop namenode -format<br /></pre><br />出來的output應該會如下：<br /><pre class="brush: xml">11/06/30 16:59:56 INFO namenode.NameNode: STARTUP_MSG:<br />/************************************************************<br />STARTUP_MSG: Starting NameNode<br />STARTUP_MSG:   host = ubuntu/140.133.xxx.xxx<br />STARTUP_MSG:   args = [-format]<br />STARTUP_MSG:   version = 0.20.2<br />STARTUP_MSG:   build = https://svn.apache.org/repos/asf/hadoop/common/branches/branch-0.20 -r 911707; compiled by 'chrisdo' on Fri Feb 19 08:07:34 UTC 2010<br />************************************************************/<br />10/05/08 16:59:56 INFO namenode.FSNamesystem: fsOwner=hadoop,hadoop<br />10/05/08 16:59:56 INFO namenode.FSNamesystem: supergroup=supergroup<br />10/05/08 16:59:56 INFO namenode.FSNamesystem: isPermissionEnabled=true<br />10/05/08 16:59:56 INFO common.Storage: Image file of size 96 saved in 0 seconds.<br />10/05/08 16:59:57 INFO common.Storage: Storage directory .../hadoop-hadoop/dfs/name has been successfully formatted.<br />10/05/08 16:59:57 INFO namenode.NameNode: SHUTDOWN_MSG:<br />/************************************************************<br />SHUTDOWN_MSG: Shutting down NameNode at ubuntu/140.133.xxx.xxx<br />************************************************************/<br /><br /></pre><br /><br /><br /><b><span class="Apple-style-span" style="font-size: large;">【9】啟動我們的single-node cluster</span></b><br /><pre class="brush: xml">/usr/local/hadoop/bin/start-all.sh<br /></pre><br /><br /><span class="Apple-style-span" style="color: #333333; font-family: arial, sans-serif; line-height: 24px;">這將會啟動機器上的Namenode, Datanode, Jobtracker and a Tasktracker!!</span><br />出來的output應該會如下：<br /><pre class="brush: java">starting namenode, logging to /usr/local/hadoop/bin/../logs/hadoop-hadoop-namenode-ubuntu.out<br />localhost: starting datanode, logging to /usr/local/hadoop/bin/../logs/hadoop-hadoop-datanode-ubuntu.out<br />localhost: starting secondarynamenode, logging to /usr/local/hadoop/bin/../logs/hadoop-hadoop-secondarynamenode-ubuntu.out<br />starting jobtracker, logging to /usr/local/hadoop/bin/../logs/hadoop-hadoop-jobtracker-ubuntu.out<br />localhost: starting tasktracker, logging to /usr/local/hadoop/bin/../logs/hadoop-hadoop-tasktracker-ubuntu.out<br /></pre><br /><br />如果要檢查是否有啟動成功，可以打入下列語法:<br /><pre class="brush: java">jps</pre><br />正確出來的output應該會如下：<br /><pre class="brush: java">2287 TaskTracker<br />2149 JobTracker<br />1938 DataNode<br />2085 SecondaryNameNode<br />2349 Jps<br />1788 NameNode<br /></pre><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><blockquote></blockquote>
     </div>
 

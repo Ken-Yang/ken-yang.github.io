@@ -223,7 +223,78 @@
       </nav>
 
       <div class="container">
-        
+        <style>
+/* Adjusted to give override background and text colour */
+.highlight pre, pre, .highlight .hll {
+    background-color: #49483E;
+    border: 1px solid #ccc;
+    padding: 6px 10px;
+    border-radius: 3px;
+    color: #FFFFFF;
+}
+/* Highlights taken from https://gist.github.com/asaaki/1007420  for Monokai theme */
+.c                 { color: #75715e }               /* Comment                     */
+.err               { color: #960050;
+                     background-color: #1e0010 }    /* Error                       */
+.k                 { color: #66d9ef }               /* Keyword                     */
+.l                 { color: #ae81ff }               /* Literal                     */
+.n                 { color: #f8f8f2 }               /* Name                        */
+.o                 { color: #f92672 }               /* Operator                    */
+.p                 { color: #f8f8f2 }               /* Punctuation                 */
+.cm                { color: #75715e }               /* Comment.Multiline           */
+.cp                { color: #75715e }               /* Comment.Preproc             */
+.c1                { color: #75715e }               /* Comment.Single              */
+.cs                { color: #75715e }               /* Comment.Special             */
+.ge                { font-style: italic }           /* Generic.Emph                */
+.gs                { font-weight: bold }            /* Generic.Strong              */
+.kc                { color: #66d9ef }               /* Keyword.Constant            */
+.kd                { color: #66d9ef }               /* Keyword.Declaration         */
+.kn                { color: #f92672 }               /* Keyword.Namespace           */
+.kp                { color: #66d9ef }               /* Keyword.Pseudo              */
+.kr                { color: #66d9ef }               /* Keyword.Reserved            */
+.kt                { color: #66d9ef }               /* Keyword.Type                */
+.ld                { color: #e6db74 }               /* Literal.Date                */
+.m                 { color: #ae81ff }               /* Literal.Number              */
+.s                 { color: #e6db74 }               /* Literal.String              */
+.na                { color: #a6e22e }               /* Name.Attribute              */
+.nb                { color: #f8f8f2 }               /* Name.Builtin                */
+.nc                { color: #a6e22e }               /* Name.Class                  */
+.no                { color: #66d9ef }               /* Name.Constant               */
+.nd                { color: #a6e22e }               /* Name.Decorator              */
+.ni                { color: #f8f8f2 }               /* Name.Entity                 */
+.ne                { color: #a6e22e }               /* Name.Exception              */
+.nf                { color: #a6e22e }               /* Name.Function               */
+.nl                { color: #f8f8f2 }               /* Name.Label                  */
+.nn                { color: #f8f8f2 }               /* Name.Namespace              */
+.nx                { color: #a6e22e }               /* Name.Other                  */
+.py                { color: #f8f8f2 }               /* Name.Property               */
+.nt                { color: #f92672 }               /* Name.Tag                    */
+.nv                { color: #f8f8f2 }               /* Name.Variable               */
+.ow                { color: #f92672 }               /* Operator.Word               */
+.w                 { color: #f8f8f2 }               /* Text.Whitespace             */
+.mf                { color: #ae81ff }               /* Literal.Number.Float        */
+.mh                { color: #ae81ff }               /* Literal.Number.Hex          */
+.mi                { color: #ae81ff }               /* Literal.Number.Integer      */
+.mo                { color: #ae81ff }               /* Literal.Number.Oct          */
+.sb                { color: #e6db74 }               /* Literal.String.Backtick     */
+.sc                { color: #e6db74 }               /* Literal.String.Char         */
+.sd                { color: #e6db74 }               /* Literal.String.Doc          */
+.s2                { color: #e6db74 }               /* Literal.String.Double       */
+.se                { color: #ae81ff }               /* Literal.String.Escape       */
+.sh                { color: #e6db74 }               /* Literal.String.Heredoc      */
+.si                { color: #e6db74 }               /* Literal.String.Interpol     */
+.sx                { color: #e6db74 }               /* Literal.String.Other        */
+.sr                { color: #e6db74 }               /* Literal.String.Regex        */
+.s1                { color: #e6db74 }               /* Literal.String.Single       */
+.ss                { color: #e6db74 }               /* Literal.String.Symbol       */
+.bp                { color: #f8f8f2 }               /* Name.Builtin.Pseudo         */
+.vc                { color: #f8f8f2 }               /* Name.Variable.Class         */
+.vg                { color: #f8f8f2 }               /* Name.Variable.Global        */
+.vi                { color: #f8f8f2 }               /* Name.Variable.Instance      */
+.il                { color: #ae81ff }               /* Literal.Number.Integer.Long */
+</style>
+
+
 <div class="page-header">
   <h1>Google App Engine (GAE/J) 使用 Picasa API 取得相簿列表 </h1>
 </div>
@@ -257,7 +328,7 @@ data-ad-format="auto"></ins>
     <div class="date">
       <span>16 December 2010</span>
     </div>
-    <div class="content">
+    <div class="content" style="line-height: 28px;">
       不管你在哪裡(GAE、Java Application)要使用Picasa<br /><br />都一定要reference 4個jar檔，<br /><br /><br /><ol><li>gdata-core-1.0.jar</li><li>gdata-media-1.0.jar</li><li>gdata-photos-2.0.jar</li><li>google-collect-1.0-rc1.jar</li></ol><br /><br />可是Google Code的說明文件卻少說一個，<br /><br />文件上並沒有叫人家reference第四個，<br /><br />但是要reference進來才不會有錯<br /><br />reference進去以後就開始撰寫程式碼了<br /><br /><br /><br />這邊是以一個<b>固定帳號</b>去做登入<br /><br />跟之前<a href="http://blog.kenyang.net/search/label/google%20calendar">在GAE中使用行事曆</a>的例子<b>不一樣</b><br /><br />那個例子是會有Google登入畫面讓使用者輸入自己的帳號密碼，<br /><br />然後去存取使用者自己本身的行事曆<br /><br />不過這個例子不是，這個例子是用寫死的帳號密碼登入<br /><br />(<span class="Apple-style-span" style="font-size: x-small;">如果妳一樣要讓使用者填選，那麼也是要用<span class="Apple-style-span" style="font-family: Verdana, Arial, sans-serif; line-height: 16px;">AuthSub來認證，可以去行事曆那個例子看，差不</span></span><span class="Apple-style-span" style="font-family: Verdana, Arial, sans-serif; font-size: 13px; line-height: 16px;">多)</span><br /><span class="Apple-style-span" style="font-family: Verdana, Arial, sans-serif; font-size: 13px; line-height: 16px;"><br /></span><br />開始撰寫程式碼了<br /><br /><pre class="brush: java">package edu.chao.lab.servlet;<br /><br />import java.io.IOException;<br />import java.net.URL;<br />import java.util.List;<br /><br />import javax.servlet.ServletException;<br />import javax.servlet.http.HttpServlet;<br />import javax.servlet.http.HttpServletRequest;<br />import javax.servlet.http.HttpServletResponse;<br /><br />import com.google.gdata.client.photos.PicasawebService;<br />import com.google.gdata.data.photos.AlbumFeed;<br />import com.google.gdata.data.photos.GphotoEntry;<br />import com.google.gdata.util.ServiceException;<br /><br />public class test extends HttpServlet {<br /> <br /> @Override<br /> protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {<br />  super.doGet(req, resp);<br /> try {<br />  String strAcc = "你的帳號";<br />  String strPwd = "你的密碼";<br />  <br />  PicasawebService service = new PicasawebService("sample");<br />  service.setUserCredentials(strAcc, strPwd);    //登入<br />  URL feedUrl = new URL("https://picasaweb.google.com/data/feed/api/user/"+strAcc+"?kind=album");<br />  AlbumFeed myUserFeed = service.getFeed(feedUrl, AlbumFeed.class); //取得所有相簿烈表<br />  List&lt;GphotoEntry&gt; lAlbum = myUserFeed.getEntries();<br />  <br />  for (GphotoEntry myAlbum : lAlbum) {<br />   resp.getWriter().println(myAlbum.getTitle().getPlainText());//印出相簿名稱<br />   resp.getWriter().println(myAlbum.getGphotoId());   //印出相簿編號<br />   <br />   <br />  }<br /> } catch (ServiceException e) {<br />   // TODO Auto-generated catch block<br />   e.printStackTrace();<br /> }<br /> }<br />  <br />}<br /><br /><br /></pre><br /><span class="Apple-style-span" style="font-family: Verdana, Arial, sans-serif; font-size: 13px; line-height: 16px;"><br /></span><br /><span class="Apple-style-span" style="font-family: Verdana, Arial, sans-serif; font-size: 13px; line-height: 16px;"><br /></span><br />這樣就完成了讀取相簿列表<br /><br /><br /><br /><br /><br /><br /><br /><br />
     </div>
 

@@ -223,7 +223,50 @@
       </nav>
 
       <div class="container">
-        <body>
+        <style>
+.myButton {
+    -moz-box-shadow:inset 0px 1px 0px 0px #ffffff;
+    -webkit-box-shadow:inset 0px 1px 0px 0px #ffffff;
+    box-shadow:inset 0px 1px 0px 0px #ffffff;
+    background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #f9f9f9), color-stop(1, #e9e9e9));
+    background:-moz-linear-gradient(top, #f9f9f9 5%, #e9e9e9 100%);
+    background:-webkit-linear-gradient(top, #f9f9f9 5%, #e9e9e9 100%);
+    background:-o-linear-gradient(top, #f9f9f9 5%, #e9e9e9 100%);
+    background:-ms-linear-gradient(top, #f9f9f9 5%, #e9e9e9 100%);
+    background:linear-gradient(to bottom, #f9f9f9 5%, #e9e9e9 100%);
+    filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#f9f9f9', endColorstr='#e9e9e9',GradientType=0);
+    background-color:#f9f9f9;
+    -moz-border-radius:6px;
+    -webkit-border-radius:6px;
+    border-radius:6px;
+    border:1px solid #dcdcdc;
+    display:inline-block;
+    cursor:pointer;
+    color:#666666;
+    font-family:Arial;
+    font-size:15px;
+    font-weight:bold;
+    padding:6px 24px;
+    text-decoration:none;
+    text-shadow:0px 1px 0px #ffffff;
+}
+.myButton:hover {
+    background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #e9e9e9), color-stop(1, #f9f9f9));
+    background:-moz-linear-gradient(top, #e9e9e9 5%, #f9f9f9 100%);
+    background:-webkit-linear-gradient(top, #e9e9e9 5%, #f9f9f9 100%);
+    background:-o-linear-gradient(top, #e9e9e9 5%, #f9f9f9 100%);
+    background:-ms-linear-gradient(top, #e9e9e9 5%, #f9f9f9 100%);
+    background:linear-gradient(to bottom, #e9e9e9 5%, #f9f9f9 100%);
+    filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#e9e9e9', endColorstr='#f9f9f9',GradientType=0);
+    background-color:#e9e9e9;
+}
+.myButton:active {
+    position:relative;
+    top:1px;
+}
+</style>
+
+<body>
     <div>
         <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 <!-- id10t_top -->
@@ -242,31 +285,85 @@ data-ad-format="auto"></ins>
       <h1><a style="color: #F22430" href="/2012/09/18/nginxapachephp">Nginx+Apache+PHP</a></h1>
       <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
       <p class="author">
-        <span class="date">18 September 2012</span>
+      <div class="date">
+        <span>18 September 2012</span>
+      </div>
       </p>
-      <div class="content">
+      <div class="content" style="line-height: 28px;">
         <br />大部分在架設網站的人都會採用<a href="http://en.wikipedia.org/wiki/LAMP_(software_bundle)">LAMP</a>的方式!<br />就是傳統的Linux+Apache+MySQL+PHP。<br />但由於這種方式對一般人來說已經是過於簡單了，<br />甚至已經有一鍵包...只要一直按"下一步"就可以完成安裝...<br />所以在這就不多做介紹。<br /><br /><br />在這要介紹一個比較特別的架構叫做L<b><span style="color: red;">N</span></b>AMP，<br />LNAMP和之前的差不多，但多了一個<a href="http://en.wikipedia.org/wiki/Nginx">Nginx</a>。<br />Nginx和Apache一樣是web server，<br />但在這邊我們將在我們的Linux Server上同時安裝二個Web Server(Nginx、Apache)。<br />然後利用<a href="http://en.wikipedia.org/wiki/Reverse_proxy">reverse proxy</a>的概念來結合這二個Web Server，<br /><br /><br />由於Nginx在處理靜態網頁、文件的效能較好，<br />而Apache一直以來都算是一個穩定的Web Server，但Apache很耗CPU、memory。<br />但是Nginx並不支援PHP，因此我們可以結合這兩個Web Server的特性來架設我們的網站!<br /><br /><br /><br />首先先看到下面那張圖，這張圖是我們網站的架構!<br />我們可以看到圖中的兩個粉紅色區塊，<br />這兩個區塊都是web server。<br />而在這邊我會把Nginx的port設為80，<br />Apache的port改為8080。<br /><br />當User request <span style="color: red; font-weight: bold;">http://www.example.com/index.</span><b style="color: blue;"><span style="font-size: large;">html&nbsp;</span></b>的時候，<br />我們就會透過Nginx response給User! &nbsp;(就是下圖中左邊的區塊)<br />但是當User request&nbsp;&nbsp;<span style="color: red; font-weight: bold;">http://www.example.com/index.</span><b style="color: blue;"><span style="font-size: large;">php&nbsp;</span></b>的時候，<br />我們一樣一開始會透過Nginx，可是Nginx會透過reverse proxy的機制，<br />reverse給Apache進行處理!!! &nbsp;(就是下圖中右邊的區塊)<br /><br /><div class="separator" style="clear: both; text-align: center;"><a href="http://4.bp.blogspot.com/-M0aRrq3UJB4/UFfWndIaGNI/AAAAAAAAA3s/wGHyUqa4gF4/s1600/UntitledDocument.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="448" src="http://4.bp.blogspot.com/-M0aRrq3UJB4/UFfWndIaGNI/AAAAAAAAA3s/wGHyUqa4gF4/s640/UntitledDocument.png" width="640" /></a></div><br /><br />透過上圖中的機制可以有效的快速response user，<br />也可以減輕Server的負擔!<br />甚至可以減輕MySQL的負擔!<br />記得以前在某公司當intern的時候，<br />由於該公司的某項服務在當時似乎是國內前幾大的，<br />然後他們某項服務就是利用rewrite的概念，盡量不會有Dynamic Page，<br />他們系統每一陣子會把Dynamic Page的內容rewite成一個Static Page，<br />這樣他們的User都會去request 該Static Page，<br />而不會去request Dynamic Page，同時也減輕了DB的負擔!<br /><br /><br />講完架構以後，<br />接著要教大家怎麼把Nginx+Apache同時架起來!<br />我的環境是Ubuntu，<br />在這我就不教大家怎麼install Apahce和PHP了...應該是common sense!<br /><br />進行說明設定Nginx之前，<br />如果你已經將Apache安裝起來了，那請先把你的Apache port改成8080。<br />因為Nginx等等會使用80。<br /><br /><br />完成上述步驟，就來安裝Nginx，<br /><div><pre class="brush: java">sudo apt-get install nginx<br /></pre></div><br />安裝完成以後，如果你去request自己網站底下的某隻.php<br />例如：www.example.com/index.php<br />那麼是跑不起來的，因為Nginx並不支援任何的Dynamic Language（php, perl, jsp...etc)<br />所以要把有關Dynamic Page的任何request reverse proxy至apache去！<br /><br /><br />所以就要進行設定，首先要把nginx的port改為80<br /><pre class="brush: java">cd /etc/nginx/sites-available  #先切換至nginx的設定目錄底下<br />sudo vim default #修改設定檔<br /></pre><br />打開設定檔以後，記得在Server{}裡面加入下面的設定，<br /><br /><pre class="brush: java">listen 80 #預設是mark起來的，把最前面的#號拿掉就好，如果沒有這行就自己加吧!<br /><br /># 下面這段的意思是，當遇到.php檔名的就把它轉向至8080<br />location ~ \.php$ {<br />    proxy_pass  http://127.0.0.1:8080;<br />}<br /></pre><br />上面的設定主要就是過濾掉.php，<br />把php通通交給apache進行處理，<br />當然你也可以做更細部的過濾設定，<br />例如.jpg、.css、.js等等之類的靜態檔案都cached起來，<br />不要進行不必要的request。<br />例如<br /><pre class="brush: java">location ~* \.(jpg|png)$ {<br />    expires  30d;  # cached 30天的意思<br />}<br /></pre><br /><br />完成上面的設定以後，<br />就將Nginx重開吧!<br /><pre class="brush: java">sudo /etc/init.d/nginx restart<br /></pre><br /><br /><br />基本上重開以後，應該就完成LNAMP的架構了!<br /><br /><br /><br /><div class="separator" style="clear: both; text-align: center;"></div><div class="separator" style="clear: both; text-align: center;"><br /></div><br />
       </div>
+      <footer>
+        <p><a class="myButton" href="/2012/09/18/nginxapachephp">read more &raquo;</a></p>
+        <div>
+          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- id10t_top -->
+<ins class="adsbygoogle"
+style="display:block"
+data-ad-client="ca-pub-7586970907106458"
+data-ad-slot="1161208442"
+data-ad-format="auto"></ins>
+<script>
+    (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+        </div>
+      </footer>
       <hr>
     
       <h1><a style="color: #F22430" href="/2012/09/15/google-oauth-20-google-api">使用Google OAuth 2.0 存取Google API</a></h1>
       <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
       <p class="author">
-        <span class="date">15 September 2012</span>
+      <div class="date">
+        <span>15 September 2012</span>
+      </div>
       </p>
-      <div class="content">
+      <div class="content" style="line-height: 28px;">
         這篇文章主要是教學如何使用Google OAuth，<br />然後利用OAuth給的token去存取gmail帳號!<br /><br /><br />至於OAuth是甚麼就不多做介紹...<br />可以去WIKI看 &nbsp;<a href="http://en.wikipedia.org/wiki/OAuth">http://en.wikipedia.org/wiki/OAuth</a><br />簡言之，是一個公開的標準認證機制!<br /><br /><br />而使用Google OAuth大概可以<b>粗</b>分為下列步驟：<br /><br /><ol><li>在Google Console註冊一個Application&nbsp;</li><li>取得Google回傳的Access Token（基本上到這步驟，代表登入成功）</li><li>傳送Access Token至某隻Google API取得Google的資料</li></ol><div><br /></div><div><br /></div><div><span style="font-size: large;"><b>【在Google Console註冊一個Application 】</b></span></div><div><br /></div><div>在這步驟要先去Google Console頁面上去註冊一個application，</div><div>然後再為這個application申請一組client id。</div><div><br /></div><div><br /></div><div>首先要先去這個站(<a href="https://code.google.com/apis/console/b/0/#project:1007457656912:access">https://code.google.com/apis/console/b/0/#project:1007457656912:access</a>)，</div><div>點進去以後大概會見到下圖，</div><div>見到下圖(圖一)以後，就先點選下圖(圖一)中左邊的API Access，</div><div>注意! 一定要點! 點了以後，下圖(圖一)中右邊的區塊才會出現Create an OAuth 2.0 client ID的按鈕!</div><div>出現右邊的區塊以後，就點選Create an OAuth 2.0 client ID的按鈕!</div><div><table cellpadding="0" cellspacing="0" class="tr-caption-container" style="margin-left: auto; margin-right: auto; text-align: center;"><tbody><tr><td style="text-align: center;"><a href="http://4.bp.blogspot.com/-JwE3gg-xhO0/UFP6oNVniUI/AAAAAAAAA2Y/NZyW3v_WnJE/s1600/1.png" imageanchor="1" style="clear: left; margin-bottom: 1em; margin-left: auto; margin-right: auto;"><img border="0" height="222" src="http://4.bp.blogspot.com/-JwE3gg-xhO0/UFP6oNVniUI/AAAAAAAAA2Y/NZyW3v_WnJE/s640/1.png" width="640" /></a></td></tr><tr><td class="tr-caption" style="text-align: center;">圖一</td></tr></tbody></table><br /></div><div><br /></div><div>如果你曾經註冊過一個application，那就不會看到上圖(圖一)的頁面，</div><div>但大同小異! 還是會有一個按鈕(Create another client ID...)</div><div>點選以後就會直接見到圖三，而不會見到下圖(圖二)</div><div><br /></div><div>而如果沒有註冊過application的，就會見到下圖(圖二)。</div><div>下面的頁面主要輸入產品名稱即可!&nbsp;</div><div>輸入以後就按下下圖(圖二)Next</div><br /><table align="center" cellpadding="0" cellspacing="0" class="tr-caption-container" style="margin-left: auto; margin-right: auto; text-align: center;"><tbody><tr><td style="text-align: center;"><a href="http://4.bp.blogspot.com/-Z5YnmHWrUEM/UFP6oyszkmI/AAAAAAAAA2c/wXleTWsGzrU/s1600/2.png" imageanchor="1" style="margin-left: auto; margin-right: auto;"><img border="0" height="418" src="http://4.bp.blogspot.com/-Z5YnmHWrUEM/UFP6oyszkmI/AAAAAAAAA2c/wXleTWsGzrU/s640/2.png" width="640" /></a></td></tr><tr><td class="tr-caption" style="text-align: center;">圖二</td></tr></tbody></table><br /><br /><br />點選上圖(圖二)中的Next以後，就會見到下圖(圖三)，<br />這個頁面很重要!<br />這頁面要填寫你的Domain Name以及接收access token的頁面!<br />但預設的狀況你只能填寫Domain Name，如下圖(圖三)的紅色框框!<br />而藍色框框中的URI(https://www.example.com/oauth2callback) 就是接收access token的頁面!<br />當然，如果你想要填寫自己接收access token的頁面，也是可以自己改!<br />只要點選下圖(圖三)中的綠色框框(more options)即可!<br />點選以後就會見到下圖(圖四)<br /><table align="center" cellpadding="0" cellspacing="0" class="tr-caption-container" style="margin-left: auto; margin-right: auto; text-align: center;"><tbody><tr><td style="text-align: center;"><a href="http://1.bp.blogspot.com/-DHKQZ6fpmus/UFP6ph8cJAI/AAAAAAAAA2k/g0lDMWSBCwI/s1600/3.png" imageanchor="1" style="margin-left: auto; margin-right: auto;"><img border="0" height="484" src="http://1.bp.blogspot.com/-DHKQZ6fpmus/UFP6ph8cJAI/AAAAAAAAA2k/g0lDMWSBCwI/s640/3.png" width="640" /></a></td></tr><tr><td class="tr-caption" style="text-align: center;">圖三</td></tr></tbody></table><br /><br />下圖(圖四)就是點選上圖(圖三)的more options才會看到的頁面。<br />你可以看到下圖(圖四)有個紅色框框，在那裏面就可以修改自己接收access token的頁面!<br />填寫完成以後，記得按下圖片中(圖三或圖四)下面的Create client ID按鈕!<br />點了才會完成。<br /><br /><table align="center" cellpadding="0" cellspacing="0" class="tr-caption-container" style="margin-left: auto; margin-right: auto; text-align: center;"><tbody><tr><td style="text-align: center;"><a href="http://2.bp.blogspot.com/-ih5kYbLFT5U/UFP6qA5qAFI/AAAAAAAAA2s/hLs7GqI05no/s1600/4.png" imageanchor="1" style="margin-left: auto; margin-right: auto;"><img border="0" height="542" src="http://2.bp.blogspot.com/-ih5kYbLFT5U/UFP6qA5qAFI/AAAAAAAAA2s/hLs7GqI05no/s640/4.png" width="640" /></a></td></tr><tr><td class="tr-caption" style="text-align: center;">圖四</td></tr></tbody></table><div><br /></div><div>完成以後，會看到下圖(圖五)的頁面!</div><div>這頁面也很<b>重要</b>!!!!</div><div>因為Google 會給你一組Client ID和Client Sercet，</div><div>這兩個資訊在後面進行auth的時候會用到!</div><table align="center" cellpadding="0" cellspacing="0" class="tr-caption-container" style="margin-left: auto; margin-right: auto; text-align: center;"><tbody><tr><td style="text-align: center;"><a href="http://4.bp.blogspot.com/-A2KWXvQ1bdM/UFP_HVzeA6I/AAAAAAAAA3E/wxYHfaoH-hs/s1600/5.png" imageanchor="1" style="margin-left: auto; margin-right: auto;"><img border="0" height="196" src="http://4.bp.blogspot.com/-A2KWXvQ1bdM/UFP_HVzeA6I/AAAAAAAAA3E/wxYHfaoH-hs/s640/5.png" width="640" /></a></td></tr><tr><td class="tr-caption" style="text-align: center;">圖五</td></tr></tbody></table><div><br /></div><div><br /></div><div><div><span style="font-size: large;"><b>【取得Google回傳的access token 】</b></span></div><div><br /></div><div>在這步驟就要進行coding了。</div></div><div>詳細的說明文件可以參考(<a href="https://developers.google.com/accounts/docs/OAuth2Login">https://developers.google.com/accounts/docs/OAuth2Login</a>)</div><div><br /></div><div><br /></div><div>先大致說明一下流程，可以參考下圖。</div><div>流程一：</div><div>　　User會先點選一個URL，</div><div>　　而這URL會連結至Google 登入頁面，</div><div>　　User得先輸入帳號＆密碼進行登入，</div><div>　　（這過程都是在Google Server上進行，我們的Server端是不會取得到User的密碼的）</div><div>流程二：</div><div>　　如果User輸入的帳號密碼正確，那麼Google就會把Access Token傳回去至我們的Server，</div><div>流程三：</div><div>　　發一個request給Google API，</div><div>　　把Google回傳給我們的token傳至Google API以存取我們想要存取的資訊！</div><div><div>流程三：</div><div>　　接收Google 回傳的資訊</div></div><div><br /></div><div class="separator" style="clear: both; text-align: center;"><a href="http://4.bp.blogspot.com/-Dyrbs33OyVg/UFQCALNi6GI/AAAAAAAAA3Y/3mwvlUpTA1s/s1600/loginflow.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="450" src="http://4.bp.blogspot.com/-Dyrbs33OyVg/UFQCALNi6GI/AAAAAAAAA3Y/3mwvlUpTA1s/s640/loginflow.png" width="640" /></a></div><div><br /></div><div><br /></div><div>恩，接著要開始寫code了。</div><div>如上面所述，我們要有一個接收access token的頁面!<br />以及一個讓User點擊的連結（這個連結會redirect至Google登入頁面）<br />而這個連結也會帶著幾個參數！<br />如下</div><br /><div><pre class="brush: html"><a href="https://accounts.google.com/o/oauth2/auth?scope=https://www.googleapis.com%2Fauth%2Fuserinfo.email+https://www.googleapis.com%2Fauth%2Fuserinfo.profile&amp;state=/profile&amp;redirect_uri=http://www.example.com/oauth2callback&amp;response_type=code&amp;client_id=xxxxxxxxxxxxxxxxxxx"><br />使用Google登入<br /></a><br /><br /></pre></div><br /><div>參數說明：<br /><b><span style="color: red;">scope</span></b>：意思是你要利用這個token存取那些Google API，這邊我們要存取USER資訊，所以就是如上述sample所示。<br /><b><span style="color: red;">state</span></b>：這是一個optional 的參數，可以填任意字串<br /><b><span style="color: red;">redirecut_uri</span></b>：這個參數很<b>重要，</b>意思是如果user輸入帳密正確以後，Google要redirect至哪一個接收access_token的頁面，基本上這個參數的value就是如上圖中（圖四）你所填的值！<br /><b><span style="color: red;">response_type</span></b>：這個參數的value一定要填寫code！code的意思是我們接收的頁面是用server-side接收response! 預設還有另一個value（token)，但token代表的是我們是利用Javascript去進行接收！但此sample是用JSP/Servlet的Servlet來接收！所以就填寫code!<br /><b><span style="color: red;">client_id</span></b>：就填寫自己的client_id!!!<br /><br />基本上user點選上述的Link以後，<br />會見到登入頁面！<br />登入完成以後就會redirect至oauth2callback去了！<br />並且會reponse一個參數給我們！參數名稱為code<br /><br /></div><div>而這邊我已JSP/Servlet為例!<br />所以我先建立一個名字為oauth2callback的Servlet，<br />這個Servlet會用來接收Google回傳給我們的參數(code)，<br />然後這支Servlet會再發出一個request，並且帶著參數code。<br />然後Google就會回傳給我們access_token</div><div><br /></div><div><pre class="brush: java">@Override<br /> protected void doGet(HttpServletRequest req, HttpServletResponse resp)<br />   throws ServletException, IOException {<br />   <br />  // Google取得access_token的url<br />  URL urlObtainToken =  new URL("https://accounts.google.com/o/oauth2/token");<br />  HttpURLConnection connectionObtainToken =  (HttpURLConnection) urlObtainToken.openConnection();<br />    <br />  // 設定此connection使用POST<br />  connectionObtainToken.setRequestMethod("POST");<br />  connectionObtainToken.setDoOutput(true);<br />   <br />  // 開始傳送參數 <br />  OutputStreamWriter writer  = new OutputStreamWriter(connectionObtainToken.getOutputStream());<br />  writer.write("code="+req.getParameter("code")+"&amp;");   // 取得Google回傳的參數code<br />  writer.write("client_id=xxxxxxxxxxxxxxxxxx&amp;xxxx&amp;");   // 這裡請將xxxx替換成自己的client_id<br />  writer.write("client_secret=xxxxxxxxxxxxxxxxxxx&amp;");   // 這裡請將xxxx替換成自己的client_serect<br />  writer.write("redirect_uri=xxxxxxxxxxxxxxxxxxxx&amp;");   // 這裡請將xxxx替換成自己的redirect_uri<br />  writer.write("grant_type=authorization_code");  <br />  writer.close();<br />  <br />  // 如果認證成功<br />  if (connectionObtainToken.getResponseCode() == HttpURLConnection.HTTP_OK){<br />   StringBuilder sbLines   = new StringBuilder("");<br />   <br />   // 取得Google回傳的資料(JSON格式)<br />   BufferedReader reader = <br />       new BufferedReader(new InputStreamReader(connectionObtainToken.getInputStream(),"utf-8"));<br />   String strLine = "";<br />   while((strLine=reader.readLine())!=null){<br />    sbLines.append(strLine);<br />   }<br />  <br />   try {<br />       // 把上面取回來的資料，放進JSONObject中，以方便我們直接存取到想要的參數<br />    JSONObject jo = new JSONObject(sbLines.toString());<br />    <br />    // 印出Google回傳的access token<br />    resp.getWriter().println(jo.getString("access_token")); <br />   } catch (JSONException e) {<br />    e.printStackTrace();<br />   }<br />  }<br /> }<br /><br /></pre></div><div><br /></div><div><br /></div><div><br /></div><div><br /></div><div><br /></div><div><br /></div><div>如果完成上述步驟，基本上就代表user的帳號密碼是正確!<br />那意思就是說，如果你的網站想要導入讓user使用Google帳號進行登入的話，<br />完成上述步驟就OK了!<br /><br />當然，如果你想要取得更進一步的user資訊，<br />只要利用上述得到的access_token，然後把這個token帶給Google API即可獲得資訊!<br />例如想要得到User的email，即可利用下列的API，<br /><b>https://www.googleapis.com/oauth2/v1/userinfo</b><br />但是要餵給他參數!<br />CODE如下：<br /><br /><br /></div><div><pre class="brush: java">URL urUserInfo =   <br />     new URL("https://www.googleapis.com/oauth2/v1/userinfo?access_token="+jo.getString("access_token")); <br /> HttpURLConnection connObtainUserInfo =  (HttpURLConnection) urUserInfo.openConnection();<br />  <br />  <br /> //如果認證成功<br /> if (connObtainUserInfo.getResponseCode() == HttpURLConnection.HTTP_OK){<br />  StringBuilder sbLines   = new StringBuilder("");<br />   <br />  // 取得Google回傳的資料(JSON格式)<br />  BufferedReader reader = <br />   new BufferedReader(new InputStreamReader(connObtainUserInfo.getInputStream(),"utf-8"));<br />  String strLine = "";<br />  while((strLine=reader.readLine())!=null){<br />   sbLines.append(strLine);<br />  }<br />  <br />  try {<br />   // 把上面取回來的資料，放進JSONObject中，以方便我們直接存取到想要的參數<br />   JSONObject jo = new JSONObject(sbLines.toString());<br />    <br />   // 印出Google回傳的"emailtoken<br />   resp.getWriter().println(jo.getString("email")); <br />    <br />  } catch (JSONException e) {<br />   e.printStackTrace();<br />  }<br /> }<br /><br /></pre></div><div><br /></div><div><br /></div><div><br /></div><div><br /></div><div><br /></div>
       </div>
+      <footer>
+        <p><a class="myButton" href="/2012/09/15/google-oauth-20-google-api">read more &raquo;</a></p>
+        <div>
+          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- id10t_top -->
+<ins class="adsbygoogle"
+style="display:block"
+data-ad-client="ca-pub-7586970907106458"
+data-ad-slot="1161208442"
+data-ad-format="auto"></ins>
+<script>
+    (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+        </div>
+      </footer>
       <hr>
     
       <h1><a style="color: #F22430" href="/2012/07/28/arduino">Arduino 基本教學</a></h1>
       <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
       <p class="author">
-        <span class="date">28 July 2012</span>
+      <div class="date">
+        <span>28 July 2012</span>
+      </div>
       </p>
-      <div class="content">
+      <div class="content" style="line-height: 28px;">
         Arduino 是一塊Open Source電路板，<br />開發者可以利用這塊板子去做到一些電子器材的控制，<br />例如：開燈、關燈，甚至可以在Arduino上裝上sensor，<br />然後根據sensor的資料來做處理！例如接上了光敏電阻這個sensor，<br />我們就可以判斷目前光的亮度，就可以根據不同亮度做不同的回應。<br />詳細資料可以去官網看：<a href="http://arduino.cc/en/">http://arduino.cc/en/</a><br /><br /><br />這篇主要教大家怎麼寫一個簡單的應用，<br />在後面會教大家怎麼接上藍芽模組，然後透過無線的方式和Arduino溝通！<br />基本上要做到下列的事項<br /><br /><ol><li>購買Arduino電路板</li><li>下載Arduino IDE開發工具</li><li>在電腦上安裝Arduino的Driver</li><li>寫個簡單應用並部屬上去Arduino</li></ol><br /><b><span style="font-size: large;">【第一步、購買Arduino】</span></b><br />在開發前，大家一定要有一塊Arduino電路板，<br />基本上在Y拍就買得到了，一塊基本的價格大概在600~1000左右！<br />因為其實Arduino板子有分很多種，且有的還算是加強版！<br />但都大同小異。<br />我買的板子是Duemilanove版本，如圖！<br /><div class="separator" style="clear: both; text-align: center;"><a href="http://3.bp.blogspot.com/-sN72o_XlMx8/UBMQ_RihaGI/AAAAAAAAAzM/oPSP0dbtwpk/s1600/IMG_20120728_054118.jpg" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="300" src="http://3.bp.blogspot.com/-sN72o_XlMx8/UBMQ_RihaGI/AAAAAAAAAzM/oPSP0dbtwpk/s400/IMG_20120728_054118.jpg" width="400" /></a></div><br /><br /><span style="font-size: large;"><b>【第二步、下載Arduino IDE】 </b></span><br />接著得去下載開發工具，<br />才能寫程式，並燒到Arduino上面去。<br />下載網址：<a href="http://arduino.cc/en/Main/Software">http://arduino.cc/en/Main/Software</a> <br />下載下來以後，就解壓縮出來即可。<br /><br /><br /><br /><b><span style="font-size: large;">【第三步、安裝Driver】 </span></b><br />接著把Arduino接上電腦，如下圖，<br /><div class="separator" style="clear: both; text-align: center;"><a href="http://4.bp.blogspot.com/-uI9qyEXk_dc/UBMRHlyanXI/AAAAAAAAAzU/X9oEw4_uJ24/s1600/IMG_20120728_054835.jpg" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="240" src="http://4.bp.blogspot.com/-uI9qyEXk_dc/UBMRHlyanXI/AAAAAAAAAzU/X9oEw4_uJ24/s320/IMG_20120728_054835.jpg" width="320" /></a></div>基本上你的電腦應該找不到Driver，<br />這時候就【我的電腦點選右鍵】→【點選管理】→【點選裝置管理員】<br />基本上應該就會看到無法辨識的設備，<br />在該設備上點選右鍵，選擇內容。<br />然後接著就自己去尋找Driver的路徑，<br />而Driver就在第二步下載下來的檔案當中，<br />在解壓縮出來的資料夾當中\arduino-1.0.1\drivers。<br />安裝完成以後，請記得自己的Serial Port！！（像我的就是21，如下圖）<br />因為等等會透過此Port把程式燒進去。<br /><br /><div class="separator" style="clear: both; text-align: center;"><a href="http://3.bp.blogspot.com/-GKGHJUHOiFY/UBMQj7W04pI/AAAAAAAAAy8/S6_wfgFsgOs/s1600/5.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="80" src="http://3.bp.blogspot.com/-GKGHJUHOiFY/UBMQj7W04pI/AAAAAAAAAy8/S6_wfgFsgOs/s320/5.png" width="320" /></a></div><br /><br /><b><span style="font-size: large;">【第四步、寫個應用】 </span></b><br />首先先打開Arduino IDE，<br />就在第二步中解壓縮的資料夾當中，<br />檔名為arduino.exe。<br />打開以後會見到下圖。<br />而白色的區塊就是你可以寫code的地方。<br /><div class="separator" style="clear: both; text-align: center;"><a href="http://2.bp.blogspot.com/-EC2IyUkb088/UBMQgIqu-RI/AAAAAAAAAyc/v4FIcmZiuD8/s1600/1.JPG" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="320" src="http://2.bp.blogspot.com/-EC2IyUkb088/UBMQgIqu-RI/AAAAAAAAAyc/v4FIcmZiuD8/s320/1.JPG" width="238" /></a></div><br /><br />接著得點選Tool→Board，如下圖<br />先選擇你購買的Arduino電路板版本，像我是Duemilanove，<br />所以就選這個！<br />如果你選錯，基本上是無法upload到Arduino板子上去的！<br /><div class="separator" style="clear: both; text-align: center;"><a href="http://4.bp.blogspot.com/-ietO9fuZtq0/UBMQg-gdhrI/AAAAAAAAAyk/HQrNWqlh35o/s1600/2.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="315" src="http://4.bp.blogspot.com/-ietO9fuZtq0/UBMQg-gdhrI/AAAAAAAAAyk/HQrNWqlh35o/s640/2.png" width="640" /></a></div><br />接著就選擇第三步中的Serial Port，像我是21，所以就選21，<br />如下圖。<br /><br /><div class="separator" style="clear: both; text-align: center;"><a href="http://2.bp.blogspot.com/-sO6zqPybv8k/UBMQhURq0aI/AAAAAAAAAys/hA9qnuPy9-8/s1600/3.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="366" src="http://2.bp.blogspot.com/-sO6zqPybv8k/UBMQhURq0aI/AAAAAAAAAys/hA9qnuPy9-8/s640/3.png" width="640" /></a></div><br /><br />接著就可以開始寫程式了，<br />首先我先說明一下，基本上你們購買的Arduino板子上，<br />一定會有一個小小的LED燈，<br />而這LED燈是連接到pin腳為13的pin上。如下圖<br /><div class="separator" style="clear: both; text-align: center;"><a href="http://2.bp.blogspot.com/-JUr-DuoAbdg/UBMQvAyNtDI/AAAAAAAAAzE/t-fzi8X4vFE/s1600/IMG_201207228_054118.jpg" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="480" src="http://2.bp.blogspot.com/-JUr-DuoAbdg/UBMQvAyNtDI/AAAAAAAAAzE/t-fzi8X4vFE/s640/IMG_201207228_054118.jpg" width="640" /></a></div><br /><br />而我們現在就要寫一個程式去開關該led燈。<br />CODE如下：<br /><pre class="brush: java">// 先宣告Pin腳位置<br />int iPinLed = 13;<br />void setup() {           <br />  // 宣告該Pin腳是output  <br />  pinMode(iPinLed, OUTPUT);     <br />}<br />void loop() {<br />  // 開始寫資料，寫HIGH進去就是讓它亮<br />  digitalWrite(iPinLed, HIGH); <br />  delay(1000);        <br />　// 寫LOW進去就是讓它暗<br />  digitalWrite(iPinLed, LOW);   <br />  delay(1000);             <br />}<br /></pre><br />基本上Arduino的程式分了兩個區塊<br /><br /><ol><li>setup</li><li>loop</li></ol>setup就是傳統的main，也可以想成是constructor，<br />loop就是會一直執行的部分，可以想成for迴圈。<br />而上述的程式中，我們先宣告了一個整數(iPinLed)，代表pin腳的位置，<br />接著在setup中把它宣告成是做輸出的動作，也就是說我們會透過這個pin腳餵資料給led<br />然後就進入loop，第一行就是讓led變亮，<br />接著就delay一秒鐘，<br />之後又把led關掉。<br />又停了一秒。<br />不斷的重複上述步驟。<br />而程式的結果如下列影片。<br />LED燈會一閃一閃的！<br /><br /><div class="separator" style="clear: both; text-align: center;"><object width="320" height="266" class="BLOG_video_class" id="BLOG_video-e338391bc4bf5307" classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,40,0"><param name="movie" value="//www.youtube.com/get_player"><param name="bgcolor" value="#FFFFFF"><param name="allowfullscreen" value="true"><param name="flashvars" value="flvurl=http://redirector.googlevideo.com/videoplayback?id%3De338391bc4bf5307%26itag%3D5%26source%3Dblogger%26app%3Dblogger%26cmo%3Dsensitive_content%253Dyes%26ip%3D0.0.0.0%26ipbits%3D0%26expire%3D1450516984%26sparams%3Did,itag,source,ip,ipbits,expire%26signature%3DA0FC7A3189FB9ED0BD788D826D17DE4490654.6B757629731B92C0E7FB6DCC6A08B8FA46E3D406%26key%3Dck2&amp;iurl=http://video.google.com/ThumbnailServer2?app%3Dblogger%26contentid%3De338391bc4bf5307%26offsetms%3D5000%26itag%3Dw160%26sigh%3DEKWSP7lBmNlXqcU-3ib3oa3O_Tk&amp;autoplay=0&amp;ps=blogger"><embed src="//www.youtube.com/get_player" type="application/x-shockwave-flash" width="320" height="266" bgcolor="#FFFFFF" flashvars="flvurl=http://redirector.googlevideo.com/videoplayback?id%3De338391bc4bf5307%26itag%3D5%26source%3Dblogger%26app%3Dblogger%26cmo%3Dsensitive_content%253Dyes%26ip%3D0.0.0.0%26ipbits%3D0%26expire%3D1450516984%26sparams%3Did,itag,source,ip,ipbits,expire%26signature%3DA0FC7A3189FB9ED0BD788D826D17DE4490654.6B757629731B92C0E7FB6DCC6A08B8FA46E3D406%26key%3Dck2&iurl=http://video.google.com/ThumbnailServer2?app%3Dblogger%26contentid%3De338391bc4bf5307%26offsetms%3D5000%26itag%3Dw160%26sigh%3DEKWSP7lBmNlXqcU-3ib3oa3O_Tk&autoplay=0&ps=blogger" allowFullScreen="true" /></object></div><br /><br /><br /><br />&nbsp;從上述的例子來看或許有點過於單調，<br />但就像本文一開始所說的，<br />Arduino可以接上許多裝置，然後透過Arduino控制該裝置。<br />像此文就是透過Arduino去控制單一LED。<br />你可以想像如果你有一百顆LED，你也可以通通接上 Arduino&nbsp;，<br />然後透過Arduino去控制那一百顆LED。<br /><br />然後在後面的文章將會介紹怎麼透過Arduino去控制機器手臂。<br /><br /><br /><div class="separator" style="clear: both; text-align: center;"></div><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
       </div>
+      <footer>
+        <p><a class="myButton" href="/2012/07/28/arduino">read more &raquo;</a></p>
+        <div>
+          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- id10t_top -->
+<ins class="adsbygoogle"
+style="display:block"
+data-ad-client="ca-pub-7586970907106458"
+data-ad-slot="1161208442"
+data-ad-format="auto"></ins>
+<script>
+    (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+        </div>
+      </footer>
       <hr>
     
 

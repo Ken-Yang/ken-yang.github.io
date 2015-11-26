@@ -223,7 +223,50 @@
       </nav>
 
       <div class="container">
-        <body>
+        <style>
+.myButton {
+    -moz-box-shadow:inset 0px 1px 0px 0px #ffffff;
+    -webkit-box-shadow:inset 0px 1px 0px 0px #ffffff;
+    box-shadow:inset 0px 1px 0px 0px #ffffff;
+    background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #f9f9f9), color-stop(1, #e9e9e9));
+    background:-moz-linear-gradient(top, #f9f9f9 5%, #e9e9e9 100%);
+    background:-webkit-linear-gradient(top, #f9f9f9 5%, #e9e9e9 100%);
+    background:-o-linear-gradient(top, #f9f9f9 5%, #e9e9e9 100%);
+    background:-ms-linear-gradient(top, #f9f9f9 5%, #e9e9e9 100%);
+    background:linear-gradient(to bottom, #f9f9f9 5%, #e9e9e9 100%);
+    filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#f9f9f9', endColorstr='#e9e9e9',GradientType=0);
+    background-color:#f9f9f9;
+    -moz-border-radius:6px;
+    -webkit-border-radius:6px;
+    border-radius:6px;
+    border:1px solid #dcdcdc;
+    display:inline-block;
+    cursor:pointer;
+    color:#666666;
+    font-family:Arial;
+    font-size:15px;
+    font-weight:bold;
+    padding:6px 24px;
+    text-decoration:none;
+    text-shadow:0px 1px 0px #ffffff;
+}
+.myButton:hover {
+    background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #e9e9e9), color-stop(1, #f9f9f9));
+    background:-moz-linear-gradient(top, #e9e9e9 5%, #f9f9f9 100%);
+    background:-webkit-linear-gradient(top, #e9e9e9 5%, #f9f9f9 100%);
+    background:-o-linear-gradient(top, #e9e9e9 5%, #f9f9f9 100%);
+    background:-ms-linear-gradient(top, #e9e9e9 5%, #f9f9f9 100%);
+    background:linear-gradient(to bottom, #e9e9e9 5%, #f9f9f9 100%);
+    filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#e9e9e9', endColorstr='#f9f9f9',GradientType=0);
+    background-color:#e9e9e9;
+}
+.myButton:active {
+    position:relative;
+    top:1px;
+}
+</style>
+
+<body>
     <div>
         <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 <!-- id10t_top -->
@@ -242,31 +285,85 @@ data-ad-format="auto"></ins>
       <h1><a style="color: #F22430" href="/2010/11/19/cssfooter">css固定footer</a></h1>
       <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
       <p class="author">
-        <span class="date">19 November 2010</span>
+      <div class="date">
+        <span>19 November 2010</span>
+      </div>
       </p>
-      <div class="content">
+      <div class="content" style="line-height: 28px;">
         介紹一個<a href="http://ryanfait.com/sticky-footer/">stick footer</a>，<br /><br />什麼是stick footer，<br /><br />可以打開<a href="http://www.techbang.com.tw/pages/t_mobile">T客邦的網站</a>，<br /><br />然後看到最下面那條，那條就是footer，<br /><br />通常都會在那塊放至版權的宣告、合作方式...等等之類的。<br /><br />通常我們html的設計方式大概如下<br /><pre class="brush: html">&lt;html&gt;<br /> &lt;head&gt;&lt;/head&gt;<br /> &lt;body&gt;<br />  &lt;div id="header"&gt;通常放置在網頁上的最上方區塊，通常是顯示LOGO或者登入、註冊連結之類的&lt;/div&gt;<br />  &lt;div id="wrapper"&gt;就是放置內文了&lt;/div&gt;<br />  &lt;div id="footer"&gt;就是版權宣告的區塊&lt;/div&gt;<br /> &lt;/body&gt;<br />&lt;/html&gt;<br /></pre><br />如果你沒有對footer作特殊的設計，那麼出來的版面可能會有點醜。<br /><br />如下圖，你會發現在版權宣告區的最下方會有一大塊白白的東西，還蠻醜的:<br /><br /><div class="separator" style="clear: both; text-align: center;"><a href="http://2.bp.blogspot.com/_6SxqtkJQECI/TOVhLqrmKJI/AAAAAAAAAMs/HnilRohKBsw/s1600/test.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="384" src="http://2.bp.blogspot.com/_6SxqtkJQECI/TOVhLqrmKJI/AAAAAAAAAMs/HnilRohKBsw/s640/test.png" width="640" /></a></div><br /><br /><br />如果你想要把下面那塊固定在最下方，如下圖，<br /><br /><div class="separator" style="clear: both; text-align: center;"><a href="http://2.bp.blogspot.com/_6SxqtkJQECI/TOViL16LVWI/AAAAAAAAAMw/Qx8YbXE2nHs/s1600/tes1t.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="384" src="http://2.bp.blogspot.com/_6SxqtkJQECI/TOViL16LVWI/AAAAAAAAAMw/Qx8YbXE2nHs/s640/tes1t.png" width="640" /></a></div><br /><br /><br /><br />就可以透過sticky footer來實作，<br /><br />至於css的code就去看<a href="http://ryanfait.com/sticky-footer/">http://ryanfait.com/sticky-footer/</a>這個站看<br /><br />因為太簡單了，就不PO教學了啦。<br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
       </div>
+      <footer>
+        <p><a class="myButton" href="/2010/11/19/cssfooter">read more &raquo;</a></p>
+        <div>
+          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- id10t_top -->
+<ins class="adsbygoogle"
+style="display:block"
+data-ad-client="ca-pub-7586970907106458"
+data-ad-slot="1161208442"
+data-ad-format="auto"></ins>
+<script>
+    (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+        </div>
+      </footer>
       <hr>
     
       <h1><a style="color: #F22430" href="/2010/11/08/apachebench-stress-testing">ApacheBench 進行stress testing</a></h1>
       <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
       <p class="author">
-        <span class="date">08 November 2010</span>
+      <div class="date">
+        <span>08 November 2010</span>
+      </div>
       </p>
-      <div class="content">
+      <div class="content" style="line-height: 28px;">
         <br />Apache提供了一個<b>免費</b>的工具(ApacheBench )來讓我們測試網站的承受壓力程度，<br /><br />不過ApacheBench 僅能提供對單一URL進行測試，但是真正的情況下，<br /><br />可能是同時很多個user連結不同的url，ApacheBench 並不能做到這樣的test<br /><br />但可以利用它來test會耗費較多效能的程式，來看看該網頁程式的承受程度。<br /><br />所以其實ApacheBench 是無法去模擬真實的狀況，沒辦法，It's free！<br /><br /><br /><br />ＯＫ，來開始說明吧。<br /><br />只要您有安裝Apache，那麼也一定會有ApacheBench ，<br /><br />就在<b>／</b><b>apache安裝目錄／bin<span class="Apple-style-span" style="font-weight: normal;"><b>／</b></span>ab.exe</b><br /><b><br /></b><br /><a href="http://httpd.apache.org/docs/2.2/programs/ab.html">我們可以到官網來看使用說明</a><br /><br />也可以直接下個command來看所有的使用參數說明<br /><br /><span class="Apple-style-span" style="background-color: #eeeeee;">&nbsp;&nbsp;ab.exe -h &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</span><br /><br />這裡就不作詳細的參數說明，大家可以到官網觀看。<br /><br /><br /><br />這裡舉個例子<br /><br /><span class="Apple-style-span" style="background-color: #eeeeee;">&nbsp;&nbsp; ab -n 100 &nbsp;http://www.google.com<span class="Apple-style-span" style="color: red;">/</span> &nbsp; &nbsp;</span><br /><br />注意: &nbsp;如果不是指定某page，一定要以<span class="Apple-style-span" style="color: red;">/</span>為結尾，如果是指定到page就不用了。<br /><br />參數-n意思是&nbsp;對該網站發出幾次request<br /><br />下了該command以後<br /><br />會response一長串的資訊<br /><br />我們只要看到幾個重要性的指標就好<br /><br />首先先看到兩個指標Complete requests、Failed requests<br /><br /><b>Complete requests &nbsp;：完成的request次數</b><br /><br /><b>Failed requests　　：失敗的次數</b><br /><br />如果失敗的次數太高，代表著該網站同一時間能承受的request數量不能太高。<br /><br />然後再看到<b>Connection Times：進行stress testing時的處理時間</b><br /><br /><br /><blockquote>Connection Times (ms)</blockquote><blockquote>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;min &nbsp;mean[+/-sd] median &nbsp; max</blockquote><blockquote>Connect: &nbsp; &nbsp; &nbsp; &nbsp;17 &nbsp; &nbsp; &nbsp;33 &nbsp;62.9 &nbsp; &nbsp; &nbsp;22 &nbsp; &nbsp; &nbsp; &nbsp;421</blockquote><blockquote>Processing: &nbsp; 20 &nbsp; &nbsp; &nbsp;40 &nbsp;86.1 &nbsp; &nbsp; &nbsp;25 &nbsp; &nbsp; &nbsp; &nbsp;688</blockquote><blockquote>Waiting: &nbsp; &nbsp; &nbsp; &nbsp; 19 &nbsp; &nbsp; &nbsp;35 &nbsp;71.8 &nbsp; &nbsp; &nbsp;25 &nbsp; &nbsp; &nbsp; &nbsp;688</blockquote><blockquote>Total: &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 39 &nbsp; &nbsp; &nbsp;73 104.9 &nbsp; &nbsp; 47 &nbsp; &nbsp; &nbsp; &nbsp;709</blockquote><br /><br />connect：是我們發出request，一直到server收到request的時間<br /><br />processing：是request後，一直到server response這期間的時間<br /><br />waiting：發出request以後，一直到收到response第一個byte的時間<br /><br />total：就是connect+processing<br /><br /><br />我們大概可以從<b>Complete requests</b>、<b>Failed requests</b>、<b>Connection Times</b> 這幾個指標來衡量一隻程式能承受的壓力程度。<br /><div><br /></div><br /><br /><br /><br /><br />
       </div>
+      <footer>
+        <p><a class="myButton" href="/2010/11/08/apachebench-stress-testing">read more &raquo;</a></p>
+        <div>
+          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- id10t_top -->
+<ins class="adsbygoogle"
+style="display:block"
+data-ad-client="ca-pub-7586970907106458"
+data-ad-slot="1161208442"
+data-ad-format="auto"></ins>
+<script>
+    (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+        </div>
+      </footer>
       <hr>
     
       <h1><a style="color: #F22430" href="/2010/11/06/apache">Apache 限制目錄瀏覽</a></h1>
       <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
       <p class="author">
-        <span class="date">06 November 2010</span>
+      <div class="date">
+        <span>06 November 2010</span>
+      </div>
       </p>
-      <div class="content">
+      <div class="content" style="line-height: 28px;">
         前天去看了社群網站<br /><br />片頭有講到哈佛裡面的有些宿舍網站的apache 沒有拿掉index，<br /><br />因此有目錄瀏覽的功能，這樣該目錄底下所有的檔案都會被使用者看見，<br /><br />那該怎麼關掉呢?<br /><br />打開httpd.conf<br /><br />找到這行<br /><b><br /></b><br /><b>Options Indexes FollowSymLinks</b><br /><br />然後把<b>Indexes </b>拿掉<br /><br />然後重開apache，該目錄底下的檔案就不會被顯示出來!<br /><br />且會response 403 Forbidden。<br /><br />如果你要有些特定目錄是允許使用者看見的，<br /><br />那麼就在該目錄底下，把index放上去即可。<br /><br />假設<br /><br />test1底下的/images是允許被看見的<br /><br />test2底下是不允許的<br /><br />那麼設置就如下<br /><br /><br /><br /><br /><pre class="brush: xml">&lt;Directory "D:/test1/images"&gt; <br />     .....<br />     # 可以被看見的<br />     Options Indexes FollowSymLinks<br />     .....<br />&lt;/Directory&gt;<br />&lt;Directory "D:/test2/images"&gt; <br />     .....<br />     # 不可以被看見的<br />     Options FollowSymLinks<br />     .....<br />&lt;/Directory&gt;<br /><br /></pre><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
       </div>
+      <footer>
+        <p><a class="myButton" href="/2010/11/06/apache">read more &raquo;</a></p>
+        <div>
+          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- id10t_top -->
+<ins class="adsbygoogle"
+style="display:block"
+data-ad-client="ca-pub-7586970907106458"
+data-ad-slot="1161208442"
+data-ad-format="auto"></ins>
+<script>
+    (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+        </div>
+      </footer>
       <hr>
     
 

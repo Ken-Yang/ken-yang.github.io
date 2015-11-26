@@ -223,7 +223,78 @@
       </nav>
 
       <div class="container">
-        
+        <style>
+/* Adjusted to give override background and text colour */
+.highlight pre, pre, .highlight .hll {
+    background-color: #49483E;
+    border: 1px solid #ccc;
+    padding: 6px 10px;
+    border-radius: 3px;
+    color: #FFFFFF;
+}
+/* Highlights taken from https://gist.github.com/asaaki/1007420  for Monokai theme */
+.c                 { color: #75715e }               /* Comment                     */
+.err               { color: #960050;
+                     background-color: #1e0010 }    /* Error                       */
+.k                 { color: #66d9ef }               /* Keyword                     */
+.l                 { color: #ae81ff }               /* Literal                     */
+.n                 { color: #f8f8f2 }               /* Name                        */
+.o                 { color: #f92672 }               /* Operator                    */
+.p                 { color: #f8f8f2 }               /* Punctuation                 */
+.cm                { color: #75715e }               /* Comment.Multiline           */
+.cp                { color: #75715e }               /* Comment.Preproc             */
+.c1                { color: #75715e }               /* Comment.Single              */
+.cs                { color: #75715e }               /* Comment.Special             */
+.ge                { font-style: italic }           /* Generic.Emph                */
+.gs                { font-weight: bold }            /* Generic.Strong              */
+.kc                { color: #66d9ef }               /* Keyword.Constant            */
+.kd                { color: #66d9ef }               /* Keyword.Declaration         */
+.kn                { color: #f92672 }               /* Keyword.Namespace           */
+.kp                { color: #66d9ef }               /* Keyword.Pseudo              */
+.kr                { color: #66d9ef }               /* Keyword.Reserved            */
+.kt                { color: #66d9ef }               /* Keyword.Type                */
+.ld                { color: #e6db74 }               /* Literal.Date                */
+.m                 { color: #ae81ff }               /* Literal.Number              */
+.s                 { color: #e6db74 }               /* Literal.String              */
+.na                { color: #a6e22e }               /* Name.Attribute              */
+.nb                { color: #f8f8f2 }               /* Name.Builtin                */
+.nc                { color: #a6e22e }               /* Name.Class                  */
+.no                { color: #66d9ef }               /* Name.Constant               */
+.nd                { color: #a6e22e }               /* Name.Decorator              */
+.ni                { color: #f8f8f2 }               /* Name.Entity                 */
+.ne                { color: #a6e22e }               /* Name.Exception              */
+.nf                { color: #a6e22e }               /* Name.Function               */
+.nl                { color: #f8f8f2 }               /* Name.Label                  */
+.nn                { color: #f8f8f2 }               /* Name.Namespace              */
+.nx                { color: #a6e22e }               /* Name.Other                  */
+.py                { color: #f8f8f2 }               /* Name.Property               */
+.nt                { color: #f92672 }               /* Name.Tag                    */
+.nv                { color: #f8f8f2 }               /* Name.Variable               */
+.ow                { color: #f92672 }               /* Operator.Word               */
+.w                 { color: #f8f8f2 }               /* Text.Whitespace             */
+.mf                { color: #ae81ff }               /* Literal.Number.Float        */
+.mh                { color: #ae81ff }               /* Literal.Number.Hex          */
+.mi                { color: #ae81ff }               /* Literal.Number.Integer      */
+.mo                { color: #ae81ff }               /* Literal.Number.Oct          */
+.sb                { color: #e6db74 }               /* Literal.String.Backtick     */
+.sc                { color: #e6db74 }               /* Literal.String.Char         */
+.sd                { color: #e6db74 }               /* Literal.String.Doc          */
+.s2                { color: #e6db74 }               /* Literal.String.Double       */
+.se                { color: #ae81ff }               /* Literal.String.Escape       */
+.sh                { color: #e6db74 }               /* Literal.String.Heredoc      */
+.si                { color: #e6db74 }               /* Literal.String.Interpol     */
+.sx                { color: #e6db74 }               /* Literal.String.Other        */
+.sr                { color: #e6db74 }               /* Literal.String.Regex        */
+.s1                { color: #e6db74 }               /* Literal.String.Single       */
+.ss                { color: #e6db74 }               /* Literal.String.Symbol       */
+.bp                { color: #f8f8f2 }               /* Name.Builtin.Pseudo         */
+.vc                { color: #f8f8f2 }               /* Name.Variable.Class         */
+.vg                { color: #f8f8f2 }               /* Name.Variable.Global        */
+.vi                { color: #f8f8f2 }               /* Name.Variable.Instance      */
+.il                { color: #ae81ff }               /* Literal.Number.Integer.Long */
+</style>
+
+
 <div class="page-header">
   <h1>Eclipse Classic with Java Server Page (JSP) </h1>
 </div>
@@ -257,7 +328,7 @@ data-ad-format="auto"></ins>
     <div class="date">
       <span>10 October 2010</span>
     </div>
-    <div class="content">
+    <div class="content" style="line-height: 28px;">
       因為有再寫GAE和android<br /><br />大家也都知道Eclipse分很多種版本<br /><br />1. Eclipse classic<br /><br />2. Eclipse IDEfor Java EE Developer<br /><br />3. Eclipse IDEfor Java Developer<br /><br />等等之類的!<br /><br />如果你想寫JSP、又想寫一般的java application。<br /><br />有些人會去下載兩種 eclipse（2、3）<br /><br />然後想寫ＪＳＰ，就開第二個，想寫java就開第三個。<br /><br />會不會太麻煩勒？<br /><br /><br /><br />我也遇到個問題，想在同個IDE環境中寫GAE和Android。<br /><br />該怎麼做呢？<br /><br />先去下載<a href="http://www.eclipse.org/downloads/packages/eclipse-classic-361/heliossr1">Eclipse classic</a><br /><br />解壓縮出來後，<br /><br />就去install new software（android、GAE)<br /><br />安裝這兩個的步驟就不說明了！<br /><br />直接跳過！<br /><br /><br /><br />完成後，當你建立一個.jsp檔案時，<br /><br />有沒有發現完全沒有highlight，也沒有content assist！！<br /><br />那是因為沒有裝pluging！<br /><br />那就把它裝起來吧！<br /><br />首先！<br /><br /><table align="center" cellpadding="0" cellspacing="0" class="tr-caption-container" style="margin-left: auto; margin-right: auto; text-align: center;"><tbody><tr><td style="text-align: center;"><a href="http://1.bp.blogspot.com/_6SxqtkJQECI/TLHcInoMV8I/AAAAAAAAAK0/U363joRV6-g/s1600/1.png" imageanchor="1" style="margin-left: auto; margin-right: auto;"><img border="0" height="280" src="http://1.bp.blogspot.com/_6SxqtkJQECI/TLHcInoMV8I/AAAAAAAAAK0/U363joRV6-g/s640/1.png" width="640" /></a></td></tr><tr><td class="tr-caption" style="text-align: center;">首先先點選Install New Software</td></tr></tbody></table><br /><table align="center" cellpadding="0" cellspacing="0" class="tr-caption-container" style="margin-left: auto; margin-right: auto; text-align: center;"><tbody><tr><td style="text-align: center;"><a href="http://3.bp.blogspot.com/_6SxqtkJQECI/TLHcJvu4i4I/AAAAAAAAAK4/5C29Yco1kl0/s1600/2.png" imageanchor="1" style="margin-left: auto; margin-right: auto;"><img border="0" height="452" src="http://3.bp.blogspot.com/_6SxqtkJQECI/TLHcJvu4i4I/AAAAAAAAAK4/5C29Yco1kl0/s640/2.png" width="640" /></a></td></tr><tr><td class="tr-caption" style="text-align: center;">接著選取圖中選取的項目，注意！版本不同，項目中的版本名稱會有所不同，此版本為HELIOS</td></tr></tbody></table><br /><table align="center" cellpadding="0" cellspacing="0" class="tr-caption-container" style="margin-left: auto; margin-right: auto; text-align: center;"><tbody><tr><td style="text-align: center;"><a href="http://1.bp.blogspot.com/_6SxqtkJQECI/TLHcKdDJ3WI/AAAAAAAAAK8/ZZ-wREFau18/s1600/3.png" imageanchor="1" style="margin-left: auto; margin-right: auto;"><img border="0" src="http://1.bp.blogspot.com/_6SxqtkJQECI/TLHcKdDJ3WI/AAAAAAAAAK8/ZZ-wREFau18/s1600/3.png" /></a></td></tr><tr><td class="tr-caption" style="text-align: center;">接著拉到最下面，點選Web, XML , Java EE Developement</td></tr></tbody></table><br /><br /><br /><br />點開以後，點選Web Page Editor就好！<br /><br />不要安裝其他的（要裝也是可以拉，你有需求的話）<br /><br />安裝完成以後，就會發現*.jsp檔案中的highlight和content assist都出現了！<br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
     </div>
 

@@ -223,7 +223,78 @@
       </nav>
 
       <div class="container">
-        
+        <style>
+/* Adjusted to give override background and text colour */
+.highlight pre, pre, .highlight .hll {
+    background-color: #49483E;
+    border: 1px solid #ccc;
+    padding: 6px 10px;
+    border-radius: 3px;
+    color: #FFFFFF;
+}
+/* Highlights taken from https://gist.github.com/asaaki/1007420  for Monokai theme */
+.c                 { color: #75715e }               /* Comment                     */
+.err               { color: #960050;
+                     background-color: #1e0010 }    /* Error                       */
+.k                 { color: #66d9ef }               /* Keyword                     */
+.l                 { color: #ae81ff }               /* Literal                     */
+.n                 { color: #f8f8f2 }               /* Name                        */
+.o                 { color: #f92672 }               /* Operator                    */
+.p                 { color: #f8f8f2 }               /* Punctuation                 */
+.cm                { color: #75715e }               /* Comment.Multiline           */
+.cp                { color: #75715e }               /* Comment.Preproc             */
+.c1                { color: #75715e }               /* Comment.Single              */
+.cs                { color: #75715e }               /* Comment.Special             */
+.ge                { font-style: italic }           /* Generic.Emph                */
+.gs                { font-weight: bold }            /* Generic.Strong              */
+.kc                { color: #66d9ef }               /* Keyword.Constant            */
+.kd                { color: #66d9ef }               /* Keyword.Declaration         */
+.kn                { color: #f92672 }               /* Keyword.Namespace           */
+.kp                { color: #66d9ef }               /* Keyword.Pseudo              */
+.kr                { color: #66d9ef }               /* Keyword.Reserved            */
+.kt                { color: #66d9ef }               /* Keyword.Type                */
+.ld                { color: #e6db74 }               /* Literal.Date                */
+.m                 { color: #ae81ff }               /* Literal.Number              */
+.s                 { color: #e6db74 }               /* Literal.String              */
+.na                { color: #a6e22e }               /* Name.Attribute              */
+.nb                { color: #f8f8f2 }               /* Name.Builtin                */
+.nc                { color: #a6e22e }               /* Name.Class                  */
+.no                { color: #66d9ef }               /* Name.Constant               */
+.nd                { color: #a6e22e }               /* Name.Decorator              */
+.ni                { color: #f8f8f2 }               /* Name.Entity                 */
+.ne                { color: #a6e22e }               /* Name.Exception              */
+.nf                { color: #a6e22e }               /* Name.Function               */
+.nl                { color: #f8f8f2 }               /* Name.Label                  */
+.nn                { color: #f8f8f2 }               /* Name.Namespace              */
+.nx                { color: #a6e22e }               /* Name.Other                  */
+.py                { color: #f8f8f2 }               /* Name.Property               */
+.nt                { color: #f92672 }               /* Name.Tag                    */
+.nv                { color: #f8f8f2 }               /* Name.Variable               */
+.ow                { color: #f92672 }               /* Operator.Word               */
+.w                 { color: #f8f8f2 }               /* Text.Whitespace             */
+.mf                { color: #ae81ff }               /* Literal.Number.Float        */
+.mh                { color: #ae81ff }               /* Literal.Number.Hex          */
+.mi                { color: #ae81ff }               /* Literal.Number.Integer      */
+.mo                { color: #ae81ff }               /* Literal.Number.Oct          */
+.sb                { color: #e6db74 }               /* Literal.String.Backtick     */
+.sc                { color: #e6db74 }               /* Literal.String.Char         */
+.sd                { color: #e6db74 }               /* Literal.String.Doc          */
+.s2                { color: #e6db74 }               /* Literal.String.Double       */
+.se                { color: #ae81ff }               /* Literal.String.Escape       */
+.sh                { color: #e6db74 }               /* Literal.String.Heredoc      */
+.si                { color: #e6db74 }               /* Literal.String.Interpol     */
+.sx                { color: #e6db74 }               /* Literal.String.Other        */
+.sr                { color: #e6db74 }               /* Literal.String.Regex        */
+.s1                { color: #e6db74 }               /* Literal.String.Single       */
+.ss                { color: #e6db74 }               /* Literal.String.Symbol       */
+.bp                { color: #f8f8f2 }               /* Name.Builtin.Pseudo         */
+.vc                { color: #f8f8f2 }               /* Name.Variable.Class         */
+.vg                { color: #f8f8f2 }               /* Name.Variable.Global        */
+.vi                { color: #f8f8f2 }               /* Name.Variable.Instance      */
+.il                { color: #ae81ff }               /* Literal.Number.Integer.Long */
+</style>
+
+
 <div class="page-header">
   <h1>Android tab activity </h1>
 </div>
@@ -257,7 +328,7 @@ data-ad-format="auto"></ins>
     <div class="date">
       <span>26 July 2010</span>
     </div>
-    <div class="content">
+    <div class="content" style="line-height: 28px;">
       今天來介紹一下Android tab activity好了!<br /><br />其實最近實作了不少東西，但一直沒有時間記錄下來<br /><br />Tab Actity倒是蠻久之前的，拿出來溫習一下吧!<br /><br />先新增一個class吧!<br /><br />但要繼承的是TabActivity!<br /><br />如果要做到Tab變換時，會有所動作時，<br /><br />要記得implements OnTabChangeListener<br /><br />如下:<br /><br /><pre class="brush: java">public class main extends TabActivity implements OnTabChangeListener {<br /><br />}<br /></pre><br /><br />接著就來部屬Tab的長相了!<br /><br />這邊先預設兩個Tab(tab1、tab2)，其實tab裡的東西可以重複使用，這裡只是為了清楚定義<br /><br />而宣告兩個!<br /><br /><br /><pre class="brush: xml">&lt;?xml version="1.0" encoding="utf-8"?&gt;<br />&lt;FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"<br /> android:orientation="vertical" android:layout_width="fill_parent"<br /> android:layout_height="fill_parent"&gt;<br /> &lt;LinearLayout <br />  android:id="@+id/tab1" <br />  android:layout_width="fill_parent"<br />  android:layout_height="fill_parent" <br />  androidrientation="vertical"<br />  android:background="#ffffff"<br /> &gt;<br /> &lt;/LinearLayout&gt;<br /><br /> &lt;LinearLayout <br />  android:id="@+id/tab2" <br />  android:layout_width="fill_parent"<br />  android:layout_height="fill_parent" <br />  androidrientation="vertical"<br />  android:background="#ff0000"<br /> &gt;<br /> &lt;/LinearLayout&gt;<br />&lt;/FrameLayout&gt;<br /></pre><br /><br />接著來撰寫主要的CODE了!<br /><br /><br /><pre class="brush: java"> <br />public class main extends TabActivity implements OnTabChangeListener {<br /> private TabHost tabHost;  //宣告一個TabHost，主機的意思。所有的TAB都要被加在裡面<br /> private TabSpec tab1, tab2;  //先宣告兩個tab<br /><br /> @Override<br /> public void onCreate(Bundle savedInstanceState) {<br />  super.onCreate(savedInstanceState);<br />  tabHost = this.getTabHost(); //先取得TabHost<br />  <br />  //利用Inflater來渲染版變<br />  LayoutInflater.from(this).inflate(R.layout.main,tabHost.getTabContentView(), true);<br />  <br />  //接著就利用newTabSpec新增一個TAB，setIndicator是設定TITLE和背景圖，setContent是設定這個TAB裡面的樣式<br />  tab1 = tabHost.newTabSpec("Id1")<br />      .setIndicator("Tab1",this.getResources().getDrawable(R.drawable.icon2))<br />      .setContent(R.id.tab1);<br />  //加入至tabHost<br />  tabHost.addTab(tab1);<br />  <br />  tab2 = tabHost.newTabSpec("Id2")<br />      .setIndicator("Tab2",this.getResources().getDrawable(R.drawable.icon))<br />      .setContent(R.id.tab2);<br />  tabHost.addTab(tab2);<br />  tabHost.setOnTabChangedListener(this);<br /> }<br /><br /> @Override<br /> public void onTabChanged(String tabId) {<br />  new AlertDialog.Builder(this).setTitle("Hint").setMessage(tabId)<br />    .setPositiveButton("OK", null).show();<br /> }<br />}<br /></pre><br /><br /><br /><br />基本上這樣就大功告成了!<br /><br /><br /><br /><br /><br /><br /><br />
     </div>
 

@@ -223,7 +223,78 @@
       </nav>
 
       <div class="container">
-        
+        <style>
+/* Adjusted to give override background and text colour */
+.highlight pre, pre, .highlight .hll {
+    background-color: #49483E;
+    border: 1px solid #ccc;
+    padding: 6px 10px;
+    border-radius: 3px;
+    color: #FFFFFF;
+}
+/* Highlights taken from https://gist.github.com/asaaki/1007420  for Monokai theme */
+.c                 { color: #75715e }               /* Comment                     */
+.err               { color: #960050;
+                     background-color: #1e0010 }    /* Error                       */
+.k                 { color: #66d9ef }               /* Keyword                     */
+.l                 { color: #ae81ff }               /* Literal                     */
+.n                 { color: #f8f8f2 }               /* Name                        */
+.o                 { color: #f92672 }               /* Operator                    */
+.p                 { color: #f8f8f2 }               /* Punctuation                 */
+.cm                { color: #75715e }               /* Comment.Multiline           */
+.cp                { color: #75715e }               /* Comment.Preproc             */
+.c1                { color: #75715e }               /* Comment.Single              */
+.cs                { color: #75715e }               /* Comment.Special             */
+.ge                { font-style: italic }           /* Generic.Emph                */
+.gs                { font-weight: bold }            /* Generic.Strong              */
+.kc                { color: #66d9ef }               /* Keyword.Constant            */
+.kd                { color: #66d9ef }               /* Keyword.Declaration         */
+.kn                { color: #f92672 }               /* Keyword.Namespace           */
+.kp                { color: #66d9ef }               /* Keyword.Pseudo              */
+.kr                { color: #66d9ef }               /* Keyword.Reserved            */
+.kt                { color: #66d9ef }               /* Keyword.Type                */
+.ld                { color: #e6db74 }               /* Literal.Date                */
+.m                 { color: #ae81ff }               /* Literal.Number              */
+.s                 { color: #e6db74 }               /* Literal.String              */
+.na                { color: #a6e22e }               /* Name.Attribute              */
+.nb                { color: #f8f8f2 }               /* Name.Builtin                */
+.nc                { color: #a6e22e }               /* Name.Class                  */
+.no                { color: #66d9ef }               /* Name.Constant               */
+.nd                { color: #a6e22e }               /* Name.Decorator              */
+.ni                { color: #f8f8f2 }               /* Name.Entity                 */
+.ne                { color: #a6e22e }               /* Name.Exception              */
+.nf                { color: #a6e22e }               /* Name.Function               */
+.nl                { color: #f8f8f2 }               /* Name.Label                  */
+.nn                { color: #f8f8f2 }               /* Name.Namespace              */
+.nx                { color: #a6e22e }               /* Name.Other                  */
+.py                { color: #f8f8f2 }               /* Name.Property               */
+.nt                { color: #f92672 }               /* Name.Tag                    */
+.nv                { color: #f8f8f2 }               /* Name.Variable               */
+.ow                { color: #f92672 }               /* Operator.Word               */
+.w                 { color: #f8f8f2 }               /* Text.Whitespace             */
+.mf                { color: #ae81ff }               /* Literal.Number.Float        */
+.mh                { color: #ae81ff }               /* Literal.Number.Hex          */
+.mi                { color: #ae81ff }               /* Literal.Number.Integer      */
+.mo                { color: #ae81ff }               /* Literal.Number.Oct          */
+.sb                { color: #e6db74 }               /* Literal.String.Backtick     */
+.sc                { color: #e6db74 }               /* Literal.String.Char         */
+.sd                { color: #e6db74 }               /* Literal.String.Doc          */
+.s2                { color: #e6db74 }               /* Literal.String.Double       */
+.se                { color: #ae81ff }               /* Literal.String.Escape       */
+.sh                { color: #e6db74 }               /* Literal.String.Heredoc      */
+.si                { color: #e6db74 }               /* Literal.String.Interpol     */
+.sx                { color: #e6db74 }               /* Literal.String.Other        */
+.sr                { color: #e6db74 }               /* Literal.String.Regex        */
+.s1                { color: #e6db74 }               /* Literal.String.Single       */
+.ss                { color: #e6db74 }               /* Literal.String.Symbol       */
+.bp                { color: #f8f8f2 }               /* Name.Builtin.Pseudo         */
+.vc                { color: #f8f8f2 }               /* Name.Variable.Class         */
+.vg                { color: #f8f8f2 }               /* Name.Variable.Global        */
+.vi                { color: #f8f8f2 }               /* Name.Variable.Instance      */
+.il                { color: #ae81ff }               /* Literal.Number.Integer.Long */
+</style>
+
+
 <div class="page-header">
   <h1>C++: Reference (參考) </h1>
 </div>
@@ -257,7 +328,7 @@ data-ad-format="auto"></ins>
     <div class="date">
       <span>17 November 2011</span>
     </div>
-    <div class="content">
+    <div class="content" style="line-height: 28px;">
       C++: Reference (參考)<br /><br /><a href="http://blog.kenyang.net/2011/11/c-pointer.html">前面一篇講了pointer</a>，這篇要講只有C++才有的reference，<br />C是沒有reference的，相較於pointer，reference顯得平易近人多了!<br />reference有個很大的特性，它的意思是<b>別名(alias)</b>的意思!<br />reference不像pointer記錄著變數的記憶體位置，它只是變數的<span class="Apple-style-span" style="font-size: large;"><b>別名</b></span>!<br /><br />下面用個簡單的例子講解：<br /><br /><pre class="brush: c++">int iValue = 2;<br />int &amp;iReference = iValue;<br />cout &lt;&lt; iReference &lt;&lt; endl;   //會印出2<br />cout &lt;&lt; &amp;iReference &lt;&lt; endl;  //會印出iValue 的記憶體位置<br />cout &lt;&lt; &amp;iValue &lt;&lt; endl;　　　 //會印出iValue本身自己的記憶體位置<br /></pre><br />上面的範例宣告了一個整數變數（iValue)，和一個參考變數（iReference) 第一行會先印出2，<br />因為前面說過參考只是別名， 意思就是說iReference是iValue的別名，<br />在白話一點iReference等於iValue，<br />所以第二行會印出iReference(也就是iValue)的記憶體位置，假設印出0x28ff44（每台電腦都不一定是這個值）<br />第三行就是印出iValue自己的記憶體位置，所以！！！它也會印出0x28ff44!! 跟第二行一樣!!&nbsp;(因為他們兩個相等咩)<br /><br />reference跟pointer不一樣的還有幾點，<br />reference一定要有初始值!!!<br />取值不需要加上*!!<br /><br />不過其實參考使用的時機大部分是用在函數時， 因為是別名，所以可以避免複製大量的變數到函數去(就算是pointer函數，也會複製)<br />下面是一個簡單的參考函數範例：<br /><br /><pre class="brush: c++">void fnReference(int &amp;iValue){<br />     iValue = iValue +1;<br />     cout &lt;&lt; iValue &lt;&lt; endl;        <br />}<br />main(){  <br />          <br />     int iValue = 2;<br />     fnReference(iValue);<br />     cout &lt;&lt; iValue &lt;&lt; endl;<br />        <br />     system("pause");<br />     return 0; <br />}<br /></pre><br /><br />在上面的範例我們宣告了一個函數（fnReference），其傳遞參數為參考型態（&amp;iValue）<br />在主程式中(main)，傳遞了單純的整數變數進去，<br />跟pointer不一樣，pointer是傳記憶體位置進去，<br />參考就直接傳普通的變數進去，<br />我們在函數中把傳遞進去的參數+1，然後印出，會印出3，<br />回到主程式以後，在印出iValue，一樣會印出3。<br />因為我們是傳遞參考，這就是call by reference！<br /><br />最後，reference還有一個跟pointer不一樣的點！<br />就是reference不能用來進行運算!!!!!<br /><br /><br /><br /><br /><br /><br />
     </div>
 

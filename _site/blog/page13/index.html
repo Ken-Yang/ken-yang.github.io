@@ -223,7 +223,50 @@
       </nav>
 
       <div class="container">
-        <body>
+        <style>
+.myButton {
+    -moz-box-shadow:inset 0px 1px 0px 0px #ffffff;
+    -webkit-box-shadow:inset 0px 1px 0px 0px #ffffff;
+    box-shadow:inset 0px 1px 0px 0px #ffffff;
+    background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #f9f9f9), color-stop(1, #e9e9e9));
+    background:-moz-linear-gradient(top, #f9f9f9 5%, #e9e9e9 100%);
+    background:-webkit-linear-gradient(top, #f9f9f9 5%, #e9e9e9 100%);
+    background:-o-linear-gradient(top, #f9f9f9 5%, #e9e9e9 100%);
+    background:-ms-linear-gradient(top, #f9f9f9 5%, #e9e9e9 100%);
+    background:linear-gradient(to bottom, #f9f9f9 5%, #e9e9e9 100%);
+    filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#f9f9f9', endColorstr='#e9e9e9',GradientType=0);
+    background-color:#f9f9f9;
+    -moz-border-radius:6px;
+    -webkit-border-radius:6px;
+    border-radius:6px;
+    border:1px solid #dcdcdc;
+    display:inline-block;
+    cursor:pointer;
+    color:#666666;
+    font-family:Arial;
+    font-size:15px;
+    font-weight:bold;
+    padding:6px 24px;
+    text-decoration:none;
+    text-shadow:0px 1px 0px #ffffff;
+}
+.myButton:hover {
+    background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #e9e9e9), color-stop(1, #f9f9f9));
+    background:-moz-linear-gradient(top, #e9e9e9 5%, #f9f9f9 100%);
+    background:-webkit-linear-gradient(top, #e9e9e9 5%, #f9f9f9 100%);
+    background:-o-linear-gradient(top, #e9e9e9 5%, #f9f9f9 100%);
+    background:-ms-linear-gradient(top, #e9e9e9 5%, #f9f9f9 100%);
+    background:linear-gradient(to bottom, #e9e9e9 5%, #f9f9f9 100%);
+    filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#e9e9e9', endColorstr='#f9f9f9',GradientType=0);
+    background-color:#e9e9e9;
+}
+.myButton:active {
+    position:relative;
+    top:1px;
+}
+</style>
+
+<body>
     <div>
         <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 <!-- id10t_top -->
@@ -242,31 +285,85 @@ data-ad-format="auto"></ins>
       <h1><a style="color: #F22430" href="/2013/03/03/raspberry-pi-os">Raspberry Pi 安裝OS</a></h1>
       <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
       <p class="author">
-        <span class="date">03 March 2013</span>
+      <div class="date">
+        <span>03 March 2013</span>
+      </div>
       </p>
-      <div class="content">
+      <div class="content" style="line-height: 28px;">
         <br />這篇的操作是以mac os為主，且是以command line進行安裝！<br /><br /><br /><br /><span style="font-size: large;">1. 首先先去<a href="http://www.raspberrypi.org/downloads/">官網下載</a>image下來</span><br />只有幾種可以選擇！<br />不過網路上也有很多customized的image可以下！（例如：android）<br /><br /><br /><br /><span style="font-size: large;">2. 下載以後先確認image的完整性吧！</span><br /><pre class="brush: java">shasum ~/Downloads/2012-12-16-wheezy-raspbian.zip<br /></pre>看看結果是不是跟官網的結果一樣！如果是的話，就沒問題拉！！<br />（我下載了好多次，超多次都下失敗...建議選個北美的載點）<br /><br /><br /><span style="font-size: large;">3. 接著解開下載的壓縮檔吧！</span><br /><pre class="brush: java">unzip ~/Downloads/2012-12-16-wheezy-raspbian.zip<br /></pre>解開以後會是一個.img檔案，<br />如：2013-02-09-wheezy-raspbian.img<br /><br /><br /><span style="font-size: large;">4. 查看自己的SD Card 在哪（記得插上sd card）</span><br /><pre class="brush: java">df -h<br /></pre>先看看自己的SD Card的Filesystem名稱！<br />我的是：/dev/disk1s1<br /><br /><br /><span style="font-size: large;">5. 先umount</span><br /><pre class="brush: java">sudo diskutil unmount /dev/disk1s1<br /></pre><br /><br /><span style="font-size: large;">6. 複製image到sd card中！</span><br />這裡很重要！<br />這裡可不是手動複製喔！！！！<br />要用到dd指令進行複製！<br />還有一點很重要！！記得是要寫在raw device上！<br />記得第四步驟嗎？你看到的filesystem name是<span style="color: red;">disk1s1</span>！<br />但我們要寫在<span style="color: red;">rdisk1</span>！別寫錯了！<br /><pre class="brush: java">sudo dd bs=1m if=2013-02-09-wheezy-raspbian.img of=/dev/rdisk1<br /></pre><br /><br /><br /><br />完成上述六步驟就完成安裝了！！！<br />把你的sd card插上pi吧！<br />插上電源以後，完成開機！<br />你在df一次，<br />你會發現很奇怪！<br />假設你是用8G的sd card，你會發現df以後，只有2g差不多而已！<br />那是因為你還沒有expand！由於手動expand很麻煩！<br />所以pi有內建的script可以幫你自動expand！<br />只要下下面的指令：<br /><pre class="brush: java">raspi-config<br /></pre>下了以後會看到下圖！請選第二個選項，並按下enter！<br />就完成expand了！<br />在df一次應該就可以看到正確的size！<br /><br /><br /><div class="separator" style="clear: both; text-align: center;"><a href="http://3.bp.blogspot.com/-WSgKkKjKhaI/UTNvkbMy0FI/AAAAAAAAElE/QqJHuxWD0E0/s1600/Screen+Shot+2013-02-27+at+11.29.41+AM.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="400" src="http://3.bp.blogspot.com/-WSgKkKjKhaI/UTNvkbMy0FI/AAAAAAAAElE/QqJHuxWD0E0/s640/Screen+Shot+2013-02-27+at+11.29.41+AM.png" width="640" /></a></div><br /><br /><br /><br /><br /><br /><br /><br />
       </div>
+      <footer>
+        <p><a class="myButton" href="/2013/03/03/raspberry-pi-os">read more &raquo;</a></p>
+        <div>
+          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- id10t_top -->
+<ins class="adsbygoogle"
+style="display:block"
+data-ad-client="ca-pub-7586970907106458"
+data-ad-slot="1161208442"
+data-ad-format="auto"></ins>
+<script>
+    (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+        </div>
+      </footer>
       <hr>
     
       <h1><a style="color: #F22430" href="/2013/02/22/android-facebook-login-v30">Android Facebook Login (v3.0)</a></h1>
       <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
       <p class="author">
-        <span class="date">22 February 2013</span>
+      <div class="date">
+        <span>22 February 2013</span>
+      </div>
       </p>
-      <div class="content">
+      <div class="content" style="line-height: 28px;">
         先前介紹過怎麼在Android上實作用Facebook login的機制（<a href="http://blog.kenyang.net/2012/01/androidfacebook-login-api.html">這裡</a>），<br />不過最近發現Facebook SDK改版了很久，先前我介紹的是2.0，<br />現在是3.0了，原本想說是小幅變動，應該不用再寫篇文章來介紹！<br />但看了一下<a href="https://developers.facebook.com/docs/tutorials/androidsdk/3.0/upgrading-from-2.0-to-3.0/">Change log</a>，發現變很大！<br /><br />而且看了一下Facebook SDK的source code，也發現大幅變更了！<br />此外，現在Facebook SDK有import&nbsp;android-support-v4.jar，<br />原因是因為在Android 3.x以上的機器會使用到Fragments......<br />為了backward compatibility，向下支援2.x，所以會import.....<br />可想而知，也多了很多東西，<br />先前2.0我在用的時候，也頂多6個Class....<br />現在是多了更多，且好多個package，甚至多了很多style.xml！<br />所以如果現在用我之前的方法，直接把Class拉進去我們的project，<br />那麼一定會出現很多error，因為現在不只要拉code了，還要拉很多圖片，style.xml！！<br />所以還是用最正統的方法吧！直接include近來！<br /><br /><br /><h2><b><span style="font-size: large;">1. 首先先去下載SDK (<a href="https://developers.facebook.com/android/">載點</a>）</span></b></h2><br /><b><span style="font-size: large;">2. 解壓縮</span></b><br /><br /><br /><span style="font-size: large;"><b>3. import Facebook SDK source code進來</b></span><br />import進來以後會看到很多個project，基本上請勾選FacebookSDK就好！<br />就是下圖中的第二個！<br /><br /><div class="separator" style="clear: both; text-align: center;"><a href="http://4.bp.blogspot.com/-K_tc8zpI-Fw/UScSM-weCDI/AAAAAAAAEjs/G63E0RlqPzM/s1600/Screen+Shot+2013-02-22+at+2.40.47+PM.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="568" src="http://4.bp.blogspot.com/-K_tc8zpI-Fw/UScSM-weCDI/AAAAAAAAEjs/G63E0RlqPzM/s640/Screen+Shot+2013-02-22+at+2.40.47+PM.png" width="640" /></a></div><br /><br /><br /><span style="font-size: large;"><b>4. 建立一個新的Project</b></span><br />建好以後在Project上點選右鍵-&gt;Properties-&gt;Android，<br />會看到下圖，<br />請在Library的欄位點選Add按鈕，<br /><div class="separator" style="clear: both; text-align: center;"><a href="http://2.bp.blogspot.com/-GyvhXdxRhdg/UScS5UbcfEI/AAAAAAAAEj4/eyDsqqUi3mk/s1600/Screen+Shot+2013-02-22+at+2.44.12+PM.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="400" src="http://2.bp.blogspot.com/-GyvhXdxRhdg/UScS5UbcfEI/AAAAAAAAEj4/eyDsqqUi3mk/s400/Screen+Shot+2013-02-22+at+2.44.12+PM.png" width="373" /></a></div><br /><br />按完以後，會彈出一個視窗，應該會有一個Project供你選擇，<br />就是下圖中的FacebookSDK，請選擇該Project．<br /><br /><div class="separator" style="clear: both; text-align: center;"><a href="http://2.bp.blogspot.com/-JYv6LYphvFA/UScS5SPRMdI/AAAAAAAAEj0/kWmMfbgQ3zQ/s1600/Screen+Shot+2013-02-22+at+2.44.29+PM.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="400" src="http://2.bp.blogspot.com/-JYv6LYphvFA/UScS5SPRMdI/AAAAAAAAEj0/kWmMfbgQ3zQ/s400/Screen+Shot+2013-02-22+at+2.44.29+PM.png" width="373" /></a></div><br />選完以後就完成import進來了，就可以準備來寫code，<br />但寫code之前，還要做一些必要的設定...<br /><br /><br /><span style="font-size: large;"><b>5. &nbsp;產生hashkey </b></span><br />產生的方法，在<a href="http://blog.kenyang.net/2012/01/androidfacebook-login-api.html">前一篇文章</a>就講過！<br />詳細的參數說明可以看那邊！<br />基本上你複製下面的指令即可完成！(only on mac)<br /><pre class="brush: java">keytool -exportcert -alias androiddebugkey -keystore ~/.android/debug.keystore | openssl sha1 -binary | openssl base64<br /></pre>下了這行指令以後，他會要你敲密碼！<br />基本上不要敲，直接按下enter即可！<br />產生key以後，把key複製下來！<br /><br />然後去到你的facebook app後台(https://developers.facebook.com/apps)<br />然後Create new app,<br />Create完成以後，會看到下圖！<br />請看到下圖中的三個橘色框框，<br />第一個是App ID，請一定要記起來！<br />第二個是key hash，把你剛剛產生的hashkey貼上去吧！<br />第三個是Facebook Login（以前沒有），請把它enable吧！<br /><br /><br /><div class="separator" style="clear: both; text-align: center;"><a href="http://1.bp.blogspot.com/-wBFq5eaJMUI/UScV7_X-4YI/AAAAAAAAEkg/JE5bZXQahG4/s1600/Screen+Shot+2013-02-22+at+2.55.10+PM.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="640" src="http://1.bp.blogspot.com/-wBFq5eaJMUI/UScV7_X-4YI/AAAAAAAAEkg/JE5bZXQahG4/s640/Screen+Shot+2013-02-22+at+2.55.10+PM.png" width="635" /></a></div><br /><br /><br /><b><span style="font-size: large;">6. 設定</span></b><br />首先先打開/res/values/strings.xml！<br />然後新增一個element，叫做app_id！<br />如下：<br /><pre class="brush: xml">&lt;?xml version="1.0" encoding="utf-8"?&gt;<br />&lt;resources&gt;<br />	&lt;string name="app_id"&gt;438511916228708&lt;/string&gt; <br />&lt;/resources&gt;<br /></pre><br />接著打開AndroidManifest.xml，<br />新增一個permission！如下：<br /><pre class="brush: xml">&lt;uses-permission android:name="android.permission.INTERNET"/&gt;<br /></pre><br />然後在新增一個activity，如下<br /><pre class="brush: xml">&lt;activity android:name="com.facebook.LoginActivity"/&gt;<br /></pre><br />新增一個meta-data，如下<br /><pre class="brush: xml">&lt;meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/app_id"/&gt;<br /></pre><br />完成上述三個步驟以後就可以來寫code了！<br /><br /><br /><br /><b><span style="font-size: large;">7. 開始寫code</span></b><br /><br />首先先在onActivityResult進行丟丟登入結果的動作，<br />如下：<br /><pre class="brush: java">	@Override<br />	protected void onActivityResult(int requestCode, int resultCode, Intent data) {<br />		super.onActivityResult(requestCode, resultCode, data);<br />		Session.getActiveSession().onActivityResult(this, requestCode,resultCode, data);<br />	}<br /></pre>要寫在onActivityResult的原因是因為，你要用Facebook login時，都會跳到另一個Activity（如上的LoginActivity）進行輸入email &amp; pwd！<br />輸入完以後，才會回到我們自己的Activity！<br /><br />接下來要寫呼叫Login的，<br />你可以直接寫在onCreate的地方，就是一開這個app就進行fb登入！<br />如下：<br /><pre class="brush: java">	@Override<br />	protected void onCreate(Bundle savedInstanceState) {<br />		super.onCreate(savedInstanceState);<br />		setContentView(R.layout.activity_main);<br />		Session.openActiveSession(this, true, new Session.StatusCallback() {<br />			@Override<br />			public void call(Session session, SessionState state,Exception exception) {<br />				if (session.isOpened()) {<br />					Log.e("kenyang",session.getAccessToken()); // get token<br />				}<br />			}<br />		});<br />	}<br /></pre><br /><br />只要有取得token，這樣就完成登入了！！<br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
       </div>
+      <footer>
+        <p><a class="myButton" href="/2013/02/22/android-facebook-login-v30">read more &raquo;</a></p>
+        <div>
+          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- id10t_top -->
+<ins class="adsbygoogle"
+style="display:block"
+data-ad-client="ca-pub-7586970907106458"
+data-ad-slot="1161208442"
+data-ad-format="auto"></ins>
+<script>
+    (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+        </div>
+      </footer>
       <hr>
     
       <h1><a style="color: #F22430" href="/2013/01/08/arduino-ultrasonic-sensor">結合Arduino + ultrasonic sensor偵測距離</a></h1>
       <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
       <p class="author">
-        <span class="date">08 January 2013</span>
+      <div class="date">
+        <span>08 January 2013</span>
+      </div>
       </p>
-      <div class="content">
+      <div class="content" style="line-height: 28px;">
         Arduino有很多有趣的擴充shield，<br /><div>像是ethernet, wifi, bluetooth, 溫度測量, 溼度測量等等之類的！</div><div><br /></div><div>這篇要講的是整合ultrasonic sensor，</div><div>透過這顆sensor去算出與前面障礙物的距離，</div><div>他的原理就是透過聲波去偵測，</div><div>發出一段聲波，然後根據<b>回傳回來的時間</b>來判斷出距離！</div><div><br /></div><div><br /></div><div>我使用的ultrasonic sensor是HC-SR04這顆，</div><div>這顆有4隻pin腳，</div><div>分別為</div><div><ul><li>VCC</li><li>Trig</li><li>Echo</li><li>GND</li></ul>VCC和GND就不需要多講了！就是正電與負電！自己接上去吧！</div><div>要講的是Trig和Echo這兩隻pin腳！</div><div>Trig的作用在於發出聲波，</div><div>Echo的作用就是取得回音的時間，</div><div>所以可以知道Trig作為output，</div><div>Echo作為Input！</div><div><br /></div><div>然後把這兩隻pin腳也接在arduino上去，</div><div>在我的範例中，我是把Trig接在pin4，</div><div>Echo接在pin3，</div><div><br /></div><div class="separator" style="clear: both; text-align: center;"><a href="http://1.bp.blogspot.com/-fISl2ety5_s/UOvpNtL7GVI/AAAAAAAAEik/0bQBDCRyG9Q/s1600/IMG_20130108_173350.jpg" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="480" src="http://1.bp.blogspot.com/-fISl2ety5_s/UOvpNtL7GVI/AAAAAAAAEik/0bQBDCRyG9Q/s640/IMG_20130108_173350.jpg" width="640" /></a></div><div><br /></div><div><br /></div><div><br /></div><div><br /></div><div><br /></div><div>下面為sample！</div><div><pre class="brush: java">int iOutputPin = 4; // trig<br />int iInputPin = 3;  // echo<br />long lCm;<br />void setup(){<br />  <br />  Serial.begin(9600);<br />  pinMode(iInputPin,INPUT);<br />  pinMode(iOutputPin,OUTPUT);<br />}<br /><br />void loop(){<br />  <br />  digitalWrite(iOutputPin, HIGH);<br />  delayMicroseconds(10); // 意思是發出訊號10microsecond，10是根據一個公式得出的．<br />  digitalWrite(iOutputPin, LOW);  <br />  <br />  int distance = pulseIn(iInputPin, HIGH);  <br />  if (distance &lt; 0) lCm = 0;<br />  else lCm = distance / 58; // 除以58也是根據一個公式而來，除58單位就會變成cm<br />  Serial.print(lCm);<br />  Serial.print("cm ");<br />  Serial.println("");<br />  delay(500);  <br />}<br /></pre></div><div><br /><br /><br /><br />deploy上去以後，打開console，應該可以看到下圖． <br />ＰＳ：如果你的ultrasonic senso只有三根pin腳...那就代表你的trig和echo都為同一隻，<br />只要在code中互換pinMode就一樣可以正常使用了！<br /><br /><div class="separator" style="clear: both; text-align: center;"><a href="http://1.bp.blogspot.com/-WK0qGO3aqHM/UOvr6T-OV8I/AAAAAAAAEjA/l5dmyUNw_WI/s1600/Screen+Shot+2013-01-08+at+5.51.52+PM.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="454" src="http://1.bp.blogspot.com/-WK0qGO3aqHM/UOvr6T-OV8I/AAAAAAAAEjA/l5dmyUNw_WI/s640/Screen+Shot+2013-01-08+at+5.51.52+PM.png" width="640" /></a></div><br /></div>
       </div>
+      <footer>
+        <p><a class="myButton" href="/2013/01/08/arduino-ultrasonic-sensor">read more &raquo;</a></p>
+        <div>
+          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- id10t_top -->
+<ins class="adsbygoogle"
+style="display:block"
+data-ad-client="ca-pub-7586970907106458"
+data-ad-slot="1161208442"
+data-ad-format="auto"></ins>
+<script>
+    (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+        </div>
+      </footer>
       <hr>
     
 

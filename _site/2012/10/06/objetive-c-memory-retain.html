@@ -223,7 +223,78 @@
       </nav>
 
       <div class="container">
-        
+        <style>
+/* Adjusted to give override background and text colour */
+.highlight pre, pre, .highlight .hll {
+    background-color: #49483E;
+    border: 1px solid #ccc;
+    padding: 6px 10px;
+    border-radius: 3px;
+    color: #FFFFFF;
+}
+/* Highlights taken from https://gist.github.com/asaaki/1007420  for Monokai theme */
+.c                 { color: #75715e }               /* Comment                     */
+.err               { color: #960050;
+                     background-color: #1e0010 }    /* Error                       */
+.k                 { color: #66d9ef }               /* Keyword                     */
+.l                 { color: #ae81ff }               /* Literal                     */
+.n                 { color: #f8f8f2 }               /* Name                        */
+.o                 { color: #f92672 }               /* Operator                    */
+.p                 { color: #f8f8f2 }               /* Punctuation                 */
+.cm                { color: #75715e }               /* Comment.Multiline           */
+.cp                { color: #75715e }               /* Comment.Preproc             */
+.c1                { color: #75715e }               /* Comment.Single              */
+.cs                { color: #75715e }               /* Comment.Special             */
+.ge                { font-style: italic }           /* Generic.Emph                */
+.gs                { font-weight: bold }            /* Generic.Strong              */
+.kc                { color: #66d9ef }               /* Keyword.Constant            */
+.kd                { color: #66d9ef }               /* Keyword.Declaration         */
+.kn                { color: #f92672 }               /* Keyword.Namespace           */
+.kp                { color: #66d9ef }               /* Keyword.Pseudo              */
+.kr                { color: #66d9ef }               /* Keyword.Reserved            */
+.kt                { color: #66d9ef }               /* Keyword.Type                */
+.ld                { color: #e6db74 }               /* Literal.Date                */
+.m                 { color: #ae81ff }               /* Literal.Number              */
+.s                 { color: #e6db74 }               /* Literal.String              */
+.na                { color: #a6e22e }               /* Name.Attribute              */
+.nb                { color: #f8f8f2 }               /* Name.Builtin                */
+.nc                { color: #a6e22e }               /* Name.Class                  */
+.no                { color: #66d9ef }               /* Name.Constant               */
+.nd                { color: #a6e22e }               /* Name.Decorator              */
+.ni                { color: #f8f8f2 }               /* Name.Entity                 */
+.ne                { color: #a6e22e }               /* Name.Exception              */
+.nf                { color: #a6e22e }               /* Name.Function               */
+.nl                { color: #f8f8f2 }               /* Name.Label                  */
+.nn                { color: #f8f8f2 }               /* Name.Namespace              */
+.nx                { color: #a6e22e }               /* Name.Other                  */
+.py                { color: #f8f8f2 }               /* Name.Property               */
+.nt                { color: #f92672 }               /* Name.Tag                    */
+.nv                { color: #f8f8f2 }               /* Name.Variable               */
+.ow                { color: #f92672 }               /* Operator.Word               */
+.w                 { color: #f8f8f2 }               /* Text.Whitespace             */
+.mf                { color: #ae81ff }               /* Literal.Number.Float        */
+.mh                { color: #ae81ff }               /* Literal.Number.Hex          */
+.mi                { color: #ae81ff }               /* Literal.Number.Integer      */
+.mo                { color: #ae81ff }               /* Literal.Number.Oct          */
+.sb                { color: #e6db74 }               /* Literal.String.Backtick     */
+.sc                { color: #e6db74 }               /* Literal.String.Char         */
+.sd                { color: #e6db74 }               /* Literal.String.Doc          */
+.s2                { color: #e6db74 }               /* Literal.String.Double       */
+.se                { color: #ae81ff }               /* Literal.String.Escape       */
+.sh                { color: #e6db74 }               /* Literal.String.Heredoc      */
+.si                { color: #e6db74 }               /* Literal.String.Interpol     */
+.sx                { color: #e6db74 }               /* Literal.String.Other        */
+.sr                { color: #e6db74 }               /* Literal.String.Regex        */
+.s1                { color: #e6db74 }               /* Literal.String.Single       */
+.ss                { color: #e6db74 }               /* Literal.String.Symbol       */
+.bp                { color: #f8f8f2 }               /* Name.Builtin.Pseudo         */
+.vc                { color: #f8f8f2 }               /* Name.Variable.Class         */
+.vg                { color: #f8f8f2 }               /* Name.Variable.Global        */
+.vi                { color: #f8f8f2 }               /* Name.Variable.Instance      */
+.il                { color: #ae81ff }               /* Literal.Number.Integer.Long */
+</style>
+
+
 <div class="page-header">
   <h1>Objetive-C memory (retain) </h1>
 </div>
@@ -257,7 +328,7 @@ data-ad-format="auto"></ins>
     <div class="date">
       <span>06 October 2012</span>
     </div>
-    <div class="content">
+    <div class="content" style="line-height: 28px;">
       恩，最近在寫Objective-C，<br />遇到了memory的一些問題，<br />也好險我有個好mentor可以問！<br /><br /><br />從Java跳過來這讓我有點點小混淆！<br />還記得我先前講過<a href="http://blog.kenyang.net/2012/01/java.html">Java複製物件</a>的問題嗎？<br />在Java中直接將instance化的物件，直接給予另一個物件！<br />這樣的情形中，這兩個物件是指向同個物件的！<br />假設我有兩個物件，分別為Ａ、Ｂ！<br />如果Ａ裡面的attribute變了！那麼Ｂ也會變！<br /><br />當然這樣的情形在Objective C也是一樣的！<br />但是Objective C有個method，就是retain!<br />還有一個特殊的機制叫做reference counting<br />retain也是把原本的物件給另一個物件！<br />這兩個物件也是指向同一個物件！<br />而reference counting就是當這個物件被copy或者retain時，<br />他的reference count都會加1! <br />（retain 是原有物件會+1，copy是新的物件+1，copy就類似java的clone）<br /><br /><br />但我一開始遇到了一個寫法上的confused，一開始一直在想這兩種差別！<br />code如下<br /><pre class="brush: c">    Book *b1 = [[Book alloc]init]; // retain count=1沒問題<br />    Book *b2 = b1; // retain count還是1，這我大概理解，就是把b2指向b1<br />    Book *b3 = [b1 retain]; // retain count變2<br />    [b1 setVal:20];  // 如果把b1物件中的value設值20，b2, b3也都會變<br /><br /></pre><br />這時候如果把b2, b3的Val都印出來，也都會是20！<br />那麼我就在思考了這兩種的差異！<br /><br />最後也大概知道了！<br />因為b2和b1算是共享同個物件！<br />如果這時候developer把[b1 release]掉！<br />b2也不能使用了！！<br />很容易發生bad access的問題！<br />所以大部份時候都要使用retain來進行物件的存取！（目前還想不到使用b2的方法用途）<br />以避免原有物件被release出來以後，現有的新物件才不會crash掉！<br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
     </div>
 

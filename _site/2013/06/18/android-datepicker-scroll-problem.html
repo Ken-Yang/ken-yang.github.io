@@ -223,7 +223,78 @@
       </nav>
 
       <div class="container">
-        
+        <style>
+/* Adjusted to give override background and text colour */
+.highlight pre, pre, .highlight .hll {
+    background-color: #49483E;
+    border: 1px solid #ccc;
+    padding: 6px 10px;
+    border-radius: 3px;
+    color: #FFFFFF;
+}
+/* Highlights taken from https://gist.github.com/asaaki/1007420  for Monokai theme */
+.c                 { color: #75715e }               /* Comment                     */
+.err               { color: #960050;
+                     background-color: #1e0010 }    /* Error                       */
+.k                 { color: #66d9ef }               /* Keyword                     */
+.l                 { color: #ae81ff }               /* Literal                     */
+.n                 { color: #f8f8f2 }               /* Name                        */
+.o                 { color: #f92672 }               /* Operator                    */
+.p                 { color: #f8f8f2 }               /* Punctuation                 */
+.cm                { color: #75715e }               /* Comment.Multiline           */
+.cp                { color: #75715e }               /* Comment.Preproc             */
+.c1                { color: #75715e }               /* Comment.Single              */
+.cs                { color: #75715e }               /* Comment.Special             */
+.ge                { font-style: italic }           /* Generic.Emph                */
+.gs                { font-weight: bold }            /* Generic.Strong              */
+.kc                { color: #66d9ef }               /* Keyword.Constant            */
+.kd                { color: #66d9ef }               /* Keyword.Declaration         */
+.kn                { color: #f92672 }               /* Keyword.Namespace           */
+.kp                { color: #66d9ef }               /* Keyword.Pseudo              */
+.kr                { color: #66d9ef }               /* Keyword.Reserved            */
+.kt                { color: #66d9ef }               /* Keyword.Type                */
+.ld                { color: #e6db74 }               /* Literal.Date                */
+.m                 { color: #ae81ff }               /* Literal.Number              */
+.s                 { color: #e6db74 }               /* Literal.String              */
+.na                { color: #a6e22e }               /* Name.Attribute              */
+.nb                { color: #f8f8f2 }               /* Name.Builtin                */
+.nc                { color: #a6e22e }               /* Name.Class                  */
+.no                { color: #66d9ef }               /* Name.Constant               */
+.nd                { color: #a6e22e }               /* Name.Decorator              */
+.ni                { color: #f8f8f2 }               /* Name.Entity                 */
+.ne                { color: #a6e22e }               /* Name.Exception              */
+.nf                { color: #a6e22e }               /* Name.Function               */
+.nl                { color: #f8f8f2 }               /* Name.Label                  */
+.nn                { color: #f8f8f2 }               /* Name.Namespace              */
+.nx                { color: #a6e22e }               /* Name.Other                  */
+.py                { color: #f8f8f2 }               /* Name.Property               */
+.nt                { color: #f92672 }               /* Name.Tag                    */
+.nv                { color: #f8f8f2 }               /* Name.Variable               */
+.ow                { color: #f92672 }               /* Operator.Word               */
+.w                 { color: #f8f8f2 }               /* Text.Whitespace             */
+.mf                { color: #ae81ff }               /* Literal.Number.Float        */
+.mh                { color: #ae81ff }               /* Literal.Number.Hex          */
+.mi                { color: #ae81ff }               /* Literal.Number.Integer      */
+.mo                { color: #ae81ff }               /* Literal.Number.Oct          */
+.sb                { color: #e6db74 }               /* Literal.String.Backtick     */
+.sc                { color: #e6db74 }               /* Literal.String.Char         */
+.sd                { color: #e6db74 }               /* Literal.String.Doc          */
+.s2                { color: #e6db74 }               /* Literal.String.Double       */
+.se                { color: #ae81ff }               /* Literal.String.Escape       */
+.sh                { color: #e6db74 }               /* Literal.String.Heredoc      */
+.si                { color: #e6db74 }               /* Literal.String.Interpol     */
+.sx                { color: #e6db74 }               /* Literal.String.Other        */
+.sr                { color: #e6db74 }               /* Literal.String.Regex        */
+.s1                { color: #e6db74 }               /* Literal.String.Single       */
+.ss                { color: #e6db74 }               /* Literal.String.Symbol       */
+.bp                { color: #f8f8f2 }               /* Name.Builtin.Pseudo         */
+.vc                { color: #f8f8f2 }               /* Name.Variable.Class         */
+.vg                { color: #f8f8f2 }               /* Name.Variable.Global        */
+.vi                { color: #f8f8f2 }               /* Name.Variable.Instance      */
+.il                { color: #ae81ff }               /* Literal.Number.Integer.Long */
+</style>
+
+
 <div class="page-header">
   <h1>Android DatePicker scroll problem. </h1>
 </div>
@@ -257,7 +328,7 @@ data-ad-format="auto"></ins>
     <div class="date">
       <span>18 June 2013</span>
     </div>
-    <div class="content">
+    <div class="content" style="line-height: 28px;">
       在Android 4.0.4機器上的&nbsp;DatePicker<b><span style="font-size: large;">一定</span></b>會發生scroll的小問題，<br />（但是4.2.3不會發生！而我推測或許3.x以上～4.0.4以下的device都會發生）<br /><br /><br />如下圖，<br />你會發現經過scrolling以後，在年/月/日的三個欄位，位置都怪怪的<br />原因是因為在做position時，那個event是被parent截取到！<br />但理應上應該是DatePicker截取到才對！<br /><br /><div class="separator" style="clear: both; text-align: center;"><a href="http://4.bp.blogspot.com/-2NithchKCw8/Ub_SFw-EClI/AAAAAAAAEy4/BDCPKYAElb8/s1600/Screenshot_2013-06-18-11-18-47.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="640" src="http://4.bp.blogspot.com/-2NithchKCw8/Ub_SFw-EClI/AAAAAAAAEy4/BDCPKYAElb8/s640/Screenshot_2013-06-18-11-18-47.png" width="360" /></a></div><br /><br />所以workaround就是，自己定義一個class，以及extend DatePicker！<br />然後去取消parent截取event！<br /><br /><pre class="brush: java">public class CustomDatePicker extends DatePicker {<br />    <br />    public CustomDatePicker(Context context, AttributeSet attrs) {<br />        super(context, attrs);<br />    }<br /><br />    public CustomDatePicker(Context context) {<br />        super(context);<br />    }<br /><br />    @SuppressLint("NewApi")<br />    @Override<br />    public boolean onInterceptTouchEvent(MotionEvent ev) {<br />        /*<br />         * Prevent parent component intercept touch event.<br />         * because only happened on Android 3.x ~ 4.0.4, so we need to check the current os version.<br />         */<br />        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB){<br />            if (ev.getActionMasked() == MotionEvent.ACTION_DOWN) {<br />                ViewParent p = getParent();<br />                if (p != null){<br />                    // disallow its parent intercept touch event.<br />                    p.requestDisallowInterceptTouchEvent(true);<br />                }<br />            }<br />        }<br /><br />        return false;<br />    }<br /><br />}<br /></pre><br /><br />而使用方式就是在你的layout.xml中指定我們上方定義的class，<br /><pre class="brush: xml">&lt;view android:id="@+id/share_expires" <br />     android:layout_width="fill_parent" <br />     android:visibility="gone"<br />     android:layout_height="wrap_content" <br />     class="net.kenyang.util.CustomDatePicker" &gt;<br /> &lt;/view&gt;  <br /></pre><br /><br />這樣就能解決scrolling的問題！<br /><br />
     </div>
 

@@ -223,7 +223,78 @@
       </nav>
 
       <div class="container">
-        
+        <style>
+/* Adjusted to give override background and text colour */
+.highlight pre, pre, .highlight .hll {
+    background-color: #49483E;
+    border: 1px solid #ccc;
+    padding: 6px 10px;
+    border-radius: 3px;
+    color: #FFFFFF;
+}
+/* Highlights taken from https://gist.github.com/asaaki/1007420  for Monokai theme */
+.c                 { color: #75715e }               /* Comment                     */
+.err               { color: #960050;
+                     background-color: #1e0010 }    /* Error                       */
+.k                 { color: #66d9ef }               /* Keyword                     */
+.l                 { color: #ae81ff }               /* Literal                     */
+.n                 { color: #f8f8f2 }               /* Name                        */
+.o                 { color: #f92672 }               /* Operator                    */
+.p                 { color: #f8f8f2 }               /* Punctuation                 */
+.cm                { color: #75715e }               /* Comment.Multiline           */
+.cp                { color: #75715e }               /* Comment.Preproc             */
+.c1                { color: #75715e }               /* Comment.Single              */
+.cs                { color: #75715e }               /* Comment.Special             */
+.ge                { font-style: italic }           /* Generic.Emph                */
+.gs                { font-weight: bold }            /* Generic.Strong              */
+.kc                { color: #66d9ef }               /* Keyword.Constant            */
+.kd                { color: #66d9ef }               /* Keyword.Declaration         */
+.kn                { color: #f92672 }               /* Keyword.Namespace           */
+.kp                { color: #66d9ef }               /* Keyword.Pseudo              */
+.kr                { color: #66d9ef }               /* Keyword.Reserved            */
+.kt                { color: #66d9ef }               /* Keyword.Type                */
+.ld                { color: #e6db74 }               /* Literal.Date                */
+.m                 { color: #ae81ff }               /* Literal.Number              */
+.s                 { color: #e6db74 }               /* Literal.String              */
+.na                { color: #a6e22e }               /* Name.Attribute              */
+.nb                { color: #f8f8f2 }               /* Name.Builtin                */
+.nc                { color: #a6e22e }               /* Name.Class                  */
+.no                { color: #66d9ef }               /* Name.Constant               */
+.nd                { color: #a6e22e }               /* Name.Decorator              */
+.ni                { color: #f8f8f2 }               /* Name.Entity                 */
+.ne                { color: #a6e22e }               /* Name.Exception              */
+.nf                { color: #a6e22e }               /* Name.Function               */
+.nl                { color: #f8f8f2 }               /* Name.Label                  */
+.nn                { color: #f8f8f2 }               /* Name.Namespace              */
+.nx                { color: #a6e22e }               /* Name.Other                  */
+.py                { color: #f8f8f2 }               /* Name.Property               */
+.nt                { color: #f92672 }               /* Name.Tag                    */
+.nv                { color: #f8f8f2 }               /* Name.Variable               */
+.ow                { color: #f92672 }               /* Operator.Word               */
+.w                 { color: #f8f8f2 }               /* Text.Whitespace             */
+.mf                { color: #ae81ff }               /* Literal.Number.Float        */
+.mh                { color: #ae81ff }               /* Literal.Number.Hex          */
+.mi                { color: #ae81ff }               /* Literal.Number.Integer      */
+.mo                { color: #ae81ff }               /* Literal.Number.Oct          */
+.sb                { color: #e6db74 }               /* Literal.String.Backtick     */
+.sc                { color: #e6db74 }               /* Literal.String.Char         */
+.sd                { color: #e6db74 }               /* Literal.String.Doc          */
+.s2                { color: #e6db74 }               /* Literal.String.Double       */
+.se                { color: #ae81ff }               /* Literal.String.Escape       */
+.sh                { color: #e6db74 }               /* Literal.String.Heredoc      */
+.si                { color: #e6db74 }               /* Literal.String.Interpol     */
+.sx                { color: #e6db74 }               /* Literal.String.Other        */
+.sr                { color: #e6db74 }               /* Literal.String.Regex        */
+.s1                { color: #e6db74 }               /* Literal.String.Single       */
+.ss                { color: #e6db74 }               /* Literal.String.Symbol       */
+.bp                { color: #f8f8f2 }               /* Name.Builtin.Pseudo         */
+.vc                { color: #f8f8f2 }               /* Name.Variable.Class         */
+.vg                { color: #f8f8f2 }               /* Name.Variable.Global        */
+.vi                { color: #f8f8f2 }               /* Name.Variable.Instance      */
+.il                { color: #ae81ff }               /* Literal.Number.Integer.Long */
+</style>
+
+
 <div class="page-header">
   <h1>android 2.0 以上 app_widget不支援每秒update一次 </h1>
 </div>
@@ -257,7 +328,7 @@ data-ad-format="auto"></ins>
     <div class="date">
       <span>30 April 2010</span>
     </div>
-    <div class="content">
+    <div class="content" style="line-height: 28px;">
       android 2.0 以上 app_widget不支援每秒update一次<br /><br />最小時間是三十分鐘..<br /><br />這邊利用thread去做到每秒執行很多次...<br /><br />首先我們要先建立一個widget的設定檔<br /><br /><span class="Apple-style-span" style="color: red;">xml/analog_appwidget.xml</span><br /><br /> <pre class="brush: xml"><br />&lt;?xml version="1.0" encoding="utf-8"?&gt;<br />&lt;appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android" &nbsp;<br />&nbsp;&nbsp;android:minWidth="146dip" &nbsp;<br />&nbsp;&nbsp;android:minHeight="146dip" &nbsp;<br />&nbsp;&nbsp;android:updatePeriodMillis="1000" &nbsp;<br />&nbsp;&nbsp;android:initialLayout="@layout/analog_appwidget" &gt; &nbsp;<br />&lt;/appwidget-provider&gt; &nbsp;<br /></pre>   <span class="Apple-style-span" style="color: red;"><span class="Apple-style-span" style="color: black;"><br /></span><br /><span class="Apple-style-span" style="color: black;">以及widget的樣式</span></span><br /><span class="Apple-style-span" style="color: red;"><span class="Apple-style-span" style="color: black;"><br /></span></span><br /><span class="Apple-style-span" style="color: red;">layout/analog_appwidget.xml</span><br /><span class="Apple-style-span" style="color: red;"><span class="Apple-style-span" style="color: black;"></span></span><br /><span class="Apple-style-span" style="color: red;"><span class="Apple-style-span" style="color: black;"></span></span><br />  <pre class="brush: xml"><br />&lt;?xml version="1.0" encoding="utf-8"?&gt;<br /><br />&lt;LinearLayout<br />  android:id="@+id/LinearLayout01"<br />  android:layout_width="fill_parent"<br />  android:layout_height="fill_parent"<br />  xmlns:android="http://schemas.android.com/apk/res/android"&gt;<br />   <br />   &nbsp;&lt;TextView<br />   &nbsp;  android:id="@+id/TextView01"<br />   &nbsp;  android:layout_width="wrap_content"<br />   &nbsp;  android:layout_height="wrap_content"<br />   &nbsp;  android:text="efefefefefef"&gt;<br />   &nbsp;&lt;/TextView&gt;<br />&lt;/LinearLayout&gt;<br /></pre>        <span class="Apple-style-span" style="color: red;"><span class="Apple-style-span" style="color: black;"><br /></span><span class="Apple-style-span" style="color: red;"><br /></span><br /><span class="Apple-style-span" style="color: black;">接著在</span>AndroidMainfest.xml<span class="Apple-style-span" style="color: black;">貼入下段</span><br /><span class="Apple-style-span" style="color: red;"><br /></span><br /><span class="Apple-style-span" style="color: red;"></span><span class="Apple-style-span" style="color: black;"></span></span><br /><span class="Apple-style-span" style="color: red;"><span class="Apple-style-span" style="color: black;">  <pre class="brush: xml"> <br /> &lt;receiver android:name="AnalogAppWidgetProvider" &gt; &nbsp; <br />       &nbsp;&lt;intent-filter&gt; &nbsp; <br />       &nbsp; &nbsp;&lt;action android:name="android.appwidget.action.APPWIDGET_UPDATE" /&gt; &nbsp; <br />       &nbsp;&lt;/intent-filter&gt; &nbsp; <br />       &nbsp;&lt;meta-data android:name="android.appwidget.provider" &nbsp;&nbsp; <br />       &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; android:resource="@xml/analog_appwidget" /&gt; &nbsp; <br /> &lt;/receiver&gt;  <br /> </pre>     </span></span><span class="Apple-style-span" style="color: red;"><span class="Apple-style-span" style="color: black;"><span class="Apple-style-span" style="color: red;"><br /><span class="Apple-style-span" style="color: black;">接著開始寫CODE搂~</span><br /><span class="Apple-style-span" style="color: black;"><br /></span><br />AnalogAppWidgetProvider.java<br /><span class="Apple-style-span" style="color: black;"><br /></span><span class="Apple-style-span" style="color: black;"></span></span></span></span><br />    <pre class="brush: java">   <br /> //import省略   <br />public class AnalogAppWidgetProvider extends AppWidgetProvider { <br />    <br />   Context context_main ; <br />   AppWidgetManager app_manager; <br />   int []appWidgetId; <br />    <br />   @Override <br />   public void onUpdate(Context context, AppWidgetManager appWidgetManager, <br />     int[] appWidgetIds) { <br />    super.onUpdate(context, appWidgetManager, appWidgetIds); <br />     <br />    app_manager = appWidgetManager; <br />    context_main = context; <br />    appWidgetId = appWidgetIds; <br />     <br />    &nbsp; &nbsp;Thread thread = new Thread(new update_thread()); <br />    &nbsp; &nbsp;thread.start(); <br /> <br />   } <br />    <br />   public class update_thread implements Runnable{ <br />    @Override <br />    public void run() { <br />     int i = 0; <br />     while(true &amp;&amp; i++ &lt;100){ <br />       RemoteViews views = <br />&nbsp;new RemoteViews(context_main.getPackageName(), R.layout.analog_appwidget); <br />       views.setTextViewText(R.id.TextView01, String.valueOf(Math.random()) ); <br /> <br />       app_manager.updateAppWidget(appWidgetId, views); <br />     }       <br />    }      <br />   } <br /> <br />}    <br /></pre>    <span class="Apple-style-span" style="color: red;"><span class="Apple-style-span" style="color: red;"><span class="Apple-style-span" style="color: black;"><br /></span><span class="Apple-style-span" style="color: black;"><br /></span><br /><span class="Apple-style-span" style="color: black;"><br /></span><br /><span class="Apple-style-span" style="color: black;"><br /></span></span><br /><span class="Apple-style-span" style="color: red;"><br /></span><br /><span class="Apple-style-span" style="color: red;"><br /></span><br />照著上列步驟即可實現...</span><br /><span class="Apple-style-span" style="color: red;"><br /></span><br /><span class="Apple-style-span" style="color: red;">如果需要是以每秒去update在自行更改</span><br /><span class="Apple-style-span" style="color: red;"><br /></span><br /><span class="Apple-style-span" style="color: red;">此範例只是個小sample</span><br /><span class="Apple-style-span" style="color: red;"><br /></span><br /><span class="Apple-style-span" style="color: red;"><br /></span><br /><span class="Apple-style-span" style="color: red;"><br /></span><br /><span class="Apple-style-span" style="color: red;"><br /></span><br /><span class="Apple-style-span" style="color: red;"><br /></span><br /><span class="Apple-style-span" style="color: red;"><br /></span><br /><span class="Apple-style-span" style="color: red;"><br /><span class="Apple-style-span" style="color: black;"><br /></span><br /><span class="Apple-style-span" style="color: black;"><br /></span></span>
     </div>
 

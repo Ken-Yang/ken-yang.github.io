@@ -223,7 +223,50 @@
       </nav>
 
       <div class="container">
-        <body>
+        <style>
+.myButton {
+    -moz-box-shadow:inset 0px 1px 0px 0px #ffffff;
+    -webkit-box-shadow:inset 0px 1px 0px 0px #ffffff;
+    box-shadow:inset 0px 1px 0px 0px #ffffff;
+    background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #f9f9f9), color-stop(1, #e9e9e9));
+    background:-moz-linear-gradient(top, #f9f9f9 5%, #e9e9e9 100%);
+    background:-webkit-linear-gradient(top, #f9f9f9 5%, #e9e9e9 100%);
+    background:-o-linear-gradient(top, #f9f9f9 5%, #e9e9e9 100%);
+    background:-ms-linear-gradient(top, #f9f9f9 5%, #e9e9e9 100%);
+    background:linear-gradient(to bottom, #f9f9f9 5%, #e9e9e9 100%);
+    filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#f9f9f9', endColorstr='#e9e9e9',GradientType=0);
+    background-color:#f9f9f9;
+    -moz-border-radius:6px;
+    -webkit-border-radius:6px;
+    border-radius:6px;
+    border:1px solid #dcdcdc;
+    display:inline-block;
+    cursor:pointer;
+    color:#666666;
+    font-family:Arial;
+    font-size:15px;
+    font-weight:bold;
+    padding:6px 24px;
+    text-decoration:none;
+    text-shadow:0px 1px 0px #ffffff;
+}
+.myButton:hover {
+    background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #e9e9e9), color-stop(1, #f9f9f9));
+    background:-moz-linear-gradient(top, #e9e9e9 5%, #f9f9f9 100%);
+    background:-webkit-linear-gradient(top, #e9e9e9 5%, #f9f9f9 100%);
+    background:-o-linear-gradient(top, #e9e9e9 5%, #f9f9f9 100%);
+    background:-ms-linear-gradient(top, #e9e9e9 5%, #f9f9f9 100%);
+    background:linear-gradient(to bottom, #e9e9e9 5%, #f9f9f9 100%);
+    filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#e9e9e9', endColorstr='#f9f9f9',GradientType=0);
+    background-color:#e9e9e9;
+}
+.myButton:active {
+    position:relative;
+    top:1px;
+}
+</style>
+
+<body>
     <div>
         <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 <!-- id10t_top -->
@@ -242,31 +285,85 @@ data-ad-format="auto"></ins>
       <h1><a style="color: #F22430" href="/2010/05/21/android-designing-for-performance">Android Designing for Performance</a></h1>
       <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
       <p class="author">
-        <span class="date">21 May 2010</span>
+      <div class="date">
+        <span>21 May 2010</span>
+      </div>
       </p>
-      <div class="content">
+      <div class="content" style="line-height: 28px;">
         Android官方發布了一篇有關效能改進的文章，<br />這篇<a href="http://developer.android.com/guide/practices/design/performance.html">文章</a>裏面講到了幾點有關於效能改進的！<br />下面列出幾點來說明<br /><br /><div style="background: #d8d8d8;"><span class="Apple-style-span" style="color: #333333; font-family: arial, sans-serif; line-height: 24px;">A somewhat more radical idea is to slice up multidimensional arrays into parallel single one-dimension arrays</span><br /><span class="Apple-style-span" style="font-family: arial, sans-serif; line-height: 24px;"></span></div><span class="Apple-style-span" style="font-family: arial, sans-serif; line-height: 24px;">意思是說建立一個多維陣列的效能會比建立多個平行式的一維陣列來的差！</span><br /><span class="Apple-style-span" style="font-family: arial, sans-serif; line-height: 24px;"><span class="Apple-style-span" style="font-family: Arial; line-height: normal;"></span></span><br /><div style="margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px;"></div><div style="background: #d8d8d8;"><span class="Apple-style-span" style="font-family: arial, sans-serif; line-height: 24px;">When processing strings, don't hesitate to use specialty methods like String.indexOf(), String.lastIndexOf(), and their cousins. These are typically implemented in C/C++ code that easily runs 10-100x faster than doing the same thing in a Java loop.</span><br /><div style="margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px;"><span class="Apple-style-span" style="font-family: arial, sans-serif; line-height: 24px;"></span></div></div><span class="Apple-style-span" style="font-family: arial, sans-serif; line-height: 24px;">意思是說不要猶豫使用indexOf()等等String.method之類！</span><br /><div style="margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px;"><span class="Apple-style-span" style="font-family: arial, sans-serif;"><span class="Apple-style-span" style="line-height: 24px;">因為他們都是用C/C++去implement的！他們會比用JAVA迴圈來的快！</span></span><br /><span class="Apple-style-span" style="font-family: arial, sans-serif;"><span class="Apple-style-span" style="line-height: 24px;"><br /></span></span></div><div apple-style-span"=""><div apple-style-span"=""><div apple-style-span"=""><div style="background: #d8d8d8;"><span class="Apple-style-span" style="font-family: arial, sans-serif; line-height: 24px;">If you don't need to access an object's fields, make your method static. It can be called faster, because it doesn't require a virtual method table indirection</span><br /><div style="margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px;"><span class="Apple-style-span" style="font-family: arial, sans-serif;"><span class="Apple-style-span" style="font-family: arial, sans-serif; line-height: 24px;"></span></span></div></div></div></div></div><span class="Apple-style-span" style="font-family: arial, sans-serif;"> </span><span class="Apple-style-span" style="font-family: arial, sans-serif; line-height: 24px;">意思叫你盡量用static method，這就不多作解釋！懂java的人應該要懂static和non-statc的差別！</span><br /><span class="Apple-style-span" style="font-family: arial, sans-serif; line-height: 24px;"><br /></span><br /><div style="margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px;"><span class="Apple-style-span" style="font-family: arial, sans-serif;"><span class="Apple-style-span" style="line-height: 24px;">最後一點是，避免使用getter/setter， </span></span></div><div style="margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px;"><span class="Apple-style-span" style="font-family: arial, sans-serif;">下列有段code，看出瑕疵的地方嗎？</span><br /><span class="Apple-style-span" style="font-family: arial, sans-serif;"><br /></span></div><pre class="brush: java">for (int i = 0; i &lt; this.getCount(); i++)<br />    dumpItems(this.getItem(i));<br /></pre><div style="margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px;"><span class="Apple-style-span" style="font-family: arial, sans-serif;">答案就是別在for迴圈作this.getCount()這種操作！很浪費！！</span></div><div style="margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px;"><span class="Apple-style-span" style="font-family: arial, sans-serif;">請先宣告個變數，再放到ＦＯＲ迴圈裡面</span></div><div style="margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px;"><span class="Apple-style-span" style="font-family: arial, sans-serif;"><span class="Apple-style-span" style="font-family: arial, sans-serif; line-height: 24px;"><br /></span></span></div><div style="margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px;"><span class="Apple-style-span" style="font-family: arial, sans-serif;"><span class="Apple-style-span" style="font-family: arial, sans-serif; line-height: 24px;"><br /></span></span></div><div style="margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px;"><span class="Apple-style-span" style="font-family: arial, sans-serif;"><span class="Apple-style-span" style="font-family: arial, sans-serif; line-height: 24px;"><br /></span></span></div><div style="margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px;"><span class="Apple-style-span" style="font-family: arial, sans-serif;"><span class="Apple-style-span" style="font-family: arial, sans-serif; line-height: 24px;"><br /></span></span></div><div style="margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px;"><span class="Apple-style-span" style="font-family: arial, sans-serif;"><span class="Apple-style-span" style="font-family: arial, sans-serif; line-height: 24px;"><br /></span></span></div><div style="margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px;"><span class="Apple-style-span" style="font-family: arial, sans-serif;"><span class="Apple-style-span" style="font-family: arial, sans-serif; line-height: 24px;"><br /></span></span></div><div style="margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px;"><span class="Apple-style-span" style="font-family: arial, sans-serif;"><span class="Apple-style-span" style="font-family: arial, sans-serif; line-height: 24px;"><br /></span></span></div><div style="margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px;"><span class="Apple-style-span" style="font-family: arial, sans-serif;"><span class="Apple-style-span" style="font-family: arial, sans-serif; line-height: 24px;"><br /></span></span></div><div style="margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px;"><span class="Apple-style-span" style="font-family: arial, sans-serif;"><span class="Apple-style-span" style="font-family: arial, sans-serif; line-height: 24px;"><br /></span></span></div><div style="margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px;"><span class="Apple-style-span" style="font-family: arial, sans-serif;"><span class="Apple-style-span" style="font-family: arial, sans-serif; line-height: 24px;"><br /></span></span></div><br /><div style="margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px;"><span class="Apple-style-span" style="font-family: arial, sans-serif;"><span class="Apple-style-span" style="line-height: 24px;"><br /></span></span></div><div style="margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px;"><span class="Apple-style-span" style="font-family: arial, sans-serif;"><span class="Apple-style-span" style="line-height: 24px;"><br /></span></span></div><div style="margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px;"><span class="Apple-style-span" style="font-family: arial, sans-serif;"><span class="Apple-style-span" style="line-height: 24px;"><br /></span></span></div><div style="margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px;"><span class="Apple-style-span" style="font-family: arial, sans-serif;"><span class="Apple-style-span" style="line-height: 24px;"><br /></span></span></div><div style="margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px;"><span class="Apple-style-span" style="font-family: arial, sans-serif;"><span class="Apple-style-span" style="line-height: 24px;"><br /></span></span></div><br /><span class="Apple-style-span" style="font-family: arial, sans-serif; font-size: 19px; line-height: 24px;"><br /></span><br /><span class="Apple-style-span" style="font-family: arial, sans-serif; font-size: 19px; line-height: 24px;"><br /></span>
       </div>
+      <footer>
+        <p><a class="myButton" href="/2010/05/21/android-designing-for-performance">read more &raquo;</a></p>
+        <div>
+          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- id10t_top -->
+<ins class="adsbygoogle"
+style="display:block"
+data-ad-client="ca-pub-7586970907106458"
+data-ad-slot="1161208442"
+data-ad-format="auto"></ins>
+<script>
+    (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+        </div>
+      </footer>
       <hr>
     
       <h1><a style="color: #F22430" href="/2010/05/20/draw-9-patch">Draw 9-patch</a></h1>
       <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
       <p class="author">
-        <span class="date">20 May 2010</span>
+      <div class="date">
+        <span>20 May 2010</span>
+      </div>
       </p>
-      <div class="content">
+      <div class="content" style="line-height: 28px;">
         Draw 9-patch是android sdk裡面內建的一支程式<br /><br />可以讓圖變長、變寬也不會失真!!<br /><br />這支程式在你的SDK目錄的tools底下!<br /><br />檔名為:<span class="Apple-style-span" style="color: red;">draw9patch.bat</span><br /><span class="Apple-style-span" style="color: red;"><br /></span><br />打開軟體以後<br /><br />可以直接把你.PNG類型的檔案直接拖曳至軟體中!<br /><br />也可以點選<span class="Apple-style-span" style="color: red;">File-&gt;</span><span class="Apple-style-span" style="color: #333333; font-family: arial, sans-serif; font-size: 16px; line-height: 20px;"><span class="Apple-style-span" style="color: red;">Open 9-patch...&nbsp;</span><span class="Apple-style-span" style="color: black;">來開啟</span></span><br /><span class="Apple-style-span" style="color: #333333; font-family: arial, sans-serif; font-size: 16px; line-height: 20px;"><span class="Apple-style-span" style="color: black;"><br /></span></span><br /><span class="Apple-style-span" style="font-family: arial, sans-serif;"><span class="Apple-style-span" style="line-height: 20px;">打開圖片以後!</span></span><br /><span class="Apple-style-span" style="font-family: arial, sans-serif;"><span class="Apple-style-span" style="line-height: 20px;"><br /></span></span><br /><span class="Apple-style-span" style="font-family: arial, sans-serif;"><span class="Apple-style-span" style="line-height: 20px;">底下會有兩條scroll bar!</span></span><br /><span class="Apple-style-span" style="font-family: arial, sans-serif;"><span class="Apple-style-span" style="line-height: 20px;"><br /></span></span><br /><span class="Apple-style-span" style="font-family: arial, sans-serif;"><span class="Apple-style-span" style="line-height: 20px;"><span class="Apple-style-span" style="font-size: 16px;">如圖:</span></span></span><br /><span class="Apple-style-span" style="color: #333333; font-family: arial, sans-serif; font-size: 16px; line-height: 20px;"><span class="Apple-style-span" style="color: black;"><br /></span></span><br /><div class="separator" style="clear: both; text-align: center;"><a href="http://1.bp.blogspot.com/_6SxqtkJQECI/S_UkakqXoTI/AAAAAAAAAH4/AoCJ9jnodpI/s1600/%E6%9C%AA%E5%91%BD%E5%90%8D.png" imageanchor="1" style="clear: left; float: left; margin-bottom: 1em; margin-right: 1em;"><img border="0" height="38" src="http://1.bp.blogspot.com/_6SxqtkJQECI/S_UkakqXoTI/AAAAAAAAAH4/AoCJ9jnodpI/s400/%E6%9C%AA%E5%91%BD%E5%90%8D.png" width="400" /></a></div><span class="Apple-style-span" style="color: #333333; font-family: arial, sans-serif; font-size: 16px; line-height: 20px;"><span class="Apple-style-span" style="color: black;"><br /></span></span><br /><span class="Apple-style-span" style="color: #333333; font-family: arial, sans-serif; font-size: 16px; line-height: 20px;"><span class="Apple-style-span" style="color: black;"><br /></span></span><br /><span class="Apple-style-span" style="color: #333333; font-family: arial, sans-serif; font-size: 16px; line-height: 20px;"><span class="Apple-style-span" style="color: black;"><br /></span></span><br /><span class="Apple-style-span" style="color: #333333; font-family: arial, sans-serif; font-size: 16px; line-height: 20px;"><span class="Apple-style-span" style="color: black;"><br /></span></span><br /><span class="Apple-style-span" style="color: #333333; font-family: arial, sans-serif; font-size: 16px; line-height: 20px;"><span class="Apple-style-span" style="color: black;"><br /></span></span><br /><span class="Apple-style-span" style="font-family: arial, sans-serif;"><span class="Apple-style-span" style="line-height: 20px;"><span class="Apple-style-span" style="color: red;">Zoom：</span>只是單純讓你放大，比較好操作，不會對最終檔案有甚麼差異！</span></span><br /><span class="Apple-style-span" style="font-family: arial, sans-serif;"><span class="Apple-style-span" style="line-height: 20px;"><br /></span></span><br /><span class="Apple-style-span" style="font-family: arial, sans-serif;"><span class="Apple-style-span" style="line-height: 20px;"><span class="Apple-style-span" style="color: red;">Patch scale：</span>只是讓你看圖片最終變長、變寬以後的樣子。在你儲存前都可以修改！</span></span><br /><span class="Apple-style-span" style="font-family: arial, sans-serif;"><span class="Apple-style-span" style="line-height: 20px;"><br /></span></span><br /><span class="Apple-style-span" style="font-family: arial, sans-serif;"><span class="Apple-style-span" style="line-height: 20px;"><br /></span></span><br /><span class="Apple-style-span" style="font-family: arial, sans-serif;"><span class="Apple-style-span" style="line-height: 20px;">接著就要對圖片作操作了！</span></span><br /><span class="Apple-style-span" style="font-family: arial, sans-serif;"><span class="Apple-style-span" style="line-height: 20px;"><br /></span></span><br /><span class="Apple-style-span" style="font-family: arial, sans-serif;"><span class="Apple-style-span" style="line-height: 20px;">圖片的周圍會圍繞著1px寬度的空白！</span></span><br /><span class="Apple-style-span" style="font-family: arial, sans-serif;"><span class="Apple-style-span" style="line-height: 20px;"><br /></span></span><br /><span class="Apple-style-span" style="font-family: arial, sans-serif;"><span class="Apple-style-span" style="line-height: 20px;">是為了讓你點選要重複的區域！</span></span><br /><span class="Apple-style-span" style="font-family: arial, sans-serif;"><span class="Apple-style-span" style="line-height: 20px;"><br /></span></span><br /><span class="Apple-style-span" style="font-family: arial, sans-serif;"><span class="Apple-style-span" style="line-height: 20px;">通常你只要點左邊和上面就好！</span></span><br /><span class="Apple-style-span" style="font-family: arial, sans-serif;"><span class="Apple-style-span" style="line-height: 20px;"><br /></span></span><br /><span class="Apple-style-span" style="font-family: arial, sans-serif;"><span class="Apple-style-span" style="line-height: 20px;">只要點1px即可！</span></span><br /><span class="Apple-style-span" style="font-family: arial, sans-serif;"><span class="Apple-style-span" style="line-height: 20px;"><br /></span></span><br /><span class="Apple-style-span" style="font-family: arial, sans-serif;"><span class="Apple-style-span" style="line-height: 20px;">如圖：</span></span><br /><span class="Apple-style-span" style="font-family: arial, sans-serif;"><span class="Apple-style-span" style="line-height: 20px;"><br /></span></span><br /><div class="separator" style="clear: both; text-align: center;"><a href="http://2.bp.blogspot.com/_6SxqtkJQECI/S_UmqqoAinI/AAAAAAAAAIA/hKbJdliZkUU/s1600/%E6%9C%AA%E5%91%BD%E5%90%8D.png" imageanchor="1" style="clear: left; float: left; margin-bottom: 1em; margin-right: 1em;"><img border="0" src="http://2.bp.blogspot.com/_6SxqtkJQECI/S_UmqqoAinI/AAAAAAAAAIA/hKbJdliZkUU/s320/%E6%9C%AA%E5%91%BD%E5%90%8D.png" /></a></div><span class="Apple-style-span" style="font-family: arial, sans-serif;"><span class="Apple-style-span" style="line-height: 20px;"><br /></span></span><br /><span class="Apple-style-span" style="font-family: arial, sans-serif;"><span class="Apple-style-span" style="line-height: 20px;"><br /></span></span><br /><span class="Apple-style-span" style="font-family: arial, sans-serif;"><span class="Apple-style-span" style="line-height: 20px;"><br /></span></span><br /><span class="Apple-style-span" style="font-family: arial, sans-serif;"><span class="Apple-style-span" style="line-height: 20px;"><br /></span></span><br /><span class="Apple-style-span" style="font-family: arial, sans-serif;"><span class="Apple-style-span" style="line-height: 20px;"><br /></span></span><br /><span class="Apple-style-span" style="font-family: arial, sans-serif;"><span class="Apple-style-span" style="line-height: 20px;"><br /></span></span><br /><span class="Apple-style-span" style="font-family: arial, sans-serif;"><span class="Apple-style-span" style="line-height: 20px;"><br /></span></span><br /><span class="Apple-style-span" style="font-family: arial, sans-serif;"><span class="Apple-style-span" style="line-height: 20px;"><br /></span></span><br /><span class="Apple-style-span" style="font-family: arial, sans-serif;"><span class="Apple-style-span" style="line-height: 20px;"><br /></span></span><br /><span class="Apple-style-span" style="font-family: arial, sans-serif;"><span class="Apple-style-span" style="line-height: 20px;"><br /></span></span><br /><span class="Apple-style-span" style="font-family: arial, sans-serif;"><span class="Apple-style-span" style="line-height: 20px;"><br /></span></span><br /><span class="Apple-style-span" style="font-family: arial, sans-serif;"><span class="Apple-style-span" style="line-height: 20px;">接著可以拉下面<span class="Apple-style-span" style="color: red;">Patch scale</span>這條看看效果如何！！！</span></span><br /><span class="Apple-style-span" style="font-family: arial, sans-serif;"><span class="Apple-style-span" style="line-height: 20px;"><br /></span></span><br /><span class="Apple-style-span" style="font-family: arial, sans-serif;"><span class="Apple-style-span" style="line-height: 20px;">如果滿意！就點選<span class="Apple-style-span" style="color: red;">File-&gt;Save XXX</span>搂！</span></span><br /><span class="Apple-style-span" style="font-family: arial, sans-serif;"><span class="Apple-style-span" style="line-height: 20px;"><br /></span></span><br /><span class="Apple-style-span" style="font-family: arial, sans-serif;"><span class="Apple-style-span" style="line-height: 20px;">儲存的檔名會是 <span class="Apple-style-span" style="color: red;">你取的檔名</span><span class="Apple-style-span" style="color: blue;">.9</span><span class="Apple-style-span" style="color: red;">.png</span></span></span><br /><span class="Apple-style-span" style="font-family: arial, sans-serif;"><span class="Apple-style-span" style="line-height: 20px;"><br /></span></span><br /><span class="Apple-style-span" style="font-family: arial, sans-serif;"><span class="Apple-style-span" style="line-height: 20px;"><br /></span></span><br /><span class="Apple-style-span" style="font-family: arial, sans-serif;"><span class="Apple-style-span" style="line-height: 20px;">.9是他的規則！不用修改！</span></span><br /><span class="Apple-style-span" style="font-family: arial, sans-serif;"><span class="Apple-style-span" style="line-height: 20px;"><br /></span></span><br /><span class="Apple-style-span" style="font-family: arial, sans-serif;"><span class="Apple-style-span" style="line-height: 20px;">這樣你的圖片就不會失真了！！！</span></span><br /><span class="Apple-style-span" style="font-family: arial, sans-serif;"><span class="Apple-style-span" style="line-height: 20px;"><br /></span></span><br /><span class="Apple-style-span" style="font-family: arial, sans-serif;"><span class="Apple-style-span" style="line-height: 20px;"><br /></span></span><br /><span class="Apple-style-span" style="color: #333333; font-family: arial, sans-serif; font-size: 16px; line-height: 20px;"><span class="Apple-style-span" style="color: black;"><br /></span></span><br /><span class="Apple-style-span" style="color: #333333; font-family: arial, sans-serif; font-size: 16px; line-height: 20px;"><span class="Apple-style-span" style="color: black;"><br /></span></span>
       </div>
+      <footer>
+        <p><a class="myButton" href="/2010/05/20/draw-9-patch">read more &raquo;</a></p>
+        <div>
+          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- id10t_top -->
+<ins class="adsbygoogle"
+style="display:block"
+data-ad-client="ca-pub-7586970907106458"
+data-ad-slot="1161208442"
+data-ad-format="auto"></ins>
+<script>
+    (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+        </div>
+      </footer>
       <hr>
     
       <h1><a style="color: #F22430" href="/2010/05/19/android">android 移除狀態列、移除標題</a></h1>
       <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
       <p class="author">
-        <span class="date">19 May 2010</span>
+      <div class="date">
+        <span>19 May 2010</span>
+      </div>
       </p>
-      <div class="content">
+      <div class="content" style="line-height: 28px;">
         一般android程式預設會有系統的狀態列和app的標題列。<br /><br />如下圖。<br /><br /><a href="http://3.bp.blogspot.com/_6SxqtkJQECI/S_PZv2SGn1I/AAAAAAAAAHg/4UFD6tUr54s/s1600/1.png" imageanchor="1" style="clear: left; float: left; margin-bottom: 1em; margin-right: 1em;"><img border="0" src="http://3.bp.blogspot.com/_6SxqtkJQECI/S_PZv2SGn1I/AAAAAAAAAHg/4UFD6tUr54s/s320/1.png" /></a><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />如果想要移除狀態列就<br /><br />輸入下段code<br /><br /><br /><pre class="brush: java;"><br />this.getWindow().setFlags(<br />                   WindowManager.LayoutParams.FLAG_FULLSCREEN,<br />                   WndowManager.LayoutParams.FLAG_FULLSCREEN<br />                          );<br /></pre><br /><br />呈現結果如下圖<br /><br /><div class="separator" style="clear: both; text-align: center;"><a href="http://2.bp.blogspot.com/_6SxqtkJQECI/S_Papn7uINI/AAAAAAAAAHo/ixaFc4ISNuE/s1600/2.png" imageanchor="1" style="clear: left; float: left; margin-bottom: 1em; margin-right: 1em;"><img border="0" height="320" src="http://2.bp.blogspot.com/_6SxqtkJQECI/S_Papn7uINI/AAAAAAAAAHo/ixaFc4ISNuE/s320/2.png" width="212" /></a></div><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />如果要移除標題列就輸入下段CODE<br /><br /><br /><pre class="brush: java;"><br />requestWindowFeature(Window.FEATURE_NO_TITLE); &nbsp;<br /></pre><br /><br /><br />結果如下圖<br /><br /><div class="separator" style="clear: both; text-align: center;"><a href="http://4.bp.blogspot.com/_6SxqtkJQECI/S_PbX2mTW3I/AAAAAAAAAHw/Wuoo3XaBMjY/s1600/3.png" imageanchor="1" style="clear: left; float: left; margin-bottom: 1em; margin-right: 1em;"><img border="0" src="http://4.bp.blogspot.com/_6SxqtkJQECI/S_PbX2mTW3I/AAAAAAAAAHw/Wuoo3XaBMjY/s320/3.png" /></a></div><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />如果想要同時消失狀態列和標題，那就兩段CODE都填入就OK啦!<br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
       </div>
+      <footer>
+        <p><a class="myButton" href="/2010/05/19/android">read more &raquo;</a></p>
+        <div>
+          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- id10t_top -->
+<ins class="adsbygoogle"
+style="display:block"
+data-ad-client="ca-pub-7586970907106458"
+data-ad-slot="1161208442"
+data-ad-format="auto"></ins>
+<script>
+    (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+        </div>
+      </footer>
       <hr>
     
 

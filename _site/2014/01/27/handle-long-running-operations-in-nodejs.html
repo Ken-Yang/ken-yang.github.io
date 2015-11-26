@@ -223,7 +223,78 @@
       </nav>
 
       <div class="container">
-        
+        <style>
+/* Adjusted to give override background and text colour */
+.highlight pre, pre, .highlight .hll {
+    background-color: #49483E;
+    border: 1px solid #ccc;
+    padding: 6px 10px;
+    border-radius: 3px;
+    color: #FFFFFF;
+}
+/* Highlights taken from https://gist.github.com/asaaki/1007420  for Monokai theme */
+.c                 { color: #75715e }               /* Comment                     */
+.err               { color: #960050;
+                     background-color: #1e0010 }    /* Error                       */
+.k                 { color: #66d9ef }               /* Keyword                     */
+.l                 { color: #ae81ff }               /* Literal                     */
+.n                 { color: #f8f8f2 }               /* Name                        */
+.o                 { color: #f92672 }               /* Operator                    */
+.p                 { color: #f8f8f2 }               /* Punctuation                 */
+.cm                { color: #75715e }               /* Comment.Multiline           */
+.cp                { color: #75715e }               /* Comment.Preproc             */
+.c1                { color: #75715e }               /* Comment.Single              */
+.cs                { color: #75715e }               /* Comment.Special             */
+.ge                { font-style: italic }           /* Generic.Emph                */
+.gs                { font-weight: bold }            /* Generic.Strong              */
+.kc                { color: #66d9ef }               /* Keyword.Constant            */
+.kd                { color: #66d9ef }               /* Keyword.Declaration         */
+.kn                { color: #f92672 }               /* Keyword.Namespace           */
+.kp                { color: #66d9ef }               /* Keyword.Pseudo              */
+.kr                { color: #66d9ef }               /* Keyword.Reserved            */
+.kt                { color: #66d9ef }               /* Keyword.Type                */
+.ld                { color: #e6db74 }               /* Literal.Date                */
+.m                 { color: #ae81ff }               /* Literal.Number              */
+.s                 { color: #e6db74 }               /* Literal.String              */
+.na                { color: #a6e22e }               /* Name.Attribute              */
+.nb                { color: #f8f8f2 }               /* Name.Builtin                */
+.nc                { color: #a6e22e }               /* Name.Class                  */
+.no                { color: #66d9ef }               /* Name.Constant               */
+.nd                { color: #a6e22e }               /* Name.Decorator              */
+.ni                { color: #f8f8f2 }               /* Name.Entity                 */
+.ne                { color: #a6e22e }               /* Name.Exception              */
+.nf                { color: #a6e22e }               /* Name.Function               */
+.nl                { color: #f8f8f2 }               /* Name.Label                  */
+.nn                { color: #f8f8f2 }               /* Name.Namespace              */
+.nx                { color: #a6e22e }               /* Name.Other                  */
+.py                { color: #f8f8f2 }               /* Name.Property               */
+.nt                { color: #f92672 }               /* Name.Tag                    */
+.nv                { color: #f8f8f2 }               /* Name.Variable               */
+.ow                { color: #f92672 }               /* Operator.Word               */
+.w                 { color: #f8f8f2 }               /* Text.Whitespace             */
+.mf                { color: #ae81ff }               /* Literal.Number.Float        */
+.mh                { color: #ae81ff }               /* Literal.Number.Hex          */
+.mi                { color: #ae81ff }               /* Literal.Number.Integer      */
+.mo                { color: #ae81ff }               /* Literal.Number.Oct          */
+.sb                { color: #e6db74 }               /* Literal.String.Backtick     */
+.sc                { color: #e6db74 }               /* Literal.String.Char         */
+.sd                { color: #e6db74 }               /* Literal.String.Doc          */
+.s2                { color: #e6db74 }               /* Literal.String.Double       */
+.se                { color: #ae81ff }               /* Literal.String.Escape       */
+.sh                { color: #e6db74 }               /* Literal.String.Heredoc      */
+.si                { color: #e6db74 }               /* Literal.String.Interpol     */
+.sx                { color: #e6db74 }               /* Literal.String.Other        */
+.sr                { color: #e6db74 }               /* Literal.String.Regex        */
+.s1                { color: #e6db74 }               /* Literal.String.Single       */
+.ss                { color: #e6db74 }               /* Literal.String.Symbol       */
+.bp                { color: #f8f8f2 }               /* Name.Builtin.Pseudo         */
+.vc                { color: #f8f8f2 }               /* Name.Variable.Class         */
+.vg                { color: #f8f8f2 }               /* Name.Variable.Global        */
+.vi                { color: #f8f8f2 }               /* Name.Variable.Instance      */
+.il                { color: #ae81ff }               /* Literal.Number.Integer.Long */
+</style>
+
+
 <div class="page-header">
   <h1>Handle long-running operations in Node.js </h1>
 </div>
@@ -257,7 +328,7 @@ data-ad-format="auto"></ins>
     <div class="date">
       <span>27 January 2014</span>
     </div>
-    <div class="content">
+    <div class="content" style="line-height: 28px;">
       <div style="font-size: 15px; line-height: 22px;">由於Node.js是Single thread的關係，<br />所以並不適合用來處理<span style="color: red;">耗費CPU</span>或者需要<span style="color: red;">長時間</span>處理的操作，<br />想要處理cpu-intensive或者long-running computation，<br />還是要靠一些job server來解決會比較好（像是<a href="http://gearman.org/" target="_blank">gearman</a>），<br />那如果你不想靠其他的job server來做，<br />硬要用node.js本身來處理cpu-intensive或者long-running computation，<br />就要靠worker來處理！<br />這篇就要講怎麼使用worker．<br />這裡我們要用的workder module是<a href="https://github.com/audreyt/node-webworker-threads">webworker-threads</a>．<br /><br /><span style="color: #e06666; font-size: 18px;">1. install</span><br /><pre class="brush: java">npm install webworker-threads --save<br /></pre><br /><br /><span style="color: #e06666; font-size: 18px;">2. implement a task.js</span><br /><br />首先，我們要先建立一個javascript，<br />而這隻javascript就是用來處理需要長時間的操作，<br />這裡我們就以fibonacci來作為長時間處理的example，<br /><pre class="brush: js">// fibonacci function<br />function fibo (n){                                                                                                               <br />    return n &gt; 1 ? fibo(n - 1) + fibo(n - 2) : 1;                <br />}                                                                <br />                                                                 <br />onmessage = function(event) {                                    <br />    postMessage('Result is : ' + fibo(event.data));                  <br />    self.close();                                                <br />};<br /></pre><br />這隻javascript有兩個function，<br />一個是fibo function，<br />另外一個就是onmessage，onmessage等等我們主程式會call到它，<br />然後onmessage裡面就會去call fibo function．<br /><br /><br /><span style="color: #e06666; font-size: 18px;">3. integrate with your main.js</span><br /><br />在這步就在你的main.js中使用<a href="https://github.com/audreyt/node-webworker-threads">webworker-threads</a>，以及呼叫我們剛剛寫的那隻task.js，<br /><pre class="brush: js">var express = require("express");<br />var app = express();<br />app.use(express.logger());<br /><br />// import the module <br />var worker_thread = require('webworker-threads');<br />var Worker = worker_thread.Worker;<br /><br />app.use(express.static(path.join(__dirname, 'view')));<br /><br />app.get('/fibo', function(req, resp) {<br /><br />    var worker = new Worker('task.js');<br /><br />    worker.onmessage = function(event) {<br />        console.log("The task said : " + event.data);<br />    };                                                                                                                            <br />    worker.postMessage(40);<br /><br />    resp.end('hello world ');<br />});<br /><br />var port = process.env.PORT || 5000;<br />app.listen(port, function() {<br />    console.log("Listening on " + port);<br />});<br /></pre><br />這個example，一樣有使用到express.js，<br />不知道怎麼使用的人可以去看<a href="http://blog.kenyang.net/2014/01/deploying-nodejs-application-to-heroku.html" target="_blank">這一篇：Deploying a Node.js application to Heroku</a><br />webworker-threads的使用方式很簡單，<br />只要先import這個module，<br />然後再呼叫Worker這個instance，<br />接著就可以去new一個worker出來，<br />然後就可以指定要worker做什麼事情，<br />這裡我們指定他去做task.js裡面的事情（new worker('task.js')）．<br /><br /><span style="color: #e06666; font-size: 18px;">4. test</span><br /><br />那要怎麼測試呢？<br />首先先把我們的main.js叫起來，<br /><pre class="brush: js">node main.js<br /></pre>成功叫起來以後，應該會在你的terminal中看到下面的字樣，<br /><br /><div class="separator" style="clear: both; text-align: center;"><a href="http://4.bp.blogspot.com/-giyBWmviB8I/UuU-smEDo0I/AAAAAAAAFIA/iSg3TL2-s_Q/s1600/Screen+Shot+2014-01-27+at+12.58.24+AM.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="http://4.bp.blogspot.com/-giyBWmviB8I/UuU-smEDo0I/AAAAAAAAFIA/iSg3TL2-s_Q/s320/Screen+Shot+2014-01-27+at+12.58.24+AM.png" /></a></div><br />接著就打開我們的browser，<br />然後輸入“http://0.0.0.0:5000/fibo”，<br />這時候browser應該很快的就show出hello world的字樣，<br />然後我們馬上回到terminal看，<br />你應該只會先看到request的log（如下圖），<br /><div class="separator" style="clear: both; text-align: center;"><a href="http://2.bp.blogspot.com/-s6pGcxYS6lI/UuVAEOs3t4I/AAAAAAAAFIQ/AZ083AEaBL8/s1600/Screen+Shot+2014-01-27+at+1.03.09+AM.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="http://2.bp.blogspot.com/-s6pGcxYS6lI/UuVAEOs3t4I/AAAAAAAAFIQ/AZ083AEaBL8/s1600/Screen+Shot+2014-01-27+at+1.03.09+AM.png" /></a></div><br /><br />接著過了幾秒鐘以後才會看到fibo的計算結果（如下圖），<br /><br /><div class="separator" style="clear: both; text-align: center;"><a href="http://2.bp.blogspot.com/-lhxjfM4sVvg/UuVAEK-Eg9I/AAAAAAAAFIM/pSvMrKChzJM/s1600/Screen+Shot+2014-01-27+at+1.04.35+AM.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="http://2.bp.blogspot.com/-lhxjfM4sVvg/UuVAEK-Eg9I/AAAAAAAAFIM/pSvMrKChzJM/s1600/Screen+Shot+2014-01-27+at+1.04.35+AM.png" height="41" width="400" /></a></div><br />如果這裡我們沒有使用worker的話，而是直接call hibo，<br />你會發現很久才可以在browser中看到hello world的字樣！<br />且甚至你可以試試看開兩個browser，然後都去打“http://0.0.0.0:5000/fibo”，<br />你會發現第二個打的request會被hang住很久，因為是single thread的關係，<br />所以thread都在處理第一個request的fibo，處理完才會去處理第二個request！<br />因此想要在node.js中處理cpu-intensive或者long-running computation，<br />就使用worker的概念吧！<br /><br /><br /><br /></div>
     </div>
 

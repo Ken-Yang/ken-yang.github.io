@@ -223,7 +223,50 @@
       </nav>
 
       <div class="container">
-        <body>
+        <style>
+.myButton {
+    -moz-box-shadow:inset 0px 1px 0px 0px #ffffff;
+    -webkit-box-shadow:inset 0px 1px 0px 0px #ffffff;
+    box-shadow:inset 0px 1px 0px 0px #ffffff;
+    background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #f9f9f9), color-stop(1, #e9e9e9));
+    background:-moz-linear-gradient(top, #f9f9f9 5%, #e9e9e9 100%);
+    background:-webkit-linear-gradient(top, #f9f9f9 5%, #e9e9e9 100%);
+    background:-o-linear-gradient(top, #f9f9f9 5%, #e9e9e9 100%);
+    background:-ms-linear-gradient(top, #f9f9f9 5%, #e9e9e9 100%);
+    background:linear-gradient(to bottom, #f9f9f9 5%, #e9e9e9 100%);
+    filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#f9f9f9', endColorstr='#e9e9e9',GradientType=0);
+    background-color:#f9f9f9;
+    -moz-border-radius:6px;
+    -webkit-border-radius:6px;
+    border-radius:6px;
+    border:1px solid #dcdcdc;
+    display:inline-block;
+    cursor:pointer;
+    color:#666666;
+    font-family:Arial;
+    font-size:15px;
+    font-weight:bold;
+    padding:6px 24px;
+    text-decoration:none;
+    text-shadow:0px 1px 0px #ffffff;
+}
+.myButton:hover {
+    background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #e9e9e9), color-stop(1, #f9f9f9));
+    background:-moz-linear-gradient(top, #e9e9e9 5%, #f9f9f9 100%);
+    background:-webkit-linear-gradient(top, #e9e9e9 5%, #f9f9f9 100%);
+    background:-o-linear-gradient(top, #e9e9e9 5%, #f9f9f9 100%);
+    background:-ms-linear-gradient(top, #e9e9e9 5%, #f9f9f9 100%);
+    background:linear-gradient(to bottom, #e9e9e9 5%, #f9f9f9 100%);
+    filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#e9e9e9', endColorstr='#f9f9f9',GradientType=0);
+    background-color:#e9e9e9;
+}
+.myButton:active {
+    position:relative;
+    top:1px;
+}
+</style>
+
+<body>
     <div>
         <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 <!-- id10t_top -->
@@ -242,31 +285,85 @@ data-ad-format="auto"></ins>
       <h1><a style="color: #F22430" href="/2012/10/18/amazon-ec2-regenerate-key">Amazon EC2 regenerate key</a></h1>
       <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
       <p class="author">
-        <span class="date">18 October 2012</span>
+      <div class="date">
+        <span>18 October 2012</span>
+      </div>
       </p>
-      <div class="content">
+      <div class="content" style="line-height: 28px;">
         <div class="separator" style="clear: both; text-align: left;">前天要上去自己的EC2上的某台機器，</div><div class="separator" style="clear: both; text-align: left;">但發現access key 放在另一台筆電上，剛好那台筆電在公司......</div><div class="separator" style="clear: both; text-align: left;">又有急切需求要上去看一些config，</div><div class="separator" style="clear: both; text-align: left;">偏偏EC2的access key只能被download一次 （就是一開始建立intance的時候）</div><div class="separator" style="clear: both; text-align: left;">所以當下我根本無法上到我的機器看！</div><div class="separator" style="clear: both; text-align: left;"><br /></div><div class="separator" style="clear: both; text-align: left;">只好把目前的instance 複製一份image出來，</div><div class="separator" style="clear: both; text-align: left;">然後在利用那份image建立一個新的instance！</div><div class="separator" style="clear: both; text-align: left;">利用這個方法來取得新key，又可以存取到一模一樣設定的機器！</div><div class="separator" style="clear: both; text-align: left;"><br /></div><div class="separator" style="clear: both; text-align: left;"><br /></div><div class="separator" style="clear: both; text-align: left;"><br /></div><div class="separator" style="clear: both; text-align: left;">操作如下！</div><div class="separator" style="clear: both; text-align: left;"><br /></div><div class="separator" style="clear: both; text-align: left;">1. 首先先把自己的正在running的instance stop！</div><div class="separator" style="clear: both; text-align: left;">接著點選該instance -&gt; 點選menu bar上的Instance actions -&gt; 選擇Create Image</div><div class="separator" style="clear: both; text-align: left;">如下圖所示</div><div class="separator" style="clear: both; text-align: left;"><a href="http://3.bp.blogspot.com/-tEXKoyzIJO8/UH-WKKaLMCI/AAAAAAAAA5g/72bF6M5Ccvk/s1600/Screen+Shot+2012-10-17+at+8.52.06+PM.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em; text-align: center;"><img border="0" height="396" src="http://3.bp.blogspot.com/-tEXKoyzIJO8/UH-WKKaLMCI/AAAAAAAAA5g/72bF6M5Ccvk/s640/Screen+Shot+2012-10-17+at+8.52.06+PM.png" width="640" /></a></div><div class="separator" style="clear: both; text-align: left;"><br /></div><div class="separator" style="clear: both; text-align: left;"><br /></div><div class="separator" style="clear: both; text-align: left;"><br /></div><div class="separator" style="clear: both; text-align: left;">2. 填寫Image名稱 - &gt;點選Yes, Create</div><div class="separator" style="clear: both; text-align: left;">如下圖&nbsp;</div><div class="separator" style="clear: both; text-align: center;"><a href="http://1.bp.blogspot.com/-j0mnSS1-YYo/UH-WK8P2-OI/AAAAAAAAA5k/zqwCo572WI0/s1600/Screen+Shot+2012-10-17+at+8.52.17+PM.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="392" src="http://1.bp.blogspot.com/-j0mnSS1-YYo/UH-WK8P2-OI/AAAAAAAAA5k/zqwCo572WI0/s640/Screen+Shot+2012-10-17+at+8.52.17+PM.png" width="640" /></a></div><div class="separator" style="clear: both; text-align: left;"><br /></div><div class="separator" style="clear: both; text-align: left;"><br /></div><div class="separator" style="clear: both; text-align: left;">3. 完成上述步驟以後，就複製完成了！</div><div class="separator" style="clear: both; text-align: left;">接著就要建立一個新的instance！</div><div class="separator" style="clear: both; text-align: left;">這邊的流程跟建立一般的instance沒什麼不同！<br />只不過要選擇自己複製好的image，如下圖所示．</div><br /><div class="separator" style="clear: both; text-align: center;"><a href="http://4.bp.blogspot.com/-iD0okdXyl4E/UH-WMQRgr6I/AAAAAAAAA50/QKNLhmCVN2M/s1600/Screen+Shot+2012-10-17+at+8.52.53+PM.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="416" src="http://4.bp.blogspot.com/-iD0okdXyl4E/UH-WMQRgr6I/AAAAAAAAA50/QKNLhmCVN2M/s640/Screen+Shot+2012-10-17+at+8.52.53+PM.png" width="640" /></a></div><br /><br />4. 到了Create Key Pair這步驟以後，記得建立一個新的Key Pair!<br />不要使用舊的key pair! （因為沒辦法下載了！）<br />所以要選擇建立新的，就可以下載這支新的key!<br />如下圖所示！<br /><br /><div class="separator" style="clear: both; text-align: center;"><a href="http://1.bp.blogspot.com/-n2M3lEl_QwM/UH-WNKVNeqI/AAAAAAAAA58/kGMc4m91bvQ/s1600/Screen+Shot+2012-10-17+at+8.56.55+PM.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="436" src="http://1.bp.blogspot.com/-n2M3lEl_QwM/UH-WNKVNeqI/AAAAAAAAA58/kGMc4m91bvQ/s640/Screen+Shot+2012-10-17+at+8.56.55+PM.png" width="640" /></a></div><div class="separator" style="clear: both; text-align: center;"><br /></div><div class="separator" style="clear: both; text-align: center;"><br /></div><div class="separator" style="clear: both; text-align: center;"><br /></div><div class="separator" style="clear: both; text-align: left;">完成上述步驟就有一台和先前舊的那台一模一樣的機器了！</div><div class="separator" style="clear: both; text-align: left;"><br /></div><div class="separator" style="clear: both; text-align: left;"><br /></div><div class="separator" style="clear: both; text-align: left;"><br /></div><div class="separator" style="clear: both; text-align: left;"><br /></div><br />
       </div>
+      <footer>
+        <p><a class="myButton" href="/2012/10/18/amazon-ec2-regenerate-key">read more &raquo;</a></p>
+        <div>
+          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- id10t_top -->
+<ins class="adsbygoogle"
+style="display:block"
+data-ad-client="ca-pub-7586970907106458"
+data-ad-slot="1161208442"
+data-ad-format="auto"></ins>
+<script>
+    (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+        </div>
+      </footer>
       <hr>
     
       <h1><a style="color: #F22430" href="/2012/10/06/objetive-c-memory-retain">Objetive-C memory (retain)</a></h1>
       <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
       <p class="author">
-        <span class="date">06 October 2012</span>
+      <div class="date">
+        <span>06 October 2012</span>
+      </div>
       </p>
-      <div class="content">
+      <div class="content" style="line-height: 28px;">
         恩，最近在寫Objective-C，<br />遇到了memory的一些問題，<br />也好險我有個好mentor可以問！<br /><br /><br />從Java跳過來這讓我有點點小混淆！<br />還記得我先前講過<a href="http://blog.kenyang.net/2012/01/java.html">Java複製物件</a>的問題嗎？<br />在Java中直接將instance化的物件，直接給予另一個物件！<br />這樣的情形中，這兩個物件是指向同個物件的！<br />假設我有兩個物件，分別為Ａ、Ｂ！<br />如果Ａ裡面的attribute變了！那麼Ｂ也會變！<br /><br />當然這樣的情形在Objective C也是一樣的！<br />但是Objective C有個method，就是retain!<br />還有一個特殊的機制叫做reference counting<br />retain也是把原本的物件給另一個物件！<br />這兩個物件也是指向同一個物件！<br />而reference counting就是當這個物件被copy或者retain時，<br />他的reference count都會加1! <br />（retain 是原有物件會+1，copy是新的物件+1，copy就類似java的clone）<br /><br /><br />但我一開始遇到了一個寫法上的confused，一開始一直在想這兩種差別！<br />code如下<br /><pre class="brush: c">    Book *b1 = [[Book alloc]init]; // retain count=1沒問題<br />    Book *b2 = b1; // retain count還是1，這我大概理解，就是把b2指向b1<br />    Book *b3 = [b1 retain]; // retain count變2<br />    [b1 setVal:20];  // 如果把b1物件中的value設值20，b2, b3也都會變<br /><br /></pre><br />這時候如果把b2, b3的Val都印出來，也都會是20！<br />那麼我就在思考了這兩種的差異！<br /><br />最後也大概知道了！<br />因為b2和b1算是共享同個物件！<br />如果這時候developer把[b1 release]掉！<br />b2也不能使用了！！<br />很容易發生bad access的問題！<br />所以大部份時候都要使用retain來進行物件的存取！（目前還想不到使用b2的方法用途）<br />以避免原有物件被release出來以後，現有的新物件才不會crash掉！<br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
       </div>
+      <footer>
+        <p><a class="myButton" href="/2012/10/06/objetive-c-memory-retain">read more &raquo;</a></p>
+        <div>
+          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- id10t_top -->
+<ins class="adsbygoogle"
+style="display:block"
+data-ad-client="ca-pub-7586970907106458"
+data-ad-slot="1161208442"
+data-ad-format="auto"></ins>
+<script>
+    (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+        </div>
+      </footer>
       <hr>
     
       <h1><a style="color: #F22430" href="/2012/10/04/xcode-45-key-binding-delete-current-line">Xcode 4.5 key binding (delete current line)</a></h1>
       <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
       <p class="author">
-        <span class="date">04 October 2012</span>
+      <div class="date">
+        <span>04 October 2012</span>
+      </div>
       </p>
-      <div class="content">
+      <div class="content" style="line-height: 28px;">
         最近剛拿到了mba, 開始在進行ios &amp; mac的study！<br />所以一定要用到xcode！<br />xcode真的是蠻強大的，像是analysis memory leak的工具！<br />但一直用習慣eclipse的我，還是有點點小小不習慣，<br />例如在eclispe可以刪除目前游標所在的一整行或者是複製一整行！<br />在eclispe可以透過hot key去操作！很方便！ 在Eclipse裡面就有這些選項可以讓開發者設定！<br /><br />但是在Xcode沒有預設的hot key可以“直接”做到！<br />得透過一連串的hot key去做到，例如先按下cmd+d -&gt; cmd+x (隨便舉例的）<br />簡單的說無法透過一個步驟就去做到（例如cmd+d)<br /><br />但好險我們可以自行設定一個combine的組合鍵來完成上述的動作！<br /><br />首先先開啓terminal！<br />然後切換到下面的目錄<br /><pre class="brush: java">cd /Applications/Xcode.app/Contents/Frameworks/IDEKit.framework/<br /></pre><br />然後可以下ls -al看一下該目錄底下的目錄結構，<br />你會看到如下圖的結構！<br />你會發現有兩個Link指向Versions這個資料夾！<br />你的資料夾的權限應該是r--r--r--x！<br />只有讀的權限！<br />但我們等等要修改該目錄底下的檔案，所以先把權限設777吧！<br /><div class="separator" style="clear: both; text-align: center;"><a href="http://3.bp.blogspot.com/-QGMemXTaciw/UG0hjhyKxMI/AAAAAAAAA40/Do8-tulYvUw/s1600/Screen+Shot+2012-10-04+at+1.43.40+PM.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="158" src="http://3.bp.blogspot.com/-QGMemXTaciw/UG0hjhyKxMI/AAAAAAAAA40/Do8-tulYvUw/s640/Screen+Shot+2012-10-04+at+1.43.40+PM.png" width="640" /></a></div><div class="separator" style="clear: both; text-align: center;"><br /></div><div class="separator" style="clear: both; text-align: left;"><br /></div><div class="separator" style="clear: both; text-align: left;">指令如下：</div><div class="separator" style="clear: both; text-align: left;"></div><pre class="brush: java">chmod 777 Versions<br /></pre><div class="separator" style="clear: both; text-align: left;"><br /></div><div class="separator" style="clear: both; text-align: left;"><br /></div><div class="separator" style="clear: both; text-align: left;">改變以後我們在進到裡面的目錄！</div><div class="separator" style="clear: both; text-align: left;">如下：</div><div class="separator" style="clear: both; text-align: left;"></div><pre class="brush: java">cd ./Current/Resources<br /></pre><div class="separator" style="clear: both; text-align: left;"><br /></div><div class="separator" style="clear: both; text-align: left;"><br /></div><div class="separator" style="clear: both; text-align: left;">然後Xcode的預設key binding設定檔就在該目錄底下</div><div class="separator" style="clear: both; text-align: left;">接著就用vim去修改設定檔案吧！</div><div class="separator" style="clear: both; text-align: left;"></div><pre class="brush: java">sudo vim ./IDETextKeyBindingSet.plist <br /></pre><div class="separator" style="clear: both; text-align: left;"><br /></div><div class="separator" style="clear: both; text-align: left;"><br /></div><div class="separator" style="clear: both; text-align: left;">打開以後會看到一大串的xml格式，基本上只要在下面dist中間加入入即可！</div><div class="separator" style="clear: both; text-align: left;"></div><pre class="brush: xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;<br />&lt;!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd"&gt;<br />&lt;plist version="1.0"&gt;<br />&lt;dict&gt;<br /><br />&lt;/dict&gt;<br />&lt;/plist&gt;<br /></pre><div class="separator" style="clear: both; text-align: left;"><br /></div><div class="separator" style="clear: both; text-align: left;">所以加入以後，就會變成下面的樣子！</div><div class="separator" style="clear: both; text-align: left;"></div><pre class="brush: xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;<br />&lt;!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd"&gt;<br />&lt;plist version="1.0"&gt;<br />&lt;dict&gt;<br />        &lt;dict&gt;<br />                &lt;key&gt;DeleteCurrentLine&lt;/key&gt;<br />                &lt;string&gt;moveToBeginningOfLine:, deleteToEndOfLine:&lt;/string&gt;<br />        &lt;/dict&gt;<br /><br />&lt;/dict&gt;<br />&lt;/plist&gt;<br /></pre><div class="separator" style="clear: both; text-align: left;"><br /></div><div class="separator" style="clear: both; text-align: left;"><br /></div><div class="separator" style="clear: both; text-align: left;">這個例子是刪除目前游標行，</div><div class="separator" style="clear: both; text-align: left;"><key>裡面就是這個指令的名稱 （別亂取，待會 要在Xcode裡面進行這個指令的快捷鍵）</key></div><div class="separator" style="clear: both; text-align: left;"><string>裡面就是這個指令的一連串指令，我們可以看到有下面兩個</string></div><div class="separator" style="clear: both; text-align: left;"></div><br /><ul><li>moveToBeginningOfLine（意思是移到這行的最前面）</li><li>deleteToEndOfLine（意思是從游標位置開始刪除，刪除到這行的最後面）</li></ul><br /><br /><div class="separator" style="clear: both; text-align: left;">透過上述的指令就可以進行刪除一整行，</div><div class="separator" style="clear: both; text-align: left;">接著就打開Xcode吧！</div><div class="separator" style="clear: both; text-align: left;">1) 先進到Preferences裡面！</div><div class="separator" style="clear: both; text-align: left;">2) 選擇Key Binding！</div><div class="separator" style="clear: both; text-align: left;">3) 然後在搜尋筐中輸入你剛剛上面xml檔案中填入的key名稱</div><div class="separator" style="clear: both; text-align: left;">4) 基本上你就可以找到你剛剛設定的檔案！就可以修改他的快捷鍵了！像下圖的案例就是以cmd+d來進行刪除一整行</div><div class="separator" style="clear: both; text-align: left;"><br /></div><div class="separator" style="clear: both; text-align: left;"><br /></div><div class="separator" style="clear: both; text-align: left;"><br /></div><div class="separator" style="clear: both; text-align: center;"><a href="http://3.bp.blogspot.com/-yMPP_tk9GHk/UG0neA6heoI/AAAAAAAAA5I/4ba3gfFjV4o/s1600/Screen+Shot+2012-10-04+at+2.06.51+PM.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="244" src="http://3.bp.blogspot.com/-yMPP_tk9GHk/UG0neA6heoI/AAAAAAAAA5I/4ba3gfFjV4o/s640/Screen+Shot+2012-10-04+at+2.06.51+PM.png" width="640" /></a></div><div class="separator" style="clear: both; text-align: left;"><br /></div><div class="separator" style="clear: both; text-align: left;"><br /></div><div class="separator" style="clear: both; text-align: left;"><br /></div><div class="separator" style="clear: both; text-align: left;"><br /></div><div class="separator" style="clear: both; text-align: left;"><br /></div><div class="separator" style="clear: both; text-align: left;"><br /></div><div class="separator" style="clear: both; text-align: left;"><br /></div><div class="separator" style="clear: both; text-align: left;"><br /></div>
       </div>
+      <footer>
+        <p><a class="myButton" href="/2012/10/04/xcode-45-key-binding-delete-current-line">read more &raquo;</a></p>
+        <div>
+          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- id10t_top -->
+<ins class="adsbygoogle"
+style="display:block"
+data-ad-client="ca-pub-7586970907106458"
+data-ad-slot="1161208442"
+data-ad-format="auto"></ins>
+<script>
+    (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+        </div>
+      </footer>
       <hr>
     
 

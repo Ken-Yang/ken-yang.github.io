@@ -223,7 +223,50 @@
       </nav>
 
       <div class="container">
-        <body>
+        <style>
+.myButton {
+    -moz-box-shadow:inset 0px 1px 0px 0px #ffffff;
+    -webkit-box-shadow:inset 0px 1px 0px 0px #ffffff;
+    box-shadow:inset 0px 1px 0px 0px #ffffff;
+    background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #f9f9f9), color-stop(1, #e9e9e9));
+    background:-moz-linear-gradient(top, #f9f9f9 5%, #e9e9e9 100%);
+    background:-webkit-linear-gradient(top, #f9f9f9 5%, #e9e9e9 100%);
+    background:-o-linear-gradient(top, #f9f9f9 5%, #e9e9e9 100%);
+    background:-ms-linear-gradient(top, #f9f9f9 5%, #e9e9e9 100%);
+    background:linear-gradient(to bottom, #f9f9f9 5%, #e9e9e9 100%);
+    filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#f9f9f9', endColorstr='#e9e9e9',GradientType=0);
+    background-color:#f9f9f9;
+    -moz-border-radius:6px;
+    -webkit-border-radius:6px;
+    border-radius:6px;
+    border:1px solid #dcdcdc;
+    display:inline-block;
+    cursor:pointer;
+    color:#666666;
+    font-family:Arial;
+    font-size:15px;
+    font-weight:bold;
+    padding:6px 24px;
+    text-decoration:none;
+    text-shadow:0px 1px 0px #ffffff;
+}
+.myButton:hover {
+    background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #e9e9e9), color-stop(1, #f9f9f9));
+    background:-moz-linear-gradient(top, #e9e9e9 5%, #f9f9f9 100%);
+    background:-webkit-linear-gradient(top, #e9e9e9 5%, #f9f9f9 100%);
+    background:-o-linear-gradient(top, #e9e9e9 5%, #f9f9f9 100%);
+    background:-ms-linear-gradient(top, #e9e9e9 5%, #f9f9f9 100%);
+    background:linear-gradient(to bottom, #e9e9e9 5%, #f9f9f9 100%);
+    filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#e9e9e9', endColorstr='#f9f9f9',GradientType=0);
+    background-color:#e9e9e9;
+}
+.myButton:active {
+    position:relative;
+    top:1px;
+}
+</style>
+
+<body>
     <div>
         <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 <!-- id10t_top -->
@@ -242,31 +285,85 @@ data-ad-format="auto"></ins>
       <h1><a style="color: #F22430" href="/2011/12/15/googe-app-engine-gae-domain">Googe App Engine (GAE) 設定 Domain</a></h1>
       <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
       <p class="author">
-        <span class="date">15 December 2011</span>
+      <div class="date">
+        <span>15 December 2011</span>
+      </div>
       </p>
-      <div class="content">
+      <div class="content" style="line-height: 28px;">
         恩，最近蠻常在GAE上面綁一個DOMAIN，<br />雖然蠻常操作，可是每次都還是要想一下，才想起來該怎麼用。<br /><br /><br />在GAE上大概分兩種設定domain，<br /><br /><ol><li>透過Google Apps去買Domain (這種方式在綁domain很簡單)</li><li>自己已經有domain了，想要只到我的GAE上去</li></ol><br />第一種很簡單，就不贅述，<br />第二種也沒難到哪去，只是要在我們買domain(例如：xxx.com)的地方新增一筆cname<br />且還要用我們的domain(例如：xxx.com)去申請Google Apps。<br />然後再verify我們的擁有權！<br /><br /><br />流程大概如下：<br /><table align="center" cellpadding="0" cellspacing="0" class="tr-caption-container" style="margin-left: auto; margin-right: auto; text-align: center;"><tbody><tr><td style="text-align: center;"><a href="http://2.bp.blogspot.com/-qEmR5Tyxz_Y/TuoWXEpiqkI/AAAAAAAAAYs/WcCJj8COmWU/s1600/1.PNG" imageanchor="1" style="margin-left: auto; margin-right: auto;"><img border="0" height="400" src="http://2.bp.blogspot.com/-qEmR5Tyxz_Y/TuoWXEpiqkI/AAAAAAAAAYs/WcCJj8COmWU/s400/1.PNG" width="127" /></a></td></tr><tr><td class="tr-caption" style="text-align: center;">【步驟一】<br />先登入到你的ＧＡＥ後台，然後點選你要設定的那個application id，然後在去點選圖中紅色的框框（Application Settings）</td></tr></tbody></table><br /><table align="center" cellpadding="0" cellspacing="0" class="tr-caption-container" style="margin-left: auto; margin-right: auto; text-align: center;"><tbody><tr><td style="text-align: center;"><a href="http://2.bp.blogspot.com/-KTRHVJtpp20/TuoWX8OQx5I/AAAAAAAAAY0/nxKNCYtdeIQ/s1600/2.PNG" imageanchor="1" style="margin-left: auto; margin-right: auto;"><img border="0" height="83" src="http://2.bp.blogspot.com/-KTRHVJtpp20/TuoWX8OQx5I/AAAAAAAAAY0/nxKNCYtdeIQ/s640/2.PNG" width="640" /></a></td></tr><tr><td class="tr-caption" style="text-align: center;">【步驟二】<br />點選以後，會看到此張圖，請再點選此圖中的Add Domain</td></tr></tbody></table><br /><table align="center" cellpadding="0" cellspacing="0" class="tr-caption-container" style="margin-left: auto; margin-right: auto; text-align: center;"><tbody><tr><td style="text-align: center;"><a href="http://4.bp.blogspot.com/-MieCzRbjvew/TuoWYtq9HlI/AAAAAAAAAY4/Ge8dRcYBi54/s1600/3.PNG" imageanchor="1" style="margin-left: auto; margin-right: auto;"><img border="0" height="192" src="http://4.bp.blogspot.com/-MieCzRbjvew/TuoWYtq9HlI/AAAAAAAAAY4/Ge8dRcYBi54/s640/3.PNG" width="640" /></a></td></tr><tr><td class="tr-caption" style="text-align: center;">【步驟三】<br />點完按鈕以後會看到此張圖，請先點選圖中的紅色框框（要先用自己的domain去註冊Google Apps）<br />ps: 綠色框框等等會用到</td></tr></tbody></table><br /><table align="center" cellpadding="0" cellspacing="0" class="tr-caption-container" style="margin-left: auto; margin-right: auto; text-align: center;"><tbody><tr><td style="text-align: center;"><a href="http://2.bp.blogspot.com/-8iiXp1bzKxQ/TuoWZs9PFOI/AAAAAAAAAZA/xYSnfvTTIPg/s1600/4.PNG" imageanchor="1" style="margin-left: auto; margin-right: auto;"><img border="0" height="252" src="http://2.bp.blogspot.com/-8iiXp1bzKxQ/TuoWZs9PFOI/AAAAAAAAAZA/xYSnfvTTIPg/s640/4.PNG" width="640" /></a></td></tr><tr><td class="tr-caption" style="text-align: center;">【步驟四】<br />點選以後會看到此圖，請在圖中的輸入框輸入您的domain，（例如：xxx.com）<br />填寫完以後，請點選Submit按鈕<br />點完按鈕以後，會要求你輸入資料<br />輸入完就點選送出</td></tr></tbody></table><br /><table align="center" cellpadding="0" cellspacing="0" class="tr-caption-container" style="margin-left: auto; margin-right: auto; text-align: center;"><tbody><tr><td style="text-align: center;"><a href="http://1.bp.blogspot.com/-dHi6mQ5lY4M/TuoWaklmzHI/AAAAAAAAAZM/2i4VjcDnr9U/s1600/5.PNG" imageanchor="1" style="margin-left: auto; margin-right: auto;"><img border="0" height="266" src="http://1.bp.blogspot.com/-dHi6mQ5lY4M/TuoWaklmzHI/AAAAAAAAAZM/2i4VjcDnr9U/s640/5.PNG" width="640" /></a></td></tr><tr><td class="tr-caption" style="text-align: center;">【步驟五】<br />之後會看到此畫面，會要求您驗證domain<br />有很多種驗證方式，這邊就不教了，因為很簡單。</td></tr></tbody></table><br /><table align="center" cellpadding="0" cellspacing="0" class="tr-caption-container" style="margin-left: auto; margin-right: auto; text-align: center;"><tbody><tr><td style="text-align: center;"><a href="http://4.bp.blogspot.com/-xWMZNlkcZds/TuoXsWT16xI/AAAAAAAAAZs/RHOgXrSgADM/s1600/6.PNG" imageanchor="1" style="margin-left: auto; margin-right: auto;"><img border="0" height="310" src="http://4.bp.blogspot.com/-xWMZNlkcZds/TuoXsWT16xI/AAAAAAAAAZs/RHOgXrSgADM/s400/6.PNG" width="400" /></a></td></tr><tr><td class="tr-caption" style="text-align: center;">【步驟六】<br />記得步驟三的綠色框框嗎？請回到那，並在那個框框輸入您的domain名稱（例如：xxx.com）<br />接著就會看到這個畫面，就輸入步驟四時填入的管理者帳號資訊</td></tr></tbody></table><div class="separator" style="clear: both; text-align: center;"></div><br /><table align="center" cellpadding="0" cellspacing="0" class="tr-caption-container" style="margin-left: auto; margin-right: auto; text-align: center;"><tbody><tr><td style="text-align: center;"><a href="http://2.bp.blogspot.com/-aU7kdYBZpOQ/TuoWcGmszhI/AAAAAAAAAZY/fdXkABFfnxY/s1600/7.PNG" imageanchor="1" style="margin-left: auto; margin-right: auto;"><img border="0" height="232" src="http://2.bp.blogspot.com/-aU7kdYBZpOQ/TuoWcGmszhI/AAAAAAAAAZY/fdXkABFfnxY/s640/7.PNG" width="640" /></a></td></tr><tr><td class="tr-caption" style="text-align: center;">【步驟七】<br />登入成功以後就會看到此畫面，就點選此圖中的紅色框框<br />輸入您的sub-domain名稱，（例如：www）<br />接著你就會有一列資料是www.xxx.com</td></tr></tbody></table><br /><table align="center" cellpadding="0" cellspacing="0" class="tr-caption-container" style="margin-left: auto; margin-right: auto; text-align: center;"><tbody><tr><td style="text-align: center;"><a href="http://4.bp.blogspot.com/-FJQhQeOM4bo/TuoWc5xTM4I/AAAAAAAAAZg/vv1drEI-9lM/s1600/8.PNG" imageanchor="1" style="margin-left: auto; margin-right: auto;"><img border="0" height="171" src="http://4.bp.blogspot.com/-FJQhQeOM4bo/TuoWc5xTM4I/AAAAAAAAAZg/vv1drEI-9lM/s640/8.PNG" width="640" /></a></td></tr><tr><td class="tr-caption" style="text-align: center;">【步驟八】<br />最後一步了，去到您購買domain的管理後台，這邊是以hinet為主，在後台上新增一筆cname，<br />且value為ghs.google.com<br />主機名稱（sub-domain）就是剛剛步驟七填寫的值</td></tr></tbody></table><br /><br /><br /><br /><br /><br /><br />
       </div>
+      <footer>
+        <p><a class="myButton" href="/2011/12/15/googe-app-engine-gae-domain">read more &raquo;</a></p>
+        <div>
+          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- id10t_top -->
+<ins class="adsbygoogle"
+style="display:block"
+data-ad-client="ca-pub-7586970907106458"
+data-ad-slot="1161208442"
+data-ad-format="auto"></ins>
+<script>
+    (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+        </div>
+      </footer>
       <hr>
     
       <h1><a style="color: #F22430" href="/2011/12/13/telnet-post">如何用Telnet POST資料</a></h1>
       <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
       <p class="author">
-        <span class="date">13 December 2011</span>
+      <div class="date">
+        <span>13 December 2011</span>
+      </div>
       </p>
-      <div class="content">
+      <div class="content" style="line-height: 28px;">
         有極少數的網站開發者，<br />在處理有關input資料時，只會在client端進行validate（用Javascript），<br />往往忽略了server端的驗證。<br /><br />如果這時候，hacker寫個小軟體利用telnet發送一個post到你的server，<br />那就爆了!<br />當然，hacker也可以直接寫個form，然後action是對你的server，<br />這樣就避掉client端的js，只不過這邊要說明怎麼用telnet去發出一個request。<br /><br /><br /><br />假設對方做一個輸入mail的page，<br />然後該page有驗證，如果你輸入不是mail的格式，<br />就不會將資料傳到他的server，以及新增至DB。<br />這時候我們就可以利用telnet，跳過他前端的驗證機制!<br /><br /><br />首先打開你的cmd!<br /><br />接著輸入下圖中的指令：<br /><br /><a href="http://4.bp.blogspot.com/-3Q5xiAZwjPY/TuZIO7ov11I/AAAAAAAAAYU/Q2RQKz0vGIg/s1600/1.PNG" imageanchor="1" style="clear: left; float: left; margin-bottom: 1em; margin-right: 1em;"><img border="0" height="48" src="http://4.bp.blogspot.com/-3Q5xiAZwjPY/TuZIO7ov11I/AAAAAAAAAYU/Q2RQKz0vGIg/s400/1.PNG" width="400" /></a><br /><br /><br /><br /><br /><br />恩，上圖中的網址，記得改成連線的網址，圖中只是範例，<br />你連不到的！<br /><br />連到以後，按下鍵盤的&nbsp;<span class="Apple-style-span" style="font-size: large;">CTRL+]</span>　按鍵<br />接著輸入下圖中的指令，set localecho，輸入完成，按2下enter，<br />這段的目的是讓你等等輸入指令時看得到自己在輸入甚麼，<br />如果沒有這段，等等輸入指令，你是看不到自己在打啥！<br /><br /><a href="http://3.bp.blogspot.com/-OipJ3-j6jOI/TuZIPZO6UBI/AAAAAAAAAYY/iCJeMLTTC1o/s1600/2.PNG" imageanchor="1" style="clear: left; float: left; margin-bottom: 1em; margin-right: 1em;"><img border="0" height="151" src="http://3.bp.blogspot.com/-OipJ3-j6jOI/TuZIPZO6UBI/AAAAAAAAAYY/iCJeMLTTC1o/s400/2.PNG" style="cursor: move;" width="400" /></a><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />接著就可以輸入發送POST的指令了！可以看下圖！<br />建議你，先在記事本上打一打，再貼上，因為在CMD輸入錯了，<br />是不能按DELETE或者Backspace的<br /><br /><div class="separator" style="clear: both; text-align: center;"><a href="http://1.bp.blogspot.com/-CjCQk5V-DRk/TuZIP39S0WI/AAAAAAAAAYg/RWNn_jH76UM/s1600/3.png" imageanchor="1" style="clear: left; float: left; margin-bottom: 1em; margin-right: 1em;"><img border="0" height="169" src="http://1.bp.blogspot.com/-CjCQk5V-DRk/TuZIP39S0WI/AAAAAAAAAYg/RWNn_jH76UM/s640/3.png" width="640" /></a></div><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />第一行，記得是POST，然後/yyyy，就是你要收資料的page，要改成自己的喔!<br />第二行，HOST就是主機名稱，<br />第三行，就是告訴server，會有表單的資料傳遞過來<br /><form>第四行，content-lengh，就是你要傳的資料有多長，因為我們的資料是mail=88811，所以是10<br />第五行，就是response完，連線就斷掉。<br /><br />上面都是http header，當然還有很多，你可以自己偽造!<br />例如cookie、date等等之類的!<br />記得header與data之間要空一行空白，<br />接著才可以輸入資料<br />就是圖中的mail=88811。<br />這樣就完成了，你就輸入一個不是正確mail格式的mail給他!<br />且如果他 server沒有進行驗證，這時候就錯誤了!<br />當然你可以把mail的問題放大，可能是sql injection，或者是XSS之類的問題!<br /><br /><br /><br /><br /><br /><br /><br /><br /><br /></form><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
       </div>
+      <footer>
+        <p><a class="myButton" href="/2011/12/13/telnet-post">read more &raquo;</a></p>
+        <div>
+          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- id10t_top -->
+<ins class="adsbygoogle"
+style="display:block"
+data-ad-client="ca-pub-7586970907106458"
+data-ad-slot="1161208442"
+data-ad-format="auto"></ins>
+<script>
+    (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+        </div>
+      </footer>
       <hr>
     
       <h1><a style="color: #F22430" href="/2011/12/12/chrome-xss">Chrome 防範XSS機制</a></h1>
       <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
       <p class="author">
-        <span class="date">12 December 2011</span>
+      <div class="date">
+        <span>12 December 2011</span>
+      </div>
       </p>
-      <div class="content">
+      <div class="content" style="line-height: 28px;">
         <span class="Apple-style-span" style="background-color: white; color: red; font-family: Consolas, 'Lucida Console', monospace; font-size: 12px; white-space: pre-wrap;">Refused to execute a JavaScript script. Source code of script found within request.</span><br /><br /><br />恩，今天再做一個準備Demo何謂XSS攻擊的網頁，<br />發現用Chrome開啟該網頁時，所有的攻擊都無效!!!!!!<br />去看了一下Console，發現出現了下列的訊息<br /><br /><span class="Apple-style-span" style="background-color: white; color: red; font-family: Consolas, 'Lucida Console', monospace; font-size: 12px; white-space: pre-wrap;">Refused to execute a JavaScript script. Source code of script found within request.</span><br /><div>才知道原來在Chrome裡面，只要request裡面含有JS code的，且只要有print出來的，都會被擋掉!!!</div><div><br /></div><div>不知道是在第幾版才有的，感覺Chrome太聰明也不是好事，</div><div>認為還是有些事情是developer該懂的，</div><div>當然!!! 這樣的機制對end user來說是好事! 至少不會被攻擊!<br /><br /><br /><br /><br /><br /><br /><br /><br /><br /></div>
       </div>
+      <footer>
+        <p><a class="myButton" href="/2011/12/12/chrome-xss">read more &raquo;</a></p>
+        <div>
+          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- id10t_top -->
+<ins class="adsbygoogle"
+style="display:block"
+data-ad-client="ca-pub-7586970907106458"
+data-ad-slot="1161208442"
+data-ad-format="auto"></ins>
+<script>
+    (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+        </div>
+      </footer>
       <hr>
     
 

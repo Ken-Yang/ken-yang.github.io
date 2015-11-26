@@ -223,7 +223,78 @@
       </nav>
 
       <div class="container">
-        
+        <style>
+/* Adjusted to give override background and text colour */
+.highlight pre, pre, .highlight .hll {
+    background-color: #49483E;
+    border: 1px solid #ccc;
+    padding: 6px 10px;
+    border-radius: 3px;
+    color: #FFFFFF;
+}
+/* Highlights taken from https://gist.github.com/asaaki/1007420  for Monokai theme */
+.c                 { color: #75715e }               /* Comment                     */
+.err               { color: #960050;
+                     background-color: #1e0010 }    /* Error                       */
+.k                 { color: #66d9ef }               /* Keyword                     */
+.l                 { color: #ae81ff }               /* Literal                     */
+.n                 { color: #f8f8f2 }               /* Name                        */
+.o                 { color: #f92672 }               /* Operator                    */
+.p                 { color: #f8f8f2 }               /* Punctuation                 */
+.cm                { color: #75715e }               /* Comment.Multiline           */
+.cp                { color: #75715e }               /* Comment.Preproc             */
+.c1                { color: #75715e }               /* Comment.Single              */
+.cs                { color: #75715e }               /* Comment.Special             */
+.ge                { font-style: italic }           /* Generic.Emph                */
+.gs                { font-weight: bold }            /* Generic.Strong              */
+.kc                { color: #66d9ef }               /* Keyword.Constant            */
+.kd                { color: #66d9ef }               /* Keyword.Declaration         */
+.kn                { color: #f92672 }               /* Keyword.Namespace           */
+.kp                { color: #66d9ef }               /* Keyword.Pseudo              */
+.kr                { color: #66d9ef }               /* Keyword.Reserved            */
+.kt                { color: #66d9ef }               /* Keyword.Type                */
+.ld                { color: #e6db74 }               /* Literal.Date                */
+.m                 { color: #ae81ff }               /* Literal.Number              */
+.s                 { color: #e6db74 }               /* Literal.String              */
+.na                { color: #a6e22e }               /* Name.Attribute              */
+.nb                { color: #f8f8f2 }               /* Name.Builtin                */
+.nc                { color: #a6e22e }               /* Name.Class                  */
+.no                { color: #66d9ef }               /* Name.Constant               */
+.nd                { color: #a6e22e }               /* Name.Decorator              */
+.ni                { color: #f8f8f2 }               /* Name.Entity                 */
+.ne                { color: #a6e22e }               /* Name.Exception              */
+.nf                { color: #a6e22e }               /* Name.Function               */
+.nl                { color: #f8f8f2 }               /* Name.Label                  */
+.nn                { color: #f8f8f2 }               /* Name.Namespace              */
+.nx                { color: #a6e22e }               /* Name.Other                  */
+.py                { color: #f8f8f2 }               /* Name.Property               */
+.nt                { color: #f92672 }               /* Name.Tag                    */
+.nv                { color: #f8f8f2 }               /* Name.Variable               */
+.ow                { color: #f92672 }               /* Operator.Word               */
+.w                 { color: #f8f8f2 }               /* Text.Whitespace             */
+.mf                { color: #ae81ff }               /* Literal.Number.Float        */
+.mh                { color: #ae81ff }               /* Literal.Number.Hex          */
+.mi                { color: #ae81ff }               /* Literal.Number.Integer      */
+.mo                { color: #ae81ff }               /* Literal.Number.Oct          */
+.sb                { color: #e6db74 }               /* Literal.String.Backtick     */
+.sc                { color: #e6db74 }               /* Literal.String.Char         */
+.sd                { color: #e6db74 }               /* Literal.String.Doc          */
+.s2                { color: #e6db74 }               /* Literal.String.Double       */
+.se                { color: #ae81ff }               /* Literal.String.Escape       */
+.sh                { color: #e6db74 }               /* Literal.String.Heredoc      */
+.si                { color: #e6db74 }               /* Literal.String.Interpol     */
+.sx                { color: #e6db74 }               /* Literal.String.Other        */
+.sr                { color: #e6db74 }               /* Literal.String.Regex        */
+.s1                { color: #e6db74 }               /* Literal.String.Single       */
+.ss                { color: #e6db74 }               /* Literal.String.Symbol       */
+.bp                { color: #f8f8f2 }               /* Name.Builtin.Pseudo         */
+.vc                { color: #f8f8f2 }               /* Name.Variable.Class         */
+.vg                { color: #f8f8f2 }               /* Name.Variable.Global        */
+.vi                { color: #f8f8f2 }               /* Name.Variable.Instance      */
+.il                { color: #ae81ff }               /* Literal.Number.Integer.Long */
+</style>
+
+
 <div class="page-header">
   <h1>Build a deb package from source </h1>
 </div>
@@ -257,7 +328,7 @@ data-ad-format="auto"></ins>
     <div class="date">
       <span>10 March 2014</span>
     </div>
-    <div class="content">
+    <div class="content" style="line-height: 28px;">
       <div style="font-size: 15px; line-height: 22px;">最近因為安全性的關係，<br />我要在ubuntu 10.04上面將openssl從0.9.8k更新至1.0.1e，<br />以及將openssh從5.3p1更新至6.2p2 <br />但偏偏這兩個較新的版本都沒有給10.04用的package....<br />所以這時候只好自己build了！<br />有人可能會覺得奇怪，為什麼要包成package安裝？<br />而不直接tar開source，然後make install就好？<br />因為我需要重複的更新很多次，很多檯機器！<br />如果在每一檯都去./configure, make, make install...那真的會很花時間！<br />所以最快的方式就是先在一檯機器上build package，<br />然後再把package拿到每一檯去安裝，<br />會快上許多！<br /><br />喔！對了！這邊教你的是怎麼build出一包debian package！<br />如果你想要把這包package撒出去給別人使用，建議你要加上sign key啦！<br />甚至如果你想要撒到launchpad上的話，更要加上sign key！<br />但這裡只會教怎麼build而已！<br /><br />恩，其實build還是很簡單！<br />難的是環境的準備跟環境的設定啊.....<br /><br /><br />在這裡會介紹兩種build debian package的方法！<br /><ol><li>checkinstall</li><li>debuild</li></ol><br /><br />這兩種的方式差蠻多的，<br />checkinstall它是用錄製的方式，<br />透過make install，然後錄下整個安裝過程，<br />再把打包成一個debian package！<br />而debuild可以想像成就是動態的去build，把所需的檔案通通包進去package！<br /><br /><span style="color: #e06666; font-size: 18px;">1. install tools</span><br /><br />先安裝所需的package，第一個是checkinstall，再來安裝ubuntu-dev-tools這個package，<br />ubuntu-dev-tools裡面就包含了debuild等相關需要的tools．<br /><pre class="brush: java">apt-get install checkinstall<br />apt-get install ubuntu-dev-tools  bzr-builddeb debhelper<br /></pre><br /><span style="color: #e06666; font-size: 18px;">2. download and decompress tarball</span><br /><br />把source code下載下來和解壓縮開，<br /><pre class="brush: java">cd ~<br />wget http://www.openssl.org/source/openssl-1.0.1e.tar.gz  // download ssl<br />tar xvzf openssl-1.0.1e.tar.gz<br /><br />wget http://openbsd.org.ar/pub/OpenBSD/OpenSSH/portable/openssh-6.2p2.tar.gz  // download ssh<br /><br />cd openssl-1.0.1e<br /></pre><br /><span style="color: #e06666; font-size: 18px;">3. Config and Compile source code</span><br /><br />這一步蠻重要的，<br />要進行config和make(compile)，<br />但！！！只有checkintall需要“先”config and compile！<br />先config，openssl的config還好，但openssh的config要稍微注意一點，<br />openssh的config要特別帶一個--sysconfdir，<br />這個參數是說明你將來的sshd_config, ssh_config, ssh_host_xxx_key要放在哪裡，<br />如果你沒有帶這個參數，預設應該是會存在/usr/etc/底下，老實說蠻奇怪的！<br />所以還是指定一下吧！<br />那因為前面剛剛說了，只有openssl需要先config，所以等等會再說openssh怎麼去設定config，<br />先設定openssl的config，<br /><pre class="brush: java">./config<br /></pre><br />進行make，make就是compile，把你的source code compile成binary，<br /><pre class="brush: java">make<br /></pre><br /><br /><span style="color: #e06666; font-size: 18px;">4. Build package (checkinstall)</span><br /><br />前面說了build package，這裡會介紹兩種方法（其實蠻多種方法的），<br />我會先用checkinstall build ssl，然後用debuild build ssh，<br />首先是ssl，<br /><pre class="brush: java">checkinstall make install<br /></pre>checkinstall的原理就是會去錄製接在它後面那個command所作的事情，<br />所以我們後面接make install（就是安裝），<br />make install下下去以後就會真的去安裝這個package，<br />然後checkintall就會在旁邊錄起來！<br />checkinstall這個指令按下enter以後，會出現幾個preconfig的訊息，<br />你要先替這個package建立一些information，<br />第一個是會問你doc，這個就是直接y下去！（如下圖）<br /><div class="separator" style="clear: both; text-align: center;"><a href="http://4.bp.blogspot.com/-YP1vCg_L8Ms/Ux14puERFgI/AAAAAAAAFJ0/j4W5Spb3314/s1600/Screen+Shot+2014-03-10+at+3.15.30+PM.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="http://4.bp.blogspot.com/-YP1vCg_L8Ms/Ux14puERFgI/AAAAAAAAFJ0/j4W5Spb3314/s1600/Screen+Shot+2014-03-10+at+3.15.30+PM.png" height="148" width="640" /></a></div><br />接著是要你描述一下這個package是做什麼的（如下圖）<br /><div class="separator" style="clear: both; text-align: center;"><a href="http://2.bp.blogspot.com/-EMe13vp50Ps/Ux14ppgOv9I/AAAAAAAAFJg/p65kwREtHCc/s1600/Screen+Shot+2014-03-10+at+3.16.02+PM.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="http://2.bp.blogspot.com/-EMe13vp50Ps/Ux14ppgOv9I/AAAAAAAAFJg/p65kwREtHCc/s1600/Screen+Shot+2014-03-10+at+3.16.02+PM.png" height="72" width="400" /></a></div><br />最後就是這package的相關資訊，你可以改掉maintainer是誰，<br />改成自己email！（如下圖）<br /><div class="separator" style="clear: both; text-align: center;"><a href="http://4.bp.blogspot.com/-RzRww5SU91U/Ux14pvwqfLI/AAAAAAAAFJk/U1XMVtDKuog/s1600/Screen+Shot+2014-03-10+at+3.16.12+PM.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="http://4.bp.blogspot.com/-RzRww5SU91U/Ux14pvwqfLI/AAAAAAAAFJk/U1XMVtDKuog/s1600/Screen+Shot+2014-03-10+at+3.16.12+PM.png" height="298" width="400" /></a></div><br />那怎麼看有沒有成功？<br />因為你是下make install，<br />所以最後build的流程會去幫你安裝，<br />如果安裝失敗, 那你的package也不會存在！<br /><br />那有人可能只是單純想要build package，而不想要安裝這個package在這檯機器上，<br />那該怎麼辦？<br />checkinstall有額外的參數可以做這件事情，多帶一個--install就行！<br /><pre class="brush: java">checkinstall --install=no make install<br /></pre><br /><br /><br /><span style="color: #e06666; font-size: 18px;">5. Build package (debuild)</span><br /><br />上面介紹了checkinstall的方法，<br />現在要介紹debuild的方式，<br />那這裡我們以opennssh為範例，<br />透過debuild比較算是debian的practice，<br />首先要先有debian的資料夾，<br />這資料夾下面有一堆林林種種的config file，甚至是init.d，<br />那我們難道要一個一個的設定這些config？<br />當然不用，可以透過dh_make去幫我們產生template，<br /><br />那可是透過dh_make也有點麻煩，就是要接一堆參數，<br />那好險Canonical有提供另一個tool(bzr)去幫我們handle這件事情，<br />透過bzr就可以幫我們產生debian/*底下的template，<br /><pre class="brush: java">cd ~<br />bzr dh-make openssh 6.2p2 openssh-6.2p2.tar.gz<br /></pre>bzr會問你這是一個single binary, indep binary, multiple binary, library, kernel module, kernel patch or cdbs?<br />就選single binary（如下圖），<br /><div class="separator" style="clear: both; text-align: center;"><a href="http://1.bp.blogspot.com/-rh1jjH_Zflk/Ux14qAh2qfI/AAAAAAAAFJs/4DvHSRPFXIw/s1600/Screen+Shot+2014-03-10+at+3.58.04+PM.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="http://1.bp.blogspot.com/-rh1jjH_Zflk/Ux14qAh2qfI/AAAAAAAAFJs/4DvHSRPFXIw/s1600/Screen+Shot+2014-03-10+at+3.58.04+PM.png" /></a></div><br /><br />dh-make會先幫你建立一個opepssh的資料夾，裡面其實就是下載的那個tarball解開！<br />進到openssh資料夾，你會發現裡面會有另外一個debian資料夾，<br />這個資料夾裡面通通都是build debian package所需要的file，<br />有幾個file蠻重要的，<br />像是control, changelog, docs，<br />這些就是dh_make幫我們建好的template，既然是template，<br />所以就有些欄位要改掉！不過都是一些基本的information，所以這裡就不一一介紹！<br /><br />接著就要開始build，<br />build其實是靠debian/rule來trigger，<br />rule裡面要放一些dh_autoconfiguration, dh_install, dh_xxxx.....etc，<br />一堆的command，<br />不過template已經幫我們建立好了dh  $@，我們就不用一一處理！<br /><br />在開始build之前，<br />有個比較dirty的事情要先做，<br />前面不是有說要設定--sysconfdir嗎？<br />debian的practice是透過override_dh_auto_configure去做，<br />override_dh_auto_configure會幫我們把要帶的參數再帶給./configure，<br />但偏偏我怎麼試都帶不過去，最後只好用dirty的方式，<br />就是去找到source code，去硬改sysconfdir的位置，<br />預設會是/etc，<br />但我想要放在/etc/ssh底下，<br />那個source code位置就在/usr/share/perl5/Debian/Debhelper/Buildsystem/autoconf.pm，<br />找到下面這行，把/etc再改成我要的...<br /><pre class="brush: java">push @opts, "--sysconfdir=/etc";<br /></pre>那因為這方法真的蠻dirty的，如果有哪位大大知道該怎麼正確的透過override_dh_auto_configure去設定，<br />歡迎告訴我～<br /><br /><br />最後就可以用debuild  build了<br />後面帶的參數意思就是不要sign source pacakge and .changes files，<br /><pre class="brush: java">debuild -uc -us -B<br /></pre><br /><br />最後說明一下另一個command，<br />這command可以來看package裡面有些什麼！<br /><pre class="brush: java">lesspipe openssh-6.2p2.deb<br /></pre>可以拿這command來簡單的驗證一下build有沒有成功！<br /><br /><br /><br /><br /></div><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
     </div>
 

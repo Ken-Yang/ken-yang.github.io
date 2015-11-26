@@ -223,7 +223,50 @@
       </nav>
 
       <div class="container">
-        <body>
+        <style>
+.myButton {
+    -moz-box-shadow:inset 0px 1px 0px 0px #ffffff;
+    -webkit-box-shadow:inset 0px 1px 0px 0px #ffffff;
+    box-shadow:inset 0px 1px 0px 0px #ffffff;
+    background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #f9f9f9), color-stop(1, #e9e9e9));
+    background:-moz-linear-gradient(top, #f9f9f9 5%, #e9e9e9 100%);
+    background:-webkit-linear-gradient(top, #f9f9f9 5%, #e9e9e9 100%);
+    background:-o-linear-gradient(top, #f9f9f9 5%, #e9e9e9 100%);
+    background:-ms-linear-gradient(top, #f9f9f9 5%, #e9e9e9 100%);
+    background:linear-gradient(to bottom, #f9f9f9 5%, #e9e9e9 100%);
+    filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#f9f9f9', endColorstr='#e9e9e9',GradientType=0);
+    background-color:#f9f9f9;
+    -moz-border-radius:6px;
+    -webkit-border-radius:6px;
+    border-radius:6px;
+    border:1px solid #dcdcdc;
+    display:inline-block;
+    cursor:pointer;
+    color:#666666;
+    font-family:Arial;
+    font-size:15px;
+    font-weight:bold;
+    padding:6px 24px;
+    text-decoration:none;
+    text-shadow:0px 1px 0px #ffffff;
+}
+.myButton:hover {
+    background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #e9e9e9), color-stop(1, #f9f9f9));
+    background:-moz-linear-gradient(top, #e9e9e9 5%, #f9f9f9 100%);
+    background:-webkit-linear-gradient(top, #e9e9e9 5%, #f9f9f9 100%);
+    background:-o-linear-gradient(top, #e9e9e9 5%, #f9f9f9 100%);
+    background:-ms-linear-gradient(top, #e9e9e9 5%, #f9f9f9 100%);
+    background:linear-gradient(to bottom, #e9e9e9 5%, #f9f9f9 100%);
+    filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#e9e9e9', endColorstr='#f9f9f9',GradientType=0);
+    background-color:#e9e9e9;
+}
+.myButton:active {
+    position:relative;
+    top:1px;
+}
+</style>
+
+<body>
     <div>
         <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 <!-- id10t_top -->
@@ -242,31 +285,85 @@ data-ad-format="auto"></ins>
       <h1><a style="color: #F22430" href="/2010/08/31/android-service-keep-alive-or-another">android service keep alive or another way??</a></h1>
       <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
       <p class="author">
-        <span class="date">31 August 2010</span>
+      <div class="date">
+        <span>31 August 2010</span>
+      </div>
       </p>
-      <div class="content">
+      <div class="content" style="line-height: 28px;">
         android service crashed (restart)<br /><br />如果你有支APP有個SERVICE是可能每隔一段時間去做一次的!<br /><br />那麼我建議你改用AlarmManager。<br /><br />最近發現自己寫的某支APP裡面的service會被android os restart!<br /><br />大概知道是因為是background service的關係，<br /><br />想要讓一個service keep alive。<br /><br />當然有解決方法，在2.0以前的device，<br /><br />可以使用setForeground(true);<br /><br />但是2.0以上，這個method，失效了。<br /><br />改成startForeground(id, notification)。<br /><br />但我改用了AlarmManager<br /><br />原因當然有很多，像是其實啟動一個service，就是啟動一個process。<br /><br />想必就消耗掉一點memory...<br /><br />當然還有其他原因，大家可以去Google一下。<br /><br />實作方法如下:<br /><br /><pre class="brush: java">public void onUpdate(Context context, AppWidgetManager appWidgetManager,int[] appWidgetIds) {<br />   Intent intent = new Intent(context, receiverChange.class);  //放入你每隔一段時間要執行的class<br />   PendingIntent pendingIntent   = PendingIntent.getBroadcast(context, 0, intent, 0);<br />   AlarmManager alarmManager  = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);<br />   //接著就是set一個repeat，這裡是設定每隔一分鐘去執行<br />   alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,  System.currentTimeMillis() , (60*1000), pendingIntent);<br /> }<br /></pre><br /><br />然後您每隔一段時間要做的事情就寫在一個BroadcastReceiver裡面<br /><br /><pre class="brush: java">public class receiverChangePicture extends BroadcastReceiver {<br /> @Override<br /> public void onReceive(Context context, Intent intent) {<br />  Log.d("main","hi I receive message every minutes..");<br /> }<br /><br />}<br /></pre><br /><br /><br />這樣就完成了，但是注意此實作方法只限定於有週期性要執行的code才適用!!!!<br /><br />如果今天你是要偵測sd card的狀態，那麼建議你還是用service!(就如同我上篇文章所說的)<br /><br />以alarmManager來實作，只是節省一點成本罷了!<br /><br /><br /><br /><br /><br /><br /><br />
       </div>
+      <footer>
+        <p><a class="myButton" href="/2010/08/31/android-service-keep-alive-or-another">read more &raquo;</a></p>
+        <div>
+          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- id10t_top -->
+<ins class="adsbygoogle"
+style="display:block"
+data-ad-client="ca-pub-7586970907106458"
+data-ad-slot="1161208442"
+data-ad-format="auto"></ins>
+<script>
+    (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+        </div>
+      </footer>
       <hr>
     
       <h1><a style="color: #F22430" href="/2010/08/19/android-sdcard">android 偵測 sdcard</a></h1>
       <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
       <p class="author">
-        <span class="date">19 August 2010</span>
+      <div class="date">
+        <span>19 August 2010</span>
+      </div>
       </p>
-      <div class="content">
+      <div class="content" style="line-height: 28px;">
         最近在寫一些有關檔案的操作，<br /><br />要把檔案寫到sdcard裡去<br /><br />至於怎麼寫，這裡就不多說<br /><br />在寫檔之前，好的programmer一定要注意到防呆!<br /><br />就是detect sdcard的狀態<br /><br />是否有被mount上去?<br /><br />之前都直接寫一個function去取得目前sdcard的狀態，如下   <br /><pre class="brush: java"> private static final boolean fnIsSDcard(){<br />  return Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED);  <br /> }<br /></pre><br /><br /><br />但是在我的需求中，這種寫法會有問題，<br /><br />因為我的檔案較大，在寫的過程中會耗費比較久的時間，<br /><br />如果在寫檔的過程中，sdcard被unmounted了! 很好，這個process會被killed掉!<br /><br />因為這是process中有參照到sdcard裡的位置，所以android os會強制kill掉!<br /><br />所以我就在想...sdcard有沒有event listener啊??<br /><br />但是沒有，所以我透過Service和BroadcastReceiver去實作<br /><br />首先先新增一個class，然後要extends Service，如下<br /><br /><br /><pre class="brush: java">public class serviceSDcard extends Service {<br /> @Override<br /> public IBinder onBind(Intent intent) {<br />  return null;<br /> }<br /><br /> @Override<br /> public void onStart(Intent intent, int startId) {<br />  //新增一個IntentFilter<br />  IntentFilter intentFilter = new IntentFilter();   <br />  //並且新增兩個action，告知此 service什麼時候的動作才要通知你<br />  intentFilter.addAction(Intent.ACTION_MEDIA_MOUNTED); //如果sdcard被掛載上去時通知<br />  intentFilter.addAction(Intent.ACTION_MEDIA_UNMOUNTED); //如果sdcard被卸載時通知<br />  intentFilter.addDataScheme("file"); <br />  intentFilter.addDataAuthority("*", null);<br />  registerReceiver(receiver, intentFilter);    //註冊一個BroadcastReceiver<br />  super.onStart(intent, startId);<br /> }<br /> private BroadcastReceiver receiver = new BroadcastReceiver() {<br />  <br />  @Override<br />  public void onReceive(Context context, Intent intent) {<br />   try {<br />    <br />    if (intent.getAction().equals(Intent.ACTION_MEDIA_UNMOUNTED)){<br />     //sdcard被卸載時的動作<br />     <br />    }else{<br />     //sdcard被掛載時的動作<br />    }<br />    <br />    <br />   } catch (Exception e) {<br />    Log.d("main", e.toString());<br />   }<br />  <br />  }<br /> };<br />}<br /></pre><br /><br /><br />一個Service就完成了，現在就要把Service啟動!<br /><br />在主要執行的activity中去startService();，如下<br /><br /><br /><pre class="brush: java">public class main extends Activity {<br />    @Override<br />    public void onCreate(Bundle savedInstanceState) {<br />        super.onCreate(savedInstanceState);<br />        setContentView(R.layout.main);<br />        Intent intent = new Intent(this,serviceSDcard.class);<br />        startService(intent);<br />    }<br />}<br /></pre><br /><br /><br /><br />這樣就完成啦! 記得要在manifest.xml中新增一個service喔!!如下:<br /><br /><br /><pre class="brush: java">&lt;service android:name=".serviceSDcard"&gt;&lt;/service&gt;<br /></pre><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
       </div>
+      <footer>
+        <p><a class="myButton" href="/2010/08/19/android-sdcard">read more &raquo;</a></p>
+        <div>
+          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- id10t_top -->
+<ins class="adsbygoogle"
+style="display:block"
+data-ad-client="ca-pub-7586970907106458"
+data-ad-slot="1161208442"
+data-ad-format="auto"></ins>
+<script>
+    (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+        </div>
+      </footer>
       <hr>
     
       <h1><a style="color: #F22430" href="/2010/08/07/android-progressbar-in-appwidget">android ProgressBar in AppWidget</a></h1>
       <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
       <p class="author">
-        <span class="date">07 August 2010</span>
+      <div class="date">
+        <span>07 August 2010</span>
+      </div>
       </p>
-      <div class="content">
+      <div class="content" style="line-height: 28px;">
         android ProgressBar in AppWidget<br /><br />會產生一些問題!<br /><br />基本上在顯示，或者設定目前progress都是沒問題的!!<br /><br />但是當你要把ProgressBar 設為Invisible的時候就會產生BUG!<br /><br />目前看來似乎是android本身的bug...<br /><br />至少找資料找到現在...蠻多人都說這樣的!<br /><br /><pre class="brush: java">Views.setViewVisibility(R.id.TextView01, View.VISIBLE);<br /></pre><br />以往只要打這行code就能把某個元件Invisible或者GONE掉<br /><br />但是如果元件是Progress Bar的話!<br /><br />會無法動作!!<br /><br />所以在這建議大家使用兩個layout<br /><br />一個是有progress bar，一個沒有!<br /><br />如下!<br /><br /><br /><pre class="brush: java">RemoteViews withProgressViews= new RemoteViews(this.getPackageName(),R.layout.progress_layout);//這個是有Progress的<br /><br />RemoteViews withoutProgressViews= new RemoteViews(this.getPackageName(),R.layout.init_layout);//這沒有Progress的<br /><br />app_manager.updateAppWidget(appWidgetId, withProgressViews/withoutProgressViews);//在透過app_manager去更新妳widget的layout樣式<br /><br /></pre><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
       </div>
+      <footer>
+        <p><a class="myButton" href="/2010/08/07/android-progressbar-in-appwidget">read more &raquo;</a></p>
+        <div>
+          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- id10t_top -->
+<ins class="adsbygoogle"
+style="display:block"
+data-ad-client="ca-pub-7586970907106458"
+data-ad-slot="1161208442"
+data-ad-format="auto"></ins>
+<script>
+    (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+        </div>
+      </footer>
       <hr>
     
 

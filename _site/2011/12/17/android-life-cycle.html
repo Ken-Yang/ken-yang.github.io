@@ -223,7 +223,78 @@
       </nav>
 
       <div class="container">
-        
+        <style>
+/* Adjusted to give override background and text colour */
+.highlight pre, pre, .highlight .hll {
+    background-color: #49483E;
+    border: 1px solid #ccc;
+    padding: 6px 10px;
+    border-radius: 3px;
+    color: #FFFFFF;
+}
+/* Highlights taken from https://gist.github.com/asaaki/1007420  for Monokai theme */
+.c                 { color: #75715e }               /* Comment                     */
+.err               { color: #960050;
+                     background-color: #1e0010 }    /* Error                       */
+.k                 { color: #66d9ef }               /* Keyword                     */
+.l                 { color: #ae81ff }               /* Literal                     */
+.n                 { color: #f8f8f2 }               /* Name                        */
+.o                 { color: #f92672 }               /* Operator                    */
+.p                 { color: #f8f8f2 }               /* Punctuation                 */
+.cm                { color: #75715e }               /* Comment.Multiline           */
+.cp                { color: #75715e }               /* Comment.Preproc             */
+.c1                { color: #75715e }               /* Comment.Single              */
+.cs                { color: #75715e }               /* Comment.Special             */
+.ge                { font-style: italic }           /* Generic.Emph                */
+.gs                { font-weight: bold }            /* Generic.Strong              */
+.kc                { color: #66d9ef }               /* Keyword.Constant            */
+.kd                { color: #66d9ef }               /* Keyword.Declaration         */
+.kn                { color: #f92672 }               /* Keyword.Namespace           */
+.kp                { color: #66d9ef }               /* Keyword.Pseudo              */
+.kr                { color: #66d9ef }               /* Keyword.Reserved            */
+.kt                { color: #66d9ef }               /* Keyword.Type                */
+.ld                { color: #e6db74 }               /* Literal.Date                */
+.m                 { color: #ae81ff }               /* Literal.Number              */
+.s                 { color: #e6db74 }               /* Literal.String              */
+.na                { color: #a6e22e }               /* Name.Attribute              */
+.nb                { color: #f8f8f2 }               /* Name.Builtin                */
+.nc                { color: #a6e22e }               /* Name.Class                  */
+.no                { color: #66d9ef }               /* Name.Constant               */
+.nd                { color: #a6e22e }               /* Name.Decorator              */
+.ni                { color: #f8f8f2 }               /* Name.Entity                 */
+.ne                { color: #a6e22e }               /* Name.Exception              */
+.nf                { color: #a6e22e }               /* Name.Function               */
+.nl                { color: #f8f8f2 }               /* Name.Label                  */
+.nn                { color: #f8f8f2 }               /* Name.Namespace              */
+.nx                { color: #a6e22e }               /* Name.Other                  */
+.py                { color: #f8f8f2 }               /* Name.Property               */
+.nt                { color: #f92672 }               /* Name.Tag                    */
+.nv                { color: #f8f8f2 }               /* Name.Variable               */
+.ow                { color: #f92672 }               /* Operator.Word               */
+.w                 { color: #f8f8f2 }               /* Text.Whitespace             */
+.mf                { color: #ae81ff }               /* Literal.Number.Float        */
+.mh                { color: #ae81ff }               /* Literal.Number.Hex          */
+.mi                { color: #ae81ff }               /* Literal.Number.Integer      */
+.mo                { color: #ae81ff }               /* Literal.Number.Oct          */
+.sb                { color: #e6db74 }               /* Literal.String.Backtick     */
+.sc                { color: #e6db74 }               /* Literal.String.Char         */
+.sd                { color: #e6db74 }               /* Literal.String.Doc          */
+.s2                { color: #e6db74 }               /* Literal.String.Double       */
+.se                { color: #ae81ff }               /* Literal.String.Escape       */
+.sh                { color: #e6db74 }               /* Literal.String.Heredoc      */
+.si                { color: #e6db74 }               /* Literal.String.Interpol     */
+.sx                { color: #e6db74 }               /* Literal.String.Other        */
+.sr                { color: #e6db74 }               /* Literal.String.Regex        */
+.s1                { color: #e6db74 }               /* Literal.String.Single       */
+.ss                { color: #e6db74 }               /* Literal.String.Symbol       */
+.bp                { color: #f8f8f2 }               /* Name.Builtin.Pseudo         */
+.vc                { color: #f8f8f2 }               /* Name.Variable.Class         */
+.vg                { color: #f8f8f2 }               /* Name.Variable.Global        */
+.vi                { color: #f8f8f2 }               /* Name.Variable.Instance      */
+.il                { color: #ae81ff }               /* Literal.Number.Integer.Long */
+</style>
+
+
 <div class="page-header">
   <h1>Android Life Cycle （二）詳細講解 </h1>
 </div>
@@ -257,7 +328,7 @@ data-ad-format="auto"></ins>
     <div class="date">
       <span>17 December 2011</span>
     </div>
-    <div class="content">
+    <div class="content" style="line-height: 28px;">
       <a href="http://blog.kenyang.net/2011/11/android-lifecycle.html">前一篇</a>已經簡略的說明Android Activity Life Cycle，<br />這篇將詳細說明Activity在Android 裡記憶體life cycle的呈現，<br /><br /><br /><br />假設我有2個 Activity&nbsp;，分別是A(主畫面)、B(子畫面)，<br />A中有一個按鈕，可以換頁面到B<br /><pre class="brush: java">startActivity(new Intent(A.this, B.class));</pre><br /><br />B中有一個按鈕，可以換頁面到A<br /><pre class="brush: java">startActivity(new Intent(B.this, A.class));</pre><br /><br /><br />且A為app進入點<br /><pre class="brush: java">&lt;intent-filter &gt;<br />  &lt;action android:name="android.intent.action.MAIN" /&gt;<br />  &lt;category android:name="android.intent.category.LAUNCHER" /&gt;<br />&lt;/intent-filter&gt;<br /><br /></pre><br /><br />執行此app時，記憶體的表現會如下圖： <br /><div class="separator" style="clear: both; text-align: center;"><a href="http://4.bp.blogspot.com/-dlbPjhqBxWg/TuubZRYATLI/AAAAAAAAAaQ/fGxJXl8DYm8/s1600/a4.png" imageanchor="1" style="clear: left; float: left; margin-bottom: 1em; margin-right: 1em;"><img border="0" height="320" src="http://4.bp.blogspot.com/-dlbPjhqBxWg/TuubZRYATLI/AAAAAAAAAaQ/fGxJXl8DYm8/s320/a4.png" width="281" /></a></div><br /><br /><div class="separator" style="clear: both; text-align: center;"><a href="http://3.bp.blogspot.com/-pNjJbp9rEKM/TuuawgdQ18I/AAAAAAAAAZ4/KlNmWLLs2Wg/s1600/a1.png" imageanchor="1" style="clear: left; float: left; margin-bottom: 1em; margin-right: 1em;"><br /></a><a href="http://3.bp.blogspot.com/-pNjJbp9rEKM/TuuawgdQ18I/AAAAAAAAAZ4/KlNmWLLs2Wg/s1600/a1.png" imageanchor="1" style="clear: left; float: left; margin-bottom: 1em; margin-right: 1em;"><br /></a><a href="http://3.bp.blogspot.com/-pNjJbp9rEKM/TuuawgdQ18I/AAAAAAAAAZ4/KlNmWLLs2Wg/s1600/a1.png" imageanchor="1" style="clear: left; float: left; margin-bottom: 1em; margin-right: 1em;"><br /></a><a href="http://3.bp.blogspot.com/-pNjJbp9rEKM/TuuawgdQ18I/AAAAAAAAAZ4/KlNmWLLs2Wg/s1600/a1.png" imageanchor="1" style="clear: left; float: left; margin-bottom: 1em; margin-right: 1em;"><img border="0" height="326" src="http://3.bp.blogspot.com/-pNjJbp9rEKM/TuuawgdQ18I/AAAAAAAAAZ4/KlNmWLLs2Wg/s400/a1.png" width="400" /></a></div><br />如果這時候在A畫面按下換頁面至B的按鈕，<br />則記憶體的狀態如下圖<br />A會先去call onPause-&gt;onStop<br />注意!!! 並沒有onDestroy，A這個物件是還存在的<br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />如果這時候在B畫面按下手機上的"【返回】按鈕，<br />則記憶體的狀態如下圖<br />B會先去call onPause -&gt; onStop -&gt; <span style="color: blue;">onDestroy</span><br />注意!!! 這裡有onDestroy，此時B物件是被銷毀的，<br />這個情況應該是正常的life cycle，<br />可是有些人會用換頁的方式(startActivity)回到上一個畫面，<br />在我的觀念裡，會不建議這樣的行為，繼續往下看!<br /><br /><br /><div class="separator" style="clear: both; text-align: center;"><a href="http://1.bp.blogspot.com/-qoMJj_xRCBc/TuuaxIEhKqI/AAAAAAAAAZ8/DCLpAMb1RSQ/s1600/a2.png" imageanchor="1" style="clear: left; float: left; margin-bottom: 1em; margin-right: 1em;"><img border="0" height="276" src="http://1.bp.blogspot.com/-qoMJj_xRCBc/TuuaxIEhKqI/AAAAAAAAAZ8/DCLpAMb1RSQ/s400/a2.png" width="400" /></a></div><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />如果這時候在B畫面，而且想要回到A畫面，<br />B畫面(下圖)中左上角，有一個自己做的返回按鈕，<br />則此時這返回按鈕的code為<br /><pre class="brush: java">startActivity(new Intent(B.this, A.class));</pre><br />當使用者按下這個按鈕時！<br /><br /><br /><div class="separator" style="clear: both; text-align: center;"></div><div class="separator" style="clear: both; text-align: center;"><a href="http://4.bp.blogspot.com/-GIwwGSk0eqI/TuueLiXlvBI/AAAAAAAAAaY/eVsiQXL-Lqk/s1600/device-2011-12-17-033450.png" imageanchor="1" style="clear: left; float: left; margin-bottom: 1em; margin-right: 1em;"><img border="0" height="400" src="http://4.bp.blogspot.com/-GIwwGSk0eqI/TuueLiXlvBI/AAAAAAAAAaY/eVsiQXL-Lqk/s400/device-2011-12-17-033450.png" width="240" /></a></div><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />則此時記憶體的狀態如下圖！<br />B會進入到onStop的狀態！<br />且會有一個新的A畫面（橘色）!!!<br />則此時舊的A畫面（藍色）就會存在記憶體裡，暫時無法回收....<br /><br /><br /><div class="separator" style="clear: both; text-align: center;"><a href="http://1.bp.blogspot.com/-SjVEDlL6_8o/Tuuax056yzI/AAAAAAAAAaE/lgui8Dzhe0Y/s1600/a3.png" imageanchor="1" style="clear: left; float: left; margin-bottom: 1em; margin-right: 1em;"><img border="0" height="281" src="http://1.bp.blogspot.com/-SjVEDlL6_8o/Tuuax056yzI/AAAAAAAAAaE/lgui8Dzhe0Y/s400/a3.png" width="400" /></a></div><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />因此不建議用這種方式回到上一個畫面，<br />會講這篇的原因，是為了稍後的另一篇，<br />要講解Bitmap recycle和 Out of Memory (OOM)的問題！<br />在做recycle時，得去考慮到整體life cycle的問題才行！<br /><br /><br /><br /><br /><br /><br />
     </div>
 

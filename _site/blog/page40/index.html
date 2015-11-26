@@ -223,7 +223,50 @@
       </nav>
 
       <div class="container">
-        <body>
+        <style>
+.myButton {
+    -moz-box-shadow:inset 0px 1px 0px 0px #ffffff;
+    -webkit-box-shadow:inset 0px 1px 0px 0px #ffffff;
+    box-shadow:inset 0px 1px 0px 0px #ffffff;
+    background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #f9f9f9), color-stop(1, #e9e9e9));
+    background:-moz-linear-gradient(top, #f9f9f9 5%, #e9e9e9 100%);
+    background:-webkit-linear-gradient(top, #f9f9f9 5%, #e9e9e9 100%);
+    background:-o-linear-gradient(top, #f9f9f9 5%, #e9e9e9 100%);
+    background:-ms-linear-gradient(top, #f9f9f9 5%, #e9e9e9 100%);
+    background:linear-gradient(to bottom, #f9f9f9 5%, #e9e9e9 100%);
+    filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#f9f9f9', endColorstr='#e9e9e9',GradientType=0);
+    background-color:#f9f9f9;
+    -moz-border-radius:6px;
+    -webkit-border-radius:6px;
+    border-radius:6px;
+    border:1px solid #dcdcdc;
+    display:inline-block;
+    cursor:pointer;
+    color:#666666;
+    font-family:Arial;
+    font-size:15px;
+    font-weight:bold;
+    padding:6px 24px;
+    text-decoration:none;
+    text-shadow:0px 1px 0px #ffffff;
+}
+.myButton:hover {
+    background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #e9e9e9), color-stop(1, #f9f9f9));
+    background:-moz-linear-gradient(top, #e9e9e9 5%, #f9f9f9 100%);
+    background:-webkit-linear-gradient(top, #e9e9e9 5%, #f9f9f9 100%);
+    background:-o-linear-gradient(top, #e9e9e9 5%, #f9f9f9 100%);
+    background:-ms-linear-gradient(top, #e9e9e9 5%, #f9f9f9 100%);
+    background:linear-gradient(to bottom, #e9e9e9 5%, #f9f9f9 100%);
+    filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#e9e9e9', endColorstr='#f9f9f9',GradientType=0);
+    background-color:#e9e9e9;
+}
+.myButton:active {
+    position:relative;
+    top:1px;
+}
+</style>
+
+<body>
     <div>
         <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 <!-- id10t_top -->
@@ -242,31 +285,85 @@ data-ad-format="auto"></ins>
       <h1><a style="color: #F22430" href="/2010/10/28/ftp">主動式與被動式FTP 差別</a></h1>
       <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
       <p class="author">
-        <span class="date">28 October 2010</span>
+      <div class="date">
+        <span>28 October 2010</span>
+      </div>
       </p>
-      <div class="content">
+      <div class="content" style="line-height: 28px;">
         FTP是一個特殊的protocol之一，<br /><br />其他的protocol，如:http、pop3、....等等之類的，<br /><br />都只需要1個connection、1個port。<br /><br />但是FTP則不是，FTP需要2個connection、2個port。<br /><br />一個是Command connection / port，用來傳遞client與FTP Server之間的command。(通常設在port 21)<br /><br />另一個是Data&nbsp;connection /&nbsp;port，是用來傳遞資料的。(通常設在port 20)<br /><br /><br />一般的人都會認為關掉20、21port，FTP Server就會無法運作，<br /><br />從某種角度來說，這樣的觀念是正確的，但是其實是錯誤的觀念！！<br /><br />但這是在傳統式模式FTP的條件下，這樣的觀念才是正確的。<br /><br />FTP主要分成兩種模式：<br /><span class="Apple-style-span" style="color: red;"><b>1.主動式（POST）</b></span><br /><span class="Apple-style-span" style="color: red;"><b>2.被動式</b></span><span class="Apple-style-span" style="color: red;"><b>（PASV）</b></span><br /><br />傳統的FTP是採用主動式的模式進行連線，<br /><br />底下為主動式FTP運作圖<br /><br /><div class="separator" style="clear: both; text-align: center;"><a href="http://1.bp.blogspot.com/_6SxqtkJQECI/TMjo0nS6Y0I/AAAAAAAAALI/hEnR6232wkg/s1600/%E4%B8%BB%E5%8B%95%E5%BC%8F.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="295" src="http://1.bp.blogspot.com/_6SxqtkJQECI/TMjo0nS6Y0I/AAAAAAAAALI/hEnR6232wkg/s400/%E4%B8%BB%E5%8B%95%E5%BC%8F.png" width="400" /></a></div><br /><br /><span class="Apple-style-span" style="color: red;">1. client端會開啟一個大於</span><span class="Apple-style-span" style="color: red;">1024</span><span class="Apple-style-span" style="color: red;">的</span><span class="Apple-style-span" style="color: red;">port&nbsp;</span>( port x )<span class="Apple-style-span" style="color: red;">對FTP Server的port 21進行connection</span><br /><br /><span class="Apple-style-span" style="color: red;">2. FTP Server會回應client端的connection，告知Client端收到連線了</span><br /><br /><span class="Apple-style-span" style="color: blue;">3. FTP Server的port 20會主動和 Client端的port 1025</span>(port x+1)<span class="Apple-style-span" style="color: blue;">進行連線(進行資料傳輸)</span><br /><span class="Apple-style-span" style="color: blue;"><br /></span><br /><span class="Apple-style-span" style="color: blue;">4. Client會回應Server端的連線。</span><br /><br />看完步驟說明，大家會發現一個問題，<br /><br />一開始client端會開啟兩個port，<br /><br />port x (connection port)和port x+1 (data port)<br /><br />在connection port沒有甚麼問題存在，<br /><br />問題出在data port，<br /><br />因為client端並不是自己建立一個connection，而是自行開啟一個port等待FTP Server連線進來<br /><br />這很有可能被Client端的防火牆過濾掉<br /><br /><br /><br />因此為了解決FTP連線到Client端被過濾掉的問題，所以發展出另一種連線模式<br /><br />就是被動式模式<br /><br />被動式模式不管是command &nbsp;connection或是data connection都是由client端建立的<br /><br />底下為運作圖<br /><br /><div class="separator" style="clear: both; text-align: center;"><a href="http://2.bp.blogspot.com/_6SxqtkJQECI/TMjugUmILnI/AAAAAAAAALM/tu85ED5r1KA/s1600/%E8%A2%AB%E5%8B%95%E5%BC%8F.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="296" src="http://2.bp.blogspot.com/_6SxqtkJQECI/TMjugUmILnI/AAAAAAAAALM/tu85ED5r1KA/s400/%E8%A2%AB%E5%8B%95%E5%BC%8F.png" width="400" /></a></div><br /><br /><div style="margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px;"><span class="Apple-style-span" style="color: red;">1. 首先，client端會開啟一個大於</span><span class="Apple-style-span" style="color: red;">1024</span><span class="Apple-style-span" style="color: red;">的</span><span class="Apple-style-span" style="color: red;">port&nbsp;</span>( port x )<span class="Apple-style-span" style="color: red;">對FTP Server的port 21進行connection</span></div><div style="margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px;"><br /></div><div style="margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px;"><span class="Apple-style-span" style="color: red;">2. FTP Server會回應client端的connection，並告知Client端，Server開啟了port 1200等待資料連線</span></div><br /><div style="margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px;"><span class="Apple-style-span" style="color: blue;">3. Client端的port 1026會和</span><span class="Apple-style-span" style="color: blue;">FTP Server的port 1200</span><span class="Apple-style-span" style="color: blue;">進行資料連線</span></div><div style="margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px;"><span class="Apple-style-span" style="color: blue;"><br /></span></div><div style="margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px;"><span class="Apple-style-span" style="color: blue;">4.&nbsp;Server會回應Client端的連線。</span></div><br /><br /><br /><br />使用了被動模式，解決了client端的問題，<br /><br />可是相反的，也把這些問題帶給了server。<br /><br /><br /><br /><br /><br />至於要用哪種模式，是由client端決定的，<br /><br />client端會在command connection時發出POST或PASV的命令<br /><br />但是server可以決定是否支援這些模式。<br /><br /><br /><br />
       </div>
+      <footer>
+        <p><a class="myButton" href="/2010/10/28/ftp">read more &raquo;</a></p>
+        <div>
+          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- id10t_top -->
+<ins class="adsbygoogle"
+style="display:block"
+data-ad-client="ca-pub-7586970907106458"
+data-ad-slot="1161208442"
+data-ad-format="auto"></ins>
+<script>
+    (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+        </div>
+      </footer>
       <hr>
     
       <h1><a style="color: #F22430" href="/2010/10/28/android-multiple-language">android multiple language</a></h1>
       <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
       <p class="author">
-        <span class="date">28 October 2010</span>
+      <div class="date">
+        <span>28 October 2010</span>
+      </div>
       </p>
-      <div class="content">
+      <div class="content" style="line-height: 28px;">
         android 多國語系開發!<br /><br />android multiple language<br /><br />只要將/res/values資料夾名稱改成您要支援的語系名稱<br /><br />這裡假設，我們要有英文和中文的內容<br /><br />那麼就在/res/values名稱改成/res/values-en，<br /><br />然後再複製/res/values/，然後一樣改成values-zh-rTW<br /><br /><br />且將其底下的string.xml的內容改成該語系的內容。<br /><br />android將會自動幫您判斷要呈現甚麼語言。<br /><br />至於有支援什麼語系，可以去底下這網站上觀看<span class="Apple-style-span" style="color: #333333; font-family: Arial, Helvetica, sans-serif; font-size: 13px; font-weight: bold;">ISO 639-1 Code</span><br /><br /><a href="http://www.loc.gov/standards/iso639-2/php/code_list.php">http://www.loc.gov/standards/iso639-2/php/code_list.php</a><br /><br /><br /><br /><br /><br /><br /><br />
       </div>
+      <footer>
+        <p><a class="myButton" href="/2010/10/28/android-multiple-language">read more &raquo;</a></p>
+        <div>
+          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- id10t_top -->
+<ins class="adsbygoogle"
+style="display:block"
+data-ad-client="ca-pub-7586970907106458"
+data-ad-slot="1161208442"
+data-ad-format="auto"></ins>
+<script>
+    (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+        </div>
+      </footer>
       <hr>
     
       <h1><a style="color: #F22430" href="/2010/10/26/drawable-hdpildpimdpi">Drawable (hdpi,ldpi,mdpi) 的分別</a></h1>
       <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
       <p class="author">
-        <span class="date">26 October 2010</span>
+      <div class="date">
+        <span>26 October 2010</span>
+      </div>
       </p>
-      <div class="content">
+      <div class="content" style="line-height: 28px;">
         <br />Drawable (hdpi,ldpi,mdpi)的分別。<br /><br />自從android 2.0.1版以後，只要新增project，<br /><br />你會發現res/drawable資料夾變成!<br /><br />/res/drawable-hdpi &nbsp; 【WVGA (480x800),FWVGA (480x854)】<br />/res/drawable-mdpi &nbsp;【HVGA (320x480)】<br />/res/drawable-ldpi &nbsp; &nbsp;【QVGA (240x320)】<br /><br />大概知道是用來做mutilple screen的，但是沒有太care，<br /><br />我通常都會把這三個通通刪掉，然後改成員先的/res/drawable（壞習慣，別學）<br /><br />結果剛剛發現如果同張圖分別放在三個不同的資料夾<br /><br />你會發現讀進來的圖檔大小都會不一樣喔！！！<br /><br />太讓我surpriesed!!<br /><br />我以為還要定義一個<span class="Apple-style-span" style="color: #000088; font-family: monospace; font-size: 13px; white-space: pre;">supports-screens</span>的xml檔案<br /><br />這些資料夾名稱的設置才會有用！<br /><br /><br /><br /><br /><br /><br />btw如果你跟我做法一樣，是三個刪掉，變成一個，<br /><br />那麼預設值讀進來的圖大小會是以/res/drawable-mdpi為主<br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
       </div>
+      <footer>
+        <p><a class="myButton" href="/2010/10/26/drawable-hdpildpimdpi">read more &raquo;</a></p>
+        <div>
+          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- id10t_top -->
+<ins class="adsbygoogle"
+style="display:block"
+data-ad-client="ca-pub-7586970907106458"
+data-ad-slot="1161208442"
+data-ad-format="auto"></ins>
+<script>
+    (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+        </div>
+      </footer>
       <hr>
     
 

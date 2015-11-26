@@ -223,7 +223,78 @@
       </nav>
 
       <div class="container">
-        
+        <style>
+/* Adjusted to give override background and text colour */
+.highlight pre, pre, .highlight .hll {
+    background-color: #49483E;
+    border: 1px solid #ccc;
+    padding: 6px 10px;
+    border-radius: 3px;
+    color: #FFFFFF;
+}
+/* Highlights taken from https://gist.github.com/asaaki/1007420  for Monokai theme */
+.c                 { color: #75715e }               /* Comment                     */
+.err               { color: #960050;
+                     background-color: #1e0010 }    /* Error                       */
+.k                 { color: #66d9ef }               /* Keyword                     */
+.l                 { color: #ae81ff }               /* Literal                     */
+.n                 { color: #f8f8f2 }               /* Name                        */
+.o                 { color: #f92672 }               /* Operator                    */
+.p                 { color: #f8f8f2 }               /* Punctuation                 */
+.cm                { color: #75715e }               /* Comment.Multiline           */
+.cp                { color: #75715e }               /* Comment.Preproc             */
+.c1                { color: #75715e }               /* Comment.Single              */
+.cs                { color: #75715e }               /* Comment.Special             */
+.ge                { font-style: italic }           /* Generic.Emph                */
+.gs                { font-weight: bold }            /* Generic.Strong              */
+.kc                { color: #66d9ef }               /* Keyword.Constant            */
+.kd                { color: #66d9ef }               /* Keyword.Declaration         */
+.kn                { color: #f92672 }               /* Keyword.Namespace           */
+.kp                { color: #66d9ef }               /* Keyword.Pseudo              */
+.kr                { color: #66d9ef }               /* Keyword.Reserved            */
+.kt                { color: #66d9ef }               /* Keyword.Type                */
+.ld                { color: #e6db74 }               /* Literal.Date                */
+.m                 { color: #ae81ff }               /* Literal.Number              */
+.s                 { color: #e6db74 }               /* Literal.String              */
+.na                { color: #a6e22e }               /* Name.Attribute              */
+.nb                { color: #f8f8f2 }               /* Name.Builtin                */
+.nc                { color: #a6e22e }               /* Name.Class                  */
+.no                { color: #66d9ef }               /* Name.Constant               */
+.nd                { color: #a6e22e }               /* Name.Decorator              */
+.ni                { color: #f8f8f2 }               /* Name.Entity                 */
+.ne                { color: #a6e22e }               /* Name.Exception              */
+.nf                { color: #a6e22e }               /* Name.Function               */
+.nl                { color: #f8f8f2 }               /* Name.Label                  */
+.nn                { color: #f8f8f2 }               /* Name.Namespace              */
+.nx                { color: #a6e22e }               /* Name.Other                  */
+.py                { color: #f8f8f2 }               /* Name.Property               */
+.nt                { color: #f92672 }               /* Name.Tag                    */
+.nv                { color: #f8f8f2 }               /* Name.Variable               */
+.ow                { color: #f92672 }               /* Operator.Word               */
+.w                 { color: #f8f8f2 }               /* Text.Whitespace             */
+.mf                { color: #ae81ff }               /* Literal.Number.Float        */
+.mh                { color: #ae81ff }               /* Literal.Number.Hex          */
+.mi                { color: #ae81ff }               /* Literal.Number.Integer      */
+.mo                { color: #ae81ff }               /* Literal.Number.Oct          */
+.sb                { color: #e6db74 }               /* Literal.String.Backtick     */
+.sc                { color: #e6db74 }               /* Literal.String.Char         */
+.sd                { color: #e6db74 }               /* Literal.String.Doc          */
+.s2                { color: #e6db74 }               /* Literal.String.Double       */
+.se                { color: #ae81ff }               /* Literal.String.Escape       */
+.sh                { color: #e6db74 }               /* Literal.String.Heredoc      */
+.si                { color: #e6db74 }               /* Literal.String.Interpol     */
+.sx                { color: #e6db74 }               /* Literal.String.Other        */
+.sr                { color: #e6db74 }               /* Literal.String.Regex        */
+.s1                { color: #e6db74 }               /* Literal.String.Single       */
+.ss                { color: #e6db74 }               /* Literal.String.Symbol       */
+.bp                { color: #f8f8f2 }               /* Name.Builtin.Pseudo         */
+.vc                { color: #f8f8f2 }               /* Name.Variable.Class         */
+.vg                { color: #f8f8f2 }               /* Name.Variable.Global        */
+.vi                { color: #f8f8f2 }               /* Name.Variable.Instance      */
+.il                { color: #ae81ff }               /* Literal.Number.Integer.Long */
+</style>
+
+
 <div class="page-header">
   <h1>Adsense for mobile content（android放置Google 廣告【上】） </h1>
 </div>
@@ -257,7 +328,7 @@ data-ad-format="auto"></ins>
     <div class="date">
       <span>18 September 2010</span>
     </div>
-    <div class="content">
+    <div class="content" style="line-height: 28px;">
       Adsense for mobile content<br /><br />注意！這篇是for mobile content<br /><br />for mobile content<br /><br />是用來給手機網站放置的。<br /><br />並不能放置android裡面去。<br /><br />not for mobile application<br /><br />當然也有for mobile application<br /><br />for mobile application只有在美國、加拿大開放而已啊！囧！<br /><br />但是可以利用一些漏洞在android放置google adsense。<br /><br />（注意！但是Google是不允許這樣的ＸＤ，但是不知道就算用了，Google會怎處理）<br /><br />反正就先教學吧！<br /><br />想要在Android裡放置Google廣告，<br /><br />那麼必須請先去Google Adsense的網站註冊，<br /><a href="https://www.google.com/adsense/report/overview">https://www.google.com/adsense/report/overview</a><br /><br />並點選<span class="Apple-style-span" style="color: red;">Adsense行動內容廣告</span>（Adsense for mobile content）<br /><br />然後先<span class="Apple-style-span" style="color: red;">【</span><span class="Apple-style-span" style="color: red;">選擇廣告類型】：不用作任何修改，直接按繼續&nbsp;</span><br /><br />在來是<span class="Apple-style-span" style="color: red;">【</span><span class="Apple-style-span" style="color: red;">廣告風格</span><span class="Apple-style-span" style="color: red;">】：</span><span class="Apple-style-span" style="color: red;">這邊就依個人，看你廣告頁面的顏色配置</span><br /><br />在來是<span class="Apple-style-span" style="color: red;">【選擇廣告頻道</span><span class="Apple-style-span" style="color: red;">】：這裡不要設定任何channel，除非要測試某些特定類型的廣告。</span><br /><br />在來就是<span class="Apple-style-span" style="color: red;">【取得廣告程式碼】</span><br /><br />取得您的Adsense程式碼後(javascript)<br /><br /><pre class="brush: js"><script type="text/javascript"><br /><!--<br />window.googleAfmcRequest = {<br />  client: 'ca-mb-pub-3783438370424072',<br />  ad_type: 'text_image',<br />  output: 'html',<br />  channel: '',<br />  format: '320x50_mb',<br />  oe: 'utf8',<br />  color_border: '336699',<br />  color_bg: 'FFFFFF',<br />  color_link: '0000FF',<br />  color_text: '000000',<br />  color_url: '008000',<br />};<br />//--><br /></script><br /><script c="http://pagead2.googlesyndication.com/pagead/show_afmc_ads.js" sr="" type="text/javascript"><br /></script><br /><br /><br /></pre><br /><br /><br /><br /><br />將這段code上傳至您的網站上，<br /><br />（注意！是貼您的那段ＣＯＤＥ，不是我這段，如果貼我的，人家點擊，也是我在賺==我是不介意ＸＤ）<br /><br />這裡我就上傳至我的GAE上，(http://ken-mis.appspot.com)<br /><br />記得，只有手機的瀏覽器才看得到廣告!<br /><br />至於怎麼放置在android app裡面，在<a href="http://ken-note.blogspot.com/2010/09/adsense-for-mobile-contentandroidgoogle_18.html">（下篇）</a>會介紹。<br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
     </div>
 

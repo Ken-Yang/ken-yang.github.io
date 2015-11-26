@@ -223,7 +223,78 @@
       </nav>
 
       <div class="container">
-        
+        <style>
+/* Adjusted to give override background and text colour */
+.highlight pre, pre, .highlight .hll {
+    background-color: #49483E;
+    border: 1px solid #ccc;
+    padding: 6px 10px;
+    border-radius: 3px;
+    color: #FFFFFF;
+}
+/* Highlights taken from https://gist.github.com/asaaki/1007420  for Monokai theme */
+.c                 { color: #75715e }               /* Comment                     */
+.err               { color: #960050;
+                     background-color: #1e0010 }    /* Error                       */
+.k                 { color: #66d9ef }               /* Keyword                     */
+.l                 { color: #ae81ff }               /* Literal                     */
+.n                 { color: #f8f8f2 }               /* Name                        */
+.o                 { color: #f92672 }               /* Operator                    */
+.p                 { color: #f8f8f2 }               /* Punctuation                 */
+.cm                { color: #75715e }               /* Comment.Multiline           */
+.cp                { color: #75715e }               /* Comment.Preproc             */
+.c1                { color: #75715e }               /* Comment.Single              */
+.cs                { color: #75715e }               /* Comment.Special             */
+.ge                { font-style: italic }           /* Generic.Emph                */
+.gs                { font-weight: bold }            /* Generic.Strong              */
+.kc                { color: #66d9ef }               /* Keyword.Constant            */
+.kd                { color: #66d9ef }               /* Keyword.Declaration         */
+.kn                { color: #f92672 }               /* Keyword.Namespace           */
+.kp                { color: #66d9ef }               /* Keyword.Pseudo              */
+.kr                { color: #66d9ef }               /* Keyword.Reserved            */
+.kt                { color: #66d9ef }               /* Keyword.Type                */
+.ld                { color: #e6db74 }               /* Literal.Date                */
+.m                 { color: #ae81ff }               /* Literal.Number              */
+.s                 { color: #e6db74 }               /* Literal.String              */
+.na                { color: #a6e22e }               /* Name.Attribute              */
+.nb                { color: #f8f8f2 }               /* Name.Builtin                */
+.nc                { color: #a6e22e }               /* Name.Class                  */
+.no                { color: #66d9ef }               /* Name.Constant               */
+.nd                { color: #a6e22e }               /* Name.Decorator              */
+.ni                { color: #f8f8f2 }               /* Name.Entity                 */
+.ne                { color: #a6e22e }               /* Name.Exception              */
+.nf                { color: #a6e22e }               /* Name.Function               */
+.nl                { color: #f8f8f2 }               /* Name.Label                  */
+.nn                { color: #f8f8f2 }               /* Name.Namespace              */
+.nx                { color: #a6e22e }               /* Name.Other                  */
+.py                { color: #f8f8f2 }               /* Name.Property               */
+.nt                { color: #f92672 }               /* Name.Tag                    */
+.nv                { color: #f8f8f2 }               /* Name.Variable               */
+.ow                { color: #f92672 }               /* Operator.Word               */
+.w                 { color: #f8f8f2 }               /* Text.Whitespace             */
+.mf                { color: #ae81ff }               /* Literal.Number.Float        */
+.mh                { color: #ae81ff }               /* Literal.Number.Hex          */
+.mi                { color: #ae81ff }               /* Literal.Number.Integer      */
+.mo                { color: #ae81ff }               /* Literal.Number.Oct          */
+.sb                { color: #e6db74 }               /* Literal.String.Backtick     */
+.sc                { color: #e6db74 }               /* Literal.String.Char         */
+.sd                { color: #e6db74 }               /* Literal.String.Doc          */
+.s2                { color: #e6db74 }               /* Literal.String.Double       */
+.se                { color: #ae81ff }               /* Literal.String.Escape       */
+.sh                { color: #e6db74 }               /* Literal.String.Heredoc      */
+.si                { color: #e6db74 }               /* Literal.String.Interpol     */
+.sx                { color: #e6db74 }               /* Literal.String.Other        */
+.sr                { color: #e6db74 }               /* Literal.String.Regex        */
+.s1                { color: #e6db74 }               /* Literal.String.Single       */
+.ss                { color: #e6db74 }               /* Literal.String.Symbol       */
+.bp                { color: #f8f8f2 }               /* Name.Builtin.Pseudo         */
+.vc                { color: #f8f8f2 }               /* Name.Variable.Class         */
+.vg                { color: #f8f8f2 }               /* Name.Variable.Global        */
+.vi                { color: #f8f8f2 }               /* Name.Variable.Instance      */
+.il                { color: #ae81ff }               /* Literal.Number.Integer.Long */
+</style>
+
+
 <div class="page-header">
   <h1>C++: pointer (指標) </h1>
 </div>
@@ -257,7 +328,7 @@ data-ad-format="auto"></ins>
     <div class="date">
       <span>16 November 2011</span>
     </div>
-    <div class="content">
+    <div class="content" style="line-height: 28px;">
       學C/C++，我想pointer(指標)是最大的門檻吧!<br />這也是大部分人學C/C++，最痛的東西吧!<br />這篇就稍微的講解pointer!<br /><br />pointer是專門用來儲存<b>某變數</b>的<b>記憶體位置</b>!<br />每宣告一個pointer時，就會配置一塊<b>4 bytes</b>的記憶體空間，<br />專門用來儲存某變數的記憶體位置。<br />下面用簡單的code來說明，<br /><pre class="brush: c++">int iValue = 10;<br />int *iPointer = &amp;iValue;<br /><br />printf("iPointer的value=%d \r\n"            ,  *iPointer);      //取值要用* <br />printf("iPointer儲存value的address=%X \r\n" ,  iPointer);       //沒有*就是印出本身儲存的記憶體位置   <br />printf("iPointer本身的address=%X \r\n"      ,  &amp;iPointer);      //取得記憶體位置都是用&amp; <br />printf("iValue  本身的address=%X \r\n"      ,  &amp;iValue);        //取得記憶體位置都是用&amp; <br />printf("iPointer的size=%d \r\n"             ,  sizeof(iPointer));  <br />printf("iValue的size=%d \r\n"               ,  sizeof(iValue));    <br /><br /><br /></pre><br /><br /><br />下面為執行結果以及說明，：<br /><table border="1"><tbody><tr style="background-color: grey; font-size: 16px; font-weight: bold;">           <td align="center" width="35%">output</td>           <td align="center">&nbsp;&nbsp; 說明</td>     </tr><tr><td width="30%">&nbsp;&nbsp; iPointer的value=10</td><td>印出儲存的記憶體位置本身的value，前面說過pointer是用來儲存記憶體位置，<br />如果要取得該記憶體位置的value，就是利用*</td>      </tr><tr><td width="30%">&nbsp;&nbsp; iPointer儲存value的address=28FF3C</td><td>印出iPointer儲存的資訊（記憶體位置）</td>      </tr><tr><td width="30%">&nbsp;&nbsp; iPointer本身的address=28FF38</td><td>iPointer自己的記憶體起始位置在哪</td>      </tr><tr><td width="30%">&nbsp;&nbsp; iValue &nbsp;本身的address=28FF3C</td><td>第四行就是印出iValue本身的記憶體起始位置，會發現跟第二行一樣，因為iPointer就是儲存這個資訊</td>      </tr><tr><td width="30%">&nbsp;&nbsp; iPointer的size=4</td><td>印出iPointer的大小，前面說過，每個pointer的大小都為4 bytes，不論型態為和</td>      </tr><tr><td width="30%">&nbsp;&nbsp; iValue的size=4</td><td>印出iValue本身的大小，因為是interger，所以為4 bytes</td>      </tr></tbody></table><br /><br />上面為基本用法。<br />pointer也很常用來做字串的處理。<br />原因是用指標處理字串較省記憶體空間，也比較彈性，<br />我們可以宣告一個字串指標指向一個字串常數，<br />下面是個簡單的範例：<br /><pre class="brush: c++">char *pValue[2]     = {"Ken","Yang"};<br />char szValue[2][10] = {"Ken","Yang"};<br />printf("szValue的value=%s \r\n"   ,  szValue[0]);     <br />printf("pValue的value=%s \r\n"  ,  pValue[0]);    <br />printf("szValue的size=%d \r\n"   ,  sizeof(szValue));     <br />printf("pValue的size=%d \r\n"  ,  sizeof(pValue));    <br /><br /></pre><br /><br />下面為執行結果以及說明，顏色相同的為該對應的結果及說明：<br /><table border="1" 　width="70%"><tbody><tr style="background-color: grey; font-size: 16px; font-weight: bold;">           <td align="center" width="35%">output</td>           <td align="center">&nbsp;&nbsp; 說明</td>     </tr><tr><td width="30%">&nbsp;&nbsp;szValue的value=Ken</td><td>印出儲存在陣列0的value</td>      </tr><tr><td width="30%">&nbsp;&nbsp;pValue的value=Ken</td><td>印出儲存在指標陣列0的value</td>      </tr><tr><td width="30%">&nbsp;&nbsp;szValue的size=20</td><td>字元陣列的大小為20</td>      </tr><tr><td width="30%">&nbsp;&nbsp;pValue的size=8</td><td>指標陣列的大小為8</td>      </tr></tbody></table><br />可以發現陣列以及指標陣列的第0項，都是ken阿，可是大小卻都不一樣!<br />陣列的大小為20，而指標陣列為8<br />這就是為什麼使用指標會較為省空間的原因，且也較為彈性<br />因為字串指標是可以更改值的，可是字元陣列是不行的。<br /><br />指標還有個特性，就是可以用來做運算，<br />可以看下面簡單的範例，<br /><pre class="brush: c++">char *pString = "Ken";<br />cout &lt;&lt; pString &lt;&lt; endl;<br />cout &lt;&lt; *(pString+1) &lt;&lt; endl;<br />cout &lt;&lt; sizeof(pString) &lt;&lt; endl;<br />cout &lt;&lt; sizeof(*(pString+1)) &lt;&lt; endl;<br />cout &lt;&lt; &amp;pString &lt;&lt; endl;<br /><br /></pre><br />上面的例子，第一行我們先宣告字串指標，然後指定一個字串常數給他，<br />第二行就是印出value來(會印出Ken)<br />第三行就是進行指標的運算(會印出e，如果我們改成+2，就變成n)<br />第四行是印出大小，會印出4，因為說過指標的長度都固定為4<br />第五行也是印出大小，差別是印出該位置的字元大小，那就一定是1了<br />第六行就是印出該記憶體位置了，會發現字串指標跟前面講的變數指標(int, double..之類的)存取value或者存取記憶體的方式都不太同。<br /><br /><br />最後要講的是指標函數，用個簡單的範例來說明，<br /><pre class="brush: c++">void fnPointer(int *pValue){<br />     *pValue=*pValue+1;<br />     cout &lt;&lt; pValue &lt;&lt; endl;    //印出記憶體位置<br />}<br />main(){  <br />     int iValue = 2; <br />     cout &lt;&lt; &amp;iValue &lt;&lt; endl;<br />     fnPointer(&amp;iValue);   //傳遞int變數的記憶體位置進去<br />     cout &lt;&lt; iValue &lt;&lt; endl;<br />}<br /></pre><br />我們先宣告一個函數，那個函數裡的參數是pointer型態，<br />那麼使用方式就是傳遞某變數的記憶體位置進去即可，<br />因為我們說過指標是用來存某變數的記憶體位置!!!<br />所以就是傳遞記憶體位置進去。<br />然後我們再函數fnPointer裡面對value進行+1的動作，<br />然後在印出傳遞進來pointer的記憶體位置，<br />而主程式則是先印出iValue的記憶體位置，<br />在印出iValue的值。<br />會發現，主程式跟函數印出來的記憶體位置都相同!!<br />且在函數裡面進行+1以後，最後在main印出的value會變成3。<br />如果有些人可能會認為還是印出2，代表對pointer的概念還是不太了解(囧)，因為是pointer，還是存取到原本的變數啊!<br />所以也是對原本的變數做操作!!!<br />印出2的方式我們稱為call by value，<br />但印出3的方式我們稱為call by address!<br />還有一種是call by reference!<br />後面一篇會講道!<br /><br /><br />以上是pointer一些簡單的介紹!<br /><a href="http://blog.kenyang.net/2011/11/c-reference.html">下一篇會介紹c++才有的參考(reference)</a><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
     </div>
 

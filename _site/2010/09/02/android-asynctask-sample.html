@@ -223,7 +223,78 @@
       </nav>
 
       <div class="container">
-        
+        <style>
+/* Adjusted to give override background and text colour */
+.highlight pre, pre, .highlight .hll {
+    background-color: #49483E;
+    border: 1px solid #ccc;
+    padding: 6px 10px;
+    border-radius: 3px;
+    color: #FFFFFF;
+}
+/* Highlights taken from https://gist.github.com/asaaki/1007420  for Monokai theme */
+.c                 { color: #75715e }               /* Comment                     */
+.err               { color: #960050;
+                     background-color: #1e0010 }    /* Error                       */
+.k                 { color: #66d9ef }               /* Keyword                     */
+.l                 { color: #ae81ff }               /* Literal                     */
+.n                 { color: #f8f8f2 }               /* Name                        */
+.o                 { color: #f92672 }               /* Operator                    */
+.p                 { color: #f8f8f2 }               /* Punctuation                 */
+.cm                { color: #75715e }               /* Comment.Multiline           */
+.cp                { color: #75715e }               /* Comment.Preproc             */
+.c1                { color: #75715e }               /* Comment.Single              */
+.cs                { color: #75715e }               /* Comment.Special             */
+.ge                { font-style: italic }           /* Generic.Emph                */
+.gs                { font-weight: bold }            /* Generic.Strong              */
+.kc                { color: #66d9ef }               /* Keyword.Constant            */
+.kd                { color: #66d9ef }               /* Keyword.Declaration         */
+.kn                { color: #f92672 }               /* Keyword.Namespace           */
+.kp                { color: #66d9ef }               /* Keyword.Pseudo              */
+.kr                { color: #66d9ef }               /* Keyword.Reserved            */
+.kt                { color: #66d9ef }               /* Keyword.Type                */
+.ld                { color: #e6db74 }               /* Literal.Date                */
+.m                 { color: #ae81ff }               /* Literal.Number              */
+.s                 { color: #e6db74 }               /* Literal.String              */
+.na                { color: #a6e22e }               /* Name.Attribute              */
+.nb                { color: #f8f8f2 }               /* Name.Builtin                */
+.nc                { color: #a6e22e }               /* Name.Class                  */
+.no                { color: #66d9ef }               /* Name.Constant               */
+.nd                { color: #a6e22e }               /* Name.Decorator              */
+.ni                { color: #f8f8f2 }               /* Name.Entity                 */
+.ne                { color: #a6e22e }               /* Name.Exception              */
+.nf                { color: #a6e22e }               /* Name.Function               */
+.nl                { color: #f8f8f2 }               /* Name.Label                  */
+.nn                { color: #f8f8f2 }               /* Name.Namespace              */
+.nx                { color: #a6e22e }               /* Name.Other                  */
+.py                { color: #f8f8f2 }               /* Name.Property               */
+.nt                { color: #f92672 }               /* Name.Tag                    */
+.nv                { color: #f8f8f2 }               /* Name.Variable               */
+.ow                { color: #f92672 }               /* Operator.Word               */
+.w                 { color: #f8f8f2 }               /* Text.Whitespace             */
+.mf                { color: #ae81ff }               /* Literal.Number.Float        */
+.mh                { color: #ae81ff }               /* Literal.Number.Hex          */
+.mi                { color: #ae81ff }               /* Literal.Number.Integer      */
+.mo                { color: #ae81ff }               /* Literal.Number.Oct          */
+.sb                { color: #e6db74 }               /* Literal.String.Backtick     */
+.sc                { color: #e6db74 }               /* Literal.String.Char         */
+.sd                { color: #e6db74 }               /* Literal.String.Doc          */
+.s2                { color: #e6db74 }               /* Literal.String.Double       */
+.se                { color: #ae81ff }               /* Literal.String.Escape       */
+.sh                { color: #e6db74 }               /* Literal.String.Heredoc      */
+.si                { color: #e6db74 }               /* Literal.String.Interpol     */
+.sx                { color: #e6db74 }               /* Literal.String.Other        */
+.sr                { color: #e6db74 }               /* Literal.String.Regex        */
+.s1                { color: #e6db74 }               /* Literal.String.Single       */
+.ss                { color: #e6db74 }               /* Literal.String.Symbol       */
+.bp                { color: #f8f8f2 }               /* Name.Builtin.Pseudo         */
+.vc                { color: #f8f8f2 }               /* Name.Variable.Class         */
+.vg                { color: #f8f8f2 }               /* Name.Variable.Global        */
+.vi                { color: #f8f8f2 }               /* Name.Variable.Instance      */
+.il                { color: #ae81ff }               /* Literal.Number.Integer.Long */
+</style>
+
+
 <div class="page-header">
   <h1>android AsyncTask sample </h1>
 </div>
@@ -257,7 +328,7 @@ data-ad-format="auto"></ins>
     <div class="date">
       <span>02 September 2010</span>
     </div>
-    <div class="content">
+    <div class="content" style="line-height: 28px;">
       android 的AsyncTask<br /><br />如果你可能要去download、request一個蠻龐大的網頁或者檔案時，<br /><br />如果是在主要的activity、widget或其他中去作，<br /><br />那麼想必你的activity、widget或其他的UI會像是被lock住!<br /><br />很LAG的感覺!<br /><br />那麼就使用AsyncTask吧!<br /><br />顧名思義，就是非同步排程(應該可以這樣翻)==<br /><br />AsyncTask的好處就是可以在background執行，<br /><br />並不影響前端的UI<br /><br />下面就是實作方法<br /><br />先去new一個class並繼承AsyncTask<br /><br /><pre class="brush: java">public class downloadTask extends AsyncTask&lt;String, Void , String&gt;{<br /> <br /> public static int iFileSize   = 0;<br /> public static double dReadSum   = 0;<br /> public static boolean bIsDownload = false;<br /> <br /> @Override<br /> protected void onProgressUpdate(Void... values) {<br />  <br />  //此method是在呼叫publishProgress()時的才會trigger到的<br />  //可以當配progressBar來使用，這裡不多作說明。<br />  <br />  super.onProgressUpdate(values);<br /><br /> }<br /><br /> <br /> @Override<br /> protected void onPreExecute() {<br />  //此method是在執行doInBackground以前，才會呼叫的<br />  super.onPreExecute();<br /> }<br /> <br /> @Override<br /> protected void onPostExecute(String result) {<br />  //此method是在doInBackground完成以後，才會呼叫的<br />  super.onPostExecute(result);<br />  if (iFileSize == dReadSum){<br />   Log.d("main","下載完成");<br />  }<br />  <br /> }<br /><br />  /*<br />  *注意!strUrlFile是一個array..代表著在呼叫此class時<br />  *可以帶入很多個參數(strUrlFile)，<br />  *如:new downloadTask().execute("http://www.xxx","http://www.xxx");<br />  */ <br /> protected String doInBackground(String... strUrlFile) {<br />     URL urlFileLocation = null;<br />   HttpURLConnection connFile = null;<br />   try {<br />    int iUrlCount = strUrlFile.length;<br />   for (int i =0 ; i &lt; iUrlCount ; i++){<br />    urlFileLocation  = new URL(strUrlFile[i]);   <br />    connFile    = (HttpURLConnection) urlFileLocation.openConnection();   <br />    connFile.setDoInput(true);<br />    <br />    InputStream is = connFile.getInputStream();<br />    iFileSize  = connFile.getContentLength();    //取得檔案大小<br />    <br />    byte[] buffer = new byte[1024];<br />    int len1 = 0;<br />    dReadSum  = 0;<br />    <br />    while ( (len1 = is.read(buffer)) != -1) {<br />     dReadSum += len1;<br />     publishProgress(dReadSum*100/iFileSize);<br />    }<br />   }<br />    <br />    <br />   } catch (Exception e) {<br />    Log.d("main","download---" + e.toString());<br />   }<br />   <br />        return "";<br />     }<br /><br />   <br /> }<br /></pre><br /><br /><br />呼叫此Class就只要一行:<br /><br /><pre class="brush: java"> new downloadTask().execute("http://www.xxx"); <br />/*<br />*注意，參數其實是可以很多個，如下<br />*new downloadTask().execute("http://www.xxx","http://www.xxx");<br />*這樣子此task就會去download兩次<br />*/<br /></pre><br /><br /><br /><br /><br /><br /><br /><br /><br />
     </div>
 
