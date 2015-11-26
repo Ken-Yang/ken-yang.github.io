@@ -49,6 +49,11 @@ ifconfig eth0
 echo hi
 ```
 
+```javascript
+var s = "JavaScript syntax highlighting";
+alert(s);
+```
+
 
 
 

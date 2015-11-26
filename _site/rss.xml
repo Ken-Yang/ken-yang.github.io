@@ -5,8 +5,8 @@
         <description>Ken Yang筆記 - Ken Yang</description>
         <link>http://blog.kenyang.net</link>
         <atom:link href="http://blog.kenyang.net/rss.xml" rel="self" type="application/rss+xml" />
-        <lastBuildDate>Thu, 26 Nov 2015 11:52:25 +0800</lastBuildDate>
-        <pubDate>Thu, 26 Nov 2015 11:52:25 +0800</pubDate>
+        <lastBuildDate>Thu, 26 Nov 2015 13:24:43 +0800</lastBuildDate>
+        <pubDate>Thu, 26 Nov 2015 13:24:43 +0800</pubDate>
         <ttl>60</ttl>
 
 
@@ -43,11 +43,13 @@ repo名稱為&lt;code&gt;your_name.github.io&lt;/code&gt;，&lt;br&gt;
 &lt;p&gt;然後使用&lt;a href=&quot;http://jekyllbootstrap.com/usage/jekyll-quick-start.html&quot;&gt;jekyll-bootstrap&lt;/a&gt;來快速地建立一個template，&lt;br&gt;
 這個template是以boostrap為基底。&lt;br&gt;
 使用方式如下（記得把&lt;code&gt;ken-yang&lt;/code&gt;換成你的&lt;code&gt;your_name&lt;/code&gt;)：&lt;/p&gt;
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-mysql&quot; data-lang=&quot;mysql&quot;&gt;mysql -uroot -psafesync osdp -e &amp;quot;select * from users&amp;quot;;
-select * from users;
-ifconfig eth0  
-echo hi
-&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;</description>
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-mysql&quot; data-lang=&quot;mysql&quot;&gt;&lt;span class=&quot;n&quot;&gt;mysql&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;uroot&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;psafesync&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;osdp&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;e&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;select * from users&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;select&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;users&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;ifconfig&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;eth0&lt;/span&gt;  
+&lt;span class=&quot;n&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;hi&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;s&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;JavaScript syntax highlighting&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;nx&quot;&gt;alert&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;s&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description>
                 <link>http://blog.kenyang.net/2015/11/26/move-blogger-to-github</link>
                 <guid>http://blog.kenyang.net/2015/11/26/move-blogger-to-github</guid>
                 <pubDate>Thu, 26 Nov 2015 00:00:00 +0800</pubDate>
