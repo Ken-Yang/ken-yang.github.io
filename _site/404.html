@@ -2813,6 +2813,20 @@
   
 
 
+<script>
+  var url = window.location.href;
+  urls = url.split("/");
+  var ol = urls[urls.length-1];
+  var l = document.getElementsByTagName("a").length;
+  for (var i = 0 ; i<l ;i++) {
+    var h = document.getElementsByTagName("a")[i].href;
+    var arr = h.split("/");
+    var nl = arr[arr.length-1] + '.html';
+    if (nl == ol) {
+        window.location=h;
+    }
+  }
+</script>
 
   </div>
 </div>
