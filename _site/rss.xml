@@ -5,10 +5,78 @@
         <description>Ken Yang筆記 - Ken Yang</description>
         <link>http://blog.kenyang.net</link>
         <atom:link href="http://blog.kenyang.net/rss.xml" rel="self" type="application/rss+xml" />
-        <lastBuildDate>Thu, 26 Nov 2015 21:39:19 +0800</lastBuildDate>
-        <pubDate>Thu, 26 Nov 2015 21:39:19 +0800</pubDate>
+        <lastBuildDate>Fri, 27 Nov 2015 18:20:02 +0800</lastBuildDate>
+        <pubDate>Fri, 27 Nov 2015 18:20:02 +0800</pubDate>
         <ttl>60</ttl>
 
+
+        <item>
+                <title>Do not allocate all the LVM space with preseed</title>
+                <description>&lt;p&gt;&lt;font size=3&gt;
+使用Preseed file分割LVM時，&lt;br&gt;
+並無法做到只使用某部分的VG就好，&lt;br&gt;
+舉例來說，假設你有一個100G的硬碟，&lt;br&gt;
+然後preseed file如下，&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;d-i partman-auto/expert_recipe string  &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+      boot-root ::                                                  &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+              &lt;span class=&quot;m&quot;&gt;20480&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;10&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;20480&lt;/span&gt; ext4                                   &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+                      &lt;span class=&quot;nv&quot;&gt;$lvmok&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;{}&lt;/span&gt; lv_name&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt; root &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$defaultignore&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;    &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+                      method&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt; format &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt; format&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;                    &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+                      use_filesystem&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt; filesystem&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt; ext4 &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;          &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+                      mountpoint&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt; / &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;                               &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+              .                                                     &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+              &lt;span class=&quot;m&quot;&gt;20480&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;10&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;20480&lt;/span&gt; ext4                                   &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+                      &lt;span class=&quot;nv&quot;&gt;$lvmok&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt; lv_name&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt; log &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$defaultignore&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;    &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+                      method&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt; format &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt; format&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;                    &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+                      use_filesystem&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt; filesystem&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt; ext4 &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;          &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+                      mountpoint&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt; /var/log &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;                        &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;我們分別給每個lv的大小為：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;root&lt;/code&gt; : 20G&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;log&lt;/code&gt;  : 20G&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;你可能會以為，剩下的60G不會被加到LV裡面，&lt;br&gt;
+但其實剩下的60G會通通被放到log裡面去。  &lt;/p&gt;
+
+&lt;p&gt;不過有比較tricky的解法，可以參考下面的Preseed file，&lt;br&gt;
+我們多增加了一個LV，叫做&lt;code&gt;to_be_free&lt;/code&gt;，&lt;br&gt;
+然後把所有的free space都指派給&lt;code&gt;to_be_free&lt;/code&gt;，&lt;br&gt;
+最後在&lt;code&gt;late_command&lt;/code&gt;裡，用&lt;code&gt;lvremove&lt;/code&gt;把&lt;code&gt;to_be_free&lt;/code&gt;砍掉，&lt;br&gt;
+這樣就可以做到把某部分space歸還了。  &lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;d-i partman-auto/expert_recipe string  &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+      boot-root ::                                                  &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+              &lt;span class=&quot;m&quot;&gt;20480&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;10&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;20480&lt;/span&gt; ext4                                   &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+                      &lt;span class=&quot;nv&quot;&gt;$lvmok&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;{}&lt;/span&gt; lv_name&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt; root &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$defaultignore&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;    &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+                      method&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt; format &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt; format&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;                    &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+                      use_filesystem&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt; filesystem&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt; ext4 &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;          &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+                      mountpoint&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt; / &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;                               &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+              .                                                     &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+              &lt;span class=&quot;m&quot;&gt;20480&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;10&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;20480&lt;/span&gt; ext4                                   &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+                      &lt;span class=&quot;nv&quot;&gt;$lvmok&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt; lv_name&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt; log &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$defaultignore&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;    &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+                      method&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt; format &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt; format&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;                    &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+                      use_filesystem&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt; filesystem&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt; ext4 &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;          &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+                      mountpoint&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt; /var/log &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;                        &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+              .                                                     &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+              &lt;span class=&quot;m&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;10&lt;/span&gt; -1 ext4                                          &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+                      &lt;span class=&quot;nv&quot;&gt;$lvmok&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt; lv_name&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt; to_be_free &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$defaultignore&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;    &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+                      method&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt; format &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt; format&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;                    &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+                      use_filesystem&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt; filesystem&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt; ext4 &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;          &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+                      mountpoint&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt; /to_be_free &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;                     &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+
+d-i preseed/late_command string &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+umount /target/to_be_free/ &lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+lvremove -f /dev/*/*to_be_free &amp;gt; /dev/null 2&amp;gt;&lt;span class=&quot;p&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+sed -i &lt;span class=&quot;s1&quot;&gt;&amp;#39;/to_be_free/d&amp;#39;&lt;/span&gt; /target/etc/fstab &lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;/font&gt;&lt;/p&gt;
+</description>
+                <link>http://blog.kenyang.net/2015/11/27/do-not-allocate-all-the-lvm-space-with-preseed</link>
+                <guid>http://blog.kenyang.net/2015/11/27/do-not-allocate-all-the-lvm-space-with-preseed</guid>
+                <pubDate>Fri, 27 Nov 2015 00:00:00 +0800</pubDate>
+        </item>
 
         <item>
                 <title>如何把Google Blogger搬到Github pages</title>
@@ -393,14 +461,6 @@ mv完成以後，接著打開&lt;code&gt;index.html&lt;/code&gt;，&lt;br&gt;
                 <link>http://blog.kenyang.net/2014/02/06/how-to-backup-and-restore-your-mongodb</link>
                 <guid>http://blog.kenyang.net/2014/02/06/how-to-backup-and-restore-your-mongodb</guid>
                 <pubDate>Thu, 06 Feb 2014 22:43:00 +0800</pubDate>
-        </item>
-
-        <item>
-                <title>Handle long-running operations in Node.js</title>
-                <description>&lt;div style=&quot;font-size: 15px; line-height: 22px;&quot;&gt;由於Node.js是Single thread的關係，&lt;br /&gt;所以並不適合用來處理&lt;span style=&quot;color: red;&quot;&gt;耗費CPU&lt;/span&gt;或者需要&lt;span style=&quot;color: red;&quot;&gt;長時間&lt;/span&gt;處理的操作，&lt;br /&gt;想要處理cpu-intensive或者long-running computation，&lt;br /&gt;還是要靠一些job server來解決會比較好（像是&lt;a href=&quot;http://gearman.org/&quot; target=&quot;_blank&quot;&gt;gearman&lt;/a&gt;），&lt;br /&gt;那如果你不想靠其他的job server來做，&lt;br /&gt;硬要用node.js本身來處理cpu-intensive或者long-running computation，&lt;br /&gt;就要靠worker來處理！&lt;br /&gt;這篇就要講怎麼使用worker．&lt;br /&gt;這裡我們要用的workder module是&lt;a href=&quot;https://github.com/audreyt/node-webworker-threads&quot;&gt;webworker-threads&lt;/a&gt;．&lt;br /&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;1. install&lt;/span&gt;&lt;br /&gt;&lt;pre class=&quot;brush: java&quot;&gt;npm install webworker-threads --save&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;2. implement a task.js&lt;/span&gt;&lt;br /&gt;&lt;br /&gt;首先，我們要先建立一個javascript，&lt;br /&gt;而這隻javascript就是用來處理需要長時間的操作，&lt;br /&gt;這裡我們就以fibonacci來作為長時間處理的example，&lt;br /&gt;&lt;pre class=&quot;brush: js&quot;&gt;// fibonacci function&lt;br /&gt;function fibo (n){                                                                                                               &lt;br /&gt;    return n &amp;gt; 1 ? fibo(n - 1) + fibo(n - 2) : 1;                &lt;br /&gt;}                                                                &lt;br /&gt;                                                                 &lt;br /&gt;onmessage = function(event) {                                    &lt;br /&gt;    postMessage(&#39;Result is : &#39; + fibo(event.data));                  &lt;br /&gt;    self.close();                                                &lt;br /&gt;};&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;這隻javascript有兩個function，&lt;br /&gt;一個是fibo function，&lt;br /&gt;另外一個就是onmessage，onmessage等等我們主程式會call到它，&lt;br /&gt;然後onmessage裡面就會去call fibo function．&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;3. integrate with your main.js&lt;/span&gt;&lt;br /&gt;&lt;br /&gt;在這步就在你的main.js中使用&lt;a href=&quot;https://github.com/audreyt/node-webworker-threads&quot;&gt;webworker-threads&lt;/a&gt;，以及呼叫我們剛剛寫的那隻task.js，&lt;br /&gt;&lt;pre class=&quot;brush: js&quot;&gt;var express = require(&quot;express&quot;);&lt;br /&gt;var app = express();&lt;br /&gt;app.use(express.logger());&lt;br /&gt;&lt;br /&gt;// import the module &lt;br /&gt;var worker_thread = require(&#39;webworker-threads&#39;);&lt;br /&gt;var Worker = worker_thread.Worker;&lt;br /&gt;&lt;br /&gt;app.use(express.static(path.join(__dirname, &#39;view&#39;)));&lt;br /&gt;&lt;br /&gt;app.get(&#39;/fibo&#39;, function(req, resp) {&lt;br /&gt;&lt;br /&gt;    var worker = new Worker(&#39;task.js&#39;);&lt;br /&gt;&lt;br /&gt;    worker.onmessage = function(event) {&lt;br /&gt;        console.log(&quot;The task said : &quot; + event.data);&lt;br /&gt;    };                                                                                                                            &lt;br /&gt;    worker.postMessage(40);&lt;br /&gt;&lt;br /&gt;    resp.end(&#39;hello world &#39;);&lt;br /&gt;});&lt;br /&gt;&lt;br /&gt;var port = process.env.PORT || 5000;&lt;br /&gt;app.listen(port, function() {&lt;br /&gt;    console.log(&quot;Listening on &quot; + port);&lt;br /&gt;});&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;這個example，一樣有使用到express.js，&lt;br /&gt;不知道怎麼使用的人可以去看&lt;a href=&quot;http://blog.kenyang.net/2014/01/deploying-nodejs-application-to-heroku.html&quot; target=&quot;_blank&quot;&gt;這一篇：Deploying a Node.js application to Heroku&lt;/a&gt;&lt;br /&gt;webworker-threads的使用方式很簡單，&lt;br /&gt;只要先import這個module，&lt;br /&gt;然後再呼叫Worker這個instance，&lt;br /&gt;接著就可以去new一個worker出來，&lt;br /&gt;然後就可以指定要worker做什麼事情，&lt;br /&gt;這裡我們指定他去做task.js裡面的事情（new worker(&#39;task.js&#39;)）．&lt;br /&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;4. test&lt;/span&gt;&lt;br /&gt;&lt;br /&gt;那要怎麼測試呢？&lt;br /&gt;首先先把我們的main.js叫起來，&lt;br /&gt;&lt;pre class=&quot;brush: js&quot;&gt;node main.js&lt;br /&gt;&lt;/pre&gt;成功叫起來以後，應該會在你的terminal中看到下面的字樣，&lt;br /&gt;&lt;br /&gt;&lt;div class=&quot;separator&quot; style=&quot;clear: both; text-align: center;&quot;&gt;&lt;a href=&quot;http://4.bp.blogspot.com/-giyBWmviB8I/UuU-smEDo0I/AAAAAAAAFIA/iSg3TL2-s_Q/s1600/Screen+Shot+2014-01-27+at+12.58.24+AM.png&quot; imageanchor=&quot;1&quot; style=&quot;margin-left: 1em; margin-right: 1em;&quot;&gt;&lt;img border=&quot;0&quot; src=&quot;http://4.bp.blogspot.com/-giyBWmviB8I/UuU-smEDo0I/AAAAAAAAFIA/iSg3TL2-s_Q/s320/Screen+Shot+2014-01-27+at+12.58.24+AM.png&quot; /&gt;&lt;/a&gt;&lt;/div&gt;&lt;br /&gt;接著就打開我們的browser，&lt;br /&gt;然後輸入“http://0.0.0.0:5000/fibo”，&lt;br /&gt;這時候browser應該很快的就show出hello world的字樣，&lt;br /&gt;然後我們馬上回到terminal看，&lt;br /&gt;你應該只會先看到request的log（如下圖），&lt;br /&gt;&lt;div class=&quot;separator&quot; style=&quot;clear: both; text-align: center;&quot;&gt;&lt;a href=&quot;http://2.bp.blogspot.com/-s6pGcxYS6lI/UuVAEOs3t4I/AAAAAAAAFIQ/AZ083AEaBL8/s1600/Screen+Shot+2014-01-27+at+1.03.09+AM.png&quot; imageanchor=&quot;1&quot; style=&quot;margin-left: 1em; margin-right: 1em;&quot;&gt;&lt;img border=&quot;0&quot; src=&quot;http://2.bp.blogspot.com/-s6pGcxYS6lI/UuVAEOs3t4I/AAAAAAAAFIQ/AZ083AEaBL8/s1600/Screen+Shot+2014-01-27+at+1.03.09+AM.png&quot; /&gt;&lt;/a&gt;&lt;/div&gt;&lt;br /&gt;&lt;br /&gt;接著過了幾秒鐘以後才會看到fibo的計算結果（如下圖），&lt;br /&gt;&lt;br /&gt;&lt;div class=&quot;separator&quot; style=&quot;clear: both; text-align: center;&quot;&gt;&lt;a href=&quot;http://2.bp.blogspot.com/-lhxjfM4sVvg/UuVAEK-Eg9I/AAAAAAAAFIM/pSvMrKChzJM/s1600/Screen+Shot+2014-01-27+at+1.04.35+AM.png&quot; imageanchor=&quot;1&quot; style=&quot;margin-left: 1em; margin-right: 1em;&quot;&gt;&lt;img border=&quot;0&quot; src=&quot;http://2.bp.blogspot.com/-lhxjfM4sVvg/UuVAEK-Eg9I/AAAAAAAAFIM/pSvMrKChzJM/s1600/Screen+Shot+2014-01-27+at+1.04.35+AM.png&quot; height=&quot;41&quot; width=&quot;400&quot; /&gt;&lt;/a&gt;&lt;/div&gt;&lt;br /&gt;如果這裡我們沒有使用worker的話，而是直接call hibo，&lt;br /&gt;你會發現很久才可以在browser中看到hello world的字樣！&lt;br /&gt;且甚至你可以試試看開兩個browser，然後都去打“http://0.0.0.0:5000/fibo”，&lt;br /&gt;你會發現第二個打的request會被hang住很久，因為是single thread的關係，&lt;br /&gt;所以thread都在處理第一個request的fibo，處理完才會去處理第二個request！&lt;br /&gt;因此想要在node.js中處理cpu-intensive或者long-running computation，&lt;br /&gt;就使用worker的概念吧！&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;/div&gt;</description>
-                <link>http://blog.kenyang.net/2014/01/27/handle-long-running-operations-in-nodejs</link>
-                <guid>http://blog.kenyang.net/2014/01/27/handle-long-running-operations-in-nodejs</guid>
-                <pubDate>Mon, 27 Jan 2014 11:14:00 +0800</pubDate>
         </item>
 
 

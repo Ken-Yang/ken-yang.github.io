@@ -212,6 +212,8 @@
   
     
   
+    
+  
 
 
 
@@ -286,6 +288,34 @@ data-ad-format="auto"></ins>
     </div>
     <!-- This loops through the paginated posts -->
     
+      <h1><a style="color: #F22430" href="/2012/07/28/arduino">Arduino 基本教學</a></h1>
+      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
+      <p class="author">
+      <div class="date">
+        <span>28 July 2012</span>
+      </div>
+      </p>
+      <div class="content" style="line-height: 28px;">
+        Arduino 是一塊Open Source電路板，<br />開發者可以利用這塊板子去做到一些電子器材的控制，<br />例如：開燈、關燈，甚至可以在Arduino上裝上sensor，<br />然後根據sensor的資料來做處理！例如接上了光敏電阻這個sensor，<br />我們就可以判斷目前光的亮度，就可以根據不同亮度做不同的回應。<br />詳細資料可以去官網看：<a href="http://arduino.cc/en/">http://arduino.cc/en/</a><br /><br /><br />這篇主要教大家怎麼寫一個簡單的應用，<br />在後面會教大家怎麼接上藍芽模組，然後透過無線的方式和Arduino溝通！<br />基本上要做到下列的事項<br /><br /><ol><li>購買Arduino電路板</li><li>下載Arduino IDE開發工具</li><li>在電腦上安裝Arduino的Driver</li><li>寫個簡單應用並部屬上去Arduino</li></ol><br /><b><span style="font-size: large;">【第一步、購買Arduino】</span></b><br />在開發前，大家一定要有一塊Arduino電路板，<br />基本上在Y拍就買得到了，一塊基本的價格大概在600~1000左右！<br />因為其實Arduino板子有分很多種，且有的還算是加強版！<br />但都大同小異。<br />我買的板子是Duemilanove版本，如圖！<br /><div class="separator" style="clear: both; text-align: center;"><a href="http://3.bp.blogspot.com/-sN72o_XlMx8/UBMQ_RihaGI/AAAAAAAAAzM/oPSP0dbtwpk/s1600/IMG_20120728_054118.jpg" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="300" src="http://3.bp.blogspot.com/-sN72o_XlMx8/UBMQ_RihaGI/AAAAAAAAAzM/oPSP0dbtwpk/s400/IMG_20120728_054118.jpg" width="400" /></a></div><br /><br /><span style="font-size: large;"><b>【第二步、下載Arduino IDE】 </b></span><br />接著得去下載開發工具，<br />才能寫程式，並燒到Arduino上面去。<br />下載網址：<a href="http://arduino.cc/en/Main/Software">http://arduino.cc/en/Main/Software</a> <br />下載下來以後，就解壓縮出來即可。<br /><br /><br /><br /><b><span style="font-size: large;">【第三步、安裝Driver】 </span></b><br />接著把Arduino接上電腦，如下圖，<br /><div class="separator" style="clear: both; text-align: center;"><a href="http://4.bp.blogspot.com/-uI9qyEXk_dc/UBMRHlyanXI/AAAAAAAAAzU/X9oEw4_uJ24/s1600/IMG_20120728_054835.jpg" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="240" src="http://4.bp.blogspot.com/-uI9qyEXk_dc/UBMRHlyanXI/AAAAAAAAAzU/X9oEw4_uJ24/s320/IMG_20120728_054835.jpg" width="320" /></a></div>基本上你的電腦應該找不到Driver，<br />這時候就【我的電腦點選右鍵】→【點選管理】→【點選裝置管理員】<br />基本上應該就會看到無法辨識的設備，<br />在該設備上點選右鍵，選擇內容。<br />然後接著就自己去尋找Driver的路徑，<br />而Driver就在第二步下載下來的檔案當中，<br />在解壓縮出來的資料夾當中\arduino-1.0.1\drivers。<br />安裝完成以後，請記得自己的Serial Port！！（像我的就是21，如下圖）<br />因為等等會透過此Port把程式燒進去。<br /><br /><div class="separator" style="clear: both; text-align: center;"><a href="http://3.bp.blogspot.com/-GKGHJUHOiFY/UBMQj7W04pI/AAAAAAAAAy8/S6_wfgFsgOs/s1600/5.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="80" src="http://3.bp.blogspot.com/-GKGHJUHOiFY/UBMQj7W04pI/AAAAAAAAAy8/S6_wfgFsgOs/s320/5.png" width="320" /></a></div><br /><br /><b><span style="font-size: large;">【第四步、寫個應用】 </span></b><br />首先先打開Arduino IDE，<br />就在第二步中解壓縮的資料夾當中，<br />檔名為arduino.exe。<br />打開以後會見到下圖。<br />而白色的區塊就是你可以寫code的地方。<br /><div class="separator" style="clear: both; text-align: center;"><a href="http://2.bp.blogspot.com/-EC2IyUkb088/UBMQgIqu-RI/AAAAAAAAAyc/v4FIcmZiuD8/s1600/1.JPG" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="320" src="http://2.bp.blogspot.com/-EC2IyUkb088/UBMQgIqu-RI/AAAAAAAAAyc/v4FIcmZiuD8/s320/1.JPG" width="238" /></a></div><br /><br />接著得點選Tool→Board，如下圖<br />先選擇你購買的Arduino電路板版本，像我是Duemilanove，<br />所以就選這個！<br />如果你選錯，基本上是無法upload到Arduino板子上去的！<br /><div class="separator" style="clear: both; text-align: center;"><a href="http://4.bp.blogspot.com/-ietO9fuZtq0/UBMQg-gdhrI/AAAAAAAAAyk/HQrNWqlh35o/s1600/2.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="315" src="http://4.bp.blogspot.com/-ietO9fuZtq0/UBMQg-gdhrI/AAAAAAAAAyk/HQrNWqlh35o/s640/2.png" width="640" /></a></div><br />接著就選擇第三步中的Serial Port，像我是21，所以就選21，<br />如下圖。<br /><br /><div class="separator" style="clear: both; text-align: center;"><a href="http://2.bp.blogspot.com/-sO6zqPybv8k/UBMQhURq0aI/AAAAAAAAAys/hA9qnuPy9-8/s1600/3.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="366" src="http://2.bp.blogspot.com/-sO6zqPybv8k/UBMQhURq0aI/AAAAAAAAAys/hA9qnuPy9-8/s640/3.png" width="640" /></a></div><br /><br />接著就可以開始寫程式了，<br />首先我先說明一下，基本上你們購買的Arduino板子上，<br />一定會有一個小小的LED燈，<br />而這LED燈是連接到pin腳為13的pin上。如下圖<br /><div class="separator" style="clear: both; text-align: center;"><a href="http://2.bp.blogspot.com/-JUr-DuoAbdg/UBMQvAyNtDI/AAAAAAAAAzE/t-fzi8X4vFE/s1600/IMG_201207228_054118.jpg" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="480" src="http://2.bp.blogspot.com/-JUr-DuoAbdg/UBMQvAyNtDI/AAAAAAAAAzE/t-fzi8X4vFE/s640/IMG_201207228_054118.jpg" width="640" /></a></div><br /><br />而我們現在就要寫一個程式去開關該led燈。<br />CODE如下：<br /><pre class="brush: java">// 先宣告Pin腳位置<br />int iPinLed = 13;<br />void setup() {           <br />  // 宣告該Pin腳是output  <br />  pinMode(iPinLed, OUTPUT);     <br />}<br />void loop() {<br />  // 開始寫資料，寫HIGH進去就是讓它亮<br />  digitalWrite(iPinLed, HIGH); <br />  delay(1000);        <br />　// 寫LOW進去就是讓它暗<br />  digitalWrite(iPinLed, LOW);   <br />  delay(1000);             <br />}<br /></pre><br />基本上Arduino的程式分了兩個區塊<br /><br /><ol><li>setup</li><li>loop</li></ol>setup就是傳統的main，也可以想成是constructor，<br />loop就是會一直執行的部分，可以想成for迴圈。<br />而上述的程式中，我們先宣告了一個整數(iPinLed)，代表pin腳的位置，<br />接著在setup中把它宣告成是做輸出的動作，也就是說我們會透過這個pin腳餵資料給led<br />然後就進入loop，第一行就是讓led變亮，<br />接著就delay一秒鐘，<br />之後又把led關掉。<br />又停了一秒。<br />不斷的重複上述步驟。<br />而程式的結果如下列影片。<br />LED燈會一閃一閃的！<br /><br /><div class="separator" style="clear: both; text-align: center;"><object width="320" height="266" class="BLOG_video_class" id="BLOG_video-e338391bc4bf5307" classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,40,0"><param name="movie" value="//www.youtube.com/get_player"><param name="bgcolor" value="#FFFFFF"><param name="allowfullscreen" value="true"><param name="flashvars" value="flvurl=http://redirector.googlevideo.com/videoplayback?id%3De338391bc4bf5307%26itag%3D5%26source%3Dblogger%26app%3Dblogger%26cmo%3Dsensitive_content%253Dyes%26ip%3D0.0.0.0%26ipbits%3D0%26expire%3D1450516984%26sparams%3Did,itag,source,ip,ipbits,expire%26signature%3DA0FC7A3189FB9ED0BD788D826D17DE4490654.6B757629731B92C0E7FB6DCC6A08B8FA46E3D406%26key%3Dck2&amp;iurl=http://video.google.com/ThumbnailServer2?app%3Dblogger%26contentid%3De338391bc4bf5307%26offsetms%3D5000%26itag%3Dw160%26sigh%3DEKWSP7lBmNlXqcU-3ib3oa3O_Tk&amp;autoplay=0&amp;ps=blogger"><embed src="//www.youtube.com/get_player" type="application/x-shockwave-flash" width="320" height="266" bgcolor="#FFFFFF" flashvars="flvurl=http://redirector.googlevideo.com/videoplayback?id%3De338391bc4bf5307%26itag%3D5%26source%3Dblogger%26app%3Dblogger%26cmo%3Dsensitive_content%253Dyes%26ip%3D0.0.0.0%26ipbits%3D0%26expire%3D1450516984%26sparams%3Did,itag,source,ip,ipbits,expire%26signature%3DA0FC7A3189FB9ED0BD788D826D17DE4490654.6B757629731B92C0E7FB6DCC6A08B8FA46E3D406%26key%3Dck2&iurl=http://video.google.com/ThumbnailServer2?app%3Dblogger%26contentid%3De338391bc4bf5307%26offsetms%3D5000%26itag%3Dw160%26sigh%3DEKWSP7lBmNlXqcU-3ib3oa3O_Tk&autoplay=0&ps=blogger" allowFullScreen="true" /></object></div><br /><br /><br /><br />&nbsp;從上述的例子來看或許有點過於單調，<br />但就像本文一開始所說的，<br />Arduino可以接上許多裝置，然後透過Arduino控制該裝置。<br />像此文就是透過Arduino去控制單一LED。<br />你可以想像如果你有一百顆LED，你也可以通通接上 Arduino&nbsp;，<br />然後透過Arduino去控制那一百顆LED。<br /><br />然後在後面的文章將會介紹怎麼透過Arduino去控制機器手臂。<br /><br /><br /><div class="separator" style="clear: both; text-align: center;"></div><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
+      </div>
+      <footer>
+        <p><a class="myButton" href="/2012/07/28/arduino">read more &raquo;</a></p>
+        <div>
+          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- id10t_top -->
+<ins class="adsbygoogle"
+style="display:block"
+data-ad-client="ca-pub-7586970907106458"
+data-ad-slot="1161208442"
+data-ad-format="auto"></ins>
+<script>
+    (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+        </div>
+      </footer>
+      <hr>
+    
       <h1><a style="color: #F22430" href="/2012/07/28/android-bluetooth-api">Android Bluetooth API</a></h1>
       <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
       <p class="author">
@@ -342,41 +372,13 @@ data-ad-format="auto"></ins>
       </footer>
       <hr>
     
-      <h1><a style="color: #F22430" href="/2012/04/09/eclipse-aws-plugin">Eclipse 安裝 AWS Plugin</a></h1>
-      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
-      <p class="author">
-      <div class="date">
-        <span>09 April 2012</span>
-      </div>
-      </p>
-      <div class="content" style="line-height: 28px;">
-        Amazon有推出一套plugin for eclipse，<br />可以讓使用者在eclipse開發Java Application或者J2EE，<br />然後deploy上去<a href="http://aws.amazon.com/elasticbeanstalk/">AWS Elastic Beanstalk</a>!<br /><br /><br />當然你也可以自己在本機寫好，<br />然後用FTP將project上傳到你的EC2上面去!<br />利用這樣的方式去執行!<br />但這邊提供一個利用Eclipse Deploy上去的方法!<br /><br /><br />而<a href="http://aws.amazon.com/elasticbeanstalk/">AWS Elastic Beanstalk</a>是Amazon推出的PaaS平台!<br />開發者一樣不用去管Infrastructure!<br />但是當你Deploy上去，Amazon可是會自動幫你create一個EC2的唷!<br />所以還是要注意費用!<br />不過這個EC2的AMI是選用Amazon Linux AMI，這個AMI也是有Free Usage Tier的!<br />但還是要注意一下別超過配額!<br /><br />至於詳細的<a href="http://aws.amazon.com/elasticbeanstalk/">AWS Elastic Beanstalk</a>介紹可以去官網看!<br />或者等待我下一篇的介紹吧!<br /><br />這篇主要介紹如何安裝Plugin至Eclipse上!<br />這裡建議您使用<a href="http://www.eclipse.org/downloads/packages/eclipse-ide-java-ee-developers/indigosr2">Eclipse J2EE</a>的版本比較方便後面的開發!<br />當然你也可以使用Eclipse Classic 的版本，(我自己是使用Classic)<br />只是就要去安裝<a href="http://www.eclipse.org/webtools/">WTP</a>!<br /><a href="http://www.eclipse.org/webtools/">WTP</a>是一個plugin可以讓你在Eclipse Classic版本中開發Java Web(jsp, jsf..etc)!<br />這裡就不另作說明了!<br /><br />首先先開啟你的 Eclipse，<br />然後點選Help-&gt; Install New Software<br />如下圖!<br /><div class="separator" style="clear: both; text-align: center;"><a href="http://1.bp.blogspot.com/-wXc4vSgX09c/T4Gy4Ji5f3I/AAAAAAAAAoQ/u0Acnq9OzcU/s1600/1.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="http://1.bp.blogspot.com/-wXc4vSgX09c/T4Gy4Ji5f3I/AAAAAAAAAoQ/u0Acnq9OzcU/s1600/1.png" /></a></div><div class="separator" style="clear: both; text-align: center;"><br /></div><div class="separator" style="clear: both; text-align: left;">接著點選下圖中的Add，然後輸入AWS Plugin的位置!&nbsp;</div><div class="separator" style="clear: both; text-align: center;"><a href="http://3.bp.blogspot.com/-UaE0V39l554/T4Gy4uBPv5I/AAAAAAAAAoU/eI0qyIepiuc/s1600/2.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="376" src="http://3.bp.blogspot.com/-UaE0V39l554/T4Gy4uBPv5I/AAAAAAAAAoU/eI0qyIepiuc/s640/2.png" width="640" /></a></div><div class="separator" style="clear: both; text-align: center;"><br /></div><div class="separator" style="clear: both; text-align: center;"><br /></div>&nbsp;接著就勾選下圖中的AWS Toolkit for Eclipse，然後進行安裝!<br /><div class="separator" style="clear: both; text-align: center;"><a href="http://4.bp.blogspot.com/-40QC3p8asfw/T4Gy5RZ8i6I/AAAAAAAAAog/jRrWgBM811s/s1600/3.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="582" src="http://4.bp.blogspot.com/-40QC3p8asfw/T4Gy5RZ8i6I/AAAAAAAAAog/jRrWgBM811s/s640/3.png" width="640" /></a></div><div class="separator" style="clear: both; text-align: center;"><br /></div><div class="separator" style="clear: both; text-align: center;"><br /></div><div class="separator" style="clear: both; text-align: left;">安裝完成，會在Toolbar上看到Amazon的圖示!&nbsp;點選一下!&nbsp;</div><div class="separator" style="clear: both; text-align: left;">可以看到很多選項!</div><div class="separator" style="clear: both; text-align: left;">像是New AWS Java Project，</div><div class="separator" style="clear: both; text-align: left;">或者Show AWS Explorer View等等之類的!</div><div class="separator" style="clear: both; text-align: left;">但我們要先選擇Preferences，</div><div class="separator" style="clear: both; text-align: left;">要先設定一些資訊!</div><div class="separator" style="clear: both; text-align: center;"><a href="http://1.bp.blogspot.com/-2WRl0SM--AE/T4Gy6SMm3cI/AAAAAAAAAok/8AK7c_9x7hU/s1600/4.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="400" src="http://1.bp.blogspot.com/-2WRl0SM--AE/T4Gy6SMm3cI/AAAAAAAAAok/8AK7c_9x7hU/s400/4.png" width="357" /></a></div><div class="separator" style="clear: both; text-align: center;"><br /></div><div class="separator" style="clear: both; text-align: left;"><br /></div>&nbsp;首先我們要先建立一個Account，<br />在Account Name輸入你在AWS的帳號!<br />然後輸入你的Access Key Id以及Secret Access Key!<br />如果忘記的人可以來這<a href="https://aws-portal.amazon.com/gp/aws/securityCredentials?">https://aws-portal.amazon.com/gp/aws/securityCredentials?</a>看!<br />或者點選下圖中的"find your existing AWS security credentials."去找<br /><div class="separator" style="clear: both; text-align: center;"><a href="http://3.bp.blogspot.com/-2Nh2ITQpFeo/T4Gy7FwgmXI/AAAAAAAAAow/r-U7W2PI4A0/s1600/5.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="510" src="http://3.bp.blogspot.com/-2Nh2ITQpFeo/T4Gy7FwgmXI/AAAAAAAAAow/r-U7W2PI4A0/s640/5.png" width="640" /></a></div><br /><br /><br />設定完成以後，就可以跟你的AWS連結上了!<br />我們可以點選<span style="text-align: left;">Show AWS Explorer View來看看我們AWS上的設定!</span><br /><span style="text-align: left;">點選以後，會出現下圖! 你可以用來觀看AWS上的設定!</span><br /><div class="separator" style="clear: both; text-align: center;"><a href="http://2.bp.blogspot.com/-5ZjBoPCmE4Q/T4Gy8L53P3I/AAAAAAAAAo0/J4BBK7uH0qE/s1600/6.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="http://2.bp.blogspot.com/-5ZjBoPCmE4Q/T4Gy8L53P3I/AAAAAAAAAo0/J4BBK7uH0qE/s1600/6.png" /></a></div><div class="separator" style="clear: both; text-align: center;"><br /></div><div class="separator" style="clear: both; text-align: center;"><br /></div>&nbsp;這裡我們點選Amazon EC2-&gt;Instances<br />會出現下圖! 像我AWS上面擁有兩個Instance，所以就會出現兩個!<br />當然你也可以在此Dilaog中去stop或者start甚至是reboot這個instance!<br /><div class="separator" style="clear: both; text-align: center;"><a href="http://4.bp.blogspot.com/-pH-O8Xl0Xh0/T4Gy8-iuh4I/AAAAAAAAAo8/bZQxo1WM02c/s1600/7.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="http://4.bp.blogspot.com/-pH-O8Xl0Xh0/T4Gy8-iuh4I/AAAAAAAAAo8/bZQxo1WM02c/s1600/7.png" /></a></div><br /><br />完成上面的步驟就代表安裝成功了!<br />下一篇會說明如何Deploy一個Project上去<a href="http://aws.amazon.com/elasticbeanstalk/">AWS Elastic Beanstalk</a><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
-      </div>
-      <footer>
-        <p><a class="myButton" href="/2012/04/09/eclipse-aws-plugin">read more &raquo;</a></p>
-        <div>
-          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<!-- id10t_top -->
-<ins class="adsbygoogle"
-style="display:block"
-data-ad-client="ca-pub-7586970907106458"
-data-ad-slot="1161208442"
-data-ad-format="auto"></ins>
-<script>
-    (adsbygoogle = window.adsbygoogle || []).push({});
-</script>
-
-        </div>
-      </footer>
-      <hr>
-    
 
     <!-- Pagination links -->
     <div class="pagination">
       
         <a href="/blog/page17" class="previous">Previous</a>
       
-      <span class="page_number ">Page: 18 of 53</span>
+      <span class="page_number ">Page: 18 of 54</span>
       
         <a href="/blog/page19" class="next">Next</a>
       

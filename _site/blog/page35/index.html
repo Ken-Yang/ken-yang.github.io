@@ -212,6 +212,8 @@
   
     
   
+    
+  
 
 
 
@@ -286,6 +288,34 @@ data-ad-format="auto"></ins>
     </div>
     <!-- This loops through the paginated posts -->
     
+      <h1><a style="color: #F22430" href="/2011/01/10/ip">IP的分級和網域的概念</a></h1>
+      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
+      <p class="author">
+      <div class="date">
+        <span>10 January 2011</span>
+      </div>
+      </p>
+      <div class="content" style="line-height: 28px;">
+        記得以前大二上網路概論的課有講到，<br /><br />但都忘光了，今天去把它惡補回來。<br /><br />並做點筆記!<br /><br />IP類似現實世界房子門牌的概念，<br /><br />而IP是由32個bits所組成<br /><br />而32個bits中包含了<span class="Apple-style-span" style="color: red;">Net_id</span>和<span class="Apple-style-span" style="color: red;">Host_id</span><br /><span class="Apple-style-span" style="color: red;"><br /></span><br />什麼是Net_id?<br /><br />Net_id意思是一個網域<br /><br />而Host_id意思是該網域底下的主機編號<br /><br />以現實例子來想，Net_id可以想像成一個大樓（台北市XX路）<br /><br />而一棟大樓裡面一定有很多戶人家，Host_id就是該大樓裡面所有的門牌號碼<br /><br />而有幾個bits是<span class="Apple-style-span" style="color: red;">Net_id</span>呢? 又有幾個bits是<span class="Apple-style-span" style="color: red;">Host_id</span>呢?<br /><br />就要講到IP分級了，<br /><br />IP主要分為五級(A、B、C、D、E)<br /><br />Class A網域的IP<br /><br /><span class="Apple-style-span" style="color: red;"><b>０</b>ｘｘｘｘｘｘｘ</span>．ｘｘｘｘｘｘｘｘ．ｘｘｘｘｘｘｘｘ．ｘｘｘｘｘｘｘｘ<div><br />Net_id有8個bits，<span class="Apple-style-span" style="color: red;">可是！</span><br /><br />第一個bits一定要為0，<br /><br />所以就剩下7個bits，也就是2的7次方。<br /><br />也就是說<br /><br />Class A網域的IP範圍為０．ｘ．ｘ．ｘ～１２７．ｘ．ｘ．ｘ<br /><br />以此類推，<br /><br /><br /><br />Class B網域的IP<br /><br /><span class="Apple-style-span" style="color: red;"><b>１０</b>ｘｘｘｘｘｘ</span>．<span class="Apple-style-span" style="color: red;">ｘｘｘｘｘｘ</span><span class="Apple-style-span" style="color: red;">ｘｘ</span>．ｘｘｘｘｘｘｘｘ．ｘｘｘｘｘｘｘｘ<br /><br /><div><div style="margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px;">Net_id有16個bits，<span class="Apple-style-span" style="color: red;">可是！</span></div><div style="margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px;"><span class="Apple-style-span" style="color: red;"><br /></span></div><div style="margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px;"><span class="Apple-style-span" style="color: red;"><span class="Apple-style-span" style="color: black;">前二個bits一定要為１０，</span></span></div><div style="margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px;"><br /></div><div style="margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px;"><span class="Apple-style-span" style="color: red;"><span class="Apple-style-span" style="color: black;"></span></span>也就是說</div><div style="margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px;"><br /></div><div style="margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px;">Class B的IP範圍為１２８．ｘ．ｘ．ｘ～１９１．ｘ．ｘ．ｘ</div><div style="margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px;"><br /></div><div style="margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px;"><br /></div><div style="margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px;"><br /></div><div style="margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px;">Class&nbsp;C網域的IP</div><div style="margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px;"><span class="Apple-style-span" style="color: red;"><b><br /></b></span></div><div style="margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px;"><span class="Apple-style-span" style="color: red;"><b>１１０</b>ｘｘｘｘｘ</span>．<span class="Apple-style-span" style="color: red;">ｘｘｘｘｘｘ</span><span class="Apple-style-span" style="color: red;">ｘｘ</span>．<span class="Apple-style-span" style="color: red;">ｘｘｘｘｘｘ</span><span class="Apple-style-span" style="color: red;">ｘｘ</span>．ｘｘｘｘｘｘｘｘ</div><div style="margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px;"><br /></div><div style="margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px;">Net_id有24個bits，<span class="Apple-style-span" style="color: red;">可是！</span></div></div><div><div style="margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px;"><span class="Apple-style-span" style="color: red;"><br /></span></div><div style="margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px;"><span class="Apple-style-span" style="color: red;"><span class="Apple-style-span" style="color: black;">前二個bits一定要為１</span></span>１０，</div><div style="margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px;"><br /></div><div style="margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px;"><span class="Apple-style-span" style="color: red;"><span class="Apple-style-span" style="color: black;"></span></span>也就是說</div></div><div style="margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px;"><br /></div><div style="margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px;">Class C網域的IP範圍為１９２．ｘ．ｘ．ｘ～２２３．ｘ．ｘ．ｘ</div><br /><br /><br />Class D E都被保留，這裡就不詳談。<br /><br /><br /><br />注意！！！<br /><br /><b>網域</b><span class="Apple-style-span" style="color: red;">不等於</span><b>網段</b><br /><br />網段的定義是，該網段底下的ip的net_id都相同，那麼就屬於同一網段！<br /><br />將在下一篇進行解說subnet的概念。<br /><br /><br /><br /><br /><br /></div>
+      </div>
+      <footer>
+        <p><a class="myButton" href="/2011/01/10/ip">read more &raquo;</a></p>
+        <div>
+          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- id10t_top -->
+<ins class="adsbygoogle"
+style="display:block"
+data-ad-client="ca-pub-7586970907106458"
+data-ad-slot="1161208442"
+data-ad-format="auto"></ins>
+<script>
+    (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+        </div>
+      </footer>
+      <hr>
+    
       <h1><a style="color: #F22430" href="/2010/12/24/android-market">Android Market改版內容</a></h1>
       <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
       <p class="author">
@@ -342,41 +372,13 @@ data-ad-format="auto"></ins>
       </footer>
       <hr>
     
-      <h1><a style="color: #F22430" href="/2010/12/19/android-sharedpreferences">Android SharedPreferences</a></h1>
-      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
-      <p class="author">
-      <div class="date">
-        <span>19 December 2010</span>
-      </div>
-      </p>
-      <div class="content" style="line-height: 28px;">
-        如果想要做到儲存資訊，<br /><br />且又是少量的，<br /><br />如果用到sqllite又會太過於麻煩(且也會較慢)<br /><br />這裡就可以用到SharedPreferences，<br /><br />假設我們要做個登入介面<br /><br />有個Email的欄位，<br /><br />且使用者可以勾選是否要記憶住帳號及密碼，<br /><br />我們就可以用SharedPreferences來做<br /><br />首先我們先來做<b><span class="Apple-style-span" style="color: red;">儲存</span></b>資訊的function<br /><br />如下:<br /><br /><pre class="brush: java">/*<br /> * 用來把mail存在preference裡面<br /> */<br /> private final void fnStorePrefs(){<br />  //先取得preference，且名稱為STR_PREF 的prefernce，STR_PREF 請自行宣告<br />  final SharedPreferences settings = getSharedPreferences(STR_PREF , 0);  <br />  <br />  //然後再取得editor，為了儲存資訊 <br />  final Editor editor = settings.edit();<br /><br />  //把資料存進去<br />  editor.putString(STR_PREF_EMAIL , edEmail.getText().toString());<br />     <br />  //然後一定要commit，才會存進去<br />   editor.commit();<br /> }<br /> <br /><br /></pre><br /><br />然後再做<b style="color: red;">取得</b>資訊的function<br /><br /><br /><pre class="brush: java">/*<br /> * 用來把mail從preference抓回來<br /> */<br /> private final void fnRestorePrefs(){<br />  //先取得preference，且名稱為STR_PREF 的prefernce，STR_PREF 請自行宣告<br />  final SharedPreferences settings = getSharedPreferences(STR_PREF , 0);<br /><br />  //然後直接取得資料<br />  final String strEmail            = settings.getString(STR_PREF_EMAIL ,"");<br /><br />  //然後再放進去EditText裡面去<br />  edEmail.setText(strEmail);<br /> }<br /></pre><br /><br /><br /><br /><br />基本上就這二種基本的運用，一個儲存的function、一個取得的function<br /><br />就看什麼時候要<b>存</b>，什麼時候要<b>取</b><br /><b><br /></b><br /><b><br /></b><br /><b><br /></b><br /><b><br /></b><br /><b><br /></b><br /><b><br /></b><br /><b><br /></b><br /><b><br /></b><br /><br /><br />
-      </div>
-      <footer>
-        <p><a class="myButton" href="/2010/12/19/android-sharedpreferences">read more &raquo;</a></p>
-        <div>
-          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<!-- id10t_top -->
-<ins class="adsbygoogle"
-style="display:block"
-data-ad-client="ca-pub-7586970907106458"
-data-ad-slot="1161208442"
-data-ad-format="auto"></ins>
-<script>
-    (adsbygoogle = window.adsbygoogle || []).push({});
-</script>
-
-        </div>
-      </footer>
-      <hr>
-    
 
     <!-- Pagination links -->
     <div class="pagination">
       
         <a href="/blog/page34" class="previous">Previous</a>
       
-      <span class="page_number ">Page: 35 of 53</span>
+      <span class="page_number ">Page: 35 of 54</span>
       
         <a href="/blog/page36" class="next">Next</a>
       

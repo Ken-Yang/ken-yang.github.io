@@ -1,0 +1,521 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>Do not allocate all the LVM space on preseed</title>
+    <meta name="description" content="">
+    <meta name="author" content="Ken Yang">
+
+    <!-- Enable responsive viewport -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Bootstrap styles -->
+    <link href="/assets/themes/bootstrap-3/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Optional theme -->
+    <link href="/assets/themes/bootstrap-3/bootstrap/css/bootstrap-theme.min.css" rel="stylesheet">
+    <!-- Sticky Footer -->
+    <link href="/assets/themes/bootstrap-3/bootstrap/css/bs-sticky-footer.css" rel="stylesheet">
+    
+    <!-- Custom styles -->
+    <link href="/assets/themes/bootstrap-3/css/style.css?body=1" rel="stylesheet" type="text/css" media="all">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Fav and touch icons -->
+    <!-- Update these with your own images
+      <link rel="shortcut icon" href="images/favicon.ico">
+      <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+      <link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-72x72.png">
+      <link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png">
+    -->
+
+    <!-- atom & rss feed -->
+    <link href="/atom.xml" type="application/atom+xml" rel="alternate" title="Sitewide ATOM Feed">
+    <link href="/rss.xml" type="application/rss+xml" rel="alternate" title="Sitewide RSS Feed">
+
+  </head>
+
+  <body>
+    <div id="wrap">
+      <nav class="navbar navbar-default" role="navigation">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#jb-navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/">Ken Yang筆記</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="jb-navbar-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+            
+
+
+  
+    
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/about">About Ken Yang</a></li>
+      	
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/archive">Archive</a></li>
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+  
+    
+      
+    
+  
+    
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/tags">Tags</a></li>
+      	
+      
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+
+
+
+          </ul>
+          <form method="get" class="navbar-form navbar-right" role="search" action="https://www.google.com/search">
+            <div class="form-group">
+              <input name="q" id="search-value" type="text" class="form-control" placeholder="Search">
+              <input style="display: none" name="as_sitesearch" id="search-value" type="text" class="form-control" value="blog.kenyang.net">
+            </div>
+            <button type="submit" class="btn btn-default">Submit</button>
+          </form>
+        </div><!-- /.navbar-collapse -->
+      </nav>
+
+      <div class="container">
+        <style>
+/* Adjusted to give override background and text colour */
+.highlight pre, pre, .highlight .hll {
+    background-color: #49483E;
+    border: 1px solid #ccc;
+    padding: 6px 10px;
+    border-radius: 3px;
+    color: #FFFFFF;
+}
+/* Highlights taken from https://gist.github.com/asaaki/1007420  for Monokai theme */
+.c                 { color: #75715e }               /* Comment                     */
+.err               { color: #960050;
+                     background-color: #1e0010 }    /* Error                       */
+.k                 { color: #66d9ef }               /* Keyword                     */
+.l                 { color: #ae81ff }               /* Literal                     */
+.n                 { color: #f8f8f2 }               /* Name                        */
+.o                 { color: #f92672 }               /* Operator                    */
+.p                 { color: #f8f8f2 }               /* Punctuation                 */
+.cm                { color: #75715e }               /* Comment.Multiline           */
+.cp                { color: #75715e }               /* Comment.Preproc             */
+.c1                { color: #75715e }               /* Comment.Single              */
+.cs                { color: #75715e }               /* Comment.Special             */
+.ge                { font-style: italic }           /* Generic.Emph                */
+.gs                { font-weight: bold }            /* Generic.Strong              */
+.kc                { color: #66d9ef }               /* Keyword.Constant            */
+.kd                { color: #66d9ef }               /* Keyword.Declaration         */
+.kn                { color: #f92672 }               /* Keyword.Namespace           */
+.kp                { color: #66d9ef }               /* Keyword.Pseudo              */
+.kr                { color: #66d9ef }               /* Keyword.Reserved            */
+.kt                { color: #66d9ef }               /* Keyword.Type                */
+.ld                { color: #e6db74 }               /* Literal.Date                */
+.m                 { color: #ae81ff }               /* Literal.Number              */
+.s                 { color: #e6db74 }               /* Literal.String              */
+.na                { color: #a6e22e }               /* Name.Attribute              */
+.nb                { color: #f8f8f2 }               /* Name.Builtin                */
+.nc                { color: #a6e22e }               /* Name.Class                  */
+.no                { color: #66d9ef }               /* Name.Constant               */
+.nd                { color: #a6e22e }               /* Name.Decorator              */
+.ni                { color: #f8f8f2 }               /* Name.Entity                 */
+.ne                { color: #a6e22e }               /* Name.Exception              */
+.nf                { color: #a6e22e }               /* Name.Function               */
+.nl                { color: #f8f8f2 }               /* Name.Label                  */
+.nn                { color: #f8f8f2 }               /* Name.Namespace              */
+.nx                { color: #a6e22e }               /* Name.Other                  */
+.py                { color: #f8f8f2 }               /* Name.Property               */
+.nt                { color: #f92672 }               /* Name.Tag                    */
+.nv                { color: #f8f8f2 }               /* Name.Variable               */
+.ow                { color: #f92672 }               /* Operator.Word               */
+.w                 { color: #f8f8f2 }               /* Text.Whitespace             */
+.mf                { color: #ae81ff }               /* Literal.Number.Float        */
+.mh                { color: #ae81ff }               /* Literal.Number.Hex          */
+.mi                { color: #ae81ff }               /* Literal.Number.Integer      */
+.mo                { color: #ae81ff }               /* Literal.Number.Oct          */
+.sb                { color: #e6db74 }               /* Literal.String.Backtick     */
+.sc                { color: #e6db74 }               /* Literal.String.Char         */
+.sd                { color: #e6db74 }               /* Literal.String.Doc          */
+.s2                { color: #e6db74 }               /* Literal.String.Double       */
+.se                { color: #ae81ff }               /* Literal.String.Escape       */
+.sh                { color: #e6db74 }               /* Literal.String.Heredoc      */
+.si                { color: #e6db74 }               /* Literal.String.Interpol     */
+.sx                { color: #e6db74 }               /* Literal.String.Other        */
+.sr                { color: #e6db74 }               /* Literal.String.Regex        */
+.s1                { color: #e6db74 }               /* Literal.String.Single       */
+.ss                { color: #e6db74 }               /* Literal.String.Symbol       */
+.bp                { color: #f8f8f2 }               /* Name.Builtin.Pseudo         */
+.vc                { color: #f8f8f2 }               /* Name.Variable.Class         */
+.vg                { color: #f8f8f2 }               /* Name.Variable.Global        */
+.vi                { color: #f8f8f2 }               /* Name.Variable.Instance      */
+.il                { color: #ae81ff }               /* Literal.Number.Integer.Long */
+</style>
+
+
+<div class="page-header">
+  <h1>Do not allocate all the LVM space on preseed </h1>
+</div>
+
+<div class="row post-full">
+  <div>
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- id10t_top -->
+<ins class="adsbygoogle"
+style="display:block"
+data-ad-client="ca-pub-7586970907106458"
+data-ad-slot="1161208442"
+data-ad-format="auto"></ins>
+<script>
+    (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+  </div>
+  <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-70705007-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+
+  <div class="col-xs-12">
+    <div class="date">
+      <span>27 November 2015</span>
+    </div>
+    <div class="content" style="line-height: 28px;">
+      <p><font size=3>
+使用Preseed file分割LVM時，<br>
+並無法做到只使用某部分的VG就好，<br>
+舉例來說，假設你有一個100G的硬碟，<br>
+然後preseed file如下，</p>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash">d-i partman-auto/expert_recipe string  <span class="se">\</span>
+      boot-root ::                                                  <span class="se">\</span>
+              <span class="m">20480</span> <span class="m">10</span> <span class="m">20480</span> ext4                                   <span class="se">\</span>
+                      <span class="nv">$lvmok</span><span class="o">{}</span> lv_name<span class="o">{</span> root <span class="o">}</span> <span class="nv">$defaultignore</span><span class="o">{</span> <span class="o">}</span>    <span class="se">\</span>
+                      method<span class="o">{</span> format <span class="o">}</span> format<span class="o">{</span> <span class="o">}</span>                    <span class="se">\</span>
+                      use_filesystem<span class="o">{</span> <span class="o">}</span> filesystem<span class="o">{</span> ext4 <span class="o">}</span>          <span class="se">\</span>
+                      mountpoint<span class="o">{</span> / <span class="o">}</span>                               <span class="se">\</span>
+              .                                                     <span class="se">\</span>
+              <span class="m">20480</span> <span class="m">10</span> <span class="m">20480</span> ext4                                   <span class="se">\</span>
+                      <span class="nv">$lvmok</span><span class="o">{</span> <span class="o">}</span> lv_name<span class="o">{</span> log <span class="o">}</span> <span class="nv">$defaultignore</span><span class="o">{</span> <span class="o">}</span>    <span class="se">\</span>
+                      method<span class="o">{</span> format <span class="o">}</span> format<span class="o">{</span> <span class="o">}</span>                    <span class="se">\</span>
+                      use_filesystem<span class="o">{</span> <span class="o">}</span> filesystem<span class="o">{</span> ext4 <span class="o">}</span>          <span class="se">\</span>
+                      mountpoint<span class="o">{</span> /var/log <span class="o">}</span>                        <span class="se">\</span>
+</code></pre></div>
+<p>我們分別給每個lv的大小為：</p>
+
+<ul>
+<li><code>root</code> : 20G</li>
+<li><code>log</code>  : 20G</li>
+</ul>
+
+<p>你可能會以為，剩下的60G不會被加到LV裡面，<br>
+但其實剩下的60G會通通被放到log裡面去。  </p>
+
+<p>不過有比較tricky的解法，可以參考下面的Preseed file，<br>
+我們多增加了一個LV，叫做<code>to_be_free</code>，<br>
+然後把所有的free space都指派給<code>to_be_free</code>，<br>
+最後在<code>late_command</code>裡，用<code>lvremove</code>把<code>to_be_free</code>砍掉，<br>
+這樣就可以做到把某部分space歸還了。  </p>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash">d-i partman-auto/expert_recipe string  <span class="se">\</span>
+      boot-root ::                                                  <span class="se">\</span>
+              <span class="m">20480</span> <span class="m">10</span> <span class="m">20480</span> ext4                                   <span class="se">\</span>
+                      <span class="nv">$lvmok</span><span class="o">{}</span> lv_name<span class="o">{</span> root <span class="o">}</span> <span class="nv">$defaultignore</span><span class="o">{</span> <span class="o">}</span>    <span class="se">\</span>
+                      method<span class="o">{</span> format <span class="o">}</span> format<span class="o">{</span> <span class="o">}</span>                    <span class="se">\</span>
+                      use_filesystem<span class="o">{</span> <span class="o">}</span> filesystem<span class="o">{</span> ext4 <span class="o">}</span>          <span class="se">\</span>
+                      mountpoint<span class="o">{</span> / <span class="o">}</span>                               <span class="se">\</span>
+              .                                                     <span class="se">\</span>
+              <span class="m">20480</span> <span class="m">10</span> <span class="m">20480</span> ext4                                   <span class="se">\</span>
+                      <span class="nv">$lvmok</span><span class="o">{</span> <span class="o">}</span> lv_name<span class="o">{</span> log <span class="o">}</span> <span class="nv">$defaultignore</span><span class="o">{</span> <span class="o">}</span>    <span class="se">\</span>
+                      method<span class="o">{</span> format <span class="o">}</span> format<span class="o">{</span> <span class="o">}</span>                    <span class="se">\</span>
+                      use_filesystem<span class="o">{</span> <span class="o">}</span> filesystem<span class="o">{</span> ext4 <span class="o">}</span>          <span class="se">\</span>
+                      mountpoint<span class="o">{</span> /var/log <span class="o">}</span>                        <span class="se">\</span>
+              .                                                     <span class="se">\</span>
+              <span class="m">1</span> <span class="m">10</span> -1 ext4                                          <span class="se">\</span>
+                      <span class="nv">$lvmok</span><span class="o">{</span> <span class="o">}</span> lv_name<span class="o">{</span> to_be_free <span class="o">}</span> <span class="nv">$defaultignore</span><span class="o">{</span> <span class="o">}</span>    <span class="se">\</span>
+                      method<span class="o">{</span> format <span class="o">}</span> format<span class="o">{</span> <span class="o">}</span>                    <span class="se">\</span>
+                      use_filesystem<span class="o">{</span> <span class="o">}</span> filesystem<span class="o">{</span> ext4 <span class="o">}</span>          <span class="se">\</span>
+                      mountpoint<span class="o">{</span> /to_be_free <span class="o">}</span>                     <span class="se">\</span>
+
+d-i preseed/late_command string <span class="se">\</span>
+umount /target/to_be_free/ <span class="p">;</span> <span class="se">\</span>
+lvremove -f /dev/*/*to_be_free &gt; /dev/null 2&gt;<span class="p">&amp;</span><span class="m">1</span> <span class="p">;</span> <span class="se">\</span>
+sed -i <span class="s1">&#39;/to_be_free/d&#39;</span> /target/etc/fstab <span class="p">;</span> <span class="se">\</span>
+</code></pre></div>
+<p></font></p>
+
+    </div>
+
+  
+    <ul class="tag_box inline">
+      <li><i class="glyphicon glyphicon-open"></i></li>
+      
+      
+
+
+  
+     
+    	<li><a href="/categories.html#linux-ref">
+    		linux <span>1</span>
+    	</a></li>
+    
+  
+
+
+    </ul>
+    
+
+  
+    <ul class="tag_box inline">
+      <li><i class="glyphicon glyphicon-tags"></i></li>
+      
+      
+
+
+  
+     
+    	<li><a href="/tags.html#linux-ref">linux <span>4</span></a></li>
+     
+    	<li><a href="/tags.html#ubuntu-ref">ubuntu <span>6</span></a></li>
+     
+    	<li><a href="/tags.html#preseed-ref">preseed <span>2</span></a></li>
+     
+    	<li><a href="/tags.html#lvm-ref">lvm <span>1</span></a></li>
+     
+    	<li><a href="/tags.html#lvresize-ref">lvresize <span>1</span></a></li>
+    
+  
+
+
+
+    </ul>
+    
+  <div>
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <!-- ken on github -->
+    <ins class="adsbygoogle"
+         style="display:block"
+         data-ad-client="ca-pub-3783438370424072"
+         data-ad-slot="1516206098"
+         data-ad-format="auto"></ins>
+    <script>
+    (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+  </div>
+  
+    <hr>
+    <ul class="pagination">
+    
+      <li class="prev"><a href="/2015/11/26/move-blogger-to-github" title="如何把Google Blogger搬到Github pages">&laquo; Previous</a></li>
+    
+      <li><a href="/archive.html">Archive</a></li>
+    
+      <li class="next disabled"><a>Next &rarr;</a>
+    
+    </ul>
+    <hr>
+    
+
+
+  <div id="disqus_thread"></div>
+<script type="text/javascript">
+    
+    var disqus_developer = 1;
+    var disqus_shortname = 'ken-yang'; // required: replace example with your forum shortname
+    
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+
+
+
+  </div>
+</div>
+
+
+      </div>
+
+    </div>
+
+    <div id="footer">
+      <div class="container">
+        <p>&copy; 2015 Ken Yang
+          with help from <a href="http://jekyllbootstrap.com" target="_blank" title="The Definitive Jekyll Blogging Framework">Jekyll Bootstrap</a>
+          and <a href="http://getbootstrap.com" target="_blank">Bootstrap</a>
+        </p>
+      </div>
+    </div>
+
+    
+
+
+
+
+
+    <!-- Latest compiled and minified JavaScript, requires jQuery 1.x (2.x not supported in IE8) -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="/assets/themes/bootstrap-3/bootstrap/js/bootstrap.min.js"></script>
+  </body>
+</html>
+
