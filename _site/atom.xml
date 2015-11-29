@@ -4,13 +4,216 @@
  <title>Ken Yang筆記</title>
  <link href="http://blog.kenyang.net/atom.xml" rel="self"/>
  <link href="http://blog.kenyang.net"/>
- <updated>2015-11-27T18:20:02+08:00</updated>
+ <updated>2015-11-29T17:03:58+08:00</updated>
  <id>http://blog.kenyang.net</id>
  <author>
    <name>Ken Yang</name>
    <email>ken@kenyang.net</email>
  </author>
 
+ 
+ <entry>
+   <title>How to Extend/Shrink LVM?</title>
+   <link href="http://blog.kenyang.net/2015/11/27/how-to-extendreduce-lvm"/>
+   <updated>2015-11-27T00:00:00+08:00</updated>
+   <id>http://blog.kenyang.net/2015/11/27/how-to-extendreduce-lvm</id>
+   <content type="html">&lt;p&gt;&lt;font size=3&gt;&lt;/p&gt;
+
+&lt;p&gt;這篇算是延續&lt;a href=&quot;http://blog.kenyang.net/2015/11/27/do-not-allocate-all-the-lvm-space-with-preseed/&quot;&gt;上一篇&lt;/a&gt;的主題，假設VG裡面還有free space尚未用到，&lt;br&gt;
+那麼過一段時間以後，該怎麼把它拿出來用?&lt;br&gt;
+所以這篇主要會講到下面2個主題：&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;Extend&lt;/li&gt;
+&lt;li&gt;Shrink&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h3 id=&quot;1-extend&quot;&gt;1. Extend&lt;/h3&gt;
+
+&lt;hr&gt;
+
+&lt;p&gt;Extend會講二種方法，分別為，  &lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;1-1. Extend from &lt;code&gt;VG&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;1-2. Extend from &lt;code&gt;new disk&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;/br&gt;&lt;/p&gt;
+
+&lt;h4 id=&quot;1-1-extend-from-pv&quot;&gt;1-1. Extend from PV&lt;/h4&gt;
+
+&lt;hr&gt;
+
+&lt;p&gt;第一種是延續&lt;a href=&quot;http://blog.kenyang.net/2015/11/27/do-not-allocate-all-the-lvm-space-with-preseed/&quot;&gt;上一篇&lt;/a&gt;，&lt;br&gt;
+從既有的VG中，把Free PE加入到LV中，&lt;br&gt;
+以&lt;a href=&quot;http://blog.kenyang.net/2015/11/27/do-not-allocate-all-the-lvm-space-with-preseed/&quot;&gt;上一篇&lt;/a&gt;來看，你的VG應該還會剩下60GB。&lt;br&gt;
+可以用下面的指令&lt;code&gt;vgs&lt;/code&gt;去看VG中剩下多少free PE，&lt;br&gt;
+最後一欄的&lt;code&gt;VFree&lt;/code&gt;就是指剩下的free PE，&lt;br&gt;
+以我的機器為範例，裡面還有829.99G，&lt;br&gt;
+以及我有5個LV。&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;$ vgs
+  VG        #PV #LV #SN Attr   VSize    VFree
+  ubuntu-vg   1   5   0 wz--n- 1019.76g 829.99g
+
+$ lvs
+  LV     VG        Attr   LSize   Origin Snap%  Move Log Copy%  Convert
+  db     ubuntu-vg -wi-ao  83.92g
+  log    ubuntu-vg -wi-ao  19.07g
+  root   ubuntu-vg -wi-ao  66.75g
+  swap_1 ubuntu-vg -wi-ao 976.00m
+  tmp    ubuntu-vg -wi-ao  19.07g
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;!--more--&gt;
+
+&lt;p&gt;假設我要讓&lt;code&gt;tmp&lt;/code&gt;這個LV加大100G，我們可以透過以下二個指令完成，&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;lvresize&lt;/li&gt;
+&lt;li&gt;resize2fs&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;&lt;/br&gt;
+使用方式如下，&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;lvresize -L +100G /dev/mapper/ubuntu--vg-tmp
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;/br&gt;
+完成上述指令以後，可以再透過&lt;code&gt;lvs&lt;/code&gt;來看一下tmp這個LV是否真的有加大100G。  &lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;lvs
+  LV     VG        Attr   LSize   Origin Snap%  Move Log Copy%  Convert
+  db     ubuntu-vg -wi-ao  83.92g
+  log    ubuntu-vg -wi-ao  19.07g
+  root   ubuntu-vg -wi-ao  66.75g
+  swap_1 ubuntu-vg -wi-ao 976.00m
+  tmp    ubuntu-vg -wi-ao 119.07g
+
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;df -h /tmp/
+Filesystem                  Size  Used Avail Use% Mounted on
+/dev/mapper/ubuntu--vg-tmp   19G   44M   18G   1% /tmp
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;/br&gt;
+根據上面的output，你會發現&lt;code&gt;LV&lt;/code&gt;真的有加大100G，&lt;br&gt;
+可是&lt;code&gt;df&lt;/code&gt;中的filesystem size並沒有變動，&lt;br&gt;
+因為少用了&lt;code&gt;resize2fs&lt;/code&gt;。&lt;br&gt;
+&lt;code&gt;resize2fs&lt;/code&gt;作用就是把filesystem變大。  &lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;resize2fs /dev/mapper/ubuntu--vg-tmp &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;119G&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;最後一個是size的參數，其實可以不用加，&lt;br&gt;
+如果不加，就是用整個LV可以用的空間。&lt;/p&gt;
+
+&lt;p&gt;&lt;/br&gt;&lt;/p&gt;
+
+&lt;h4 id=&quot;1-2-extend-from-new-disk&quot;&gt;1-2. Extend from new disk&lt;/h4&gt;
+
+&lt;hr&gt;
+
+&lt;p&gt;第二種Extend的方法是把新disk來加入至lv中。&lt;br&gt;
+其實步驟跟上述差不多，只是多了一些準備作業，&lt;br&gt;
+準備作業如下：&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;新增 &lt;code&gt;PV&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;把&lt;code&gt;新PV&lt;/code&gt; 加入至 &lt;code&gt;VG&lt;/code&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;首先你要有一顆硬碟，&lt;br&gt;
+然後用&lt;code&gt;lsblk&lt;/code&gt;找到該block device的名稱，&lt;br&gt;
+我機器上的新硬碟就是sdb。&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;lsblk -d
+NAME MAJ:MIN RM   SIZE RO TYPE MOUNTPOINT
+fd0    2:0    &lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;     4K  &lt;span class=&quot;m&quot;&gt;0&lt;/span&gt; disk
+sda    8:0    &lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;  1020G  &lt;span class=&quot;m&quot;&gt;0&lt;/span&gt; disk
+sdb    8:16   &lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;   200G  &lt;span class=&quot;m&quot;&gt;0&lt;/span&gt; disk
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;/br&gt;&lt;/p&gt;
+
+&lt;p&gt;在新增一個&lt;code&gt;PV&lt;/code&gt;前，&lt;br&gt;
+必須先format disk成LVM的格式。&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;fdsik /dev/sdb
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;然後請按照下面的步驟去create，&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;按下&lt;code&gt;n&lt;/code&gt;以建立新的partition&lt;/li&gt;
+&lt;li&gt;按下&lt;code&gt;p&lt;/code&gt;選擇primary partition&lt;/li&gt;
+&lt;li&gt;按下&lt;code&gt;1&lt;/code&gt;選擇partition number&lt;/li&gt;
+&lt;li&gt;按下&lt;code&gt;enter&lt;/code&gt;選擇Default first sector&lt;/li&gt;
+&lt;li&gt;按下&lt;code&gt;enter&lt;/code&gt;選擇Default last sector&lt;/li&gt;
+&lt;li&gt;按下&lt;code&gt;t&lt;/code&gt;改變partition type&lt;/li&gt;
+&lt;li&gt;輸入&lt;code&gt;8e&lt;/code&gt;, 8e為LVM的代碼&lt;/li&gt;
+&lt;li&gt;按下&lt;code&gt;w&lt;/code&gt;儲存寫入&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;完成以後你就有一個新的partition了，名稱應該為&lt;code&gt;sdb1&lt;/code&gt;，&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;fdisk -l /dev/sdb
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;/br&gt;
+這時候就可以用&lt;code&gt;pvcreate&lt;/code&gt;來新增一個PV，&lt;br&gt;
+然後再用&lt;code&gt;pvs&lt;/code&gt;看看是否有成功。&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt; pvcreate /dev/sdb1
+
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;pvs
+  PV         VG        Fmt  Attr PSize    PFree
+  /dev/sda5  ubuntu-vg lvm2 a-   1019.76g 629.99g
+  /dev/sdb1            lvm2 a-    200.00g 200.00g
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;/br&gt;
+接著就可以用&lt;code&gt;vgextend&lt;/code&gt;這個指令，&lt;br&gt;
+把剛剛新增的&lt;code&gt;PV&lt;/code&gt;加入至原有的&lt;code&gt;ubuntu-vg&lt;/code&gt;當中，&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;vgextend ubuntu-vg /dev/sdb1
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;/br&gt;
+然後一樣用&lt;code&gt;vgs&lt;/code&gt;去看看&lt;code&gt;Free PE&lt;/code&gt;，應該會多了200g。&lt;br&gt;
+然後就可以用上面的&lt;code&gt;lvresize&lt;/code&gt;以及&lt;code&gt;resize2fs&lt;/code&gt;去Extend某個LV了。&lt;/p&gt;
+
+&lt;p&gt;&lt;/br&gt;&lt;/br&gt;&lt;/br&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;2-shrink&quot;&gt;2. Shrink&lt;/h3&gt;
+
+&lt;hr&gt;
+
+&lt;p&gt;接著要來講Shrink的部分，&lt;br&gt;
+其實Shrink也是透過&lt;code&gt;lvresize&lt;/code&gt;以及&lt;code&gt;resize2fs&lt;/code&gt;來完成。&lt;br&gt;
+但Shrink和Extend有以下幾點的差別：&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;不能online shrinking&lt;/li&gt;
+&lt;li&gt;要先縮filesytem，再縮LVM&lt;/li&gt;
+&lt;li&gt;Data有可能會遺失&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;那因為不能online shrinking，所以我們要先umount，&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;umount /tmp
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;/br&gt;
+接著才可以shrink filesystem，&lt;br&gt;
+透過&lt;code&gt;resize2fs&lt;/code&gt;去把&lt;code&gt;tmp&lt;/code&gt;縮到19G。&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;resize2fs /dev/mapper/ubuntu--vg-tmp 19G
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;/br&gt;&lt;/p&gt;
+
+&lt;p&gt;最後才是去shrink LV，一樣是用&lt;code&gt;lvresize&lt;/code&gt;去做，&lt;br&gt;
+過程中會show warning，告訴你資料可能會遺失，是否真的要做shrink？&lt;br&gt;
+如果沒有什麼疑慮，就按下&lt;code&gt;y&lt;/code&gt;吧！&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;lvresize -L -100G /dev/mapper/ubuntu--vg-tmp
+  WARNING: Reducing active logical volume to 19.07 GiB
+  THIS MAY DESTROY YOUR DATA &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;filesystem etc.&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+Do you really want to reduce tmp? &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;y/n&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;: y
+  Reducing logical volume tmp to 19.07 GiB
+  Logical volume tmp successfully resized
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;/br&gt;
+最後在mount起來，以及用&lt;code&gt;df&lt;/code&gt;去看，&lt;br&gt;
+應該會發現&lt;code&gt;tmp&lt;/code&gt;只剩下19G了！&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;mount /tmp
+
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;df -h /tmp
+Filesystem                  Size  Used Avail Use% Mounted on
+/dev/mapper/ubuntu--vg-tmp   19G   44M   18G   1% /tmp
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;/font&gt;&lt;/p&gt;
+</content>
+ </entry>
  
  <entry>
    <title>Do not allocate all the LVM space with preseed</title>
@@ -455,14 +658,6 @@ mv完成以後，接著打開&lt;code&gt;index.html&lt;/code&gt;，&lt;br&gt;
    <updated>2014-02-24T13:09:00+08:00</updated>
    <id>http://blog.kenyang.net/2014/02/24/how-to-build-android-image</id>
    <content type="html">&lt;div style=&quot;font-size: 15px; line-height: 22px;&quot;&gt;因緣際會下，剛好有機會可以練習如何build android source code，&lt;br /&gt;（是android source code！不是app！）&lt;br /&gt;&lt;br /&gt;不過練習完以後，發現其實build android真的很簡單！&lt;br /&gt;難的在於prepare build environment.....&lt;br /&gt;所以這篇會從頭做起，從一個完全乾淨的ubuntu 12.04開始做起！&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;1. install ubuntu 12.04&lt;/span&gt;&lt;br /&gt;&lt;br /&gt;第一步就是去下載&lt;a href=&quot;http://www.ubuntu.com/download&quot; target=&quot;_blank&quot;&gt;ubuntu 12.04 64 bits&lt;/a&gt;，&lt;br /&gt;要裝server版或者是desktop版都可以，&lt;br /&gt;安裝desktop版的好處就是你build好image的時候，&lt;br /&gt;要測試很簡單！&lt;br /&gt;像我是用server版build，因為沒有x-window，我也不想再裝！&lt;br /&gt;就只好把build好的image抓出來，抓到我自己的mac上，&lt;br /&gt;然後透過emulator來測試！&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;2. install add-apt-repository&lt;/span&gt;&lt;br /&gt;&lt;br /&gt;剛安裝完的ubuntu預設是沒有add-apt-repository這個package的，&lt;br /&gt;所以得手動安裝，請安裝下列兩項packages&lt;br /&gt;&lt;pre class=&quot;brush: java&quot;&gt;sudo apt-get install software-properties-common&lt;br /&gt;sudo apt-get install python-software-properties&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;3. install sun-java6-sdk&lt;/span&gt;&lt;br /&gt;&lt;br /&gt;那因為不能用openjdk build android，&lt;br /&gt;所以得換成sun(oracle)的版本，&lt;br /&gt;&lt;pre class=&quot;brush: java&quot;&gt;sudo add-apt-repository ppa:webupd8team/java&lt;br /&gt;sudo apt-get update&lt;br /&gt;sudo apt-get install oracle-java6-installer&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;4. install required packages&lt;/span&gt;&lt;br /&gt;&lt;br /&gt;安裝一些必要的packages，&lt;br /&gt;&lt;pre class=&quot;brush: java&quot;&gt;sudo apt-get install git gnupg flex bison gperf build-essential \&lt;br /&gt;  zip curl libc6-dev libncurses5-dev:i386 x11proto-core-dev \&lt;br /&gt;  libx11-dev:i386 libreadline6-dev:i386 libgl1-mesa-glx:i386 \&lt;br /&gt;  libgl1-mesa-dev g++-multilib mingw32 tofrodos \&lt;br /&gt;  python-markdown libxml2-utils xsltproc zlib1g-dev:i386&lt;br /&gt;sudo ln -s /usr/lib/i386-linux-gnu/mesa/libGL.so.1 /usr/lib/i386-linux-gnu/libGL.so&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;5.&amp;nbsp;Configuring USB Access&lt;/span&gt;&lt;br /&gt;&lt;br /&gt;因為linux預設無法access到USB device，&lt;br /&gt;所以得加一些udev的rule，&lt;br /&gt;先在udev底下建立一個檔案,&lt;br /&gt;&lt;pre class=&quot;brush: java&quot;&gt;sudo vim /etc/udev/rules.d/51-android.rules&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;然後貼入下列的內容！注意！！請把owner改成你自己的ubuntu user name！&lt;br /&gt;&lt;pre class=&quot;brush: java&quot;&gt;# adb protocol on passion (Nexus One)&lt;br /&gt;SUBSYSTEM==&quot;usb&quot;, ATTR{idVendor}==&quot;18d1&quot;, ATTR{idProduct}==&quot;4e12&quot;, MODE=&quot;0600&quot;, OWNER=&quot;ken&quot;&lt;br /&gt;# fastboot protocol on passion (Nexus One)&lt;br /&gt;SUBSYSTEM==&quot;usb&quot;, ATTR{idVendor}==&quot;0bb4&quot;, ATTR{idProduct}==&quot;0fff&quot;, MODE=&quot;0600&quot;, OWNER=&quot;ken&quot;&lt;br /&gt;# adb protocol on crespo/crespo4g (Nexus S)&lt;br /&gt;SUBSYSTEM==&quot;usb&quot;, ATTR{idVendor}==&quot;18d1&quot;, ATTR{idProduct}==&quot;4e22&quot;, MODE=&quot;0600&quot;, OWNER=&quot;ken&quot;&lt;br /&gt;# fastboot protocol on crespo/crespo4g (Nexus S)&lt;br /&gt;SUBSYSTEM==&quot;usb&quot;, ATTR{idVendor}==&quot;18d1&quot;, ATTR{idProduct}==&quot;4e20&quot;, MODE=&quot;0600&quot;, OWNER=&quot;ken&quot;&lt;br /&gt;# adb protocol on stingray/wingray (Xoom)&lt;br /&gt;SUBSYSTEM==&quot;usb&quot;, ATTR{idVendor}==&quot;22b8&quot;, ATTR{idProduct}==&quot;70a9&quot;, MODE=&quot;0600&quot;, OWNER=&quot;ken&quot;&lt;br /&gt;# fastboot protocol on stingray/wingray (Xoom)&lt;br /&gt;SUBSYSTEM==&quot;usb&quot;, ATTR{idVendor}==&quot;18d1&quot;, ATTR{idProduct}==&quot;708c&quot;, MODE=&quot;0600&quot;, OWNER=&quot;ken&quot;&lt;br /&gt;# adb protocol on maguro/toro (Galaxy Nexus)&lt;br /&gt;SUBSYSTEM==&quot;usb&quot;, ATTR{idVendor}==&quot;04e8&quot;, ATTR{idProduct}==&quot;6860&quot;, MODE=&quot;0600&quot;, OWNER=&quot;ken&quot;&lt;br /&gt;# fastboot protocol on maguro/toro (Galaxy Nexus)&lt;br /&gt;SUBSYSTEM==&quot;usb&quot;, ATTR{idVendor}==&quot;18d1&quot;, ATTR{idProduct}==&quot;4e30&quot;, MODE=&quot;0600&quot;, OWNER=&quot;ken&quot;&lt;br /&gt;# adb protocol on panda (PandaBoard)&lt;br /&gt;SUBSYSTEM==&quot;usb&quot;, ATTR{idVendor}==&quot;0451&quot;, ATTR{idProduct}==&quot;d101&quot;, MODE=&quot;0600&quot;, OWNER=&quot;ken&quot;&lt;br /&gt;# adb protocol on panda (PandaBoard ES)&lt;br /&gt;SUBSYSTEM==&quot;usb&quot;, ATTR{idVendor}==&quot;18d1&quot;, ATTR{idProduct}==&quot;d002&quot;, MODE=&quot;0600&quot;, OWNER=&quot;ken&quot;&lt;br /&gt;# fastboot protocol on panda (PandaBoard)&lt;br /&gt;SUBSYSTEM==&quot;usb&quot;, ATTR{idVendor}==&quot;0451&quot;, ATTR{idProduct}==&quot;d022&quot;, MODE=&quot;0600&quot;, OWNER=&quot;ken&quot;&lt;br /&gt;# usbboot protocol on panda (PandaBoard)&lt;br /&gt;SUBSYSTEM==&quot;usb&quot;, ATTR{idVendor}==&quot;0451&quot;, ATTR{idProduct}==&quot;d00f&quot;, MODE=&quot;0600&quot;, OWNER=&quot;ken&quot;&lt;br /&gt;# usbboot protocol on panda (PandaBoard ES)&lt;br /&gt;SUBSYSTEM==&quot;usb&quot;, ATTR{idVendor}==&quot;0451&quot;, ATTR{idProduct}==&quot;d010&quot;, MODE=&quot;0600&quot;, OWNER=&quot;ken&quot;&lt;br /&gt;# adb protocol on grouper/tilapia (Nexus 7)&lt;br /&gt;SUBSYSTEM==&quot;usb&quot;, ATTR{idVendor}==&quot;18d1&quot;, ATTR{idProduct}==&quot;4e42&quot;, MODE=&quot;0600&quot;, OWNER=&quot;ken&quot;&lt;br /&gt;# fastboot protocol on grouper/tilapia (Nexus 7)&lt;br /&gt;SUBSYSTEM==&quot;usb&quot;, ATTR{idVendor}==&quot;18d1&quot;, ATTR{idProduct}==&quot;4e40&quot;, MODE=&quot;0600&quot;, OWNER=&quot;ken&quot;&lt;br /&gt;# adb protocol on manta (Nexus 10)&lt;br /&gt;SUBSYSTEM==&quot;usb&quot;, ATTR{idVendor}==&quot;18d1&quot;, ATTR{idProduct}==&quot;4ee2&quot;, MODE=&quot;0600&quot;, OWNER=&quot;ken&quot;&lt;br /&gt;# fastboot protocol on manta (Nexus 10)&lt;br /&gt;SUBSYSTEM==&quot;usb&quot;, ATTR{idVendor}==&quot;18d1&quot;, ATTR{idProduct}==&quot;4ee0&quot;, MODE=&quot;0600&quot;, OWNER=“ken&quot;&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;6. install&amp;nbsp;Repo&lt;/span&gt;&lt;br /&gt;&lt;br /&gt;接著要安裝Repo這個tool，&lt;br /&gt;Repo是一個讓你可以輕鬆使用git的tool，&lt;br /&gt;&lt;br /&gt;先在你的home目錄建立一個bin目錄，&lt;br /&gt;&lt;pre class=&quot;brush: java&quot;&gt;mkdir ~/bin&lt;br /&gt;PATH=~/bin:$PATH&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;開始下載repo tool&lt;br /&gt;&lt;pre class=&quot;brush: java&quot;&gt;curl http://commondatastorage.googleapis.com/git-repo-downloads/repo &gt; ~/bin/repo&lt;br /&gt;chmod a+x ~/bin/repo&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;7. Initialize a Repo client and Download Android source&lt;/span&gt;&lt;br /&gt;&lt;br /&gt;安裝好repo以後，就開始來設定他，&lt;br /&gt;首先先建立一個資料夾，這資料夾準備用來存android source code，&lt;br /&gt;&lt;pre class=&quot;brush: java&quot;&gt;mkdir WORKING_DIRECTORY&lt;br /&gt;cd WORKING_DIRECTORY&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;接著就init，其實就跟git差不多，&lt;br /&gt;最後-b的意思就是checkout哪個branch的意思，&lt;br /&gt;&lt;pre class=&quot;brush: java&quot;&gt;repo init -u https://android.googlesource.com/platform/manifest -b android-4.4.2_r2&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;&lt;br /&gt;設定完repo以後，就開始下載android source吧！&lt;br /&gt;&lt;pre class=&quot;brush: java&quot;&gt;repo sync&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;8.&amp;nbsp;change the default shell environment&lt;/span&gt;&lt;br /&gt;&lt;br /&gt;完成下載以後，在開始build之前，還有一些要設定，&lt;br /&gt;ubuntu的預設的shell是dash，&lt;br /&gt;那據說用dash build會fail，&lt;br /&gt;所以要把它換成bash，就使用下面的指令，&lt;br /&gt;使用以後，就選No！就完成了！&lt;br /&gt;&lt;pre class=&quot;brush: java&quot;&gt;sudo dpkg-reconfigure dash&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;9.&amp;nbsp;Initialize build environment&lt;/span&gt;&lt;br /&gt;&lt;br /&gt;接著就要initialize你的build environment,&lt;br /&gt;很簡單，靠下面一個script就可做到,&lt;br /&gt;&lt;pre class=&quot;brush: java&quot;&gt;. build/envsetup.sh&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;10.&amp;nbsp;Choose a Target&lt;/span&gt;&lt;br /&gt;&lt;br /&gt;接著就要選擇你要build的target，&lt;br /&gt;有很多種可以選，可以來這看（&lt;a href=&quot;http://source.android.com/source/building-devices.html&quot;&gt;點我&lt;/a&gt;）&lt;br /&gt;那因為我們等等是用emulator去做測試，&lt;br /&gt;所以我們是選擇aosp_arm-eng!&lt;br /&gt;&lt;pre class=&quot;brush: java&quot;&gt;lunch aosp_arm-eng&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;11.&amp;nbsp;build code&lt;/span&gt;&lt;br /&gt;&lt;br /&gt;接著就可以開始build，&lt;br /&gt;直接下make就可以build，後面會帶一個參數是-jN，&lt;br /&gt;N是一個數字，通常取決於你的hardware thread的數量！&lt;br /&gt;build還蠻花時間的，我的機器在沒有做cache的情況下，build了差不多2小時..&lt;br /&gt;所以耐心等待吧！&lt;br /&gt;&lt;pre class=&quot;brush: java&quot;&gt;make -j4&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;build成功以後，應該會看到下面的字樣，&lt;br /&gt;&lt;pre class=&quot;brush: java&quot;&gt;Install system fs image: out/target/product/generic/system.img &lt;br /&gt;out/target/product/generic/system.img+ maxsize=588791808 blocksize=2112 total=576716800 reserve=5947392&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;12. Test&lt;/span&gt;&lt;br /&gt;&lt;br /&gt;接著就要來測試剛剛build好的image是否可以使用，&lt;br /&gt;如果你是使用desktop的ubuntu，&lt;br /&gt;理論上你只要下下面的指令就可以測試，&lt;br /&gt;&lt;pre class=&quot;brush: java&quot;&gt;emulator&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;但剛好我是使用server版本去build...&lt;br /&gt;我又懶得裝ubuntu-desktop，&lt;br /&gt;我就只好抓回來我的mac環境來測試！&lt;br /&gt;注意！前提是你的mac環境已經有android-sdk，而且你也把system.img也抓回來了！&lt;br /&gt;&lt;br /&gt;首先請先建立一個avd，就是emulator，&lt;br /&gt;注意！emulator的api level要是19！&lt;br /&gt;為什麼呢？&lt;br /&gt;因為我們剛剛checkout branch的時候是4.4.2！&lt;br /&gt;你可以利用下面的指令來建立一個avd，&lt;br /&gt;&lt;pre class=&quot;brush: java&quot;&gt;cd ~/your_android_sdk_dir/tools&lt;br /&gt;./android create avd -n test-emulator -t 15 -c 100M --abi armeabi-v7a&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;接著就把你的system.img複製到剛剛建立的avd資料夾下！&lt;br /&gt;只要搬到該資料夾下，等emluator啟動時，就會試著去load那個system.img!&lt;br /&gt;&lt;pre class=&quot;brush: java&quot;&gt;cp system.img ~/.android/test-emulator&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;啟動emulator&lt;br /&gt;&lt;pre class=&quot;brush: java&quot;&gt;./emulator -avd test-emulator&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;理論上看到android字樣的開機畫面，應該就代表build成功了！&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;/div&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;</content>
- </entry>
- 
- <entry>
-   <title>How to Backup and Restore your MongoDB database?</title>
-   <link href="http://blog.kenyang.net/2014/02/06/how-to-backup-and-restore-your-mongodb"/>
-   <updated>2014-02-06T22:43:00+08:00</updated>
-   <id>http://blog.kenyang.net/2014/02/06/how-to-backup-and-restore-your-mongodb</id>
-   <content type="html">&lt;div style=&quot;font-size: 15px; line-height: 22px;&quot;&gt;這篇要講如何Backup和Restore MongoDB，&lt;br /&gt;MongoDB本身提供了2種不同的backup/restore solutions，&lt;br /&gt;&lt;br /&gt;&lt;ul&gt;&lt;li&gt;mongoexport/mongoimport&lt;/li&gt;&lt;li&gt;mongodump/mongorestore&lt;/li&gt;&lt;/ul&gt;&lt;br /&gt;還有一些進階的，像是&lt;a href=&quot;https://mms.mongodb.com/?pk_campaign=MongoDB-Org&amp;amp;pk_kwd=Backup-Docs&quot; target=&quot;_blank&quot;&gt;MongoDB Management Service (MMS)&lt;/a&gt;，&lt;br /&gt;但這裡只介紹這2種比較基本的solutions，&lt;br /&gt;那麼這兩種的差異在哪呢？&lt;br /&gt;第一種的mongoexport/mongoimport其實不太算是backup/restore solution，&lt;br /&gt;因為它只能用來backup collection中的data（collection可以想成relational database的table），&lt;br /&gt;它無法backup整個db的狀態，&lt;br /&gt;在官網中也說明了，&lt;br /&gt;mongoexport/mongoimport在保存&lt;a href=&quot;http://docs.mongodb.org/v2.2/reference/glossary/#term-bson&quot; target=&quot;_blank&quot;&gt;BSON&lt;/a&gt;上是不可靠的，&lt;br /&gt;所以mongoexport/mongoimport比較適合用在保存簡單的data，&lt;br /&gt;但也可以勉強算是比較簡易型的backup/restore solution，&lt;br /&gt;但儘量別拿來作為backup/restore的方式．原因前面說過了，&lt;br /&gt;把它方法當作data的export和import就好．&lt;br /&gt;如果想要備份較完整的db，那麼就要靠第二種mongodump/mongorestore，&lt;br /&gt;下面分別是這兩種的使用方式．&lt;br /&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;1. mongoexport/mongoimport&lt;/span&gt;&lt;br /&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 16px;&quot;&gt;1-1.Backup&lt;/span&gt;&lt;br /&gt;&lt;pre class=&quot;brush: java&quot;&gt;mongoexport -h &amp;lt;Host:Port&amp;gt; -d &amp;lt;DB_Name&amp;gt; -c &amp;lt;Collection_Name&amp;gt; -u &amp;lt;DB_User&amp;gt; -p &amp;lt;DB_Password&amp;gt; -o &amp;lt;Output_File_Name&amp;gt;&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;-h：你的db uri和port number&lt;br /&gt;-d：你要備份的database名稱&lt;br /&gt;-c：要備份哪一個collection(table)&lt;br /&gt;-u：db帳號&lt;br /&gt;-p：db密碼&lt;br /&gt;-o：要備份出來的檔案名稱&lt;br /&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 16px;&quot;&gt;1-2. Restore&lt;/span&gt;&lt;br /&gt;備份成功以後，你可以試著drop那個collection，&lt;br /&gt;接著在輸入下面的command，應該就會recover成功．&lt;br /&gt;&lt;pre class=&quot;brush: java&quot;&gt;mongoimport -h &amp;lt;Host:Port&amp;gt; -d &amp;lt;DB_Name&amp;gt; -c &amp;lt;Collection_Name&amp;gt; -u &amp;lt;DB_User&amp;gt; -p &amp;lt;DB_Password&amp;gt; --file &amp;lt;File_Name&amp;gt;&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;參數大部分和backup一樣，&lt;br /&gt;只有--file不同，&lt;br /&gt;--file要接的是剛剛備份出來的檔案名稱，&lt;br /&gt;輸入以後，看到下圖就代表recover成功了&lt;br /&gt;&lt;div class=&quot;separator&quot; style=&quot;clear: both; text-align: center;&quot;&gt;&lt;/div&gt;&lt;br /&gt;&lt;div class=&quot;separator&quot; style=&quot;clear: both; text-align: center;&quot;&gt;&lt;a href=&quot;http://1.bp.blogspot.com/-c9hAXACpEJQ/UvOcUq3HNFI/AAAAAAAAFI4/YbP5amWS_7k/s1600/Screen+Shot+2014-02-06+at+10.29.31+PM.png&quot; imageanchor=&quot;1&quot; style=&quot;margin-left: 1em; margin-right: 1em;&quot;&gt;&lt;img border=&quot;0&quot; src=&quot;http://1.bp.blogspot.com/-c9hAXACpEJQ/UvOcUq3HNFI/AAAAAAAAFI4/YbP5amWS_7k/s1600/Screen+Shot+2014-02-06+at+10.29.31+PM.png&quot; /&gt;&lt;/a&gt;&lt;/div&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;2. mongodump/mongorestore&lt;/span&gt;&lt;br /&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 16px;&quot;&gt;2-1.Backup&lt;/span&gt;&lt;br /&gt;&lt;pre class=&quot;brush: java&quot;&gt;mongodump -h &amp;lt;Host:Port&amp;gt; -d &amp;lt;DB_Name&amp;gt; -c &amp;lt;Collection_Name&amp;gt; -u &amp;lt;DB_User&amp;gt; -p &amp;lt;DB_Password&amp;gt; -o &amp;lt;Directory&amp;gt;&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;參數也和上面一樣，&lt;br /&gt;但-o是要接目錄位置，mongodump會在該目錄底下建立一個folder來存backup的檔案，&lt;br /&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 16px;&quot;&gt;2-2. Restore&lt;/span&gt;&lt;br /&gt;&lt;pre class=&quot;brush: java&quot;&gt;mongorestore -h &amp;lt;Host:Port&amp;gt; -d &amp;lt;DB_Name&amp;gt; -c &amp;lt;Collection_Name&amp;gt; -u &amp;lt;DB_User&amp;gt; -p &amp;lt;DB_Password&amp;gt; &amp;lt;Directory&amp;gt;&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;參數也一樣，&lt;br /&gt;但少了-o，&lt;br /&gt;請在後面直接接上存放backup db的directory．&lt;br /&gt;輸入以後，&lt;br /&gt;你會發現mongorestore不只會幫你recover data，連該collection原有的index也會幫你建好．&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;結論，&lt;br /&gt;第一種儘量別拿來做backup/restore，其實就連MongoDB官網也沒有把mongoimport/mongoexport歸類在backup/restore的類別下，&lt;br /&gt;就把第一種當作data的export吧！&lt;br /&gt;第二種就是完整的backup/restore solution，就像mysqldump一樣！&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;/div&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;</content>
  </entry>
  
  

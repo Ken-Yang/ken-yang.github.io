@@ -61,6 +61,7 @@ http://blog.kenyang.net/blog/page52/
 http://blog.kenyang.net/blog/page53/
 http://blog.kenyang.net/blog/page54/
 
+http://blog.kenyang.net/2015/11/27/how-to-extendreduce-lvm
 http://blog.kenyang.net/2015/11/27/do-not-allocate-all-the-lvm-space-with-preseed
 http://blog.kenyang.net/2015/11/26/move-blogger-to-github
 http://blog.kenyang.net/2015/08/13/setup-linux-multipath-in-ubuntu

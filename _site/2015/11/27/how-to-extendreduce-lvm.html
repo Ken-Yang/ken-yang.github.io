@@ -5,8 +5,8 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-    <title>How to create a customized Ubuntu ISO?</title>
-    
+    <title>How to Extend/Shrink LVM?</title>
+    <meta name="description" content="">
     <meta name="author" content="Ken Yang">
 
     <!-- Enable responsive viewport -->
@@ -302,7 +302,7 @@
 
 
 <div class="page-header">
-  <h1>How to create a customized Ubuntu ISO? </h1>
+  <h1>How to Extend/Shrink LVM? </h1>
 </div>
 
 <div class="row post-full">
@@ -332,10 +332,205 @@ data-ad-format="auto"></ins>
 
   <div class="col-xs-12">
     <div class="date">
-      <span>13 April 2015</span>
+      <span>27 November 2015</span>
     </div>
     <div class="content" style="line-height: 28px;">
-      <div style="font-size: 15px; line-height: 22px;">這篇要講怎麼客製化你自己想要的ubuntu ISO，<br />會講解一些<a href="http://en.wikipedia.org/wiki/Preseed">preseed</a>的參數，<br />preseed file是debian系列的automation config，而redhat系列就是用kickstart，<br />debian系列就是根據preseed file去進行安裝．<br />因此ubuntu也是用preseed，當然ubuntu也可以用kickstart，只是“似乎”支援沒有那麼好!?<br />題外話，雖然說preseed file是debian的標準格式，<br />但有一點要記得，debian自己本身的preseed file，並不是每一個command，ubuntu都能接受！<br /><br /><br /><span style="color: #e06666; font-size: 18px;">1. Download ubuntu ISO</span><br /><br />首先，你要有一個ubuntu的ISO，<br />這裏我選用ubuntu 12.04的ISO，<br /><pre class="brush: bash">wget http://releases.ubuntu.com/12.04.5/ubuntu-12.04.5-server-amd64.iso<br /></pre><br /><br /><span style="color: #e06666; font-size: 18px;">2. Mount the ISO</span><br /><br />接著要把ISO內的東西，先mount起來，接著再copy出來，<br /><pre class="brush: bash">mkdir -p /mnt/tmp /mnt/iso<br />mount -o loop ./ubuntu-12.04.5-server-amd64.iso /mnt/tmp<br />rsyn -av /mnt/tmp /mnt/iso<br />umount /mnt/tmp<br /></pre><br /><span style="color: #e06666; font-size: 18px;">3. Add boot menu option</span><br /><br />因為要客製化你自己的ISO，<br />所以我們要在boot menu中，新增一個屬於我們自己的menu，<br />首先先開啟這個isolinux/txt.cfg檔案<br /><pre class="brush: bash">vim /mnt/iso/isolinux/txt.cfg<br /></pre><br />打開以後應該會看到下面的內容，<br /><div class="separator" style="clear: both; text-align: center;"><a href="http://3.bp.blogspot.com/-VdB_0wKMjWA/VSo0ZnuY9hI/AAAAAAAAFjY/2TZzIfVE7Is/s1600/Screen%2BShot%2B2015-04-12%2Bat%2B4.56.41%2BPM.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="http://3.bp.blogspot.com/-VdB_0wKMjWA/VSo0ZnuY9hI/AAAAAAAAFjY/2TZzIfVE7Is/s640/Screen%2BShot%2B2015-04-12%2Bat%2B4.56.41%2BPM.png" /></a></div><br />我們就在label install之前新增一筆boot menu，<br />內容如下，<br /><pre class="brush: bash">label YourCustomizedISO<br />    menu label ^Customized ISO<br />    kernel /install/vmlinuz<br />    append  file=/cdrom/preseed/customized.seed initrd=/install/initrd.gz quiet --<br /></pre><br /><br /><span style="color: #e06666; font-size: 18px;">4. Add pressed file</span><br /><br />接著就要新增一個客製化的preseed file，<br /><pre class="brush: bash">vim /mnt/iso/preseed/customized.seed<br /></pre><br />內容如下，這份preseed讓你可以不用輸入任何按鍵就進行自動安裝！<br />我覺得還蠻淺顯易懂的，每個section都有標註是在做什麼，<br />比較值得注意的是『Advance command』這個section，<br />這section裡面放的是，『安裝完ubuntu以後，要做些什麼事情。』<br />但是如果你想要在『安裝之前』或者『partition之前或者之後』做些事情，都是可以的。<br />只不過這個example，我們是在『安裝完ubuntu以後』。<br /><br />『preseed/late_command』就是『安裝完ubuntu以後』的意思。<br />不過這邊可能大家會覺得很奇怪，為什麼在late_command中，<br />一開始要cp至/target目錄？/target目錄又是什麼？<br />大家在安裝ubuntu的時候，可以change console一下，這時候cd至/target底下，<br />你會發現其實裡面就是你真正ubuntu安裝的位置！<br />那/target外面的東西是誰的呢(bin, lib, etc,....)？<br />其實是busybox的，所以你一定得把你想要的東西搬到/target裡面，<br />這樣在你安裝完以後，該東西才會存在。<br />接著還有另一段奇怪的command：in-target，<br />『in-target』，簡單的說就是chroot /target而已，<br />你也可以用chroot /target去取代『in-target』。<br /><br /><pre class="brush: bash">####### Localization #######<br />d-i debian-installer/locale string en_US<br />d-i debian-installer/language string en<br />d-i debian-installer/country string US<br /><br /><br />####### Keyboard selection #######<br />d-i console-setup/ask_detect boolean false<br />d-i console-setup/layoutcode string us<br />d-i console-setup/modelcode string pc105<br />d-i kbd-chooser/method string us<br />d-i keyboard-configuration/layout string USA<br />d-i keyboard-configuration/variant string USA<br /><br />####### Network configuration #######<br />#d-i netcfg/choose_interface select auto<br />d-i netcfg/choose_interface select eth0<br />d-i netcfg/get_hostname string ubuntu<br />d-i netcfg/get_domain string<br /># configure the network manually<br />#d-i netcfg/disable_autoconfig boolean true<br /># configure the network automatically<br />d-i netcfg/get_nameservers string 8.8.8.8<br />d-i netcfg/get_ipaddress string 172.16.131.138<br />d-i netcfg/get_netmask string 255.255.255.0<br />d-i netcfg/get_gateway string 172.16.131.2<br />d-i netcfg/confirm_static boolean true<br /><br />####### Apt setup #######<br />d-i apt-setup/security-updates boolean false<br />d-i apt-setup/restricted boolean false<br />d-i apt-setup/universe boolean false<br />d-i apt-setup/backports boolean false<br />d-i apt-setup/security boolean false<br />d-i mirror/http/proxy string<br /><br />####### Base system installation #######<br />d-i debian-installer/splash boolean false<br />d-i base-installer/install-recommends boolean true<br />d-i base-installer/kernel/altmeta string lts-saucy<br /><br />####### Clock and time zone setup #######<br />d-i clock-setup/utc boolean true<br />d-i clock-setup/utc-auto boolean true<br />d-i time/zone string UTC<br /><br />####### Boot loader installation #######<br />d-i finish-install/reboot_in_progress note<br />d-i grub-installer/only_debian boolean true<br />d-i grub-installer/with_other_os boolean true<br /><br />####### Partitioning using LVM #######<br />d-i partman-auto-lvm/guided_size string max<br />d-i partman-auto/choose_recipe select atomic<br />d-i partman-auto/method string lvm<br />d-i partman-lvm/confirm boolean true<br />d-i partman-lvm/confirm boolean true<br />d-i partman-lvm/confirm_nooverwrite boolean true<br />d-i partman-lvm/device_remove_lvm boolean true<br />d-i partman/choose_partition select finish<br />d-i partman/confirm boolean true<br />d-i partman/confirm_nooverwrite boolean true<br />d-i partman/confirm_write_new_label boolean true<br /><br />####### User #######<br />d-i passwd/root-login boolean true<br />d-i passwd/root-password password 1234<br />d-i passwd/root-password-again password 1234<br />d-i user-setup/allow-password-weak boolean true<br /># create user or not<br />d-i passwd/make-user boolean false<br />#d-i user-setup/encrypt-home boolean false<br />#d-i passwd/user-fullname string ken<br />#d-i passwd/username string ken<br />#d-i passwd/user-password password 123456<br />#d-i passwd/user-password-again password 123456<br /><br />####### Package selection #######<br />d-i pkgsel/include string openssh-server vim<br />d-i pkgsel/install-language-support boolean false<br />d-i pkgsel/update-policy select none<br />d-i pkgsel/upgrade select none<br /><br />tasksel tasksel/first multiselect standard, ubuntu-server<br /><br />####### Advance command #######<br />d-i preseed/late_command string \<br />cp /cdrom/preseed/setup-something.bash /target/tmp/setup-something.bash && in-target chmod +x /tmp/setup-something.bash && in-target /bin/bash /tmp/setup-something.bash<br /><br /></pre><br /><br /><br /><span style="color: #e06666; font-size: 18px;">5. Make an ISO</span><br /><br />完成上面的步驟後，<br />剩下最後一步就完成了，<br />把剛剛copy出來的內容，在包成一個ISO就好了。<br /><pre class="brush: bash">mkisofs -r -R -J -T -v -b isolinux/isolinux.bin -no-emul-boot -boot-load-size 4 -boot-info-table -z -iso-level 4 -c isolinux/isolinux.cat -o custom.iso /mnt/iso<br /></pre><br />大概等個20秒以後，就會看到一個custom.iso，就代表你成功了！<br /><br /><br /><br /><br /><br /><br /><br /><br /></div><br />
+      <p><font size=3></p>
+
+<p>這篇算是延續<a href="http://blog.kenyang.net/2015/11/27/do-not-allocate-all-the-lvm-space-with-preseed/">上一篇</a>的主題，假設VG裡面還有free space尚未用到，<br>
+那麼過一段時間以後，該怎麼把它拿出來用?<br>
+所以這篇主要會講到下面2個主題：</p>
+
+<ol>
+<li>Extend</li>
+<li>Shrink</li>
+</ol>
+
+<h3 id="1-extend">1. Extend</h3>
+
+<hr>
+
+<p>Extend會講二種方法，分別為，  </p>
+
+<ul>
+<li>1-1. Extend from <code>VG</code></li>
+<li>1-2. Extend from <code>new disk</code></li>
+</ul>
+
+<p></br></p>
+
+<h4 id="1-1-extend-from-pv">1-1. Extend from PV</h4>
+
+<hr>
+
+<p>第一種是延續<a href="http://blog.kenyang.net/2015/11/27/do-not-allocate-all-the-lvm-space-with-preseed/">上一篇</a>，<br>
+從既有的VG中，把Free PE加入到LV中，<br>
+以<a href="http://blog.kenyang.net/2015/11/27/do-not-allocate-all-the-lvm-space-with-preseed/">上一篇</a>來看，你的VG應該還會剩下60GB。<br>
+可以用下面的指令<code>vgs</code>去看VG中剩下多少free PE，<br>
+最後一欄的<code>VFree</code>就是指剩下的free PE，<br>
+以我的機器為範例，裡面還有829.99G，<br>
+以及我有5個LV。</p>
+<div class="highlight"><pre><code class="language-text" data-lang="text">$ vgs
+  VG        #PV #LV #SN Attr   VSize    VFree
+  ubuntu-vg   1   5   0 wz--n- 1019.76g 829.99g
+
+$ lvs
+  LV     VG        Attr   LSize   Origin Snap%  Move Log Copy%  Convert
+  db     ubuntu-vg -wi-ao  83.92g
+  log    ubuntu-vg -wi-ao  19.07g
+  root   ubuntu-vg -wi-ao  66.75g
+  swap_1 ubuntu-vg -wi-ao 976.00m
+  tmp    ubuntu-vg -wi-ao  19.07g
+</code></pre></div>
+<!--more-->
+
+<p>假設我要讓<code>tmp</code>這個LV加大100G，我們可以透過以下二個指令完成，</p>
+
+<ol>
+<li>lvresize</li>
+<li>resize2fs</li>
+</ol>
+
+<p></br>
+使用方式如下，</p>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>lvresize -L +100G /dev/mapper/ubuntu--vg-tmp
+</code></pre></div>
+<p></br>
+完成上述指令以後，可以再透過<code>lvs</code>來看一下tmp這個LV是否真的有加大100G。  </p>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>lvs
+  LV     VG        Attr   LSize   Origin Snap%  Move Log Copy%  Convert
+  db     ubuntu-vg -wi-ao  83.92g
+  log    ubuntu-vg -wi-ao  19.07g
+  root   ubuntu-vg -wi-ao  66.75g
+  swap_1 ubuntu-vg -wi-ao 976.00m
+  tmp    ubuntu-vg -wi-ao 119.07g
+
+<span class="nv">$ </span>df -h /tmp/
+Filesystem                  Size  Used Avail Use% Mounted on
+/dev/mapper/ubuntu--vg-tmp   19G   44M   18G   1% /tmp
+</code></pre></div>
+<p></br>
+根據上面的output，你會發現<code>LV</code>真的有加大100G，<br>
+可是<code>df</code>中的filesystem size並沒有變動，<br>
+因為少用了<code>resize2fs</code>。<br>
+<code>resize2fs</code>作用就是把filesystem變大。  </p>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>resize2fs /dev/mapper/ubuntu--vg-tmp <span class="o">[</span>119G<span class="o">]</span>
+</code></pre></div>
+<p>最後一個是size的參數，其實可以不用加，<br>
+如果不加，就是用整個LV可以用的空間。</p>
+
+<p></br></p>
+
+<h4 id="1-2-extend-from-new-disk">1-2. Extend from new disk</h4>
+
+<hr>
+
+<p>第二種Extend的方法是把新disk來加入至lv中。<br>
+其實步驟跟上述差不多，只是多了一些準備作業，<br>
+準備作業如下：</p>
+
+<ol>
+<li>新增 <code>PV</code></li>
+<li>把<code>新PV</code> 加入至 <code>VG</code></li>
+</ol>
+
+<p>首先你要有一顆硬碟，<br>
+然後用<code>lsblk</code>找到該block device的名稱，<br>
+我機器上的新硬碟就是sdb。</p>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>lsblk -d
+NAME MAJ:MIN RM   SIZE RO TYPE MOUNTPOINT
+fd0    2:0    <span class="m">1</span>     4K  <span class="m">0</span> disk
+sda    8:0    <span class="m">0</span>  1020G  <span class="m">0</span> disk
+sdb    8:16   <span class="m">0</span>   200G  <span class="m">0</span> disk
+</code></pre></div>
+<p></br></p>
+
+<p>在新增一個<code>PV</code>前，<br>
+必須先format disk成LVM的格式。</p>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>fdsik /dev/sdb
+</code></pre></div>
+<p>然後請按照下面的步驟去create，</p>
+
+<ol>
+<li>按下<code>n</code>以建立新的partition</li>
+<li>按下<code>p</code>選擇primary partition</li>
+<li>按下<code>1</code>選擇partition number</li>
+<li>按下<code>enter</code>選擇Default first sector</li>
+<li>按下<code>enter</code>選擇Default last sector</li>
+<li>按下<code>t</code>改變partition type</li>
+<li>輸入<code>8e</code>, 8e為LVM的代碼</li>
+<li>按下<code>w</code>儲存寫入</li>
+</ol>
+
+<p>完成以後你就有一個新的partition了，名稱應該為<code>sdb1</code>，</p>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>fdisk -l /dev/sdb
+</code></pre></div>
+<p></br>
+這時候就可以用<code>pvcreate</code>來新增一個PV，<br>
+然後再用<code>pvs</code>看看是否有成功。</p>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span> pvcreate /dev/sdb1
+
+<span class="nv">$ </span>pvs
+  PV         VG        Fmt  Attr PSize    PFree
+  /dev/sda5  ubuntu-vg lvm2 a-   1019.76g 629.99g
+  /dev/sdb1            lvm2 a-    200.00g 200.00g
+</code></pre></div>
+<p></br>
+接著就可以用<code>vgextend</code>這個指令，<br>
+把剛剛新增的<code>PV</code>加入至原有的<code>ubuntu-vg</code>當中，</p>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>vgextend ubuntu-vg /dev/sdb1
+</code></pre></div>
+<p></br>
+然後一樣用<code>vgs</code>去看看<code>Free PE</code>，應該會多了200g。<br>
+然後就可以用上面的<code>lvresize</code>以及<code>resize2fs</code>去Extend某個LV了。</p>
+
+<p></br></br></br></p>
+
+<h3 id="2-shrink">2. Shrink</h3>
+
+<hr>
+
+<p>接著要來講Shrink的部分，<br>
+其實Shrink也是透過<code>lvresize</code>以及<code>resize2fs</code>來完成。<br>
+但Shrink和Extend有以下幾點的差別：</p>
+
+<ol>
+<li>不能online shrinking</li>
+<li>要先縮filesytem，再縮LVM</li>
+<li>Data有可能會遺失</li>
+</ol>
+
+<p>那因為不能online shrinking，所以我們要先umount，</p>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>umount /tmp
+</code></pre></div>
+<p></br>
+接著才可以shrink filesystem，<br>
+透過<code>resize2fs</code>去把<code>tmp</code>縮到19G。</p>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>resize2fs /dev/mapper/ubuntu--vg-tmp 19G
+</code></pre></div>
+<p></br></p>
+
+<p>最後才是去shrink LV，一樣是用<code>lvresize</code>去做，<br>
+過程中會show warning，告訴你資料可能會遺失，是否真的要做shrink？<br>
+如果沒有什麼疑慮，就按下<code>y</code>吧！</p>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>lvresize -L -100G /dev/mapper/ubuntu--vg-tmp
+  WARNING: Reducing active logical volume to 19.07 GiB
+  THIS MAY DESTROY YOUR DATA <span class="o">(</span>filesystem etc.<span class="o">)</span>
+Do you really want to reduce tmp? <span class="o">[</span>y/n<span class="o">]</span>: y
+  Reducing logical volume tmp to 19.07 GiB
+  Logical volume tmp successfully resized
+</code></pre></div>
+<p></br>
+最後在mount起來，以及用<code>df</code>去看，<br>
+應該會發現<code>tmp</code>只剩下19G了！</p>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>mount /tmp
+
+<span class="nv">$ </span>df -h /tmp
+Filesystem                  Size  Used Avail Use% Mounted on
+/dev/mapper/ubuntu--vg-tmp   19G   44M   18G   1% /tmp
+</code></pre></div>
+<p></font></p>
+
     </div>
 
     
@@ -349,17 +544,23 @@ data-ad-format="auto"></ins>
 
   
      
-    	<li><a href="/tags.html#ubuntu-ref">ubuntu <span>6</span></a></li>
-     
-    	<li><a href="/tags.html#12.04-ref">12.04 <span>1</span></a></li>
-     
-    	<li><a href="/tags.html#customized-ref">customized <span>1</span></a></li>
-     
     	<li><a href="/tags.html#linux-ref">linux <span>5</span></a></li>
      
-    	<li><a href="/tags.html#ISO-ref">ISO <span>1</span></a></li>
+    	<li><a href="/tags.html#LVM-ref">LVM <span>1</span></a></li>
      
-    	<li><a href="/tags.html#preseed-ref">preseed <span>2</span></a></li>
+    	<li><a href="/tags.html#PV-ref">PV <span>1</span></a></li>
+     
+    	<li><a href="/tags.html#VG-ref">VG <span>1</span></a></li>
+     
+    	<li><a href="/tags.html#PE-ref">PE <span>1</span></a></li>
+     
+    	<li><a href="/tags.html#lvm-ref">lvm <span>2</span></a></li>
+     
+    	<li><a href="/tags.html#physical volume-ref">physical volume <span>1</span></a></li>
+     
+    	<li><a href="/tags.html#volume group-ref">volume group <span>1</span></a></li>
+     
+    	<li><a href="/tags.html#physical extent-ref">physical extent <span>1</span></a></li>
     
   
 
@@ -383,11 +584,11 @@ data-ad-format="auto"></ins>
     <hr>
     <ul class="pagination">
     
-      <li class="prev"><a href="/2014/11/24/mogilefs-distributed-filesystem" title="MogileFS: Distributed filesystem">&laquo; Previous</a></li>
+      <li class="prev"><a href="/2015/11/27/do-not-allocate-all-the-lvm-space-with-preseed" title="Do not allocate all the LVM space with preseed">&laquo; Previous</a></li>
     
       <li><a href="/archive.html">Archive</a></li>
     
-      <li class="next"><a href="/2015/06/17/how-to-run-simple-apache-spark" title="How to run a simple Apache Spark application? (Ubuntu 12.04)">Next &raquo;</a></li>
+      <li class="next disabled"><a>Next &rarr;</a>
     
     </ul>
     <hr>
