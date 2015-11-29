@@ -1,7 +1,7 @@
 ---
 layout: post
-title: "How to Extend/Shrink LVM?"
-description: ""
+title: "How to resize a LVM partition?"
+description: "Extend/Shrink a LVM partition"
 category: 
 tags: [linux, LVM, PV, VG, PE, lvm, physical volume, volume group, physical extent]
 ---

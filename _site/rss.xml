@@ -5,13 +5,13 @@
         <description>Ken Yang筆記 - Ken Yang</description>
         <link>http://blog.kenyang.net</link>
         <atom:link href="http://blog.kenyang.net/rss.xml" rel="self" type="application/rss+xml" />
-        <lastBuildDate>Sun, 29 Nov 2015 17:03:58 +0800</lastBuildDate>
-        <pubDate>Sun, 29 Nov 2015 17:03:58 +0800</pubDate>
+        <lastBuildDate>Sun, 29 Nov 2015 17:18:26 +0800</lastBuildDate>
+        <pubDate>Sun, 29 Nov 2015 17:18:26 +0800</pubDate>
         <ttl>60</ttl>
 
 
         <item>
-                <title>How to Extend/Shrink LVM?</title>
+                <title>How to resize a LVM partition?</title>
                 <description>&lt;p&gt;&lt;font size=3&gt;&lt;/p&gt;
 
 &lt;p&gt;這篇算是延續&lt;a href=&quot;http://blog.kenyang.net/2015/11/27/do-not-allocate-all-the-lvm-space-with-preseed/&quot;&gt;上一篇&lt;/a&gt;的主題，假設VG裡面還有free space尚未用到，&lt;br&gt;
