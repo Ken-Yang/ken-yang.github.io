@@ -60,7 +60,9 @@ http://blog.kenyang.net/blog/page51/
 http://blog.kenyang.net/blog/page52/
 http://blog.kenyang.net/blog/page53/
 http://blog.kenyang.net/blog/page54/
+http://blog.kenyang.net/blog/page55/
 
+http://blog.kenyang.net/2015/12/01/create-a-iscsi-target-on-ubuntu
 http://blog.kenyang.net/2015/11/30/how-to-use-nodejs-mongodb-with-docker
 http://blog.kenyang.net/2015/11/27/how-to-extendreduce-lvm
 http://blog.kenyang.net/2015/11/27/do-not-allocate-all-the-lvm-space-with-preseed

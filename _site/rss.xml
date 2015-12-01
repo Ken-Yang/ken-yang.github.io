@@ -5,10 +5,100 @@
         <description>Ken Yang筆記 - Ken Yang</description>
         <link>http://blog.kenyang.net</link>
         <atom:link href="http://blog.kenyang.net/rss.xml" rel="self" type="application/rss+xml" />
-        <lastBuildDate>Tue, 01 Dec 2015 13:48:10 +0800</lastBuildDate>
-        <pubDate>Tue, 01 Dec 2015 13:48:10 +0800</pubDate>
+        <lastBuildDate>Tue, 01 Dec 2015 19:01:37 +0800</lastBuildDate>
+        <pubDate>Tue, 01 Dec 2015 19:01:37 +0800</pubDate>
         <ttl>60</ttl>
 
+
+        <item>
+                <title>Create a iSCSI target on Ubuntu</title>
+                <description>&lt;p&gt;&lt;font size=3&gt;
+這篇會介紹如何在Ubuntu上，建立一個iSCSI Target Server，&lt;br&gt;
+提供給別人測試使用。&lt;/p&gt;
+
+&lt;p&gt;&lt;/br&gt;&lt;/p&gt;
+
+&lt;h4 id=&quot;install-tgt&quot;&gt;Install tgt&lt;/h4&gt;
+
+&lt;hr&gt;
+
+&lt;p&gt;首先要先安裝tgt這個package。  &lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;apt-get install tgt
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;/br&gt;&lt;/p&gt;
+
+&lt;h4 id=&quot;create-virtual-disks&quot;&gt;Create virtual disks&lt;/h4&gt;
+
+&lt;hr&gt;
+
+&lt;p&gt;這裡會用&lt;code&gt;dd&lt;/code&gt;來建立幾個假的block device，&lt;br&gt;
+待會就把devices加入到iSCSI中。&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;dd &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;/dev/zero &lt;span class=&quot;nv&quot;&gt;of&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;/var/tmp/iscsi-disk1 &lt;span class=&quot;nv&quot;&gt;bs&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;1M &lt;span class=&quot;nv&quot;&gt;count&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;100
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;dd &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;/dev/zero &lt;span class=&quot;nv&quot;&gt;of&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;/var/tmp/iscsi-disk2 &lt;span class=&quot;nv&quot;&gt;bs&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;1M &lt;span class=&quot;nv&quot;&gt;count&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;100
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;/br&gt;&lt;/p&gt;
+
+&lt;h4 id=&quot;create-targets&quot;&gt;Create targets&lt;/h4&gt;
+
+&lt;hr&gt;
+
+&lt;p&gt;這裡建立了2個target，分別為，&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;iqn.2015-07.net.kenyang:ken.iscsi.1&lt;/li&gt;
+&lt;li&gt;iqn.2015-07.net.kenyang:ken.iscsi.2&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;tgtadm --lld iscsi --op new --mode target --tid &lt;span class=&quot;m&quot;&gt;1&lt;/span&gt; -T iqn.2015-07.net.kenyang:ken.iscsi.1
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;tgtadm --lld iscsi --op new --mode target --tid &lt;span class=&quot;m&quot;&gt;2&lt;/span&gt; -T iqn.2015-07.net.kenyang:ken.iscsi.2
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;!--more--&gt;
+
+&lt;p&gt;&lt;/br&gt;&lt;/p&gt;
+
+&lt;h4 id=&quot;create-lun&quot;&gt;Create LUN&lt;/h4&gt;
+
+&lt;hr&gt;
+
+&lt;p&gt;然後替上面的2個target各加入一個LUN。&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;tgtadm --lld iscsi --mode logicalunit --op new --tid &lt;span class=&quot;m&quot;&gt;1&lt;/span&gt; --lun &lt;span class=&quot;m&quot;&gt;1&lt;/span&gt; -b /var/tmp/iscsi-disk1
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;tgtadm --lld iscsi --mode logicalunit --op new --tid &lt;span class=&quot;m&quot;&gt;2&lt;/span&gt; --lun &lt;span class=&quot;m&quot;&gt;1&lt;/span&gt; -b /var/tmp/iscsi-disk2
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;/br&gt;&lt;/p&gt;
+
+&lt;h4 id=&quot;enable-the-target-to-accept-any-initiators&quot;&gt;Enable the target to accept any initiators&lt;/h4&gt;
+
+&lt;hr&gt;
+
+&lt;p&gt;如果你想要讓你的target，&lt;br&gt;
+可以讓任何人連，不需要密碼，&lt;br&gt;
+就可以用下面的指令。&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;tgtadm --lld iscsi --op &lt;span class=&quot;nb&quot;&gt;bind&lt;/span&gt; --mode target --tid &lt;span class=&quot;m&quot;&gt;1&lt;/span&gt; -I ALL
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;tgtadm --lld iscsi --op &lt;span class=&quot;nb&quot;&gt;bind&lt;/span&gt; --mode target --tid &lt;span class=&quot;m&quot;&gt;2&lt;/span&gt; -I ALL
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;/br&gt;&lt;/p&gt;
+
+&lt;h4 id=&quot;create-user&quot;&gt;Create user&lt;/h4&gt;
+
+&lt;hr&gt;
+
+&lt;p&gt;如果你想要讓你的target，有credential才能連，&lt;br&gt;
+那就要create user，以及把user bind在某個target上。&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;tgtadm --mode account --op new --user safesync --password safesync
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;tgtadm --mode account --op &lt;span class=&quot;nb&quot;&gt;bind&lt;/span&gt; --tid &lt;span class=&quot;m&quot;&gt;1&lt;/span&gt; --user safesync
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;/br&gt;&lt;/p&gt;
+
+&lt;h4 id=&quot;show-configuration&quot;&gt;Show configuration&lt;/h4&gt;
+
+&lt;hr&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;$ tgtadm --lld iscsi --mode target --op show
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;/font&gt;&lt;/p&gt;
+</description>
+                <link>http://blog.kenyang.net/2015/12/01/create-a-iscsi-target-on-ubuntu</link>
+                <guid>http://blog.kenyang.net/2015/12/01/create-a-iscsi-target-on-ubuntu</guid>
+                <pubDate>Tue, 01 Dec 2015 00:00:00 +0800</pubDate>
+        </item>
 
         <item>
                 <title>How to use NodeJS &amp; MongoDB with Docker?</title>
@@ -873,14 +963,6 @@ mv完成以後，接著打開&lt;code&gt;index.html&lt;/code&gt;，&lt;br&gt;
                 <link>http://blog.kenyang.net/2014/05/06/getting-started-with-amazon-ec2-api</link>
                 <guid>http://blog.kenyang.net/2014/05/06/getting-started-with-amazon-ec2-api</guid>
                 <pubDate>Tue, 06 May 2014 17:48:00 +0800</pubDate>
-        </item>
-
-        <item>
-                <title>Build a deb package from source</title>
-                <description>&lt;div style=&quot;font-size: 15px; line-height: 22px;&quot;&gt;最近因為安全性的關係，&lt;br /&gt;我要在ubuntu 10.04上面將openssl從0.9.8k更新至1.0.1e，&lt;br /&gt;以及將openssh從5.3p1更新至6.2p2 &lt;br /&gt;但偏偏這兩個較新的版本都沒有給10.04用的package....&lt;br /&gt;所以這時候只好自己build了！&lt;br /&gt;有人可能會覺得奇怪，為什麼要包成package安裝？&lt;br /&gt;而不直接tar開source，然後make install就好？&lt;br /&gt;因為我需要重複的更新很多次，很多檯機器！&lt;br /&gt;如果在每一檯都去./configure, make, make install...那真的會很花時間！&lt;br /&gt;所以最快的方式就是先在一檯機器上build package，&lt;br /&gt;然後再把package拿到每一檯去安裝，&lt;br /&gt;會快上許多！&lt;br /&gt;&lt;br /&gt;喔！對了！這邊教你的是怎麼build出一包debian package！&lt;br /&gt;如果你想要把這包package撒出去給別人使用，建議你要加上sign key啦！&lt;br /&gt;甚至如果你想要撒到launchpad上的話，更要加上sign key！&lt;br /&gt;但這裡只會教怎麼build而已！&lt;br /&gt;&lt;br /&gt;恩，其實build還是很簡單！&lt;br /&gt;難的是環境的準備跟環境的設定啊.....&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;在這裡會介紹兩種build debian package的方法！&lt;br /&gt;&lt;ol&gt;&lt;li&gt;checkinstall&lt;/li&gt;&lt;li&gt;debuild&lt;/li&gt;&lt;/ol&gt;&lt;br /&gt;&lt;br /&gt;這兩種的方式差蠻多的，&lt;br /&gt;checkinstall它是用錄製的方式，&lt;br /&gt;透過make install，然後錄下整個安裝過程，&lt;br /&gt;再把打包成一個debian package！&lt;br /&gt;而debuild可以想像成就是動態的去build，把所需的檔案通通包進去package！&lt;br /&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;1. install tools&lt;/span&gt;&lt;br /&gt;&lt;br /&gt;先安裝所需的package，第一個是checkinstall，再來安裝ubuntu-dev-tools這個package，&lt;br /&gt;ubuntu-dev-tools裡面就包含了debuild等相關需要的tools．&lt;br /&gt;&lt;pre class=&quot;brush: java&quot;&gt;apt-get install checkinstall&lt;br /&gt;apt-get install ubuntu-dev-tools  bzr-builddeb debhelper&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;2. download and decompress tarball&lt;/span&gt;&lt;br /&gt;&lt;br /&gt;把source code下載下來和解壓縮開，&lt;br /&gt;&lt;pre class=&quot;brush: java&quot;&gt;cd ~&lt;br /&gt;wget http://www.openssl.org/source/openssl-1.0.1e.tar.gz  // download ssl&lt;br /&gt;tar xvzf openssl-1.0.1e.tar.gz&lt;br /&gt;&lt;br /&gt;wget http://openbsd.org.ar/pub/OpenBSD/OpenSSH/portable/openssh-6.2p2.tar.gz  // download ssh&lt;br /&gt;&lt;br /&gt;cd openssl-1.0.1e&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;3. Config and Compile source code&lt;/span&gt;&lt;br /&gt;&lt;br /&gt;這一步蠻重要的，&lt;br /&gt;要進行config和make(compile)，&lt;br /&gt;但！！！只有checkintall需要“先”config and compile！&lt;br /&gt;先config，openssl的config還好，但openssh的config要稍微注意一點，&lt;br /&gt;openssh的config要特別帶一個--sysconfdir，&lt;br /&gt;這個參數是說明你將來的sshd_config, ssh_config, ssh_host_xxx_key要放在哪裡，&lt;br /&gt;如果你沒有帶這個參數，預設應該是會存在/usr/etc/底下，老實說蠻奇怪的！&lt;br /&gt;所以還是指定一下吧！&lt;br /&gt;那因為前面剛剛說了，只有openssl需要先config，所以等等會再說openssh怎麼去設定config，&lt;br /&gt;先設定openssl的config，&lt;br /&gt;&lt;pre class=&quot;brush: java&quot;&gt;./config&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;進行make，make就是compile，把你的source code compile成binary，&lt;br /&gt;&lt;pre class=&quot;brush: java&quot;&gt;make&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;4. Build package (checkinstall)&lt;/span&gt;&lt;br /&gt;&lt;br /&gt;前面說了build package，這裡會介紹兩種方法（其實蠻多種方法的），&lt;br /&gt;我會先用checkinstall build ssl，然後用debuild build ssh，&lt;br /&gt;首先是ssl，&lt;br /&gt;&lt;pre class=&quot;brush: java&quot;&gt;checkinstall make install&lt;br /&gt;&lt;/pre&gt;checkinstall的原理就是會去錄製接在它後面那個command所作的事情，&lt;br /&gt;所以我們後面接make install（就是安裝），&lt;br /&gt;make install下下去以後就會真的去安裝這個package，&lt;br /&gt;然後checkintall就會在旁邊錄起來！&lt;br /&gt;checkinstall這個指令按下enter以後，會出現幾個preconfig的訊息，&lt;br /&gt;你要先替這個package建立一些information，&lt;br /&gt;第一個是會問你doc，這個就是直接y下去！（如下圖）&lt;br /&gt;&lt;div class=&quot;separator&quot; style=&quot;clear: both; text-align: center;&quot;&gt;&lt;a href=&quot;http://4.bp.blogspot.com/-YP1vCg_L8Ms/Ux14puERFgI/AAAAAAAAFJ0/j4W5Spb3314/s1600/Screen+Shot+2014-03-10+at+3.15.30+PM.png&quot; imageanchor=&quot;1&quot; style=&quot;margin-left: 1em; margin-right: 1em;&quot;&gt;&lt;img border=&quot;0&quot; src=&quot;http://4.bp.blogspot.com/-YP1vCg_L8Ms/Ux14puERFgI/AAAAAAAAFJ0/j4W5Spb3314/s1600/Screen+Shot+2014-03-10+at+3.15.30+PM.png&quot; height=&quot;148&quot; width=&quot;640&quot; /&gt;&lt;/a&gt;&lt;/div&gt;&lt;br /&gt;接著是要你描述一下這個package是做什麼的（如下圖）&lt;br /&gt;&lt;div class=&quot;separator&quot; style=&quot;clear: both; text-align: center;&quot;&gt;&lt;a href=&quot;http://2.bp.blogspot.com/-EMe13vp50Ps/Ux14ppgOv9I/AAAAAAAAFJg/p65kwREtHCc/s1600/Screen+Shot+2014-03-10+at+3.16.02+PM.png&quot; imageanchor=&quot;1&quot; style=&quot;margin-left: 1em; margin-right: 1em;&quot;&gt;&lt;img border=&quot;0&quot; src=&quot;http://2.bp.blogspot.com/-EMe13vp50Ps/Ux14ppgOv9I/AAAAAAAAFJg/p65kwREtHCc/s1600/Screen+Shot+2014-03-10+at+3.16.02+PM.png&quot; height=&quot;72&quot; width=&quot;400&quot; /&gt;&lt;/a&gt;&lt;/div&gt;&lt;br /&gt;最後就是這package的相關資訊，你可以改掉maintainer是誰，&lt;br /&gt;改成自己email！（如下圖）&lt;br /&gt;&lt;div class=&quot;separator&quot; style=&quot;clear: both; text-align: center;&quot;&gt;&lt;a href=&quot;http://4.bp.blogspot.com/-RzRww5SU91U/Ux14pvwqfLI/AAAAAAAAFJk/U1XMVtDKuog/s1600/Screen+Shot+2014-03-10+at+3.16.12+PM.png&quot; imageanchor=&quot;1&quot; style=&quot;margin-left: 1em; margin-right: 1em;&quot;&gt;&lt;img border=&quot;0&quot; src=&quot;http://4.bp.blogspot.com/-RzRww5SU91U/Ux14pvwqfLI/AAAAAAAAFJk/U1XMVtDKuog/s1600/Screen+Shot+2014-03-10+at+3.16.12+PM.png&quot; height=&quot;298&quot; width=&quot;400&quot; /&gt;&lt;/a&gt;&lt;/div&gt;&lt;br /&gt;那怎麼看有沒有成功？&lt;br /&gt;因為你是下make install，&lt;br /&gt;所以最後build的流程會去幫你安裝，&lt;br /&gt;如果安裝失敗, 那你的package也不會存在！&lt;br /&gt;&lt;br /&gt;那有人可能只是單純想要build package，而不想要安裝這個package在這檯機器上，&lt;br /&gt;那該怎麼辦？&lt;br /&gt;checkinstall有額外的參數可以做這件事情，多帶一個--install就行！&lt;br /&gt;&lt;pre class=&quot;brush: java&quot;&gt;checkinstall --install=no make install&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;5. Build package (debuild)&lt;/span&gt;&lt;br /&gt;&lt;br /&gt;上面介紹了checkinstall的方法，&lt;br /&gt;現在要介紹debuild的方式，&lt;br /&gt;那這裡我們以opennssh為範例，&lt;br /&gt;透過debuild比較算是debian的practice，&lt;br /&gt;首先要先有debian的資料夾，&lt;br /&gt;這資料夾下面有一堆林林種種的config file，甚至是init.d，&lt;br /&gt;那我們難道要一個一個的設定這些config？&lt;br /&gt;當然不用，可以透過dh_make去幫我們產生template，&lt;br /&gt;&lt;br /&gt;那可是透過dh_make也有點麻煩，就是要接一堆參數，&lt;br /&gt;那好險Canonical有提供另一個tool(bzr)去幫我們handle這件事情，&lt;br /&gt;透過bzr就可以幫我們產生debian/*底下的template，&lt;br /&gt;&lt;pre class=&quot;brush: java&quot;&gt;cd ~&lt;br /&gt;bzr dh-make openssh 6.2p2 openssh-6.2p2.tar.gz&lt;br /&gt;&lt;/pre&gt;bzr會問你這是一個single binary, indep binary, multiple binary, library, kernel module, kernel patch or cdbs?&lt;br /&gt;就選single binary（如下圖），&lt;br /&gt;&lt;div class=&quot;separator&quot; style=&quot;clear: both; text-align: center;&quot;&gt;&lt;a href=&quot;http://1.bp.blogspot.com/-rh1jjH_Zflk/Ux14qAh2qfI/AAAAAAAAFJs/4DvHSRPFXIw/s1600/Screen+Shot+2014-03-10+at+3.58.04+PM.png&quot; imageanchor=&quot;1&quot; style=&quot;margin-left: 1em; margin-right: 1em;&quot;&gt;&lt;img border=&quot;0&quot; src=&quot;http://1.bp.blogspot.com/-rh1jjH_Zflk/Ux14qAh2qfI/AAAAAAAAFJs/4DvHSRPFXIw/s1600/Screen+Shot+2014-03-10+at+3.58.04+PM.png&quot; /&gt;&lt;/a&gt;&lt;/div&gt;&lt;br /&gt;&lt;br /&gt;dh-make會先幫你建立一個opepssh的資料夾，裡面其實就是下載的那個tarball解開！&lt;br /&gt;進到openssh資料夾，你會發現裡面會有另外一個debian資料夾，&lt;br /&gt;這個資料夾裡面通通都是build debian package所需要的file，&lt;br /&gt;有幾個file蠻重要的，&lt;br /&gt;像是control, changelog, docs，&lt;br /&gt;這些就是dh_make幫我們建好的template，既然是template，&lt;br /&gt;所以就有些欄位要改掉！不過都是一些基本的information，所以這裡就不一一介紹！&lt;br /&gt;&lt;br /&gt;接著就要開始build，&lt;br /&gt;build其實是靠debian/rule來trigger，&lt;br /&gt;rule裡面要放一些dh_autoconfiguration, dh_install, dh_xxxx.....etc，&lt;br /&gt;一堆的command，&lt;br /&gt;不過template已經幫我們建立好了dh  $@，我們就不用一一處理！&lt;br /&gt;&lt;br /&gt;在開始build之前，&lt;br /&gt;有個比較dirty的事情要先做，&lt;br /&gt;前面不是有說要設定--sysconfdir嗎？&lt;br /&gt;debian的practice是透過override_dh_auto_configure去做，&lt;br /&gt;override_dh_auto_configure會幫我們把要帶的參數再帶給./configure，&lt;br /&gt;但偏偏我怎麼試都帶不過去，最後只好用dirty的方式，&lt;br /&gt;就是去找到source code，去硬改sysconfdir的位置，&lt;br /&gt;預設會是/etc，&lt;br /&gt;但我想要放在/etc/ssh底下，&lt;br /&gt;那個source code位置就在/usr/share/perl5/Debian/Debhelper/Buildsystem/autoconf.pm，&lt;br /&gt;找到下面這行，把/etc再改成我要的...&lt;br /&gt;&lt;pre class=&quot;brush: java&quot;&gt;push @opts, &quot;--sysconfdir=/etc&quot;;&lt;br /&gt;&lt;/pre&gt;那因為這方法真的蠻dirty的，如果有哪位大大知道該怎麼正確的透過override_dh_auto_configure去設定，&lt;br /&gt;歡迎告訴我～&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;最後就可以用debuild  build了&lt;br /&gt;後面帶的參數意思就是不要sign source pacakge and .changes files，&lt;br /&gt;&lt;pre class=&quot;brush: java&quot;&gt;debuild -uc -us -B&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;&lt;br /&gt;最後說明一下另一個command，&lt;br /&gt;這command可以來看package裡面有些什麼！&lt;br /&gt;&lt;pre class=&quot;brush: java&quot;&gt;lesspipe openssh-6.2p2.deb&lt;br /&gt;&lt;/pre&gt;可以拿這command來簡單的驗證一下build有沒有成功！&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;/div&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;</description>
-                <link>http://blog.kenyang.net/2014/03/10/build-deb-package-from-source</link>
-                <guid>http://blog.kenyang.net/2014/03/10/build-deb-package-from-source</guid>
-                <pubDate>Mon, 10 Mar 2014 16:38:00 +0800</pubDate>
         </item>
 
 

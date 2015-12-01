@@ -1,0 +1,384 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title></title>
+    
+    <meta name="author" content="Ken Yang">
+
+    <!-- Enable responsive viewport -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Bootstrap styles -->
+    <link href="/assets/themes/bootstrap-3/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Optional theme -->
+    <link href="/assets/themes/bootstrap-3/bootstrap/css/bootstrap-theme.min.css" rel="stylesheet">
+    <!-- Sticky Footer -->
+    <link href="/assets/themes/bootstrap-3/bootstrap/css/bs-sticky-footer.css" rel="stylesheet">
+    
+    <!-- Custom styles -->
+    <link href="/assets/themes/bootstrap-3/css/style.css?body=1" rel="stylesheet" type="text/css" media="all">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Fav and touch icons -->
+    <!-- Update these with your own images
+      <link rel="shortcut icon" href="images/favicon.ico">
+      <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+      <link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-72x72.png">
+      <link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png">
+    -->
+
+    <!-- atom & rss feed -->
+    <link href="/atom.xml" type="application/atom+xml" rel="alternate" title="Sitewide ATOM Feed">
+    <link href="/rss.xml" type="application/rss+xml" rel="alternate" title="Sitewide RSS Feed">
+
+  </head>
+
+  <body>
+    <div id="wrap">
+      <nav class="navbar navbar-default" role="navigation">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#jb-navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/">Ken Yang筆記</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="jb-navbar-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+            
+
+
+  
+    
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/about">About Ken Yang</a></li>
+      	
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/archive">Archive</a></li>
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+  
+    
+      
+    
+  
+    
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/tags">Tags</a></li>
+      	
+      
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+
+
+
+          </ul>
+          <form method="get" class="navbar-form navbar-right" role="search" action="https://www.google.com/search">
+            <div class="form-group">
+              <input name="q" id="search-value" type="text" class="form-control" placeholder="Search">
+              <input style="display: none" name="as_sitesearch" id="search-value" type="text" class="form-control" value="blog.kenyang.net">
+            </div>
+            <button type="submit" class="btn btn-default">Submit</button>
+          </form>
+        </div><!-- /.navbar-collapse -->
+      </nav>
+
+      <div class="container">
+        <style>
+.myButton {
+    -moz-box-shadow:inset 0px 1px 0px 0px #ffffff;
+    -webkit-box-shadow:inset 0px 1px 0px 0px #ffffff;
+    box-shadow:inset 0px 1px 0px 0px #ffffff;
+    background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #f9f9f9), color-stop(1, #e9e9e9));
+    background:-moz-linear-gradient(top, #f9f9f9 5%, #e9e9e9 100%);
+    background:-webkit-linear-gradient(top, #f9f9f9 5%, #e9e9e9 100%);
+    background:-o-linear-gradient(top, #f9f9f9 5%, #e9e9e9 100%);
+    background:-ms-linear-gradient(top, #f9f9f9 5%, #e9e9e9 100%);
+    background:linear-gradient(to bottom, #f9f9f9 5%, #e9e9e9 100%);
+    filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#f9f9f9', endColorstr='#e9e9e9',GradientType=0);
+    background-color:#f9f9f9;
+    -moz-border-radius:6px;
+    -webkit-border-radius:6px;
+    border-radius:6px;
+    border:1px solid #dcdcdc;
+    display:inline-block;
+    cursor:pointer;
+    color:#666666;
+    font-family:Arial;
+    font-size:15px;
+    font-weight:bold;
+    padding:6px 24px;
+    text-decoration:none;
+    text-shadow:0px 1px 0px #ffffff;
+}
+.myButton:hover {
+    background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #e9e9e9), color-stop(1, #f9f9f9));
+    background:-moz-linear-gradient(top, #e9e9e9 5%, #f9f9f9 100%);
+    background:-webkit-linear-gradient(top, #e9e9e9 5%, #f9f9f9 100%);
+    background:-o-linear-gradient(top, #e9e9e9 5%, #f9f9f9 100%);
+    background:-ms-linear-gradient(top, #e9e9e9 5%, #f9f9f9 100%);
+    background:linear-gradient(to bottom, #e9e9e9 5%, #f9f9f9 100%);
+    filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#e9e9e9', endColorstr='#f9f9f9',GradientType=0);
+    background-color:#e9e9e9;
+}
+.myButton:active {
+    position:relative;
+    top:1px;
+}
+</style>
+
+<body>
+    <div>
+        <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- ken on github -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3783438370424072"
+     data-ad-slot="1516206098"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+    </div>
+    <!-- This loops through the paginated posts -->
+    
+      <h1><a style="color: #F22430" href="/2010/04/04/google-app-engine-for-javasession">在Google App Engine for Java裡，開啟session</a></h1>
+      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
+      <p class="author">
+      <div class="date">
+        <span>04 April 2010</span>
+      </div>
+      </p>
+      <div class="content" style="line-height: 28px;">
+        <div>恩~大部份的人(之前只碰過Python部分)!</div><div><br /></div><div>會以為GAE沒有支援SESSION!</div><div><br /></div><div>但在for java卻有喔!</div><div><br /></div><div>只要在<span class="Apple-style-span" style="font-family: Helvetica, Arial, sans-serif; font-size: small; line-height: 23px;"> <code style="color: #007000; font-family: monospace;">appengine-web.xml</code> </span><span class="Apple-style-span" style="font-family: Helvetica, Arial, sans-serif; line-height: 23px;">底下加入下段code</span></div><div><span class="Apple-style-span" style="font-family: Helvetica, Arial, sans-serif;"><span class="Apple-style-span" style="font-size: small; line-height: 23px;"><br /></span></span></div><div><span class="Apple-style-span" style="font-family: Helvetica, Arial, sans-serif;"><span class="Apple-style-span" style="line-height: 23px;">就可以支援了喔</span></span></div><pre class="brush: xml">   &lt;sessions-enabled&gt;true&lt;/sessions-enabled&gt;<br /></pre><div><span class="Apple-style-span" style="font-family: Helvetica, Arial, sans-serif;"><span class="Apple-style-span" style="line-height: 23px;"><br /></span></span></div><div><span class="Apple-style-span" style="font-family: Helvetica, Arial, sans-serif;"><span class="Apple-style-span" style="line-height: 23px;">之前不知道!</span></span></div><div><span class="Apple-style-span" style="font-family: Helvetica, Arial, sans-serif;"><span class="Apple-style-span" style="line-height: 23px;"><br /></span></span></div><div><span class="Apple-style-span" style="font-family: Helvetica, Arial, sans-serif;"><span class="Apple-style-span" style="line-height: 23px;">還以為沒有!</span></span></div><div><span class="Apple-style-span" style="font-family: Helvetica, Arial, sans-serif;"><span class="Apple-style-span" style="line-height: 23px;"><br /></span></span></div><div><span class="Apple-style-span" style="font-family: Helvetica, Arial, sans-serif;"><span class="Apple-style-span" style="line-height: 23px;">用cookie+memcache來實作!</span></span></div><div><span class="Apple-style-span" style="font-family: Helvetica, Arial, sans-serif;"><span class="Apple-style-span" style="line-height: 23px;"><br /></span></span></div><div><span class="Apple-style-span" style="font-family: Helvetica, Arial, sans-serif;"><span class="Apple-style-span" style="line-height: 23px;">真夠笨的!</span></span></div><div><span class="Apple-style-span" style="font-family: Helvetica, Arial, sans-serif;"><span class="Apple-style-span" style="line-height: 23px;"><br /></span></span></div><div><span class="Apple-style-span" style="font-family: Helvetica, Arial, sans-serif;"><span class="Apple-style-span" style="line-height: 23px;">所以說手冊一定要看清楚@@</span></span></div><div><span class="Apple-style-span" style="font-family: Helvetica, Arial, sans-serif;"><span class="Apple-style-span" style="line-height: 23px;"><br /></span></span></div><div><span class="Apple-style-span" style="font-family: Helvetica, Arial, sans-serif;"><span class="Apple-style-span" style="line-height: 23px;"><br /></span></span></div><div><span class="Apple-style-span" style="font-family: Helvetica, Arial, sans-serif;"><span class="Apple-style-span" style="line-height: 23px;"><br /></span></span></div><div><span class="Apple-style-span" style="font-family: Helvetica, Arial, sans-serif;"><span class="Apple-style-span" style="line-height: 23px;"><br /></span></span></div><div><span class="Apple-style-span" style="font-family: Helvetica, Arial, sans-serif;"><span class="Apple-style-span" style="line-height: 23px;"><br /></span></span></div><div><span class="Apple-style-span" style="font-family: Helvetica, Arial, sans-serif;"><span class="Apple-style-span" style="line-height: 23px;"><br /></span></span></div><div><span class="Apple-style-span" style="font-family: Helvetica, Arial, sans-serif;"><span class="Apple-style-span" style="line-height: 23px;"><span class="Apple-style-span" style="font-size: medium;"><br /></span></span></span></div>
+      </div>
+      <footer>
+        <p><a class="myButton" href="/2010/04/04/google-app-engine-for-javasession">read more &raquo;</a></p>
+        <div>
+          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- ken on github -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3783438370424072"
+     data-ad-slot="1516206098"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+        </div>
+      </footer>
+      <hr>
+    
+
+    <!-- Pagination links -->
+    <div class="pagination">
+      
+        <a href="/blog/page54" class="previous">Previous</a>
+      
+      <span class="page_number ">Page: 55 of 55</span>
+      
+        <span class="next ">Next</span>
+      
+    </div>
+
+    <div>
+        <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- ken on github -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3783438370424072"
+     data-ad-slot="1516206098"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+        <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-70705007-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+
+    </div>
+</body>
+
+      </div>
+
+    </div>
+
+    <div id="footer">
+      <div class="container">
+        <p>&copy; 2015 Ken Yang
+          with help from <a href="http://jekyllbootstrap.com" target="_blank" title="The Definitive Jekyll Blogging Framework">Jekyll Bootstrap</a>
+          and <a href="http://getbootstrap.com" target="_blank">Bootstrap</a>
+        </p>
+      </div>
+    </div>
+
+    
+
+
+
+
+
+    <!-- Latest compiled and minified JavaScript, requires jQuery 1.x (2.x not supported in IE8) -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="/assets/themes/bootstrap-3/bootstrap/js/bootstrap.min.js"></script>
+  </body>
+</html>
+

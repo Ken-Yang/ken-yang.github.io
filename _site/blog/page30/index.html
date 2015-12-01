@@ -214,6 +214,8 @@
   
     
   
+    
+  
 
 
 
@@ -288,6 +290,34 @@
     </div>
     <!-- This loops through the paginated posts -->
     
+      <h1><a style="color: #F22430" href="/2011/11/16/c-pointer">C++: pointer (指標)</a></h1>
+      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
+      <p class="author">
+      <div class="date">
+        <span>16 November 2011</span>
+      </div>
+      </p>
+      <div class="content" style="line-height: 28px;">
+        學C/C++，我想pointer(指標)是最大的門檻吧!<br />這也是大部分人學C/C++，最痛的東西吧!<br />這篇就稍微的講解pointer!<br /><br />pointer是專門用來儲存<b>某變數</b>的<b>記憶體位置</b>!<br />每宣告一個pointer時，就會配置一塊<b>4 bytes</b>的記憶體空間，<br />專門用來儲存某變數的記憶體位置。<br />下面用簡單的code來說明，<br /><pre class="brush: c++">int iValue = 10;<br />int *iPointer = &amp;iValue;<br /><br />printf("iPointer的value=%d \r\n"            ,  *iPointer);      //取值要用* <br />printf("iPointer儲存value的address=%X \r\n" ,  iPointer);       //沒有*就是印出本身儲存的記憶體位置   <br />printf("iPointer本身的address=%X \r\n"      ,  &amp;iPointer);      //取得記憶體位置都是用&amp; <br />printf("iValue  本身的address=%X \r\n"      ,  &amp;iValue);        //取得記憶體位置都是用&amp; <br />printf("iPointer的size=%d \r\n"             ,  sizeof(iPointer));  <br />printf("iValue的size=%d \r\n"               ,  sizeof(iValue));    <br /><br /><br /></pre><br /><br /><br />下面為執行結果以及說明，：<br /><table border="1"><tbody><tr style="background-color: grey; font-size: 16px; font-weight: bold;">           <td align="center" width="35%">output</td>           <td align="center">&nbsp;&nbsp; 說明</td>     </tr><tr><td width="30%">&nbsp;&nbsp; iPointer的value=10</td><td>印出儲存的記憶體位置本身的value，前面說過pointer是用來儲存記憶體位置，<br />如果要取得該記憶體位置的value，就是利用*</td>      </tr><tr><td width="30%">&nbsp;&nbsp; iPointer儲存value的address=28FF3C</td><td>印出iPointer儲存的資訊（記憶體位置）</td>      </tr><tr><td width="30%">&nbsp;&nbsp; iPointer本身的address=28FF38</td><td>iPointer自己的記憶體起始位置在哪</td>      </tr><tr><td width="30%">&nbsp;&nbsp; iValue &nbsp;本身的address=28FF3C</td><td>第四行就是印出iValue本身的記憶體起始位置，會發現跟第二行一樣，因為iPointer就是儲存這個資訊</td>      </tr><tr><td width="30%">&nbsp;&nbsp; iPointer的size=4</td><td>印出iPointer的大小，前面說過，每個pointer的大小都為4 bytes，不論型態為和</td>      </tr><tr><td width="30%">&nbsp;&nbsp; iValue的size=4</td><td>印出iValue本身的大小，因為是interger，所以為4 bytes</td>      </tr></tbody></table><br /><br />上面為基本用法。<br />pointer也很常用來做字串的處理。<br />原因是用指標處理字串較省記憶體空間，也比較彈性，<br />我們可以宣告一個字串指標指向一個字串常數，<br />下面是個簡單的範例：<br /><pre class="brush: c++">char *pValue[2]     = {"Ken","Yang"};<br />char szValue[2][10] = {"Ken","Yang"};<br />printf("szValue的value=%s \r\n"   ,  szValue[0]);     <br />printf("pValue的value=%s \r\n"  ,  pValue[0]);    <br />printf("szValue的size=%d \r\n"   ,  sizeof(szValue));     <br />printf("pValue的size=%d \r\n"  ,  sizeof(pValue));    <br /><br /></pre><br /><br />下面為執行結果以及說明，顏色相同的為該對應的結果及說明：<br /><table border="1" 　width="70%"><tbody><tr style="background-color: grey; font-size: 16px; font-weight: bold;">           <td align="center" width="35%">output</td>           <td align="center">&nbsp;&nbsp; 說明</td>     </tr><tr><td width="30%">&nbsp;&nbsp;szValue的value=Ken</td><td>印出儲存在陣列0的value</td>      </tr><tr><td width="30%">&nbsp;&nbsp;pValue的value=Ken</td><td>印出儲存在指標陣列0的value</td>      </tr><tr><td width="30%">&nbsp;&nbsp;szValue的size=20</td><td>字元陣列的大小為20</td>      </tr><tr><td width="30%">&nbsp;&nbsp;pValue的size=8</td><td>指標陣列的大小為8</td>      </tr></tbody></table><br />可以發現陣列以及指標陣列的第0項，都是ken阿，可是大小卻都不一樣!<br />陣列的大小為20，而指標陣列為8<br />這就是為什麼使用指標會較為省空間的原因，且也較為彈性<br />因為字串指標是可以更改值的，可是字元陣列是不行的。<br /><br />指標還有個特性，就是可以用來做運算，<br />可以看下面簡單的範例，<br /><pre class="brush: c++">char *pString = "Ken";<br />cout &lt;&lt; pString &lt;&lt; endl;<br />cout &lt;&lt; *(pString+1) &lt;&lt; endl;<br />cout &lt;&lt; sizeof(pString) &lt;&lt; endl;<br />cout &lt;&lt; sizeof(*(pString+1)) &lt;&lt; endl;<br />cout &lt;&lt; &amp;pString &lt;&lt; endl;<br /><br /></pre><br />上面的例子，第一行我們先宣告字串指標，然後指定一個字串常數給他，<br />第二行就是印出value來(會印出Ken)<br />第三行就是進行指標的運算(會印出e，如果我們改成+2，就變成n)<br />第四行是印出大小，會印出4，因為說過指標的長度都固定為4<br />第五行也是印出大小，差別是印出該位置的字元大小，那就一定是1了<br />第六行就是印出該記憶體位置了，會發現字串指標跟前面講的變數指標(int, double..之類的)存取value或者存取記憶體的方式都不太同。<br /><br /><br />最後要講的是指標函數，用個簡單的範例來說明，<br /><pre class="brush: c++">void fnPointer(int *pValue){<br />     *pValue=*pValue+1;<br />     cout &lt;&lt; pValue &lt;&lt; endl;    //印出記憶體位置<br />}<br />main(){  <br />     int iValue = 2; <br />     cout &lt;&lt; &amp;iValue &lt;&lt; endl;<br />     fnPointer(&amp;iValue);   //傳遞int變數的記憶體位置進去<br />     cout &lt;&lt; iValue &lt;&lt; endl;<br />}<br /></pre><br />我們先宣告一個函數，那個函數裡的參數是pointer型態，<br />那麼使用方式就是傳遞某變數的記憶體位置進去即可，<br />因為我們說過指標是用來存某變數的記憶體位置!!!<br />所以就是傳遞記憶體位置進去。<br />然後我們再函數fnPointer裡面對value進行+1的動作，<br />然後在印出傳遞進來pointer的記憶體位置，<br />而主程式則是先印出iValue的記憶體位置，<br />在印出iValue的值。<br />會發現，主程式跟函數印出來的記憶體位置都相同!!<br />且在函數裡面進行+1以後，最後在main印出的value會變成3。<br />如果有些人可能會認為還是印出2，代表對pointer的概念還是不太了解(囧)，因為是pointer，還是存取到原本的變數啊!<br />所以也是對原本的變數做操作!!!<br />印出2的方式我們稱為call by value，<br />但印出3的方式我們稱為call by address!<br />還有一種是call by reference!<br />後面一篇會講道!<br /><br /><br />以上是pointer一些簡單的介紹!<br /><a href="http://blog.kenyang.net/2011/11/c-reference.html">下一篇會介紹c++才有的參考(reference)</a><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
+      </div>
+      <footer>
+        <p><a class="myButton" href="/2011/11/16/c-pointer">read more &raquo;</a></p>
+        <div>
+          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- ken on github -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3783438370424072"
+     data-ad-slot="1516206098"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+        </div>
+      </footer>
+      <hr>
+    
       <h1><a style="color: #F22430" href="/2011/11/09/android-sd-card">Android 強制安裝至 sd card</a></h1>
       <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
       <p class="author">
@@ -344,41 +374,13 @@
       </footer>
       <hr>
     
-      <h1><a style="color: #F22430" href="/2011/10/24/class-c">切割子網域（subnet）</a></h1>
-      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
-      <p class="author">
-      <div class="date">
-        <span>24 October 2011</span>
-      </div>
-      </p>
-      <div class="content" style="line-height: 28px;">
-        在<a href="http://blog.kenyang.net/2011/01/ip.html">前一篇</a>中，提到了<a href="http://blog.kenyang.net/2011/01/ip.html">IP分級以及網域</a>的概念。<br /><br />在這篇中，將說明切割子網域的概念！<br /><br />IP分級是為了管理方便，但今天假設我們有一個Class A的IP，<br /><br />我們不可能將一個Class A的IP僅僅設定一個區網！很浪費！<br /><br />且該區網底下也很容易發生壅塞的情形！效能會不好<br /><br />那麼這時候就得運用切割子網域的概念！<br /><br /><br />假設我們有個Class C的IP（192.168.0.0～192.168.0.255），<br /><br />且我們要將該Class C的IP切割成4個子網域！<br /><br />那麼該怎麼做？<br /><br />我們知道Class C的IP的<b>net_id</b>有24個！<br /><br />先假設我們要將一個Class C的IP細切割成4個子網域！<br /><br />那麼我們可以跟<b>host_id</b>借<span class="Apple-style-span" style="color: red;">2</span>個bits！（2的<span class="Apple-style-span" style="color: red;">2</span>次方，所以是借<span class="Apple-style-span" style="color: red;">2</span>個）<br /><br />也就是說<b>net_id</b>變成26個！<br /><br />如：11000000.101010000.00000000.<span class="Apple-style-span" style="color: red;">0</span><span class="Apple-style-span" style="color: red;">0&nbsp;</span>000000（192.168.0.0）<br /><br />這樣就會有<span class="Apple-style-span" style="color: red;">00, 01, 10, 11 </span>這樣就會有4種組合，<br /><br />這樣就可以切成4個子網域了！！<br /><br />而每個子網域，就會剩下2的6次方個ip（64）。<br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
-      </div>
-      <footer>
-        <p><a class="myButton" href="/2011/10/24/class-c">read more &raquo;</a></p>
-        <div>
-          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<!-- ken on github -->
-<ins class="adsbygoogle"
-     style="display:block"
-     data-ad-client="ca-pub-3783438370424072"
-     data-ad-slot="1516206098"
-     data-ad-format="auto"></ins>
-<script>
-(adsbygoogle = window.adsbygoogle || []).push({});
-</script>
-
-        </div>
-      </footer>
-      <hr>
-    
 
     <!-- Pagination links -->
     <div class="pagination">
       
         <a href="/blog/page29" class="previous">Previous</a>
       
-      <span class="page_number ">Page: 30 of 54</span>
+      <span class="page_number ">Page: 30 of 55</span>
       
         <a href="/blog/page31" class="next">Next</a>
       

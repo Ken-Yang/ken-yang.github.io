@@ -214,6 +214,8 @@
   
     
   
+    
+  
 
 
 
@@ -288,6 +290,34 @@
     </div>
     <!-- This loops through the paginated posts -->
     
+      <h1><a style="color: #F22430" href="/2010/10/26/drawable-hdpildpimdpi">Drawable (hdpi,ldpi,mdpi) 的分別</a></h1>
+      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
+      <p class="author">
+      <div class="date">
+        <span>26 October 2010</span>
+      </div>
+      </p>
+      <div class="content" style="line-height: 28px;">
+        <br />Drawable (hdpi,ldpi,mdpi)的分別。<br /><br />自從android 2.0.1版以後，只要新增project，<br /><br />你會發現res/drawable資料夾變成!<br /><br />/res/drawable-hdpi &nbsp; 【WVGA (480x800),FWVGA (480x854)】<br />/res/drawable-mdpi &nbsp;【HVGA (320x480)】<br />/res/drawable-ldpi &nbsp; &nbsp;【QVGA (240x320)】<br /><br />大概知道是用來做mutilple screen的，但是沒有太care，<br /><br />我通常都會把這三個通通刪掉，然後改成員先的/res/drawable（壞習慣，別學）<br /><br />結果剛剛發現如果同張圖分別放在三個不同的資料夾<br /><br />你會發現讀進來的圖檔大小都會不一樣喔！！！<br /><br />太讓我surpriesed!!<br /><br />我以為還要定義一個<span class="Apple-style-span" style="color: #000088; font-family: monospace; font-size: 13px; white-space: pre;">supports-screens</span>的xml檔案<br /><br />這些資料夾名稱的設置才會有用！<br /><br /><br /><br /><br /><br /><br />btw如果你跟我做法一樣，是三個刪掉，變成一個，<br /><br />那麼預設值讀進來的圖大小會是以/res/drawable-mdpi為主<br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
+      </div>
+      <footer>
+        <p><a class="myButton" href="/2010/10/26/drawable-hdpildpimdpi">read more &raquo;</a></p>
+        <div>
+          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- ken on github -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3783438370424072"
+     data-ad-slot="1516206098"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+        </div>
+      </footer>
+      <hr>
+    
       <h1><a style="color: #F22430" href="/2010/10/15/spring-mvcspringjar-spring-webmvc">Spring MVC sample</a></h1>
       <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
       <p class="author">
@@ -344,41 +374,13 @@
       </footer>
       <hr>
     
-      <h1><a style="color: #F22430" href="/2010/10/10/eclipse-classic-with-java-server-page">Eclipse Classic with Java Server Page (JSP)</a></h1>
-      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
-      <p class="author">
-      <div class="date">
-        <span>10 October 2010</span>
-      </div>
-      </p>
-      <div class="content" style="line-height: 28px;">
-        因為有再寫GAE和android<br /><br />大家也都知道Eclipse分很多種版本<br /><br />1. Eclipse classic<br /><br />2. Eclipse IDEfor Java EE Developer<br /><br />3. Eclipse IDEfor Java Developer<br /><br />等等之類的!<br /><br />如果你想寫JSP、又想寫一般的java application。<br /><br />有些人會去下載兩種 eclipse（2、3）<br /><br />然後想寫ＪＳＰ，就開第二個，想寫java就開第三個。<br /><br />會不會太麻煩勒？<br /><br /><br /><br />我也遇到個問題，想在同個IDE環境中寫GAE和Android。<br /><br />該怎麼做呢？<br /><br />先去下載<a href="http://www.eclipse.org/downloads/packages/eclipse-classic-361/heliossr1">Eclipse classic</a><br /><br />解壓縮出來後，<br /><br />就去install new software（android、GAE)<br /><br />安裝這兩個的步驟就不說明了！<br /><br />直接跳過！<br /><br /><br /><br />完成後，當你建立一個.jsp檔案時，<br /><br />有沒有發現完全沒有highlight，也沒有content assist！！<br /><br />那是因為沒有裝pluging！<br /><br />那就把它裝起來吧！<br /><br />首先！<br /><br /><table align="center" cellpadding="0" cellspacing="0" class="tr-caption-container" style="margin-left: auto; margin-right: auto; text-align: center;"><tbody><tr><td style="text-align: center;"><a href="http://1.bp.blogspot.com/_6SxqtkJQECI/TLHcInoMV8I/AAAAAAAAAK0/U363joRV6-g/s1600/1.png" imageanchor="1" style="margin-left: auto; margin-right: auto;"><img border="0" height="280" src="http://1.bp.blogspot.com/_6SxqtkJQECI/TLHcInoMV8I/AAAAAAAAAK0/U363joRV6-g/s640/1.png" width="640" /></a></td></tr><tr><td class="tr-caption" style="text-align: center;">首先先點選Install New Software</td></tr></tbody></table><br /><table align="center" cellpadding="0" cellspacing="0" class="tr-caption-container" style="margin-left: auto; margin-right: auto; text-align: center;"><tbody><tr><td style="text-align: center;"><a href="http://3.bp.blogspot.com/_6SxqtkJQECI/TLHcJvu4i4I/AAAAAAAAAK4/5C29Yco1kl0/s1600/2.png" imageanchor="1" style="margin-left: auto; margin-right: auto;"><img border="0" height="452" src="http://3.bp.blogspot.com/_6SxqtkJQECI/TLHcJvu4i4I/AAAAAAAAAK4/5C29Yco1kl0/s640/2.png" width="640" /></a></td></tr><tr><td class="tr-caption" style="text-align: center;">接著選取圖中選取的項目，注意！版本不同，項目中的版本名稱會有所不同，此版本為HELIOS</td></tr></tbody></table><br /><table align="center" cellpadding="0" cellspacing="0" class="tr-caption-container" style="margin-left: auto; margin-right: auto; text-align: center;"><tbody><tr><td style="text-align: center;"><a href="http://1.bp.blogspot.com/_6SxqtkJQECI/TLHcKdDJ3WI/AAAAAAAAAK8/ZZ-wREFau18/s1600/3.png" imageanchor="1" style="margin-left: auto; margin-right: auto;"><img border="0" src="http://1.bp.blogspot.com/_6SxqtkJQECI/TLHcKdDJ3WI/AAAAAAAAAK8/ZZ-wREFau18/s1600/3.png" /></a></td></tr><tr><td class="tr-caption" style="text-align: center;">接著拉到最下面，點選Web, XML , Java EE Developement</td></tr></tbody></table><br /><br /><br /><br />點開以後，點選Web Page Editor就好！<br /><br />不要安裝其他的（要裝也是可以拉，你有需求的話）<br /><br />安裝完成以後，就會發現*.jsp檔案中的highlight和content assist都出現了！<br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
-      </div>
-      <footer>
-        <p><a class="myButton" href="/2010/10/10/eclipse-classic-with-java-server-page">read more &raquo;</a></p>
-        <div>
-          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<!-- ken on github -->
-<ins class="adsbygoogle"
-     style="display:block"
-     data-ad-client="ca-pub-3783438370424072"
-     data-ad-slot="1516206098"
-     data-ad-format="auto"></ins>
-<script>
-(adsbygoogle = window.adsbygoogle || []).push({});
-</script>
-
-        </div>
-      </footer>
-      <hr>
-    
 
     <!-- Pagination links -->
     <div class="pagination">
       
         <a href="/blog/page41" class="previous">Previous</a>
       
-      <span class="page_number ">Page: 42 of 54</span>
+      <span class="page_number ">Page: 42 of 55</span>
       
         <a href="/blog/page43" class="next">Next</a>
       
