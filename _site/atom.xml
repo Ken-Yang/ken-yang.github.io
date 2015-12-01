@@ -4,13 +4,246 @@
  <title>Ken Yang筆記</title>
  <link href="http://blog.kenyang.net/atom.xml" rel="self"/>
  <link href="http://blog.kenyang.net"/>
- <updated>2015-11-30T20:12:45+08:00</updated>
+ <updated>2015-12-01T13:48:10+08:00</updated>
  <id>http://blog.kenyang.net</id>
  <author>
    <name>Ken Yang</name>
    <email>ken@kenyang.net</email>
  </author>
 
+ 
+ <entry>
+   <title>How to use NodeJS &amp; MongoDB with Docker?</title>
+   <link href="http://blog.kenyang.net/2015/11/30/how-to-use-nodejs-mongodb-with-docker"/>
+   <updated>2015-11-30T00:00:00+08:00</updated>
+   <id>http://blog.kenyang.net/2015/11/30/how-to-use-nodejs--mongodb-with-docker</id>
+   <content type="html">&lt;p&gt;&lt;font size=3&gt;&lt;/p&gt;
+
+&lt;p&gt;這篇會講如何在Docker上部署一個NodeJS+MongoDB的application，&lt;br&gt;
+所以會分二個部分來講，&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;在Docker上部署MongoDB&lt;/li&gt;
+&lt;li&gt;在Docker上部署NodeJS+Express&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h3 id=&quot;1-在docker上部署mongodb&quot;&gt;1. 在Docker上部署MongoDB&lt;/h3&gt;
+
+&lt;p&gt;要在Docker上部署MongoDB，首先要先在local machine上建立一個folder，&lt;br&gt;
+這個folder是待會要mapping到container裡面的volume，&lt;br&gt;
+然後MongoDB上的data都會存在這個volume上。&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;mkdir ~/monogo-data
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;/br&gt;&lt;/p&gt;
+
+&lt;h4 id=&quot;create-a-container&quot;&gt;Create a container&lt;/h4&gt;
+
+&lt;hr&gt;
+
+&lt;p&gt;接著就可以把MongoDB的image抓下來以及run。  &lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;docker pull mongo:latest
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;docker run -v ~/mongo-data:/data &lt;span class=&quot;se&quot;&gt;\ &lt;/span&gt;
+             --name ken-mongo &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+             -d &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+             mongo &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+             mongod --smallfiles
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;!--more--&gt;
+
+&lt;p&gt;&lt;/br&gt;&lt;/p&gt;
+
+&lt;h4 id=&quot;connect-to-a-container&quot;&gt;Connect to a container&lt;/h4&gt;
+
+&lt;hr&gt;
+
+&lt;p&gt;那麼怎麼連進去這個MongoDB呢？&lt;br&gt;
+有二種方式，&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;透過另外一個container，用&lt;code&gt;link&lt;/code&gt;的方法&lt;/li&gt;
+&lt;li&gt;透過&lt;code&gt;docker exec&lt;/code&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;我們先講第二種方法，&lt;br&gt;
+因為第一種方法，待會會透過NodeJS的container來示範。&lt;br&gt;
+我們透過&lt;code&gt;exec&lt;/code&gt;，然後用參數&lt;code&gt;-it&lt;/code&gt;與ken-mongo進行互動，&lt;br&gt;
+進去以後在再試試看create db以及新增一筆資料至table student之中。&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;docker &lt;span class=&quot;nb&quot;&gt;exec&lt;/span&gt; -it ken-mongo bash
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;mongo
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;use school
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;db.student.insert&lt;span class=&quot;o&quot;&gt;({&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;quot;name&amp;quot;&lt;/span&gt;: &lt;span class=&quot;s2&quot;&gt;&amp;quot;ken&amp;quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;})&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;db.student.find&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;/br&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;2-在docker上部署nodejs-express&quot;&gt;2. 在Docker上部署NodeJS+Express&lt;/h3&gt;
+
+&lt;p&gt;首先先建立一個folder，用來放置source code以及json等檔案。&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;mkdir &lt;span class=&quot;nb&quot;&gt;test&lt;/span&gt;-app
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cd test&lt;/span&gt;-app
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;/br&gt;&lt;/p&gt;
+
+&lt;h4 id=&quot;package-json&quot;&gt;Package.json&lt;/h4&gt;
+
+&lt;hr&gt;
+
+&lt;p&gt;接著在&lt;code&gt;test-app&lt;/code&gt;這個folder底下，建立一個&lt;code&gt;package.json&lt;/code&gt;，&lt;br&gt;
+&lt;code&gt;package.json&lt;/code&gt;是用來定義這個app的dependcies以及一些基本資料。  &lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-json&quot; data-lang=&quot;json&quot;&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;nt&quot;&gt;&amp;quot;name&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;node-centos&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+  &lt;span class=&quot;nt&quot;&gt;&amp;quot;private&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+  &lt;span class=&quot;nt&quot;&gt;&amp;quot;version&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;0.0.1&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+  &lt;span class=&quot;nt&quot;&gt;&amp;quot;description&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;Node.js on CentOS using docker&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+  &lt;span class=&quot;nt&quot;&gt;&amp;quot;author&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;Ken Yang &amp;lt;ken@kenyang.net&amp;gt;&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+  &lt;span class=&quot;nt&quot;&gt;&amp;quot;dependencies&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;&amp;quot;express&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;3.2.4&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;&amp;quot;mongoose&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;4.2.8&amp;quot;&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;從上面的&lt;code&gt;package.json&lt;/code&gt;中，我們在&lt;code&gt;dependencies&lt;/code&gt;裡有二個packages，&lt;br&gt;
+分別是&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;code&gt;express&lt;/code&gt;  : Web framework&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;mongoose&lt;/code&gt; : MongoDB client driver&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;&lt;/br&gt;&lt;/p&gt;
+
+&lt;h4 id=&quot;schema-js&quot;&gt;Schema.js&lt;/h4&gt;
+
+&lt;hr&gt;
+
+&lt;p&gt;接著一樣在&lt;code&gt;test-app&lt;/code&gt;底下，建立一個&lt;code&gt;Schema.js&lt;/code&gt;，&lt;br&gt;
+&lt;code&gt;Schema.js&lt;/code&gt;是用來定義你的MongoDB的schema。&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;mongoose&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;require&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;mongoose&amp;#39;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;Schema&lt;/span&gt;   &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;mongoose&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Schema&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;Student&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;Schema&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;({&lt;/span&gt;
+    &lt;span class=&quot;nx&quot;&gt;name&lt;/span&gt;    &lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;String&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;
+
+&lt;span class=&quot;nx&quot;&gt;mongoose&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;model&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;Student&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;Student&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;/br&gt;&lt;/p&gt;
+
+&lt;h4 id=&quot;index-js&quot;&gt;Index.js&lt;/h4&gt;
+
+&lt;hr&gt;
+
+&lt;p&gt;接著一樣在&lt;code&gt;test-app&lt;/code&gt;底下，建立一個&lt;code&gt;index.js&lt;/code&gt;，&lt;br&gt;
+&lt;code&gt;index.js&lt;/code&gt;就是待會這個app的進入點。  &lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;express&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;require&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;express&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;mongoose&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;require&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;mongoose&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;nx&quot;&gt;require&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;./schema&amp;#39;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;app&lt;/span&gt;     &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;express&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
+&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;Student&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;mongoose&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;model&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;Student&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;nx&quot;&gt;app&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;use&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;express&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;bodyParser&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;());&lt;/span&gt;
+
+&lt;span class=&quot;nx&quot;&gt;app&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;configure&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;dev&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(){&lt;/span&gt;
+    &lt;span class=&quot;nx&quot;&gt;mongoose&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;connect&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;mongodb://db:27017&amp;#39;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;
+&lt;span class=&quot;nx&quot;&gt;app&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;configure&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;production&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(){&lt;/span&gt;
+    &lt;span class=&quot;nx&quot;&gt;mongoose&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;connect&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;mongodb://xxx.xxx.xxx.xxx:27017&amp;#39;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;
+
+&lt;span class=&quot;nx&quot;&gt;app&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;get&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;/&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;req&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;res&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;nx&quot;&gt;res&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;send&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;Hello world\n&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;
+
+&lt;span class=&quot;nx&quot;&gt;app&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;post&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;/insert&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;req&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;resp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;body&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;req&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;body&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;s&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;Student&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;({&lt;/span&gt;
+              &lt;span class=&quot;nx&quot;&gt;name&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;body&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;name&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;
+
+    &lt;span class=&quot;nx&quot;&gt;s&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;save&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;err&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;item&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;){&lt;/span&gt;
+        &lt;span class=&quot;nx&quot;&gt;resp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;redirect&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;/&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;
+
+&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;PORT&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;8080&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;nx&quot;&gt;app&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;listen&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;PORT&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;nx&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;Running on http://localhost:&amp;#39;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;PORT&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;上面的範例有個比較重要的地方，需要說明一下，&lt;br&gt;
+首先看到&lt;code&gt;mongoose.connect( &amp;#39;mongodb://db:27017&amp;#39; );&lt;/code&gt;，&lt;br&gt;
+我們是connect至&lt;code&gt;db&lt;/code&gt;這個host去，&lt;br&gt;
+這個&lt;code&gt;db&lt;/code&gt;是怎麼來的？&lt;br&gt;
+是待會會透過&lt;code&gt;--link&lt;/code&gt;的指令指定的，&lt;br&gt;
+一旦你指定了，就會在container中的&lt;code&gt;/etc/hosts&lt;/code&gt;裡面增加一筆record。&lt;/p&gt;
+
+&lt;p&gt;&lt;/br&gt;&lt;/p&gt;
+
+&lt;h4 id=&quot;dockerfile&quot;&gt;DockerFile&lt;/h4&gt;
+
+&lt;hr&gt;
+
+&lt;p&gt;接著建立&lt;code&gt;DockerFile&lt;/code&gt;，&lt;br&gt;
+&lt;code&gt;DockerFile&lt;/code&gt;就像是&lt;code&gt;makefile&lt;/code&gt;一樣，用來定義如何build這個image。&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;FROM    centos:centos6
+
+# Enable Extra Packages for Enterprise Linux (EPEL) for CentOS
+RUN     yum install -y epel-release
+# Install Node.js and npm
+RUN     yum install -y nodejs npm
+
+# Install app dependencies
+COPY package.json /src/package.json
+RUN cd /src; npm install
+
+# Bundle app source
+COPY . /src
+
+ENV NODE_ENV dev
+
+EXPOSE  8080
+CMD [&amp;quot;node&amp;quot;, &amp;quot;/src/index.js&amp;quot;]
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;裡面比較需要注意的是， &lt;code&gt;ENV NODE_ENV dev&lt;/code&gt;，&lt;br&gt;
+這個是用來設置環境變數，因為我們設定了&lt;code&gt;dev&lt;/code&gt;，&lt;br&gt;
+所以在&lt;code&gt;index.js&lt;/code&gt;中，才會去configure dev。&lt;/p&gt;
+
+&lt;p&gt;&lt;/br&gt;&lt;/p&gt;
+
+&lt;h4 id=&quot;build-image-amp-run&quot;&gt;Build image &amp;amp; Run&lt;/h4&gt;
+
+&lt;hr&gt;
+
+&lt;p&gt;有了&lt;code&gt;DockerFile&lt;/code&gt;以後，就可以來build以及run了。&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;$ docker build -t ken-yang/centos-nodejs:v1 .
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;/br&gt;
+Build完以後，就可以用下面的指令去把container run起來。&lt;br&gt;
+注意&lt;code&gt;--link ken-mongo:db&lt;/code&gt;，&lt;br&gt;
+意思就是把現在正在running的&lt;code&gt;ken-mongo&lt;/code&gt;與現在這個新的container連起來。&lt;br&gt;
+以及給它一個alias &lt;code&gt;db&lt;/code&gt;。&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;docker run -d &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+             --name ken-node &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+             -p 80:8080 &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+             --link ken-mongo:db &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+             ken-yang/centos-nodejs:v1
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;/br&gt;&lt;/p&gt;
+
+&lt;h4 id=&quot;test&quot;&gt;Test&lt;/h4&gt;
+
+&lt;hr&gt;
+
+&lt;p&gt;最後用&lt;code&gt;curl&lt;/code&gt;來發request測試，&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;curl -X POST -d &lt;span class=&quot;s1&quot;&gt;&amp;#39;name=kenyang&amp;#39;&lt;/span&gt; 192.168.99.100/insert
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;然後可以再去看是否有新增成功，&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;docker -exec -it ken-mongo bash
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;mongo
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;db.students.find&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;/font&gt;&lt;/p&gt;
+</content>
+ </entry>
  
  <entry>
    <title>How to resize a LVM partition?</title>
@@ -650,14 +883,6 @@ mv完成以後，接著打開&lt;code&gt;index.html&lt;/code&gt;，&lt;br&gt;
    <updated>2014-03-10T16:38:00+08:00</updated>
    <id>http://blog.kenyang.net/2014/03/10/build-deb-package-from-source</id>
    <content type="html">&lt;div style=&quot;font-size: 15px; line-height: 22px;&quot;&gt;最近因為安全性的關係，&lt;br /&gt;我要在ubuntu 10.04上面將openssl從0.9.8k更新至1.0.1e，&lt;br /&gt;以及將openssh從5.3p1更新至6.2p2 &lt;br /&gt;但偏偏這兩個較新的版本都沒有給10.04用的package....&lt;br /&gt;所以這時候只好自己build了！&lt;br /&gt;有人可能會覺得奇怪，為什麼要包成package安裝？&lt;br /&gt;而不直接tar開source，然後make install就好？&lt;br /&gt;因為我需要重複的更新很多次，很多檯機器！&lt;br /&gt;如果在每一檯都去./configure, make, make install...那真的會很花時間！&lt;br /&gt;所以最快的方式就是先在一檯機器上build package，&lt;br /&gt;然後再把package拿到每一檯去安裝，&lt;br /&gt;會快上許多！&lt;br /&gt;&lt;br /&gt;喔！對了！這邊教你的是怎麼build出一包debian package！&lt;br /&gt;如果你想要把這包package撒出去給別人使用，建議你要加上sign key啦！&lt;br /&gt;甚至如果你想要撒到launchpad上的話，更要加上sign key！&lt;br /&gt;但這裡只會教怎麼build而已！&lt;br /&gt;&lt;br /&gt;恩，其實build還是很簡單！&lt;br /&gt;難的是環境的準備跟環境的設定啊.....&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;在這裡會介紹兩種build debian package的方法！&lt;br /&gt;&lt;ol&gt;&lt;li&gt;checkinstall&lt;/li&gt;&lt;li&gt;debuild&lt;/li&gt;&lt;/ol&gt;&lt;br /&gt;&lt;br /&gt;這兩種的方式差蠻多的，&lt;br /&gt;checkinstall它是用錄製的方式，&lt;br /&gt;透過make install，然後錄下整個安裝過程，&lt;br /&gt;再把打包成一個debian package！&lt;br /&gt;而debuild可以想像成就是動態的去build，把所需的檔案通通包進去package！&lt;br /&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;1. install tools&lt;/span&gt;&lt;br /&gt;&lt;br /&gt;先安裝所需的package，第一個是checkinstall，再來安裝ubuntu-dev-tools這個package，&lt;br /&gt;ubuntu-dev-tools裡面就包含了debuild等相關需要的tools．&lt;br /&gt;&lt;pre class=&quot;brush: java&quot;&gt;apt-get install checkinstall&lt;br /&gt;apt-get install ubuntu-dev-tools  bzr-builddeb debhelper&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;2. download and decompress tarball&lt;/span&gt;&lt;br /&gt;&lt;br /&gt;把source code下載下來和解壓縮開，&lt;br /&gt;&lt;pre class=&quot;brush: java&quot;&gt;cd ~&lt;br /&gt;wget http://www.openssl.org/source/openssl-1.0.1e.tar.gz  // download ssl&lt;br /&gt;tar xvzf openssl-1.0.1e.tar.gz&lt;br /&gt;&lt;br /&gt;wget http://openbsd.org.ar/pub/OpenBSD/OpenSSH/portable/openssh-6.2p2.tar.gz  // download ssh&lt;br /&gt;&lt;br /&gt;cd openssl-1.0.1e&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;3. Config and Compile source code&lt;/span&gt;&lt;br /&gt;&lt;br /&gt;這一步蠻重要的，&lt;br /&gt;要進行config和make(compile)，&lt;br /&gt;但！！！只有checkintall需要“先”config and compile！&lt;br /&gt;先config，openssl的config還好，但openssh的config要稍微注意一點，&lt;br /&gt;openssh的config要特別帶一個--sysconfdir，&lt;br /&gt;這個參數是說明你將來的sshd_config, ssh_config, ssh_host_xxx_key要放在哪裡，&lt;br /&gt;如果你沒有帶這個參數，預設應該是會存在/usr/etc/底下，老實說蠻奇怪的！&lt;br /&gt;所以還是指定一下吧！&lt;br /&gt;那因為前面剛剛說了，只有openssl需要先config，所以等等會再說openssh怎麼去設定config，&lt;br /&gt;先設定openssl的config，&lt;br /&gt;&lt;pre class=&quot;brush: java&quot;&gt;./config&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;進行make，make就是compile，把你的source code compile成binary，&lt;br /&gt;&lt;pre class=&quot;brush: java&quot;&gt;make&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;4. Build package (checkinstall)&lt;/span&gt;&lt;br /&gt;&lt;br /&gt;前面說了build package，這裡會介紹兩種方法（其實蠻多種方法的），&lt;br /&gt;我會先用checkinstall build ssl，然後用debuild build ssh，&lt;br /&gt;首先是ssl，&lt;br /&gt;&lt;pre class=&quot;brush: java&quot;&gt;checkinstall make install&lt;br /&gt;&lt;/pre&gt;checkinstall的原理就是會去錄製接在它後面那個command所作的事情，&lt;br /&gt;所以我們後面接make install（就是安裝），&lt;br /&gt;make install下下去以後就會真的去安裝這個package，&lt;br /&gt;然後checkintall就會在旁邊錄起來！&lt;br /&gt;checkinstall這個指令按下enter以後，會出現幾個preconfig的訊息，&lt;br /&gt;你要先替這個package建立一些information，&lt;br /&gt;第一個是會問你doc，這個就是直接y下去！（如下圖）&lt;br /&gt;&lt;div class=&quot;separator&quot; style=&quot;clear: both; text-align: center;&quot;&gt;&lt;a href=&quot;http://4.bp.blogspot.com/-YP1vCg_L8Ms/Ux14puERFgI/AAAAAAAAFJ0/j4W5Spb3314/s1600/Screen+Shot+2014-03-10+at+3.15.30+PM.png&quot; imageanchor=&quot;1&quot; style=&quot;margin-left: 1em; margin-right: 1em;&quot;&gt;&lt;img border=&quot;0&quot; src=&quot;http://4.bp.blogspot.com/-YP1vCg_L8Ms/Ux14puERFgI/AAAAAAAAFJ0/j4W5Spb3314/s1600/Screen+Shot+2014-03-10+at+3.15.30+PM.png&quot; height=&quot;148&quot; width=&quot;640&quot; /&gt;&lt;/a&gt;&lt;/div&gt;&lt;br /&gt;接著是要你描述一下這個package是做什麼的（如下圖）&lt;br /&gt;&lt;div class=&quot;separator&quot; style=&quot;clear: both; text-align: center;&quot;&gt;&lt;a href=&quot;http://2.bp.blogspot.com/-EMe13vp50Ps/Ux14ppgOv9I/AAAAAAAAFJg/p65kwREtHCc/s1600/Screen+Shot+2014-03-10+at+3.16.02+PM.png&quot; imageanchor=&quot;1&quot; style=&quot;margin-left: 1em; margin-right: 1em;&quot;&gt;&lt;img border=&quot;0&quot; src=&quot;http://2.bp.blogspot.com/-EMe13vp50Ps/Ux14ppgOv9I/AAAAAAAAFJg/p65kwREtHCc/s1600/Screen+Shot+2014-03-10+at+3.16.02+PM.png&quot; height=&quot;72&quot; width=&quot;400&quot; /&gt;&lt;/a&gt;&lt;/div&gt;&lt;br /&gt;最後就是這package的相關資訊，你可以改掉maintainer是誰，&lt;br /&gt;改成自己email！（如下圖）&lt;br /&gt;&lt;div class=&quot;separator&quot; style=&quot;clear: both; text-align: center;&quot;&gt;&lt;a href=&quot;http://4.bp.blogspot.com/-RzRww5SU91U/Ux14pvwqfLI/AAAAAAAAFJk/U1XMVtDKuog/s1600/Screen+Shot+2014-03-10+at+3.16.12+PM.png&quot; imageanchor=&quot;1&quot; style=&quot;margin-left: 1em; margin-right: 1em;&quot;&gt;&lt;img border=&quot;0&quot; src=&quot;http://4.bp.blogspot.com/-RzRww5SU91U/Ux14pvwqfLI/AAAAAAAAFJk/U1XMVtDKuog/s1600/Screen+Shot+2014-03-10+at+3.16.12+PM.png&quot; height=&quot;298&quot; width=&quot;400&quot; /&gt;&lt;/a&gt;&lt;/div&gt;&lt;br /&gt;那怎麼看有沒有成功？&lt;br /&gt;因為你是下make install，&lt;br /&gt;所以最後build的流程會去幫你安裝，&lt;br /&gt;如果安裝失敗, 那你的package也不會存在！&lt;br /&gt;&lt;br /&gt;那有人可能只是單純想要build package，而不想要安裝這個package在這檯機器上，&lt;br /&gt;那該怎麼辦？&lt;br /&gt;checkinstall有額外的參數可以做這件事情，多帶一個--install就行！&lt;br /&gt;&lt;pre class=&quot;brush: java&quot;&gt;checkinstall --install=no make install&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;5. Build package (debuild)&lt;/span&gt;&lt;br /&gt;&lt;br /&gt;上面介紹了checkinstall的方法，&lt;br /&gt;現在要介紹debuild的方式，&lt;br /&gt;那這裡我們以opennssh為範例，&lt;br /&gt;透過debuild比較算是debian的practice，&lt;br /&gt;首先要先有debian的資料夾，&lt;br /&gt;這資料夾下面有一堆林林種種的config file，甚至是init.d，&lt;br /&gt;那我們難道要一個一個的設定這些config？&lt;br /&gt;當然不用，可以透過dh_make去幫我們產生template，&lt;br /&gt;&lt;br /&gt;那可是透過dh_make也有點麻煩，就是要接一堆參數，&lt;br /&gt;那好險Canonical有提供另一個tool(bzr)去幫我們handle這件事情，&lt;br /&gt;透過bzr就可以幫我們產生debian/*底下的template，&lt;br /&gt;&lt;pre class=&quot;brush: java&quot;&gt;cd ~&lt;br /&gt;bzr dh-make openssh 6.2p2 openssh-6.2p2.tar.gz&lt;br /&gt;&lt;/pre&gt;bzr會問你這是一個single binary, indep binary, multiple binary, library, kernel module, kernel patch or cdbs?&lt;br /&gt;就選single binary（如下圖），&lt;br /&gt;&lt;div class=&quot;separator&quot; style=&quot;clear: both; text-align: center;&quot;&gt;&lt;a href=&quot;http://1.bp.blogspot.com/-rh1jjH_Zflk/Ux14qAh2qfI/AAAAAAAAFJs/4DvHSRPFXIw/s1600/Screen+Shot+2014-03-10+at+3.58.04+PM.png&quot; imageanchor=&quot;1&quot; style=&quot;margin-left: 1em; margin-right: 1em;&quot;&gt;&lt;img border=&quot;0&quot; src=&quot;http://1.bp.blogspot.com/-rh1jjH_Zflk/Ux14qAh2qfI/AAAAAAAAFJs/4DvHSRPFXIw/s1600/Screen+Shot+2014-03-10+at+3.58.04+PM.png&quot; /&gt;&lt;/a&gt;&lt;/div&gt;&lt;br /&gt;&lt;br /&gt;dh-make會先幫你建立一個opepssh的資料夾，裡面其實就是下載的那個tarball解開！&lt;br /&gt;進到openssh資料夾，你會發現裡面會有另外一個debian資料夾，&lt;br /&gt;這個資料夾裡面通通都是build debian package所需要的file，&lt;br /&gt;有幾個file蠻重要的，&lt;br /&gt;像是control, changelog, docs，&lt;br /&gt;這些就是dh_make幫我們建好的template，既然是template，&lt;br /&gt;所以就有些欄位要改掉！不過都是一些基本的information，所以這裡就不一一介紹！&lt;br /&gt;&lt;br /&gt;接著就要開始build，&lt;br /&gt;build其實是靠debian/rule來trigger，&lt;br /&gt;rule裡面要放一些dh_autoconfiguration, dh_install, dh_xxxx.....etc，&lt;br /&gt;一堆的command，&lt;br /&gt;不過template已經幫我們建立好了dh  $@，我們就不用一一處理！&lt;br /&gt;&lt;br /&gt;在開始build之前，&lt;br /&gt;有個比較dirty的事情要先做，&lt;br /&gt;前面不是有說要設定--sysconfdir嗎？&lt;br /&gt;debian的practice是透過override_dh_auto_configure去做，&lt;br /&gt;override_dh_auto_configure會幫我們把要帶的參數再帶給./configure，&lt;br /&gt;但偏偏我怎麼試都帶不過去，最後只好用dirty的方式，&lt;br /&gt;就是去找到source code，去硬改sysconfdir的位置，&lt;br /&gt;預設會是/etc，&lt;br /&gt;但我想要放在/etc/ssh底下，&lt;br /&gt;那個source code位置就在/usr/share/perl5/Debian/Debhelper/Buildsystem/autoconf.pm，&lt;br /&gt;找到下面這行，把/etc再改成我要的...&lt;br /&gt;&lt;pre class=&quot;brush: java&quot;&gt;push @opts, &quot;--sysconfdir=/etc&quot;;&lt;br /&gt;&lt;/pre&gt;那因為這方法真的蠻dirty的，如果有哪位大大知道該怎麼正確的透過override_dh_auto_configure去設定，&lt;br /&gt;歡迎告訴我～&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;最後就可以用debuild  build了&lt;br /&gt;後面帶的參數意思就是不要sign source pacakge and .changes files，&lt;br /&gt;&lt;pre class=&quot;brush: java&quot;&gt;debuild -uc -us -B&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;&lt;br /&gt;最後說明一下另一個command，&lt;br /&gt;這command可以來看package裡面有些什麼！&lt;br /&gt;&lt;pre class=&quot;brush: java&quot;&gt;lesspipe openssh-6.2p2.deb&lt;br /&gt;&lt;/pre&gt;可以拿這command來簡單的驗證一下build有沒有成功！&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;/div&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;</content>
- </entry>
- 
- <entry>
-   <title>How to build Android image?</title>
-   <link href="http://blog.kenyang.net/2014/02/24/how-to-build-android-image"/>
-   <updated>2014-02-24T13:09:00+08:00</updated>
-   <id>http://blog.kenyang.net/2014/02/24/how-to-build-android-image</id>
-   <content type="html">&lt;div style=&quot;font-size: 15px; line-height: 22px;&quot;&gt;因緣際會下，剛好有機會可以練習如何build android source code，&lt;br /&gt;（是android source code！不是app！）&lt;br /&gt;&lt;br /&gt;不過練習完以後，發現其實build android真的很簡單！&lt;br /&gt;難的在於prepare build environment.....&lt;br /&gt;所以這篇會從頭做起，從一個完全乾淨的ubuntu 12.04開始做起！&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;1. install ubuntu 12.04&lt;/span&gt;&lt;br /&gt;&lt;br /&gt;第一步就是去下載&lt;a href=&quot;http://www.ubuntu.com/download&quot; target=&quot;_blank&quot;&gt;ubuntu 12.04 64 bits&lt;/a&gt;，&lt;br /&gt;要裝server版或者是desktop版都可以，&lt;br /&gt;安裝desktop版的好處就是你build好image的時候，&lt;br /&gt;要測試很簡單！&lt;br /&gt;像我是用server版build，因為沒有x-window，我也不想再裝！&lt;br /&gt;就只好把build好的image抓出來，抓到我自己的mac上，&lt;br /&gt;然後透過emulator來測試！&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;2. install add-apt-repository&lt;/span&gt;&lt;br /&gt;&lt;br /&gt;剛安裝完的ubuntu預設是沒有add-apt-repository這個package的，&lt;br /&gt;所以得手動安裝，請安裝下列兩項packages&lt;br /&gt;&lt;pre class=&quot;brush: java&quot;&gt;sudo apt-get install software-properties-common&lt;br /&gt;sudo apt-get install python-software-properties&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;3. install sun-java6-sdk&lt;/span&gt;&lt;br /&gt;&lt;br /&gt;那因為不能用openjdk build android，&lt;br /&gt;所以得換成sun(oracle)的版本，&lt;br /&gt;&lt;pre class=&quot;brush: java&quot;&gt;sudo add-apt-repository ppa:webupd8team/java&lt;br /&gt;sudo apt-get update&lt;br /&gt;sudo apt-get install oracle-java6-installer&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;4. install required packages&lt;/span&gt;&lt;br /&gt;&lt;br /&gt;安裝一些必要的packages，&lt;br /&gt;&lt;pre class=&quot;brush: java&quot;&gt;sudo apt-get install git gnupg flex bison gperf build-essential \&lt;br /&gt;  zip curl libc6-dev libncurses5-dev:i386 x11proto-core-dev \&lt;br /&gt;  libx11-dev:i386 libreadline6-dev:i386 libgl1-mesa-glx:i386 \&lt;br /&gt;  libgl1-mesa-dev g++-multilib mingw32 tofrodos \&lt;br /&gt;  python-markdown libxml2-utils xsltproc zlib1g-dev:i386&lt;br /&gt;sudo ln -s /usr/lib/i386-linux-gnu/mesa/libGL.so.1 /usr/lib/i386-linux-gnu/libGL.so&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;5.&amp;nbsp;Configuring USB Access&lt;/span&gt;&lt;br /&gt;&lt;br /&gt;因為linux預設無法access到USB device，&lt;br /&gt;所以得加一些udev的rule，&lt;br /&gt;先在udev底下建立一個檔案,&lt;br /&gt;&lt;pre class=&quot;brush: java&quot;&gt;sudo vim /etc/udev/rules.d/51-android.rules&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;然後貼入下列的內容！注意！！請把owner改成你自己的ubuntu user name！&lt;br /&gt;&lt;pre class=&quot;brush: java&quot;&gt;# adb protocol on passion (Nexus One)&lt;br /&gt;SUBSYSTEM==&quot;usb&quot;, ATTR{idVendor}==&quot;18d1&quot;, ATTR{idProduct}==&quot;4e12&quot;, MODE=&quot;0600&quot;, OWNER=&quot;ken&quot;&lt;br /&gt;# fastboot protocol on passion (Nexus One)&lt;br /&gt;SUBSYSTEM==&quot;usb&quot;, ATTR{idVendor}==&quot;0bb4&quot;, ATTR{idProduct}==&quot;0fff&quot;, MODE=&quot;0600&quot;, OWNER=&quot;ken&quot;&lt;br /&gt;# adb protocol on crespo/crespo4g (Nexus S)&lt;br /&gt;SUBSYSTEM==&quot;usb&quot;, ATTR{idVendor}==&quot;18d1&quot;, ATTR{idProduct}==&quot;4e22&quot;, MODE=&quot;0600&quot;, OWNER=&quot;ken&quot;&lt;br /&gt;# fastboot protocol on crespo/crespo4g (Nexus S)&lt;br /&gt;SUBSYSTEM==&quot;usb&quot;, ATTR{idVendor}==&quot;18d1&quot;, ATTR{idProduct}==&quot;4e20&quot;, MODE=&quot;0600&quot;, OWNER=&quot;ken&quot;&lt;br /&gt;# adb protocol on stingray/wingray (Xoom)&lt;br /&gt;SUBSYSTEM==&quot;usb&quot;, ATTR{idVendor}==&quot;22b8&quot;, ATTR{idProduct}==&quot;70a9&quot;, MODE=&quot;0600&quot;, OWNER=&quot;ken&quot;&lt;br /&gt;# fastboot protocol on stingray/wingray (Xoom)&lt;br /&gt;SUBSYSTEM==&quot;usb&quot;, ATTR{idVendor}==&quot;18d1&quot;, ATTR{idProduct}==&quot;708c&quot;, MODE=&quot;0600&quot;, OWNER=&quot;ken&quot;&lt;br /&gt;# adb protocol on maguro/toro (Galaxy Nexus)&lt;br /&gt;SUBSYSTEM==&quot;usb&quot;, ATTR{idVendor}==&quot;04e8&quot;, ATTR{idProduct}==&quot;6860&quot;, MODE=&quot;0600&quot;, OWNER=&quot;ken&quot;&lt;br /&gt;# fastboot protocol on maguro/toro (Galaxy Nexus)&lt;br /&gt;SUBSYSTEM==&quot;usb&quot;, ATTR{idVendor}==&quot;18d1&quot;, ATTR{idProduct}==&quot;4e30&quot;, MODE=&quot;0600&quot;, OWNER=&quot;ken&quot;&lt;br /&gt;# adb protocol on panda (PandaBoard)&lt;br /&gt;SUBSYSTEM==&quot;usb&quot;, ATTR{idVendor}==&quot;0451&quot;, ATTR{idProduct}==&quot;d101&quot;, MODE=&quot;0600&quot;, OWNER=&quot;ken&quot;&lt;br /&gt;# adb protocol on panda (PandaBoard ES)&lt;br /&gt;SUBSYSTEM==&quot;usb&quot;, ATTR{idVendor}==&quot;18d1&quot;, ATTR{idProduct}==&quot;d002&quot;, MODE=&quot;0600&quot;, OWNER=&quot;ken&quot;&lt;br /&gt;# fastboot protocol on panda (PandaBoard)&lt;br /&gt;SUBSYSTEM==&quot;usb&quot;, ATTR{idVendor}==&quot;0451&quot;, ATTR{idProduct}==&quot;d022&quot;, MODE=&quot;0600&quot;, OWNER=&quot;ken&quot;&lt;br /&gt;# usbboot protocol on panda (PandaBoard)&lt;br /&gt;SUBSYSTEM==&quot;usb&quot;, ATTR{idVendor}==&quot;0451&quot;, ATTR{idProduct}==&quot;d00f&quot;, MODE=&quot;0600&quot;, OWNER=&quot;ken&quot;&lt;br /&gt;# usbboot protocol on panda (PandaBoard ES)&lt;br /&gt;SUBSYSTEM==&quot;usb&quot;, ATTR{idVendor}==&quot;0451&quot;, ATTR{idProduct}==&quot;d010&quot;, MODE=&quot;0600&quot;, OWNER=&quot;ken&quot;&lt;br /&gt;# adb protocol on grouper/tilapia (Nexus 7)&lt;br /&gt;SUBSYSTEM==&quot;usb&quot;, ATTR{idVendor}==&quot;18d1&quot;, ATTR{idProduct}==&quot;4e42&quot;, MODE=&quot;0600&quot;, OWNER=&quot;ken&quot;&lt;br /&gt;# fastboot protocol on grouper/tilapia (Nexus 7)&lt;br /&gt;SUBSYSTEM==&quot;usb&quot;, ATTR{idVendor}==&quot;18d1&quot;, ATTR{idProduct}==&quot;4e40&quot;, MODE=&quot;0600&quot;, OWNER=&quot;ken&quot;&lt;br /&gt;# adb protocol on manta (Nexus 10)&lt;br /&gt;SUBSYSTEM==&quot;usb&quot;, ATTR{idVendor}==&quot;18d1&quot;, ATTR{idProduct}==&quot;4ee2&quot;, MODE=&quot;0600&quot;, OWNER=&quot;ken&quot;&lt;br /&gt;# fastboot protocol on manta (Nexus 10)&lt;br /&gt;SUBSYSTEM==&quot;usb&quot;, ATTR{idVendor}==&quot;18d1&quot;, ATTR{idProduct}==&quot;4ee0&quot;, MODE=&quot;0600&quot;, OWNER=“ken&quot;&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;6. install&amp;nbsp;Repo&lt;/span&gt;&lt;br /&gt;&lt;br /&gt;接著要安裝Repo這個tool，&lt;br /&gt;Repo是一個讓你可以輕鬆使用git的tool，&lt;br /&gt;&lt;br /&gt;先在你的home目錄建立一個bin目錄，&lt;br /&gt;&lt;pre class=&quot;brush: java&quot;&gt;mkdir ~/bin&lt;br /&gt;PATH=~/bin:$PATH&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;開始下載repo tool&lt;br /&gt;&lt;pre class=&quot;brush: java&quot;&gt;curl http://commondatastorage.googleapis.com/git-repo-downloads/repo &gt; ~/bin/repo&lt;br /&gt;chmod a+x ~/bin/repo&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;7. Initialize a Repo client and Download Android source&lt;/span&gt;&lt;br /&gt;&lt;br /&gt;安裝好repo以後，就開始來設定他，&lt;br /&gt;首先先建立一個資料夾，這資料夾準備用來存android source code，&lt;br /&gt;&lt;pre class=&quot;brush: java&quot;&gt;mkdir WORKING_DIRECTORY&lt;br /&gt;cd WORKING_DIRECTORY&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;接著就init，其實就跟git差不多，&lt;br /&gt;最後-b的意思就是checkout哪個branch的意思，&lt;br /&gt;&lt;pre class=&quot;brush: java&quot;&gt;repo init -u https://android.googlesource.com/platform/manifest -b android-4.4.2_r2&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;&lt;br /&gt;設定完repo以後，就開始下載android source吧！&lt;br /&gt;&lt;pre class=&quot;brush: java&quot;&gt;repo sync&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;8.&amp;nbsp;change the default shell environment&lt;/span&gt;&lt;br /&gt;&lt;br /&gt;完成下載以後，在開始build之前，還有一些要設定，&lt;br /&gt;ubuntu的預設的shell是dash，&lt;br /&gt;那據說用dash build會fail，&lt;br /&gt;所以要把它換成bash，就使用下面的指令，&lt;br /&gt;使用以後，就選No！就完成了！&lt;br /&gt;&lt;pre class=&quot;brush: java&quot;&gt;sudo dpkg-reconfigure dash&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;9.&amp;nbsp;Initialize build environment&lt;/span&gt;&lt;br /&gt;&lt;br /&gt;接著就要initialize你的build environment,&lt;br /&gt;很簡單，靠下面一個script就可做到,&lt;br /&gt;&lt;pre class=&quot;brush: java&quot;&gt;. build/envsetup.sh&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;10.&amp;nbsp;Choose a Target&lt;/span&gt;&lt;br /&gt;&lt;br /&gt;接著就要選擇你要build的target，&lt;br /&gt;有很多種可以選，可以來這看（&lt;a href=&quot;http://source.android.com/source/building-devices.html&quot;&gt;點我&lt;/a&gt;）&lt;br /&gt;那因為我們等等是用emulator去做測試，&lt;br /&gt;所以我們是選擇aosp_arm-eng!&lt;br /&gt;&lt;pre class=&quot;brush: java&quot;&gt;lunch aosp_arm-eng&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;11.&amp;nbsp;build code&lt;/span&gt;&lt;br /&gt;&lt;br /&gt;接著就可以開始build，&lt;br /&gt;直接下make就可以build，後面會帶一個參數是-jN，&lt;br /&gt;N是一個數字，通常取決於你的hardware thread的數量！&lt;br /&gt;build還蠻花時間的，我的機器在沒有做cache的情況下，build了差不多2小時..&lt;br /&gt;所以耐心等待吧！&lt;br /&gt;&lt;pre class=&quot;brush: java&quot;&gt;make -j4&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;build成功以後，應該會看到下面的字樣，&lt;br /&gt;&lt;pre class=&quot;brush: java&quot;&gt;Install system fs image: out/target/product/generic/system.img &lt;br /&gt;out/target/product/generic/system.img+ maxsize=588791808 blocksize=2112 total=576716800 reserve=5947392&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;12. Test&lt;/span&gt;&lt;br /&gt;&lt;br /&gt;接著就要來測試剛剛build好的image是否可以使用，&lt;br /&gt;如果你是使用desktop的ubuntu，&lt;br /&gt;理論上你只要下下面的指令就可以測試，&lt;br /&gt;&lt;pre class=&quot;brush: java&quot;&gt;emulator&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;但剛好我是使用server版本去build...&lt;br /&gt;我又懶得裝ubuntu-desktop，&lt;br /&gt;我就只好抓回來我的mac環境來測試！&lt;br /&gt;注意！前提是你的mac環境已經有android-sdk，而且你也把system.img也抓回來了！&lt;br /&gt;&lt;br /&gt;首先請先建立一個avd，就是emulator，&lt;br /&gt;注意！emulator的api level要是19！&lt;br /&gt;為什麼呢？&lt;br /&gt;因為我們剛剛checkout branch的時候是4.4.2！&lt;br /&gt;你可以利用下面的指令來建立一個avd，&lt;br /&gt;&lt;pre class=&quot;brush: java&quot;&gt;cd ~/your_android_sdk_dir/tools&lt;br /&gt;./android create avd -n test-emulator -t 15 -c 100M --abi armeabi-v7a&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;接著就把你的system.img複製到剛剛建立的avd資料夾下！&lt;br /&gt;只要搬到該資料夾下，等emluator啟動時，就會試著去load那個system.img!&lt;br /&gt;&lt;pre class=&quot;brush: java&quot;&gt;cp system.img ~/.android/test-emulator&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;啟動emulator&lt;br /&gt;&lt;pre class=&quot;brush: java&quot;&gt;./emulator -avd test-emulator&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;理論上看到android字樣的開機畫面，應該就代表build成功了！&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;/div&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;</content>
  </entry>
  
  

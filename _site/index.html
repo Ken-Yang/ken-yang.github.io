@@ -288,6 +288,64 @@
     </div>
     <!-- This loops through the paginated posts -->
     
+      <h1><a style="color: #F22430" href="/2015/11/30/how-to-use-nodejs-mongodb-with-docker">How to use NodeJS & MongoDB with Docker?</a></h1>
+      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
+      <p class="author">
+      <div class="date">
+        <span>30 November 2015</span>
+      </div>
+      </p>
+      <div class="content" style="line-height: 28px;">
+        <p><font size=3></p>
+
+<p>這篇會講如何在Docker上部署一個NodeJS+MongoDB的application，<br>
+所以會分二個部分來講，</p>
+
+<ol>
+<li>在Docker上部署MongoDB</li>
+<li>在Docker上部署NodeJS+Express</li>
+</ol>
+
+<h3 id="1-在docker上部署mongodb">1. 在Docker上部署MongoDB</h3>
+
+<p>要在Docker上部署MongoDB，首先要先在local machine上建立一個folder，<br>
+這個folder是待會要mapping到container裡面的volume，<br>
+然後MongoDB上的data都會存在這個volume上。</p>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>mkdir ~/monogo-data
+</code></pre></div>
+<p></br></p>
+
+<h4 id="create-a-container">Create a container</h4>
+
+<hr>
+
+<p>接著就可以把MongoDB的image抓下來以及run。  </p>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>docker pull mongo:latest
+<span class="nv">$ </span>docker run -v ~/mongo-data:/data <span class="se">\ </span>
+             --name ken-mongo <span class="se">\</span>
+             -d <span class="se">\</span>
+             mongo <span class="se">\</span>
+             mongod --smallfiles
+</code></pre></div>
+      </div>
+      <footer>
+        <p><a class="myButton" href="/2015/11/30/how-to-use-nodejs-mongodb-with-docker">read more &raquo;</a></p>
+        <div>
+          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- ken on github -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3783438370424072"
+     data-ad-slot="1516206098"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+        </div>
+      </footer>
+      <hr>
+    
       <h1><a style="color: #F22430" href="/2015/11/27/how-to-extendreduce-lvm">How to resize a LVM partition?</a></h1>
       <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
       <p class="author">
@@ -434,54 +492,6 @@ sed -i <span class="s1">&#39;/to_be_free/d&#39;</span> /target/etc/fstab <span c
       </div>
       <footer>
         <p><a class="myButton" href="/2015/11/27/do-not-allocate-all-the-lvm-space-with-preseed">read more &raquo;</a></p>
-        <div>
-          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<!-- ken on github -->
-<ins class="adsbygoogle"
-     style="display:block"
-     data-ad-client="ca-pub-3783438370424072"
-     data-ad-slot="1516206098"
-     data-ad-format="auto"></ins>
-<script>
-(adsbygoogle = window.adsbygoogle || []).push({});
-</script>
-
-        </div>
-      </footer>
-      <hr>
-    
-      <h1><a style="color: #F22430" href="/2015/11/26/move-blogger-to-github">如何把Google Blogger搬到Github pages</a></h1>
-      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
-      <p class="author">
-      <div class="date">
-        <span>26 November 2015</span>
-      </div>
-      </p>
-      <div class="content" style="line-height: 28px;">
-        <p><font size=3>
-最近一直很想從Google Blogger中離家出走，因為在blogger寫筆記實在太麻煩了，<br>
-每一個筆記的format每次都調得好累，<br>
-且我很常在local寫一份markdown，<br>
-這樣等於我要寫二次..  </p>
-
-<p>所以就動起了念頭要搬到一個支援markdown格式的地方。<br>
-那我選的是github pages，然後搭配著jekyll這個tool去做publish。<br>
-所以這篇會圍繞在下面的主題，</p>
-
-<ol>
-<li>建立github repo</li>
-<li>用jekyll-bootstrap建立一個template</li>
-<li>用jekyll-import把blogger資料匯出與匯入</li>
-<li>安裝jekyll</li>
-<li>安裝jekyll-paginate</li>
-<li>整合Google Adsense</li>
-<li>整合comment system</li>
-<li>整合Google Analytics</li>
-</ol>
-
-      </div>
-      <footer>
-        <p><a class="myButton" href="/2015/11/26/move-blogger-to-github">read more &raquo;</a></p>
         <div>
           <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 <!-- ken on github -->

@@ -288,6 +288,34 @@
     </div>
     <!-- This loops through the paginated posts -->
     
+      <h1><a style="color: #F22430" href="/2010/11/19/cssfooter">css固定footer</a></h1>
+      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
+      <p class="author">
+      <div class="date">
+        <span>19 November 2010</span>
+      </div>
+      </p>
+      <div class="content" style="line-height: 28px;">
+        介紹一個<a href="http://ryanfait.com/sticky-footer/">stick footer</a>，<br /><br />什麼是stick footer，<br /><br />可以打開<a href="http://www.techbang.com.tw/pages/t_mobile">T客邦的網站</a>，<br /><br />然後看到最下面那條，那條就是footer，<br /><br />通常都會在那塊放至版權的宣告、合作方式...等等之類的。<br /><br />通常我們html的設計方式大概如下<br /><pre class="brush: html">&lt;html&gt;<br /> &lt;head&gt;&lt;/head&gt;<br /> &lt;body&gt;<br />  &lt;div id="header"&gt;通常放置在網頁上的最上方區塊，通常是顯示LOGO或者登入、註冊連結之類的&lt;/div&gt;<br />  &lt;div id="wrapper"&gt;就是放置內文了&lt;/div&gt;<br />  &lt;div id="footer"&gt;就是版權宣告的區塊&lt;/div&gt;<br /> &lt;/body&gt;<br />&lt;/html&gt;<br /></pre><br />如果你沒有對footer作特殊的設計，那麼出來的版面可能會有點醜。<br /><br />如下圖，你會發現在版權宣告區的最下方會有一大塊白白的東西，還蠻醜的:<br /><br /><div class="separator" style="clear: both; text-align: center;"><a href="http://2.bp.blogspot.com/_6SxqtkJQECI/TOVhLqrmKJI/AAAAAAAAAMs/HnilRohKBsw/s1600/test.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="384" src="http://2.bp.blogspot.com/_6SxqtkJQECI/TOVhLqrmKJI/AAAAAAAAAMs/HnilRohKBsw/s640/test.png" width="640" /></a></div><br /><br /><br />如果你想要把下面那塊固定在最下方，如下圖，<br /><br /><div class="separator" style="clear: both; text-align: center;"><a href="http://2.bp.blogspot.com/_6SxqtkJQECI/TOViL16LVWI/AAAAAAAAAMw/Qx8YbXE2nHs/s1600/tes1t.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="384" src="http://2.bp.blogspot.com/_6SxqtkJQECI/TOViL16LVWI/AAAAAAAAAMw/Qx8YbXE2nHs/s640/tes1t.png" width="640" /></a></div><br /><br /><br /><br />就可以透過sticky footer來實作，<br /><br />至於css的code就去看<a href="http://ryanfait.com/sticky-footer/">http://ryanfait.com/sticky-footer/</a>這個站看<br /><br />因為太簡單了，就不PO教學了啦。<br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
+      </div>
+      <footer>
+        <p><a class="myButton" href="/2010/11/19/cssfooter">read more &raquo;</a></p>
+        <div>
+          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- ken on github -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3783438370424072"
+     data-ad-slot="1516206098"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+        </div>
+      </footer>
+      <hr>
+    
       <h1><a style="color: #F22430" href="/2010/11/08/apachebench-stress-testing">ApacheBench 進行stress testing</a></h1>
       <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
       <p class="author">
@@ -328,34 +356,6 @@
       </div>
       <footer>
         <p><a class="myButton" href="/2010/11/06/apache">read more &raquo;</a></p>
-        <div>
-          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<!-- ken on github -->
-<ins class="adsbygoogle"
-     style="display:block"
-     data-ad-client="ca-pub-3783438370424072"
-     data-ad-slot="1516206098"
-     data-ad-format="auto"></ins>
-<script>
-(adsbygoogle = window.adsbygoogle || []).push({});
-</script>
-
-        </div>
-      </footer>
-      <hr>
-    
-      <h1><a style="color: #F22430" href="/2010/11/06/jsp-include">JSP 兩種include 的差別</a></h1>
-      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
-      <p class="author">
-      <div class="date">
-        <span>06 November 2010</span>
-      </div>
-      </p>
-      <div class="content" style="line-height: 28px;">
-        在JSP中，<br /><br />include有分兩種<br /><br /><pre class="brush: xml">&lt;%@include file="/footer.jsp" %&gt;&lt;!-- 第一種 --&gt;<br /><br /><br />&lt;jsp:include page="/footer.jsp"&gt;&lt;/jsp:include&gt;&lt;!-- 第二種 --&gt;<br /><br /><br /><br /></pre><br /><br />第一種稱為<span class="Apple-style-span" style="color: red;">指令元素</span><br /><br />第二種稱為<span class="Apple-style-span" style="color: red;">動作元素</span><br /><br />差別在於<br /><br />第一種的include會在編譯時期（轉換成servlet）就將file include進來，<br /><br />而第二種在編譯時期並不會被編譯，是在client request時，才會動態的去載入在去編譯。<br /><br /><br />且第一種最後只會有一個.class檔案，<br /><br />因為他會在被轉換成servlet之前就把include的file融合至原本的內容中<br /><br />最後才轉換成servlet，故只有一個.class檔案<br /><br />而第二種就會有兩種。<br /><br /><br />總結<br /><br />第一種是在編譯時期就去include<br /><br />第二種是在run time時期去include（這個效能似乎較差一點點，但較靈活）<br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
-      </div>
-      <footer>
-        <p><a class="myButton" href="/2010/11/06/jsp-include">read more &raquo;</a></p>
         <div>
           <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 <!-- ken on github -->

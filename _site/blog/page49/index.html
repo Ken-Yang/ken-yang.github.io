@@ -288,6 +288,34 @@
     </div>
     <!-- This loops through the paginated posts -->
     
+      <h1><a style="color: #F22430" href="/2010/07/21/android-appsd-card">讓android app安裝在SD card</a></h1>
+      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
+      <p class="author">
+      <div class="date">
+        <span>21 July 2010</span>
+      </div>
+      </p>
+      <div class="content" style="line-height: 28px;">
+        怎麼讓android app安裝在SDcard裡面去?<br /><br />這個問題我研究了一陣子==<br /><br />一直以為是上傳至MARKET有個選項讓我們勾(Application can be copied from the device)<br /><br />以為勾了就可以使那隻APP能夠安裝到記憶卡裡去==<br /><br />原來不是!<br /><br />是要在AndroidManifest.xml裡面插入一個attributes<br /><br />如下<br /><br /><pre class="brush: xml">&lt;manifest <br />      xmlns:android="http://schemas.android.com/apk/res/android"<br />      android:installLocation="preferExternal"&gt;<br /><br /></pre><br />使用<span class="Apple-style-span" style="font-family: monospace; white-space: pre;">android:installLocation此屬性即可，有三個選項</span><br /><span class="Apple-style-span" style="font-family: monospace; white-space: pre;"><br /></span><br /><span class="Apple-style-span" style="font-family: monospace; white-space: pre;">1.internalOnly(只能安裝在手機裡)</span><br /><span class="Apple-style-span" style="font-family: monospace; white-space: pre;"><br /></span><br /><span class="Apple-style-span" style="font-family: monospace; white-space: pre;">2.</span><span class="Apple-style-span" style="font-family: monospace; white-space: pre;">preferExternal(自動安裝至記憶卡裡)</span><br /><span class="Apple-style-span" style="font-family: monospace; white-space: pre;"><br /></span><br /><span class="Apple-style-span" style="font-family: monospace; white-space: pre;">3.auto(就是讓使用者自己選啦)</span><br /><br /><br /><br /><br />
+      </div>
+      <footer>
+        <p><a class="myButton" href="/2010/07/21/android-appsd-card">read more &raquo;</a></p>
+        <div>
+          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- ken on github -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3783438370424072"
+     data-ad-slot="1516206098"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+        </div>
+      </footer>
+      <hr>
+    
       <h1><a style="color: #F22430" href="/2010/07/11/chrome-app">如何製作一個chrome extension</a></h1>
       <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
       <p class="author">
@@ -328,34 +356,6 @@
       </div>
       <footer>
         <p><a class="myButton" href="/2010/07/01/nexus-android-22-ota">read more &raquo;</a></p>
-        <div>
-          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<!-- ken on github -->
-<ins class="adsbygoogle"
-     style="display:block"
-     data-ad-client="ca-pub-3783438370424072"
-     data-ad-slot="1516206098"
-     data-ad-format="auto"></ins>
-<script>
-(adsbygoogle = window.adsbygoogle || []).push({});
-</script>
-
-        </div>
-      </footer>
-      <hr>
-    
-      <h1><a style="color: #F22430" href="/2010/06/20/android-avd">android avd 無法開啟(中文路徑的問題)</a></h1>
-      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
-      <p class="author">
-      <div class="date">
-        <span>20 June 2010</span>
-      </div>
-      </p>
-      <div class="content" style="line-height: 28px;">
-        幫人解決了好幾次這樣的問題!<br /><br />好幾次avd都無法開啟!<br /><br />都卡在ANDROID這樣的字樣畫面!!<br /><br />是因為avd是不能建立在中文目錄底下的!!!<br /><br />有些人的C曹會以中文姓名命名!<br /><br />但可惜的是，android是不允許這樣的事情發生的!<br /><br />因此我們必須手動移動我們的avd至英文目錄底下去!<br /><br /><br />android move avd -n <span class="Apple-style-span" style="color: red;">avd名稱</span> -p <span class="Apple-style-span" style="color: red;">要移至的路徑，記得要是英文路徑</span>
-      </div>
-      <footer>
-        <p><a class="myButton" href="/2010/06/20/android-avd">read more &raquo;</a></p>
         <div>
           <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 <!-- ken on github -->
