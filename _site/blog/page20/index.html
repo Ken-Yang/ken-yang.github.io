@@ -290,6 +290,34 @@
     </div>
     <!-- This loops through the paginated posts -->
     
+      <h1><a style="color: #F22430" href="/2012/07/21/amazon-ec2-send-gmail">在Amazon EC2-  send gmail 問題</a></h1>
+      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
+      <p class="author">
+      <div class="date">
+        <span>21 July 2012</span>
+      </div>
+      </p>
+      <div class="content" style="line-height: 28px;">
+        用Java寄MAIL不是這篇的重點，<br />反正主要是用JavaMail API就是了!<br />code 如下，就不多做說明：<br /><pre class="brush: java">            final String MAIL_HOST = "smtp.gmail.com";   // gmail的smtp<br />            final String GMAIL_ACCOUNT = "XXXXX@gmail.com";  //gmail account<br />            final String GMAIL_PASSWORD = "XXXXX";    // gmail pwd<br />            final String strRecipients = "xxx@gmail.com"; // 收件人<br />            final String strSender = "ejustmake@gmail.com";  // 寄件人名稱<br />            Security.addProvider(new com.sun.net.ssl.internal.ssl.Provider());<br /><br />            Properties props = new Properties();<br />            props.setProperty("mail.transport.protocol", "smtp");<br />            props.setProperty("mail.host", MAIL_HOST);<br />            props.put("mail.smtp.auth", "true");<br />            props.put("mail.smtp.port", "465");<br />            props.put("mail.smtp.socketFactory.port", "465");//smtp PORT 528好像也可以<br />            props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");<br />            props.put("mail.smtp.socketFactory.fallback", "false");<br />            props.setProperty("mail.smtp.quitwait", "false");<br />            <br />            <br />   // Authenticate的動作 <br />            Session session = Session.getDefaultInstance(props,<br />                    new javax.mail.Authenticator() {<br />                        protected PasswordAuthentication getPasswordAuthentication() {<br />                            String account = GMAIL_ACCOUNT;<br />                            String pass = GMAIL_PASSWORD;<br />                            return new PasswordAuthentication(account, pass);<br />                        }<br />            });<br />            <br /><br />            MimeMessage message = new MimeMessage(session);<br />            message.setstrSender(new InternetAddress(strSender));<br />            message.setSubject("Mail標題", "UTF-8");<br />            message.setContent(strBody, "text/html;charset=utf-8");//這裡用text/html就可以傳網頁的內容！<br /><br />            message.setstrRecipients(Message.RecipientType.TO, InternetAddress.parse(strRecipients));<br />            Transport.send(message);<br /><br /></pre><br /><br />然後這段code在任何一台host上，甚至local上都可以run，<br />但是打包成war搬上去ec2以後就出現AuthenticationFail問題.....<br />恩，主要問題是被Google擋住了！<br />因為我用的帳號平常是在台灣進行登入！<br />可是搬上去ec2以後...因為主機是在美國，<br />所以變成IP變成從美國登入...<br />會被擋住，但是GOOGLE會發一封MAIL給你，<br />內容如下圖，反正就是詢問這是不是你，如果是你，<br />就點下圖中的紅色框框，點了以後按照步驟做，<br />然後再用你的應用程式登入一次，就成功了！<br /><br /><br /><div class="separator" style="clear: both; text-align: center;"><a href="http://1.bp.blogspot.com/-EAIGVKFlLZ4/UApcPcfDdNI/AAAAAAAAAxY/QBBUCnqIQpk/s1600/Untitled.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="348" src="http://1.bp.blogspot.com/-EAIGVKFlLZ4/UApcPcfDdNI/AAAAAAAAAxY/QBBUCnqIQpk/s640/Untitled.png" width="640" /></a></div><br /><br /><br /><br /><br /><br />
+      </div>
+      <footer>
+        <p><a class="myButton" href="/2012/07/21/amazon-ec2-send-gmail">read more &raquo;</a></p>
+        <div>
+          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- ken on github -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3783438370424072"
+     data-ad-slot="1516206098"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+        </div>
+      </footer>
+      <hr>
+    
       <h1><a style="color: #F22430" href="/2012/04/09/eclipse-aws-plugin">Eclipse 安裝 AWS Plugin</a></h1>
       <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
       <p class="author">
@@ -330,34 +358,6 @@
       </div>
       <footer>
         <p><a class="myButton" href="/2012/04/08/amazon-simpledb-java">read more &raquo;</a></p>
-        <div>
-          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<!-- ken on github -->
-<ins class="adsbygoogle"
-     style="display:block"
-     data-ad-client="ca-pub-3783438370424072"
-     data-ad-slot="1516206098"
-     data-ad-format="auto"></ins>
-<script>
-(adsbygoogle = window.adsbygoogle || []).push({});
-</script>
-
-        </div>
-      </footer>
-      <hr>
-    
-      <h1><a style="color: #F22430" href="/2012/04/07/amazon-elasticbeanstalk-health-check">Amazon ElasticBeanstalk Health Check URL</a></h1>
-      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
-      <p class="author">
-      <div class="date">
-        <span>07 April 2012</span>
-      </div>
-      </p>
-      <div class="content" style="line-height: 28px;">
-        今天Deploy上去ElasticBeanstalk 以後...<br />一直發生error!<br />status一直是紅燈!<br />連都不能連....<br />查了一下!<br />原來Amazon會去check我的首頁!<br />如果首頁有出現任何error，那麼我的service就會被中斷連不上去!<br />剛好我今天首頁有error code.. 所以就被中斷連不上去!<br /><br />更正以後就沒事了!<br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
-      </div>
-      <footer>
-        <p><a class="myButton" href="/2012/04/07/amazon-elasticbeanstalk-health-check">read more &raquo;</a></p>
         <div>
           <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 <!-- ken on github -->

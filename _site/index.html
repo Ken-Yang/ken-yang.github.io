@@ -290,6 +290,49 @@
     </div>
     <!-- This loops through the paginated posts -->
     
+      <h1><a style="color: #F22430" href="/2015/12/04/jcconf-taiwan-2015-day-1">JCConf Taiwan 2015   Day 1</a></h1>
+      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
+      <p class="author">
+      <div class="date">
+        <span>04 December 2015</span>
+      </div>
+      </p>
+      <div class="content" style="line-height: 28px;">
+        <p><font size=3></p>
+
+<p><img src="/assets/2015-12-04-ticket.jpg" alt="Ticket"></p>
+
+<p>這篇只是紀錄Java Community Conference 2015的第一天筆記，<br>
+今天聽了以下幾個session，</p>
+
+<ol>
+<li>JRuby</li>
+<li>Asynchronous and Non-blocking in Scala</li>
+<li>使用zookeeper打造軟體式負載平衡</li>
+<li>workshop動手玩Java專案建置工具：以Gradle與Docker為例</li>
+<li>Akka Cluster in Java</li>
+<li>使用Java的Future/Promise API來撰寫非同步程式</li>
+</ol>
+
+      </div>
+      <footer>
+        <p><a class="myButton" href="/2015/12/04/jcconf-taiwan-2015-day-1">read more &raquo;</a></p>
+        <div>
+          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- ken on github -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3783438370424072"
+     data-ad-slot="1516206098"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+        </div>
+      </footer>
+      <hr>
+    
       <h1><a style="color: #F22430" href="/2015/12/01/create-a-iscsi-target-on-ubuntu">Create a iSCSI target on Ubuntu</a></h1>
       <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
       <p class="author">
@@ -398,80 +441,6 @@
       </div>
       <footer>
         <p><a class="myButton" href="/2015/11/30/how-to-use-nodejs-mongodb-with-docker">read more &raquo;</a></p>
-        <div>
-          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<!-- ken on github -->
-<ins class="adsbygoogle"
-     style="display:block"
-     data-ad-client="ca-pub-3783438370424072"
-     data-ad-slot="1516206098"
-     data-ad-format="auto"></ins>
-<script>
-(adsbygoogle = window.adsbygoogle || []).push({});
-</script>
-
-        </div>
-      </footer>
-      <hr>
-    
-      <h1><a style="color: #F22430" href="/2015/11/27/how-to-extendreduce-lvm">How to resize a LVM partition?</a></h1>
-      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
-      <p class="author">
-      <div class="date">
-        <span>27 November 2015</span>
-      </div>
-      </p>
-      <div class="content" style="line-height: 28px;">
-        <p><font size=3></p>
-
-<p>這篇算是延續<a href="http://blog.kenyang.net/2015/11/27/do-not-allocate-all-the-lvm-space-with-preseed/">上一篇</a>的主題，假設VG裡面還有free space尚未用到，<br>
-那麼過一段時間以後，該怎麼把它拿出來用?<br>
-所以這篇主要會講到下面2個主題：</p>
-
-<ol>
-<li>Extend</li>
-<li>Shrink</li>
-</ol>
-
-<h3 id="1-extend">1. Extend</h3>
-
-<hr>
-
-<p>Extend會講二種方法，分別為，  </p>
-
-<ul>
-<li>1-1. Extend from <code>VG</code></li>
-<li>1-2. Extend from <code>new disk</code></li>
-</ul>
-
-<p></br></p>
-
-<h4 id="1-1-extend-from-pv">1-1. Extend from PV</h4>
-
-<hr>
-
-<p>第一種是延續<a href="http://blog.kenyang.net/2015/11/27/do-not-allocate-all-the-lvm-space-with-preseed/">上一篇</a>，<br>
-從既有的VG中，把Free PE加入到LV中，<br>
-以<a href="http://blog.kenyang.net/2015/11/27/do-not-allocate-all-the-lvm-space-with-preseed/">上一篇</a>來看，你的VG應該還會剩下60GB。<br>
-可以用下面的指令<code>vgs</code>去看VG中剩下多少free PE，<br>
-最後一欄的<code>VFree</code>就是指剩下的free PE，<br>
-以我的機器為範例，裡面還有829.99G，<br>
-以及我有5個LV。</p>
-<div class="highlight"><pre><code class="language-text" data-lang="text">$ vgs
-  VG        #PV #LV #SN Attr   VSize    VFree
-  ubuntu-vg   1   5   0 wz--n- 1019.76g 829.99g
-
-$ lvs
-  LV     VG        Attr   LSize   Origin Snap%  Move Log Copy%  Convert
-  db     ubuntu-vg -wi-ao  83.92g
-  log    ubuntu-vg -wi-ao  19.07g
-  root   ubuntu-vg -wi-ao  66.75g
-  swap_1 ubuntu-vg -wi-ao 976.00m
-  tmp    ubuntu-vg -wi-ao  19.07g
-</code></pre></div>
-      </div>
-      <footer>
-        <p><a class="myButton" href="/2015/11/27/how-to-extendreduce-lvm">read more &raquo;</a></p>
         <div>
           <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 <!-- ken on github -->

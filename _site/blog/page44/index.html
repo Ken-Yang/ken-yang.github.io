@@ -290,6 +290,34 @@
     </div>
     <!-- This loops through the paginated posts -->
     
+      <h1><a style="color: #F22430" href="/2010/10/10/myisam-innodb">MyISAM 與 InnoDB 的筆記</a></h1>
+      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
+      <p class="author">
+      <div class="date">
+        <span>10 October 2010</span>
+      </div>
+      </p>
+      <div class="content" style="line-height: 28px;">
+        &nbsp;MyISAM 與 InnoDB 誰較快?誰安全性較高?<br /><br />最近都在玩GAE，好久沒有碰MySQL<br /><br />再把新nb裝起來，正在重灌，<br /><br />就看到了MyISAM 與 InnoDB 選項<br /><br />一時想不起來兩者差別，忘記哪個快，哪個有支援transaction?<br /><br />查了一下資料才想起來，年紀大了，還是做筆記把他記下來吧!<br /><br /><br /><br />InnoDB&nbsp;是不支援全文索引，如果資料量大，建議用InnoDB ，<br /><br />大量的insert語法在MyISAM會比較快一點，但update在InnoDB會比較快，<br /><br />count不適用於InnoDB（等等會說明），MyISAM是不支援foreign key的喔<br /><br />因為設計上MyISAM比InnoDB簡單，因此效能上也較好一點，小型的應用使用MyISAM可能會較好一點<br /><br />InnoDB不會紀錄table的行數，因此當使用者下select count(*) from xxxx，InnoDB會去掃描整張table，但MyISAM就只是讀取記錄好的行數即可，<br /><br />但是!!當你的count後面有下where條件時，InnoDB和MyISAM都會去掃描整張table<br /><br /><br />以上是我的筆記，如有誤，請指教<br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
+      </div>
+      <footer>
+        <p><a class="myButton" href="/2010/10/10/myisam-innodb">read more &raquo;</a></p>
+        <div>
+          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- ken on github -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3783438370424072"
+     data-ad-slot="1516206098"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+        </div>
+      </footer>
+      <hr>
+    
       <h1><a style="color: #F22430" href="/2010/10/09/android-camera">android 取得camera的照片</a></h1>
       <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
       <p class="author">
@@ -330,34 +358,6 @@
       </div>
       <footer>
         <p><a class="myButton" href="/2010/10/09/byebye">read more &raquo;</a></p>
-        <div>
-          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<!-- ken on github -->
-<ins class="adsbygoogle"
-     style="display:block"
-     data-ad-client="ca-pub-3783438370424072"
-     data-ad-slot="1516206098"
-     data-ad-format="auto"></ins>
-<script>
-(adsbygoogle = window.adsbygoogle || []).push({});
-</script>
-
-        </div>
-      </footer>
-      <hr>
-    
-      <h1><a style="color: #F22430" href="/2010/10/01/android-market">android market 台灣可以上傳付費軟體了</a></h1>
-      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
-      <p class="author">
-      <div class="date">
-        <span>01 October 2010</span>
-      </div>
-      </p>
-      <div class="content" style="line-height: 28px;">
-        今天早上到了Google DevFest Day，<br /><br />就收到了mail，<br /><br /><br /><div style="margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px;"><span class="Apple-style-span" style="border-collapse: collapse; font-family: arial, sans-serif; font-size: 13px;">developers from 20 additional countries (Argentina, Australia, Belgium, Brazil, Canada, Denmark, Finland, Hong Kong, Ireland, Israel, Mexico, New Zealand, Norway, Portugal, Russia, Singapore, South Korea, Sweden, Switzerland and&nbsp;<span class="Apple-style-span" style="color: red;">Taiwan</span>) can now<span class="Apple-style-span" style="color: red;">&nbsp;sell paid apps</span>&nbsp;on Android Market</span></div><div style="margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px;"><span class="Apple-style-span" style="border-collapse: collapse; font-family: arial, sans-serif; font-size: 13px;"><br /></span></div><div style="margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px;"><span class="Apple-style-span" style="border-collapse: collapse; font-family: arial, sans-serif; font-size: 13px;"><br /></span></div><div><span class="Apple-style-span" style="border-collapse: collapse; font-family: arial, sans-serif; font-size: 13px;"><br /></span></div><br /><br /><br /><br />預計是在兩個禮拜內!!<br /><br />在現場的Google工程師也開始講解上傳的一些規則及技巧了!!<br /><br /><br /><span class="Apple-style-span" style="font-family: arial, sans-serif; font-size: small;"><span class="Apple-style-span" style="border-collapse: collapse; font-size: 13px;"><span class="Apple-style-span" style="font-family: Arial;"><span class="Apple-style-span" style="border-collapse: separate; font-size: medium;"><br /></span></span></span></span><br /><span class="Apple-style-span" style="border-collapse: collapse; font-family: arial, sans-serif; font-size: 13px;"><br /></span><br /><span class="Apple-style-span" style="font-family: arial, sans-serif; font-size: small;"><span class="Apple-style-span" style="border-collapse: collapse; font-size: 13px;"><br /></span></span>
-      </div>
-      <footer>
-        <p><a class="myButton" href="/2010/10/01/android-market">read more &raquo;</a></p>
         <div>
           <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 <!-- ken on github -->

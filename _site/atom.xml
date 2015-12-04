@@ -4,13 +4,368 @@
  <title>Ken Yang筆記</title>
  <link href="http://blog.kenyang.net/atom.xml" rel="self"/>
  <link href="http://blog.kenyang.net"/>
- <updated>2015-12-01T19:01:37+08:00</updated>
+ <updated>2015-12-04T22:52:00+08:00</updated>
  <id>http://blog.kenyang.net</id>
  <author>
    <name>Ken Yang</name>
    <email>ken@kenyang.net</email>
  </author>
 
+ 
+ <entry>
+   <title>JCConf Taiwan 2015   Day 1</title>
+   <link href="http://blog.kenyang.net/2015/12/04/jcconf-taiwan-2015-day-1"/>
+   <updated>2015-12-04T00:00:00+08:00</updated>
+   <id>http://blog.kenyang.net/2015/12/04/jcconf-taiwan-2015---day-1</id>
+   <content type="html">&lt;p&gt;&lt;font size=3&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/2015-12-04-ticket.jpg&quot; alt=&quot;Ticket&quot;&gt;&lt;/p&gt;
+
+&lt;p&gt;這篇只是紀錄Java Community Conference 2015的第一天筆記，&lt;br&gt;
+今天聽了以下幾個session，&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;JRuby&lt;/li&gt;
+&lt;li&gt;Asynchronous and Non-blocking in Scala&lt;/li&gt;
+&lt;li&gt;使用zookeeper打造軟體式負載平衡&lt;/li&gt;
+&lt;li&gt;workshop動手玩Java專案建置工具：以Gradle與Docker為例&lt;/li&gt;
+&lt;li&gt;Akka Cluster in Java&lt;/li&gt;
+&lt;li&gt;使用Java的Future/Promise API來撰寫非同步程式&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;!--more--&gt;
+
+&lt;h3 id=&quot;1-jruby&quot;&gt;1. JRuby&lt;/h3&gt;
+
+&lt;hr&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Charles Oliver Nutter&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;mailto:headius@headius.com&quot;&gt;headius@headius.com&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;blog.headius.com&lt;/li&gt;
+&lt;li&gt;works at RedHat&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;ruby&quot;&gt;ruby&lt;/h4&gt;
+
+&lt;ul&gt;
+&lt;li&gt;everything is Object. no primitive integer.&lt;/li&gt;
+&lt;li&gt;invokeinterface
+
+&lt;ul&gt;
+&lt;li&gt;Runnable.run();&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;invokespecial
+
+&lt;ul&gt;
+&lt;li&gt;super.equals();&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;invokevirtual&lt;br&gt;&lt;/li&gt;
+&lt;li&gt;invokestatic
+
+&lt;ul&gt;
+&lt;li&gt;System.currentMill();&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;invokedynamic
+
+&lt;ul&gt;
+&lt;li&gt;*Released in Java7&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;Ruby == Unix, but java == java everywhere
+
+&lt;ul&gt;
+&lt;li&gt;Ruby has getpwd(), getpid()...etc.&lt;/li&gt;
+&lt;li&gt;but java has no these capability.&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;JNI 
+
+&lt;ul&gt;
+&lt;li&gt;Speaker doesn&amp;#39;t like it.&lt;/li&gt;
+&lt;li&gt;you need to implement a feature for each platform (win, mac, linux)
+
+&lt;ul&gt;
+&lt;li&gt;ex: if you want to get pid() in java.&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;JNR
+
+&lt;ul&gt;
+&lt;li&gt;Speaker use JNR.&lt;/li&gt;
+&lt;li&gt;there are many impelmentations in JNR.&lt;/li&gt;
+&lt;li&gt;POSIX posix = POSIXFactory.getPostfix(xxxxx);&lt;br&gt;&lt;/li&gt;
+&lt;li&gt;posix.getpid()&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;project-panama&quot;&gt;Project panama&lt;/h4&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Panama in JVM for java 9, api in java 10&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;why-use-jvm&quot;&gt;why use JVM?&lt;/h4&gt;
+
+&lt;p&gt;someone ask why not use standard ruby?
+author answer: hard to implement JIT.&lt;/p&gt;
+
+&lt;p&gt;&lt;/br&gt;&lt;/p&gt;
+
+&lt;hr&gt;
+
+&lt;h3 id=&quot;2-asynchronous-and-non-blocking-in-scala&quot;&gt;2. Asynchronous and Non-blocking in Scala&lt;/h3&gt;
+
+&lt;hr&gt;
+
+&lt;ul&gt;
+&lt;li&gt;I/O is very slow, so we need aysnc and non-blocking.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;nio&quot;&gt;NIO&lt;/h4&gt;
+
+&lt;ul&gt;
+&lt;li&gt;not use thread to do operation. have a subsystem will handle it.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;pure-function&quot;&gt;pure function&lt;/h4&gt;
+
+&lt;ul&gt;
+&lt;li&gt;no side effects&lt;/li&gt;
+&lt;li&gt;no write db or file&lt;/li&gt;
+&lt;li&gt;the output will be the same at each time&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;val-vs-var&quot;&gt;val vs var&lt;/h4&gt;
+
+&lt;ul&gt;
+&lt;li&gt;val is immutable&lt;/li&gt;
+&lt;li&gt;var is mutable&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;case-object&quot;&gt;case object&lt;/h4&gt;
+
+&lt;ul&gt;
+&lt;li&gt;singleton in Java. there is no static in Scala.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;/br&gt;&lt;/p&gt;
+
+&lt;hr&gt;
+
+&lt;h3 id=&quot;3-使用zookeeper打造軟體式負載平衡&quot;&gt;3. 使用zookeeper打造軟體式負載平衡&lt;/h3&gt;
+
+&lt;hr&gt;
+
+&lt;p&gt;這個session主要在介紹zookeeper，由於時間很短，只有15分鐘。&lt;br&gt;
+所以都是講很high level，並沒有講到detail的實作。&lt;/p&gt;
+
+&lt;p&gt;&lt;/br&gt;&lt;/p&gt;
+
+&lt;hr&gt;
+
+&lt;h3 id=&quot;4-workshop動手玩java專案建置工具：以gradle與docker為例&quot;&gt;4. workshop動手玩Java專案建置工具：以Gradle與Docker為例&lt;/h3&gt;
+
+&lt;hr&gt;
+
+&lt;p&gt;這個session在介紹他們team是怎麼用&lt;code&gt;docker&lt;/code&gt;建立test env，&lt;br&gt;
+然後再透過&lt;code&gt;Geb&lt;/code&gt;去進行automation，&lt;br&gt;
+主要提供了以下二個docker images讓我們練習測試，&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;client：vvoyer/docker-selenium-firefox-chrome&lt;/li&gt;
+&lt;li&gt;main：groovy&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;由於我對於&lt;code&gt;docker&lt;/code&gt;算是瞭解，因此這個session沒有全部聽完就先去趕場了。&lt;br&gt;
+簡單的說，整個流程就是先透過docker叫起&lt;code&gt;client&lt;/code&gt;，&lt;br&gt;
+之後再叫起&lt;code&gt;main&lt;/code&gt;來對&lt;code&gt;client&lt;/code&gt;進行測試。&lt;/p&gt;
+
+&lt;h3 id=&quot;resource&quot;&gt;Resource&lt;/h3&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;https://github.com/TrunkWorkshop/jcconf-2015-java-docker&quot;&gt;Git repo&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://hackpad.com/JCConf-Taiwan-2015-Workshop-lKcJEMyjraR&quot;&gt;Hackpad&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;docker-swarm&quot;&gt;docker-swarm&lt;/h4&gt;
+
+&lt;ul&gt;
+&lt;li&gt;cluster&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;docker-compose&quot;&gt;docker-compose&lt;/h4&gt;
+
+&lt;ul&gt;
+&lt;li&gt;簡化docker指令&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;geb&quot;&gt;geb&lt;/h4&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;http://learngeb.readbook.tw/&quot;&gt;http://learngeb.readbook.tw/&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;functional test&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;/br&gt;&lt;/p&gt;
+
+&lt;hr&gt;
+
+&lt;h3 id=&quot;5-akka-cluster-in-java&quot;&gt;5. Akka Cluster in Java&lt;/h3&gt;
+
+&lt;hr&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://github.com/jiayun/akka_samples&quot;&gt;Git repo for Akka cluster example&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;/br&gt;&lt;/p&gt;
+
+&lt;hr&gt;
+
+&lt;h3 id=&quot;6-使用java的future-promise-api來撰寫非同步程式&quot;&gt;6. 使用Java的Future/Promise API來撰寫非同步程式&lt;/h3&gt;
+
+&lt;hr&gt;
+
+&lt;p&gt;前陣子也剛好在研究&lt;code&gt;CompletableFuture&lt;/code&gt;，&lt;br&gt;
+所以這是今天最有共鳴的一場session，&lt;/p&gt;
+
+&lt;h3 id=&quot;speaker&quot;&gt;Speaker&lt;/h3&gt;
+
+&lt;ul&gt;
+&lt;li&gt;koji&lt;/li&gt;
+&lt;li&gt;work at Line (located at Japan)&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;傳統做法開thread&quot;&gt;傳統做法開thread&lt;/h4&gt;
+
+&lt;p&gt;thread缺點  &lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;需要配合synchronized, wait, notify, join&lt;br&gt;&lt;/li&gt;
+&lt;li&gt;不同thread如何存取同變數&lt;/li&gt;
+&lt;li&gt;如何控管&lt;/li&gt;
+&lt;li&gt;不易組合和再利用&lt;/li&gt;
+&lt;li&gt;組合各種非同步方法，會變成callback hell&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;講者說：這個年代請不要再直接使用thread api&lt;/p&gt;
+
+&lt;h4 id=&quot;future&quot;&gt;Future&lt;/h4&gt;
+
+&lt;ul&gt;
+&lt;li&gt;一個等待結果的容器&lt;/li&gt;
+&lt;li&gt;get會卡住！！&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;completablefuture&quot;&gt;CompletableFuture&lt;/h4&gt;
+
+&lt;ul&gt;
+&lt;li&gt;類似有callback概念，做完動作以後，通知我，我再繼續做想做的事情&lt;/li&gt;
+&lt;li&gt;get會丟exception，可以用join &lt;/li&gt;
+&lt;li&gt;supplyAsync可以指定executorService，如果沒給，就會用forkjoin裡的tool。&lt;/li&gt;
+&lt;li&gt;盡量要給！&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;CF&amp;lt;CF&amp;lt;string&amp;gt;&amp;gt; c&lt;/code&gt; 不好，要get 2次 ex: &lt;code&gt;c.get().get()&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;請用.thenCompose, 回傳也是completeablefutre的時候，就不用get 2次，像是scala的flatmap，&lt;/li&gt;
+&lt;li&gt;優點
+
+&lt;ul&gt;
+&lt;li&gt;event driven&lt;/li&gt;
+&lt;li&gt;容易組合 (easy to compose)&lt;/li&gt;
+&lt;li&gt;控制權還給呼叫者&lt;/li&gt;
+&lt;li&gt;減少thread的浪費，沿用thread繼續做之類的&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;缺點
+
+&lt;ul&gt;
+&lt;li&gt;future/promise的混合，不少語言都分開坐 &lt;/li&gt;
+&lt;li&gt;爆多的方法數量 60+&lt;br&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;注意
+
+&lt;ul&gt;
+&lt;li&gt;雖然有future，但cancel跟future不一樣，completablefutre不能interrupt。&lt;/li&gt;
+&lt;li&gt;不能取消正在執行的工作&lt;/li&gt;
+&lt;li&gt;盡量使用Async語尾的API&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;/br&gt;&lt;/p&gt;
+
+&lt;hr&gt;
+
+&lt;h3 id=&quot;7-other&quot;&gt;7. Other&lt;/h3&gt;
+
+&lt;hr&gt;
+
+&lt;h4 id=&quot;攤位sudo&quot;&gt;攤位sudo&lt;/h4&gt;
+
+&lt;ul&gt;
+&lt;li&gt;yvette lin 曾經做過創投&lt;/li&gt;
+&lt;li&gt;就專業的人力資源公司，但focus on RD&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;攤位mysql&quot;&gt;攤位mysql&lt;/h4&gt;
+
+&lt;ul&gt;
+&lt;li&gt;speaker很專業&lt;/li&gt;
+&lt;li&gt;詢問了master與master的架構時，當replication發生error時，通常得取捨一台，必定有資料會遺失，該怎麼辦？
+
+&lt;ul&gt;
+&lt;li&gt;回答：透過讓&lt;code&gt;master&lt;/code&gt;等待的機制，然後取回binlog回來至&lt;code&gt;slave&lt;/code&gt;，partially updated&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;還介紹了MySQL Enterprise Monitor
+
+&lt;ul&gt;
+&lt;li&gt;有圖形化介面讓admin看究竟哪些sql command花最久&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;還賺到了一隻MySQL的海豚玩偶&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/2015-12-04-mysql-dophin.jpg&quot; alt=&quot;Ticket&quot;&gt;&lt;/p&gt;
+
+&lt;h4 id=&quot;攤位微軟&quot;&gt;攤位微軟&lt;/h4&gt;
+
+&lt;ul&gt;
+&lt;li&gt;介紹Azure&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;攤位kxxxx-banking&quot;&gt;攤位Kxxxx banking&lt;/h4&gt;
+
+&lt;ul&gt;
+&lt;li&gt;在做財務管理系統&lt;/li&gt;
+&lt;li&gt;在徵人，要&lt;code&gt;java&lt;/code&gt;，前端用&lt;code&gt;extJS&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;攤位ruckus&quot;&gt;攤位ruckus&lt;/h4&gt;
+
+&lt;ul&gt;
+&lt;li&gt;主要做無線網路設備&lt;/li&gt;
+&lt;li&gt;也是Java&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;攤位safari-book-online&quot;&gt;攤位safari book online&lt;/h4&gt;
+
+&lt;ul&gt;
+&lt;li&gt;線上遊覽書籍之類的網站 &lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://www.safaribooksonline.com/&quot;&gt;Link&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;晚上的lightning-show&quot;&gt;晚上的lightning show&lt;/h4&gt;
+
+&lt;ul&gt;
+&lt;li&gt;ruckus的人出來送價值6000元的ap，很幸運地被我同事拿到&lt;/li&gt;
+&lt;li&gt;中鋼的人來分享他們內部系統心路歷程&lt;/li&gt;
+&lt;li&gt;linkedin員工來分享在那工作的第一個月 （其實是fliptop的員工，但被linkedin收購）&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;foods-and-drinks&quot;&gt;Foods and Drinks&lt;/h4&gt;
+
+&lt;ul&gt;
+&lt;li&gt;大概是我參加過所有conf吃最好的吧，晚上還有烤山豬肉可以吃&lt;/li&gt;
+&lt;li&gt;飲料是金色三麥贊助&lt;/li&gt;
+&lt;li&gt;茶也是知名廠商&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;/font&gt;&lt;/p&gt;
+</content>
+ </entry>
  
  <entry>
    <title>Create a iSCSI target on Ubuntu</title>
@@ -957,14 +1312,6 @@ mv完成以後，接著打開&lt;code&gt;index.html&lt;/code&gt;，&lt;br&gt;
    <updated>2014-07-06T19:28:00+08:00</updated>
    <id>http://blog.kenyang.net/2014/07/06/setting-up-high-availabilityha</id>
    <content type="html">&lt;div style=&quot;font-size: 15px; line-height: 22px;&quot;&gt;Keepalived是一個routing software，&lt;br /&gt;它可以做到load balancing和high-availability，&lt;br /&gt;load balancing會倚靠lvs (linux virtual server, ipvsadm)來做到（但這篇只會做HA，下篇再講怎麼做load balancing），&lt;br /&gt;而high-availability是靠VRRP protocol來達成，&lt;br /&gt;那什麼是&lt;a href=&quot;http://en.wikipedia.org/wiki/Virtual_Router_Redundancy_Protocol&quot; target=&quot;_blank&quot;&gt;VRRP&lt;/a&gt;（Virtual Router Redundancy Protocol ）？&lt;br /&gt;簡單的說，就是為了當某個router故障，然後可以快速的failover，&lt;br /&gt;Keepalivied就是利用這protocol來達到HA．&lt;br /&gt;&lt;br /&gt;假設我們有兩檯web server，&lt;br /&gt;IP分別為&lt;br /&gt;&amp;nbsp;&amp;nbsp;1. 10.1.190.142&lt;br /&gt;&amp;nbsp;&amp;nbsp;2. 10.1.190.143&lt;br /&gt;&lt;br /&gt;在兩檯都安裝好keepalived的情況下，&lt;br /&gt;被設定為&quot;MASTER&quot;的那檯機器，會去binding 一個我們所指定的virtual ip！&lt;br /&gt;這裡先假設virtual ip為10.1.190.150&lt;br /&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;1. Install the packages &lt;/span&gt;&lt;br /&gt;&lt;br /&gt;首先先ssh到第一檯和第二檯上，安裝等等會用到的幾個packages，&lt;br /&gt;&amp;nbsp;&amp;nbsp;1. keepalived&lt;br /&gt;&amp;nbsp;&amp;nbsp;2. nginx: 你也可以選擇你想要用的web server&lt;br /&gt;&amp;nbsp;&amp;nbsp;3. postfix: optional, 安裝postfix的目的在於，server壞掉時，會寄信通知你&lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;apt-get install keepalived nginx postfix&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;2. Set up environment &lt;/span&gt;&lt;br /&gt;&lt;br /&gt;安裝好以後，先確認你的nginx是有起來的，&lt;br /&gt;開browser去打一下web server就可以簡單確認！&lt;br /&gt;&lt;br /&gt;接著先到第一檯機器上去進行keepalived的config設定 &lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;vim /etc/keepalived/keepalived.conf&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;內容如下：&lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;global_defs {&lt;br /&gt;  notification_email {&lt;br /&gt;    kenyang@xxx.com&lt;br /&gt;  }&lt;br /&gt;  notification_email_from xxxx@example.com&lt;br /&gt;  smtp_server 127.0.0.1&lt;br /&gt;  smtp_connect_timeout 30&lt;br /&gt;  router_id host1      # 用來識別是哪檯機器，如果postfix有安裝，在寄信的時候，title就會跟你說是哪檯機器有問題&lt;br /&gt;}&lt;br /&gt;&lt;br /&gt;vrrp_instance VI_1 {   # VI_1 可以改成自己想要的string&lt;br /&gt;&lt;br /&gt;  state MASTER         # MASTER意思是這檯為主要的機器&lt;br /&gt;&lt;br /&gt;  interface eth0       # 把virtual ip binding在eht0上&lt;br /&gt;&lt;br /&gt;  virtual_router_id 1  # 0~255之間，用來識別是哪一個instance&lt;br /&gt;  priority 100         &lt;br /&gt;&lt;br /&gt;  virtual_ipaddress {&lt;br /&gt;    10.1.190.150/24&lt;br /&gt;  }&lt;br /&gt;&lt;br /&gt;  smtp_alert           # 當有問題時要發信通知&lt;br /&gt;}&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;&lt;br /&gt;接著就到第二檯上去進行設定，&lt;br /&gt;其實內容大致上和第一檯一模一樣，&lt;br /&gt;只有router_id, state, priority需要變動&lt;br /&gt;內容如下，&lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;global_defs {&lt;br /&gt;  ... same with host1 ...&lt;br /&gt;  router_id host2  &lt;br /&gt;}&lt;br /&gt;&lt;br /&gt;vrrp_instance VI_1 {   # VI_1 可以改成自己想要的string&lt;br /&gt;  ... same with host 1 ....&lt;br /&gt;  state BACKUP&lt;br /&gt;  priority 50         &lt;br /&gt;}&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;完成設定以後，分別在兩檯機器上打開keepalived，&lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;service keepalived start&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;3. Verify &lt;/span&gt;&lt;br /&gt;&lt;br /&gt;最後就來驗證ha是work的，&lt;br /&gt;先到第一檯上去，因為第一檯設定為MASTER，&lt;br /&gt;因此理論上第一檯除了自己的IP (10.1.190.142)以外，&lt;br /&gt;還要拿到這個virtual ip (10.1.190.150)，&lt;br /&gt;打下面的指令可以驗證，&lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;root@host1:~$ ip a | grep eth0 | grep inet&lt;br /&gt;    inet 10.1.190.142/24 brd 10.1.190.255 scope global eth0&lt;br /&gt;    inet 10.1.190.150/24 scope global secondary eth0&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;接著打開web browser去連virtual ip (10.1.190.150)，&lt;br /&gt;都會導到第一檯的nginx去！&lt;br /&gt;這時候把第一檯關機！&lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;root@host1:~$ shutdown now&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;此時第二檯應該要拿到virtual ip，&lt;br /&gt;一樣打下面的指令做驗證&lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;root@host2:~$ ip a | grep eth0 | grep inet&lt;br /&gt;    inet 10.1.190.143/24 brd 10.1.190.255 scope global eth0&lt;br /&gt;    inet 10.1.190.150/24 scope global secondary eth0&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;然後再打開web browser去連virtual ip (10.1.190.150)，&lt;br /&gt;此時看到的內容會是第二檯nginx上的內容！&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;除此之外，如果postfix有設定成功，&lt;br /&gt;應該是會收到mail跟你說host2進入了MASTER模式，&lt;br /&gt;標題是：[host2] VRRP Instance VI_1 - Entering MASTER state&lt;br /&gt;內容是：=&gt; VRRP Instance is now owning VRRP VIPs &lt;=   下一篇再教怎麼用keepalived做load balance.           &lt;/div&gt;&lt;br /&gt;</content>
- </entry>
- 
- <entry>
-   <title>Getting started with Amazon EC2 API Tools</title>
-   <link href="http://blog.kenyang.net/2014/05/06/getting-started-with-amazon-ec2-api"/>
-   <updated>2014-05-06T17:48:00+08:00</updated>
-   <id>http://blog.kenyang.net/2014/05/06/getting-started-with-amazon-ec2-api</id>
-   <content type="html">&lt;div style=&quot;font-size: 15px; line-height: 22px;&quot;&gt;&lt;a href=&quot;https://aws.amazon.com/ec2/&quot; target=&quot;_blank&quot;&gt;Amazon EC2&lt;/a&gt;是什麼東西，這裡就不多做介紹了，&lt;br /&gt;這裡主要介紹 Amazon EC2 API Tools，這個tool讓developer用來管理EC2上的instances，&lt;br /&gt;不管是create, terminate, stop, create key等等之類的操作都可以透過API tool來完成，&lt;br /&gt;那什麼時候需要用到這個tool? 像是automation啊，或者如果你想要customize自己的AMI時，&lt;br /&gt;還是得先安裝 Amazon EC2 API Tools以及&lt;a href=&quot;http://aws.amazon.com/developertools/368&quot;&gt;AMI Tools&lt;/a&gt;，不過AMI就是另外一個課題了，有機會的話再開另一篇來講吧！&lt;br /&gt;這裡就focus在下面兩個主題：&lt;br /&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;1. how to &lt;span style=&quot;color: red;&quot;&gt;setup&lt;/span&gt; API tools?&lt;br /&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;2. how to &lt;span style=&quot;color: red;&quot;&gt;create&lt;/span&gt; EC2 instance using API command line?&lt;br /&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;3. how to &lt;span style=&quot;color: red;&quot;&gt;grant permissions&lt;/span&gt; to instance using API command line?&lt;br /&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;4. how to &lt;span style=&quot;color: red;&quot;&gt;terminate&lt;/span&gt; instance using API command line?&lt;br /&gt;&lt;br /&gt;在開始之前，記得先去註冊AWS的帳號啊！（有一張信用卡就可以註冊了）&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;1. Get certificate and Private key &lt;/span&gt;&lt;br /&gt;&lt;br /&gt;因為tools需要先拿到cert and private key，才可以讓developer對自己的account做操作，&lt;br /&gt;所以得先拿到！&lt;br /&gt;怎麼拿呢？&lt;br /&gt;先到&lt;a href=&quot;https://console.aws.amazon.com/iam/home?#security_credential&quot;&gt;Security credentials&lt;/a&gt;的頁面，&lt;br /&gt;進去以後，請點選紅色框框中的按鈕『Create new certificate』（如下圖），&lt;br /&gt;&lt;div class=&quot;separator&quot; style=&quot;clear: both; text-align: center;&quot;&gt;&lt;a href=&quot;http://4.bp.blogspot.com/-canxBzIKYD8/U2iwOCeE_SI/AAAAAAAAFK0/QT56bsjEeUc/s1600/Screen+Shot+2014-05-06+at+4.50.31+PM.png&quot; imageanchor=&quot;1&quot; style=&quot;margin-left: 1em; margin-right: 1em;&quot;&gt;&lt;img border=&quot;0&quot; src=&quot;http://4.bp.blogspot.com/-canxBzIKYD8/U2iwOCeE_SI/AAAAAAAAFK0/QT56bsjEeUc/s1600/Screen+Shot+2014-05-06+at+4.50.31+PM.png&quot; height=&quot;246&quot; width=&quot;640&quot; /&gt;&lt;/a&gt;&lt;/div&gt;&lt;div class=&quot;separator&quot; style=&quot;clear: both; text-align: center;&quot;&gt;&lt;br /&gt;&lt;/div&gt;按下按鈕就建立好cert and private key了！就把cert and private key下載到『桌面』．&lt;br /&gt;記得！！！一定要先下載private key！因為只有一次的機會！錯過就無法重新下載了！&lt;br /&gt;cert也要一併下載下來．&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;2. Download the API tools&lt;/span&gt;&lt;br /&gt;&lt;br /&gt;接著就去下載API tools，&lt;br /&gt;先在home目錄底下建立一個.ec2的folder，&lt;br /&gt;這folder會存放cert and private key，以及api tools，&lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;cd &lt;br /&gt;mkdir .ec2  # create folder&lt;br /&gt;cd .ec2 &lt;br /&gt;wget http://s3.amazonaws.com/ec2-downloads/ec2-api-tools.zip # download tools&lt;br /&gt;unzip ec2-api-tools.zip&lt;br /&gt;mv ~/Desktop/*.pem . # move cert and private key&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;3. Environment setup&lt;/span&gt;&lt;br /&gt;&lt;br /&gt;接著要設定環境變數，&lt;br /&gt;打開你的.bash_profile&lt;br /&gt;&lt;pre class=&quot;brush: java&quot;&gt;vim ~/.bash_profile&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;並且insert下列的內容，&lt;br /&gt;&lt;pre class=&quot;brush: java&quot;&gt;export EC2_HOME=~/.ec2    &lt;br /&gt;export PATH=$PATH:$EC2_HOME/bin&lt;br /&gt;export EC2_PRIVATE_KEY=$EC2_HOME/pk-xxxxxxxxxx.pem   # remember to replace xxxx to your file name&lt;br /&gt;export EC2_CERT=$EC2_HOME/cert-xxxxxxxxxxx.pem       # remember to replace xxxx to your file name&lt;br /&gt;export JAVA_HOME=/System/Library/Frameworks/JavaVM.framework/Home/    # because API tools are written in java&lt;br /&gt;export EC2_URL=https://ec2.us-west-2.amazonaws.com   &lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;其實設定都還蠻淺顯易懂的，&lt;br /&gt;EC2_URL比較需要特別說明，&lt;br /&gt;這個超重要！為什麼呢？&lt;br /&gt;因為你不設的話，你待會下某些指令都會找不到東西！指令還得帶上--region option才行！&lt;br /&gt;為了省下麻煩，就在bash_profile設定吧！當然你可以把us-west-2改成你想要的region！&lt;br /&gt;&lt;br /&gt;最後記得要讓bash_profile生效！&lt;br /&gt;&lt;pre class=&quot;brush: java&quot;&gt;source ~/.bash_profile&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;4. Gen key&lt;/span&gt;&lt;br /&gt;&lt;br /&gt;接著先建立key，這key是等等用來ssh連線到你的instance的！&lt;br /&gt;&lt;pre class=&quot;brush: java&quot;&gt;ec2-add-keypair ec2-keypair&lt;br /&gt;&lt;/pre&gt;這指令會幫你gen key，gen完以後會顯示在console上，&lt;br /&gt;請把它複製起來！（從-----BEGIN RSA PRIVATE KEY-----開始複製，一直到-----END RSA PRIVATE KEY-----）&lt;br /&gt;然後建立一個ec2-keypair的檔案，把內容貼在裡面！&lt;br /&gt;&lt;pre class=&quot;brush: java&quot;&gt;cd ~/.ec2&lt;br /&gt;vim ec2-keypair&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;5. Create instance&lt;/span&gt;&lt;br /&gt;&lt;br /&gt;在create之前，你應該要知道你想要create哪一類型的instance！像是ubuntu, centos, amazon linux....etc.&lt;br /&gt;所以要透過下面的指令去查有哪些instance，&lt;br /&gt;&lt;pre class=&quot;brush: java&quot;&gt;ec2-describe-images -a --filter architecture=x86_64 &amp;gt;&amp;gt; ~/image_list&lt;br /&gt;&lt;/pre&gt;-a意思就是show all&lt;br /&gt;然後--filter出architecture是x86_64的image！&lt;br /&gt;因為其實資料蠻亂的，建議你還是output到一個file來看你想要create哪一種instance！&lt;br /&gt;這裡我選擇了ami-6ac2a85a，這個是ubuntu14.04的instance！&lt;br /&gt;&lt;br /&gt;接著就可以create了！下面的option應該就不用多作說明了，有玩ec2的應該都知道&lt;br /&gt;&lt;pre class=&quot;brush: java&quot;&gt;ec2-run-instances  ami-6ac2a85a  --key ec2-keypair  --region us-west-2  --instance-type t1.micro&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;6. Connect to instance&lt;/span&gt;&lt;br /&gt;&lt;br /&gt;一開始你想要ssh進去instance，一定是不行的！&lt;br /&gt;因為預設的group permission是沒有開22 port的！&lt;br /&gt;所以要用下面的指令去打開！&lt;br /&gt;&lt;pre class=&quot;brush: java&quot;&gt;ec2-authorize default -p 22&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;打開以後就可以ssh進去了！&lt;br /&gt;&lt;pre class=&quot;brush: java&quot;&gt;ssh -i ec2-keypair ec2-xxx-xxx-xxx-xxx.us-west-2.compute.amazonaws.com&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;喔！對了！如果你忘記自己instance的ip或者相關資訊，&lt;br /&gt;可以透過下面指令來查！&lt;br /&gt;&lt;pre class=&quot;brush: java&quot;&gt;ec2-describe-instances&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;7. Terminate instance&lt;/span&gt;&lt;br /&gt;&lt;br /&gt;要terminate一個instance非常簡單！&lt;br /&gt;你只要知道自己的instance id就好了！（如果忘記id是什麼，一樣用ec2-describe-instances去查！）&lt;br /&gt;&lt;pre class=&quot;brush: java&quot;&gt;ec2-terminate-instances i-xxxxxxx&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;/div&gt;</content>
  </entry>
  
  

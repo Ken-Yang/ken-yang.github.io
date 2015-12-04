@@ -5,8 +5,8 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-    <title>Integer.valueOf的Cache機制</title>
-    
+    <title>JCConf Taiwan 2015   Day 1</title>
+    <meta name="description" content="">
     <meta name="author" content="Ken Yang">
 
     <!-- Enable responsive viewport -->
@@ -304,7 +304,7 @@
 
 
 <div class="page-header">
-  <h1>Integer.valueOf的Cache機制 </h1>
+  <h1>JCConf Taiwan 2015   Day 1 </h1>
 </div>
 
 <div class="row post-full">
@@ -334,10 +334,357 @@
 
   <div class="col-xs-12">
     <div class="date">
-      <span>27 October 2011</span>
+      <span>04 December 2015</span>
     </div>
     <div class="content" style="line-height: 28px;">
-      <br /><br /><br />如果有一個Integer的物件要宣告，<br />大部分的人宣告方式會是如下<br /><pre class="brush: java">Integer a = new Integer(2);<br /></pre><br />但如果其value是介於-128~127之間，<br />某些時刻可以使用下面的宣告方式<br /><pre class="brush: java">Integer a = Integer.valueOf(2);<br /></pre><br />在<b><u>某些條件下</u></b>，速度較快一點點點!!<br />為什麼呢??  我們來看下面的例子!<br /><br /><pre class="brush: java">/*<br /> * 如果不是用new Integer()去賦予值，<br /> * 如果是下方的宣告方式，都會去call Integer.valueOf()這個method<br /> * 也就是說下方的宣告方式，a=2 如同 a=Integer.valueOf(2)<br /> */<br />Integer a = 3;<br />Integer b = 3;<br />System.out.println( a==b ); //印出來會是什麼? <br /></pre><br />如果你的答案是<span class="Apple-style-span" style="color: purple; font-size: x-large;">false</span>，只能說不完全錯<br />因為你的想法，可能是認為==是用來比較2個物件的位址是否相同。<br />如果你是這樣想，那你觀念對了，可是就是忽略掉了valueOf的cache機制。<br />這算是一個陷阱。<br /><br />如果你的答案是<span class="Apple-style-span" style="background-color: white;"><span class="Apple-style-span" style="color: purple; font-size: x-large;">true</span></span>，只能說不完全對<br />因為得取決於你的想法，<br /><br /><ol><li>如果你認為因為a是3，b也是3，3等於3阿，所以是true，那就大錯特錯了。你的觀念需要加強。因為==是比較2個物件的位置是否相同，也就說用來判斷是否為同個物件，並不是判斷value是否相同。</li><li>如果你是認為因為==是比較位置，且知道valueOf有cache機制，所以為true，那你答對了。</li></ol><br />因為在call valueOf這個method時，<br />此method裡面會有判斷是否要調用cache的code，<br />如下，<br /><pre class="brush: java">public static Integer valueOf(int i) {<br />    if(i &gt;= -128 &amp;&amp; i &lt;= IntegerCache.high)<br />        return IntegerCache.cache[i + 128];<br />    else<br />        return new Integer(i);<br />}<br /></pre><br />也就是說如果value是介於-128~127之間，<br />就會掉入到if裡面，而IntegerCache為一個class，<br />在使用這個class時就會去new 256個Integer的物件，並放入cache中，<br />所以在上面的例子a跟b的value都是3，<br />自然會調用同一塊cache，所以用==在比較時，他們的記憶體位置自然為同一塊。<br />因此答案為TRUE。<br /><br />最後!!!<br />或許有人會覺得奇怪，cache會去new 256個Integer物件耶!!<br />這樣用valueOf怎麼會比較快呢??<br />上面有說到<b style="text-decoration: underline;">某些條件下</b>，該條件就是，<br />如果是<span class="Apple-style-span" style="font-size: large;"><b>大量</b></span>宣告的話，此時調用valueOf比較快的條件就成立了。<br /><br /><br />我們可以寫一小段code來判斷執行時間，如下<br /><pre class="brush: java">long lStart = System.nanoTime();<br />for (int i = 0; i &lt; 1000000000 ; i++) {<br /> Integer a = new Integer(3);<br />}<br />long lEnd = System.nanoTime()-lStart;<br /><br />System.out.println((float) lEnd/1000000000);<br /><br />lStart = System.nanoTime();<br />for (int i = 0; i &lt; 1000000000 ; i++) {<br /> Integer a = Integer.valueOf(3);<br />}<br />lEnd = System.nanoTime()-lStart;<br />System.out.println((float) lEnd/1000000000);<br /></pre><br />可以發現上面的例子，<br />用new Integer的方法大概都快要1秒鐘，差不多為0.6秒，<br />但調用Integer.valueOf()的方法大概0.003秒，<br />當然其實人感覺不太到差異啦。<br />只是說硬要評比的話，valueOf的方法較為快。<br />但記得!! 必須符合大量資料的前提才成立。<br /><br /><br /><br /><br /><br />
+      <p><font size=3></p>
+
+<p><img src="/assets/2015-12-04-ticket.jpg" alt="Ticket"></p>
+
+<p>這篇只是紀錄Java Community Conference 2015的第一天筆記，<br>
+今天聽了以下幾個session，</p>
+
+<ol>
+<li>JRuby</li>
+<li>Asynchronous and Non-blocking in Scala</li>
+<li>使用zookeeper打造軟體式負載平衡</li>
+<li>workshop動手玩Java專案建置工具：以Gradle與Docker為例</li>
+<li>Akka Cluster in Java</li>
+<li>使用Java的Future/Promise API來撰寫非同步程式</li>
+</ol>
+
+<!--more-->
+
+<h3 id="1-jruby">1. JRuby</h3>
+
+<hr>
+
+<ul>
+<li>Charles Oliver Nutter</li>
+<li><a href="mailto:headius@headius.com">headius@headius.com</a></li>
+<li>blog.headius.com</li>
+<li>works at RedHat</li>
+</ul>
+
+<h4 id="ruby">ruby</h4>
+
+<ul>
+<li>everything is Object. no primitive integer.</li>
+<li>invokeinterface
+
+<ul>
+<li>Runnable.run();</li>
+</ul></li>
+<li>invokespecial
+
+<ul>
+<li>super.equals();</li>
+</ul></li>
+<li>invokevirtual<br></li>
+<li>invokestatic
+
+<ul>
+<li>System.currentMill();</li>
+</ul></li>
+<li>invokedynamic
+
+<ul>
+<li>*Released in Java7</li>
+</ul></li>
+<li>Ruby == Unix, but java == java everywhere
+
+<ul>
+<li>Ruby has getpwd(), getpid()...etc.</li>
+<li>but java has no these capability.</li>
+</ul></li>
+<li>JNI 
+
+<ul>
+<li>Speaker doesn&#39;t like it.</li>
+<li>you need to implement a feature for each platform (win, mac, linux)
+
+<ul>
+<li>ex: if you want to get pid() in java.</li>
+</ul></li>
+</ul></li>
+<li>JNR
+
+<ul>
+<li>Speaker use JNR.</li>
+<li>there are many impelmentations in JNR.</li>
+<li>POSIX posix = POSIXFactory.getPostfix(xxxxx);<br></li>
+<li>posix.getpid()</li>
+</ul></li>
+</ul>
+
+<h4 id="project-panama">Project panama</h4>
+
+<ul>
+<li>Panama in JVM for java 9, api in java 10</li>
+</ul>
+
+<h4 id="why-use-jvm">why use JVM?</h4>
+
+<p>someone ask why not use standard ruby?
+author answer: hard to implement JIT.</p>
+
+<p></br></p>
+
+<hr>
+
+<h3 id="2-asynchronous-and-non-blocking-in-scala">2. Asynchronous and Non-blocking in Scala</h3>
+
+<hr>
+
+<ul>
+<li>I/O is very slow, so we need aysnc and non-blocking.</li>
+</ul>
+
+<h4 id="nio">NIO</h4>
+
+<ul>
+<li>not use thread to do operation. have a subsystem will handle it.</li>
+</ul>
+
+<h4 id="pure-function">pure function</h4>
+
+<ul>
+<li>no side effects</li>
+<li>no write db or file</li>
+<li>the output will be the same at each time</li>
+</ul>
+
+<h4 id="val-vs-var">val vs var</h4>
+
+<ul>
+<li>val is immutable</li>
+<li>var is mutable</li>
+</ul>
+
+<h4 id="case-object">case object</h4>
+
+<ul>
+<li>singleton in Java. there is no static in Scala.</li>
+</ul>
+
+<p></br></p>
+
+<hr>
+
+<h3 id="3-使用zookeeper打造軟體式負載平衡">3. 使用zookeeper打造軟體式負載平衡</h3>
+
+<hr>
+
+<p>這個session主要在介紹zookeeper，由於時間很短，只有15分鐘。<br>
+所以都是講很high level，並沒有講到detail的實作。</p>
+
+<p></br></p>
+
+<hr>
+
+<h3 id="4-workshop動手玩java專案建置工具：以gradle與docker為例">4. workshop動手玩Java專案建置工具：以Gradle與Docker為例</h3>
+
+<hr>
+
+<p>這個session在介紹他們team是怎麼用<code>docker</code>建立test env，<br>
+然後再透過<code>Geb</code>去進行automation，<br>
+主要提供了以下二個docker images讓我們練習測試，</p>
+
+<ol>
+<li>client：vvoyer/docker-selenium-firefox-chrome</li>
+<li>main：groovy</li>
+</ol>
+
+<p>由於我對於<code>docker</code>算是瞭解，因此這個session沒有全部聽完就先去趕場了。<br>
+簡單的說，整個流程就是先透過docker叫起<code>client</code>，<br>
+之後再叫起<code>main</code>來對<code>client</code>進行測試。</p>
+
+<h3 id="resource">Resource</h3>
+
+<ul>
+<li><a href="https://github.com/TrunkWorkshop/jcconf-2015-java-docker">Git repo</a></li>
+<li><a href="https://hackpad.com/JCConf-Taiwan-2015-Workshop-lKcJEMyjraR">Hackpad</a></li>
+</ul>
+
+<h4 id="docker-swarm">docker-swarm</h4>
+
+<ul>
+<li>cluster</li>
+</ul>
+
+<h4 id="docker-compose">docker-compose</h4>
+
+<ul>
+<li>簡化docker指令</li>
+</ul>
+
+<h4 id="geb">geb</h4>
+
+<ul>
+<li><a href="http://learngeb.readbook.tw/">http://learngeb.readbook.tw/</a></li>
+<li>functional test</li>
+</ul>
+
+<p></br></p>
+
+<hr>
+
+<h3 id="5-akka-cluster-in-java">5. Akka Cluster in Java</h3>
+
+<hr>
+
+<p><a href="https://github.com/jiayun/akka_samples">Git repo for Akka cluster example</a></p>
+
+<p></br></p>
+
+<hr>
+
+<h3 id="6-使用java的future-promise-api來撰寫非同步程式">6. 使用Java的Future/Promise API來撰寫非同步程式</h3>
+
+<hr>
+
+<p>前陣子也剛好在研究<code>CompletableFuture</code>，<br>
+所以這是今天最有共鳴的一場session，</p>
+
+<h3 id="speaker">Speaker</h3>
+
+<ul>
+<li>koji</li>
+<li>work at Line (located at Japan)</li>
+</ul>
+
+<h4 id="傳統做法開thread">傳統做法開thread</h4>
+
+<p>thread缺點  </p>
+
+<ul>
+<li>需要配合synchronized, wait, notify, join<br></li>
+<li>不同thread如何存取同變數</li>
+<li>如何控管</li>
+<li>不易組合和再利用</li>
+<li>組合各種非同步方法，會變成callback hell</li>
+</ul>
+
+<p>講者說：這個年代請不要再直接使用thread api</p>
+
+<h4 id="future">Future</h4>
+
+<ul>
+<li>一個等待結果的容器</li>
+<li>get會卡住！！</li>
+</ul>
+
+<h4 id="completablefuture">CompletableFuture</h4>
+
+<ul>
+<li>類似有callback概念，做完動作以後，通知我，我再繼續做想做的事情</li>
+<li>get會丟exception，可以用join </li>
+<li>supplyAsync可以指定executorService，如果沒給，就會用forkjoin裡的tool。</li>
+<li>盡量要給！</li>
+<li><code>CF&lt;CF&lt;string&gt;&gt; c</code> 不好，要get 2次 ex: <code>c.get().get()</code></li>
+<li>請用.thenCompose, 回傳也是completeablefutre的時候，就不用get 2次，像是scala的flatmap，</li>
+<li>優點
+
+<ul>
+<li>event driven</li>
+<li>容易組合 (easy to compose)</li>
+<li>控制權還給呼叫者</li>
+<li>減少thread的浪費，沿用thread繼續做之類的</li>
+</ul></li>
+<li>缺點
+
+<ul>
+<li>future/promise的混合，不少語言都分開坐 </li>
+<li>爆多的方法數量 60+<br></li>
+</ul></li>
+<li>注意
+
+<ul>
+<li>雖然有future，但cancel跟future不一樣，completablefutre不能interrupt。</li>
+<li>不能取消正在執行的工作</li>
+<li>盡量使用Async語尾的API</li>
+</ul></li>
+</ul>
+
+<p></br></p>
+
+<hr>
+
+<h3 id="7-other">7. Other</h3>
+
+<hr>
+
+<h4 id="攤位sudo">攤位sudo</h4>
+
+<ul>
+<li>yvette lin 曾經做過創投</li>
+<li>就專業的人力資源公司，但focus on RD</li>
+</ul>
+
+<h4 id="攤位mysql">攤位mysql</h4>
+
+<ul>
+<li>speaker很專業</li>
+<li>詢問了master與master的架構時，當replication發生error時，通常得取捨一台，必定有資料會遺失，該怎麼辦？
+
+<ul>
+<li>回答：透過讓<code>master</code>等待的機制，然後取回binlog回來至<code>slave</code>，partially updated</li>
+</ul></li>
+<li>還介紹了MySQL Enterprise Monitor
+
+<ul>
+<li>有圖形化介面讓admin看究竟哪些sql command花最久</li>
+</ul></li>
+<li>還賺到了一隻MySQL的海豚玩偶</li>
+</ul>
+
+<p><img src="/assets/2015-12-04-mysql-dophin.jpg" alt="Ticket"></p>
+
+<h4 id="攤位微軟">攤位微軟</h4>
+
+<ul>
+<li>介紹Azure</li>
+</ul>
+
+<h4 id="攤位kxxxx-banking">攤位Kxxxx banking</h4>
+
+<ul>
+<li>在做財務管理系統</li>
+<li>在徵人，要<code>java</code>，前端用<code>extJS</code></li>
+</ul>
+
+<h4 id="攤位ruckus">攤位ruckus</h4>
+
+<ul>
+<li>主要做無線網路設備</li>
+<li>也是Java</li>
+</ul>
+
+<h4 id="攤位safari-book-online">攤位safari book online</h4>
+
+<ul>
+<li>線上遊覽書籍之類的網站 </li>
+<li><a href="https://www.safaribooksonline.com/">Link</a></li>
+</ul>
+
+<h4 id="晚上的lightning-show">晚上的lightning show</h4>
+
+<ul>
+<li>ruckus的人出來送價值6000元的ap，很幸運地被我同事拿到</li>
+<li>中鋼的人來分享他們內部系統心路歷程</li>
+<li>linkedin員工來分享在那工作的第一個月 （其實是fliptop的員工，但被linkedin收購）</li>
+</ul>
+
+<h4 id="foods-and-drinks">Foods and Drinks</h4>
+
+<ul>
+<li>大概是我參加過所有conf吃最好的吧，晚上還有烤山豬肉可以吃</li>
+<li>飲料是金色三麥贊助</li>
+<li>茶也是知名廠商</li>
+</ul>
+
+<p></font></p>
+
     </div>
 
     
@@ -350,6 +697,8 @@
 
 
   
+     
+    	<li><a href="/tags.html#JCConf-ref">JCConf <span>1</span></a></li>
      
     	<li><a href="/tags.html#java-ref">java <span>14</span></a></li>
     
@@ -375,11 +724,11 @@
     <hr>
     <ul class="pagination">
     
-      <li class="prev"><a href="/2011/10/24/class-c" title="切割子網域（subnet）">&laquo; Previous</a></li>
+      <li class="prev"><a href="/2015/12/01/create-a-iscsi-target-on-ubuntu" title="Create a iSCSI target on Ubuntu">&laquo; Previous</a></li>
     
       <li><a href="/archive.html">Archive</a></li>
     
-      <li class="next"><a href="/2011/11/09/android-sd-card" title="Android 強制安裝至 sd card">Next &raquo;</a></li>
+      <li class="next disabled"><a>Next &rarr;</a>
     
     </ul>
     <hr>

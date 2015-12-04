@@ -290,6 +290,34 @@
     </div>
     <!-- This loops through the paginated posts -->
     
+      <h1><a style="color: #F22430" href="/2011/10/27/integervalueofcache">Integer.valueOf的Cache機制</a></h1>
+      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
+      <p class="author">
+      <div class="date">
+        <span>27 October 2011</span>
+      </div>
+      </p>
+      <div class="content" style="line-height: 28px;">
+        <br /><br /><br />如果有一個Integer的物件要宣告，<br />大部分的人宣告方式會是如下<br /><pre class="brush: java">Integer a = new Integer(2);<br /></pre><br />但如果其value是介於-128~127之間，<br />某些時刻可以使用下面的宣告方式<br /><pre class="brush: java">Integer a = Integer.valueOf(2);<br /></pre><br />在<b><u>某些條件下</u></b>，速度較快一點點點!!<br />為什麼呢??  我們來看下面的例子!<br /><br /><pre class="brush: java">/*<br /> * 如果不是用new Integer()去賦予值，<br /> * 如果是下方的宣告方式，都會去call Integer.valueOf()這個method<br /> * 也就是說下方的宣告方式，a=2 如同 a=Integer.valueOf(2)<br /> */<br />Integer a = 3;<br />Integer b = 3;<br />System.out.println( a==b ); //印出來會是什麼? <br /></pre><br />如果你的答案是<span class="Apple-style-span" style="color: purple; font-size: x-large;">false</span>，只能說不完全錯<br />因為你的想法，可能是認為==是用來比較2個物件的位址是否相同。<br />如果你是這樣想，那你觀念對了，可是就是忽略掉了valueOf的cache機制。<br />這算是一個陷阱。<br /><br />如果你的答案是<span class="Apple-style-span" style="background-color: white;"><span class="Apple-style-span" style="color: purple; font-size: x-large;">true</span></span>，只能說不完全對<br />因為得取決於你的想法，<br /><br /><ol><li>如果你認為因為a是3，b也是3，3等於3阿，所以是true，那就大錯特錯了。你的觀念需要加強。因為==是比較2個物件的位置是否相同，也就說用來判斷是否為同個物件，並不是判斷value是否相同。</li><li>如果你是認為因為==是比較位置，且知道valueOf有cache機制，所以為true，那你答對了。</li></ol><br />因為在call valueOf這個method時，<br />此method裡面會有判斷是否要調用cache的code，<br />如下，<br /><pre class="brush: java">public static Integer valueOf(int i) {<br />    if(i &gt;= -128 &amp;&amp; i &lt;= IntegerCache.high)<br />        return IntegerCache.cache[i + 128];<br />    else<br />        return new Integer(i);<br />}<br /></pre><br />也就是說如果value是介於-128~127之間，<br />就會掉入到if裡面，而IntegerCache為一個class，<br />在使用這個class時就會去new 256個Integer的物件，並放入cache中，<br />所以在上面的例子a跟b的value都是3，<br />自然會調用同一塊cache，所以用==在比較時，他們的記憶體位置自然為同一塊。<br />因此答案為TRUE。<br /><br />最後!!!<br />或許有人會覺得奇怪，cache會去new 256個Integer物件耶!!<br />這樣用valueOf怎麼會比較快呢??<br />上面有說到<b style="text-decoration: underline;">某些條件下</b>，該條件就是，<br />如果是<span class="Apple-style-span" style="font-size: large;"><b>大量</b></span>宣告的話，此時調用valueOf比較快的條件就成立了。<br /><br /><br />我們可以寫一小段code來判斷執行時間，如下<br /><pre class="brush: java">long lStart = System.nanoTime();<br />for (int i = 0; i &lt; 1000000000 ; i++) {<br /> Integer a = new Integer(3);<br />}<br />long lEnd = System.nanoTime()-lStart;<br /><br />System.out.println((float) lEnd/1000000000);<br /><br />lStart = System.nanoTime();<br />for (int i = 0; i &lt; 1000000000 ; i++) {<br /> Integer a = Integer.valueOf(3);<br />}<br />lEnd = System.nanoTime()-lStart;<br />System.out.println((float) lEnd/1000000000);<br /></pre><br />可以發現上面的例子，<br />用new Integer的方法大概都快要1秒鐘，差不多為0.6秒，<br />但調用Integer.valueOf()的方法大概0.003秒，<br />當然其實人感覺不太到差異啦。<br />只是說硬要評比的話，valueOf的方法較為快。<br />但記得!! 必須符合大量資料的前提才成立。<br /><br /><br /><br /><br /><br />
+      </div>
+      <footer>
+        <p><a class="myButton" href="/2011/10/27/integervalueofcache">read more &raquo;</a></p>
+        <div>
+          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- ken on github -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3783438370424072"
+     data-ad-slot="1516206098"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+        </div>
+      </footer>
+      <hr>
+    
       <h1><a style="color: #F22430" href="/2011/10/24/class-c">切割子網域（subnet）</a></h1>
       <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
       <p class="author">
@@ -330,34 +358,6 @@
       </div>
       <footer>
         <p><a class="myButton" href="/2011/07/22/displaying-recaptcha-without-plugins">read more &raquo;</a></p>
-        <div>
-          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<!-- ken on github -->
-<ins class="adsbygoogle"
-     style="display:block"
-     data-ad-client="ca-pub-3783438370424072"
-     data-ad-slot="1516206098"
-     data-ad-format="auto"></ins>
-<script>
-(adsbygoogle = window.adsbygoogle || []).push({});
-</script>
-
-        </div>
-      </footer>
-      <hr>
-    
-      <h1><a style="color: #F22430" href="/2011/07/06/install-android-plugin-for-eclipse">Install Android Plugin for Eclipse</a></h1>
-      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
-      <p class="author">
-      <div class="date">
-        <span>06 July 2011</span>
-      </div>
-      </p>
-      <div class="content" style="line-height: 28px;">
-        這篇主要是在教導大家如何在Eclipse中，安裝開發Android程式的plugin，<div>其實這類型的文章在網路上很多，但會打這篇主要是為了今年資管營的學生們，</div><div>為了讓他們能夠快速地找到安裝教學，因此打這篇。</div><div><br /></div><div><br /></div><div>首先我們要先去下載</div><div><ol><li><a href="http://www.oracle.com/technetwork/java/javase/downloads/jdk-6u26-download-400750.html">JDK (請在下面選擇符合自己作業系統的版本)</a></li><li><a href="http://www.eclipse.org/downloads/packages/eclipse-classic-37/indigor">Eclipse Classic 3.7 (請在右邊選單選擇符合自己的版本)</a></li><li><a href="http://dl.google.com/android/android-sdk_r11-windows.zip">Android SDK</a></li></ol><div><br /></div></div><div>下載完成以後，請照著下面的步驟操作：</div><div><ol><li>安裝第一個下載的檔案JDK</li><li>將第二個下載的檔案Eclipse解壓縮出來到一個目錄，無須安裝，即可使用</li><li>將第三個檔案Android SDK解壓縮出來到一個目錄即可。</li><li>開啟Eclipse</li><li>看到上方的選單，請點選【Help】→點選【Install New Software】→點選【Add】→在Name地方輸入android，Location地方輸入http://dl-ssl.google.com/android/eclipse &nbsp;→點選下方按鈕【Next】進行安裝。</li><li>完成上步驟，應該會重新啟動Eclipse，應該會看到如圖中的紅色框框選項<a href="http://2.bp.blogspot.com/-pTvVhox-Nn8/ThNhoprnIQI/AAAAAAAAAWU/AZSYV5Kv_DY/s1600/3.PNG" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="66" src="http://2.bp.blogspot.com/-pTvVhox-Nn8/ThNhoprnIQI/AAAAAAAAAWU/AZSYV5Kv_DY/s320/3.PNG" width="320" /></a></li><li>此時再點選上方選單的【Window】→點選【Preferences】→點選【Android】→在右邊視窗的SDK Location選擇剛剛第三個檔案解壓縮的位置→點選【Apply】→點選【OK】</li><li>完成上步驟，再點選下圖中的紅色框框<a href="http://2.bp.blogspot.com/-pTvVhox-Nn8/ThNhoprnIQI/AAAAAAAAAWU/AZSYV5Kv_DY/s1600/3.PNG" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="66" src="http://2.bp.blogspot.com/-pTvVhox-Nn8/ThNhoprnIQI/AAAAAAAAAWU/AZSYV5Kv_DY/s320/3.PNG" width="320" /></a></li><li>點選【Available packages】→將兩個選項都打勾→點選【Install selected】→接著就一直按next或者finish即可。</li><li>按照上面9步驟即可完成安裝Android Plugin for Eclipse</li></ol><div><br /></div></div><div><br /></div><div><br /></div><div class="separator" style="clear: both; text-align: center;"></div>
-      </div>
-      <footer>
-        <p><a class="myButton" href="/2011/07/06/install-android-plugin-for-eclipse">read more &raquo;</a></p>
         <div>
           <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 <!-- ken on github -->
