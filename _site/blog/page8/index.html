@@ -290,6 +290,34 @@
     </div>
     <!-- This loops through the paginated posts -->
     
+      <h1><a style="color: #F22430" href="/2014/05/06/getting-started-with-amazon-ec2-api">Getting started with Amazon EC2 API Tools</a></h1>
+      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
+      <p class="author">
+      <div class="date">
+        <span>06 May 2014</span>
+      </div>
+      </p>
+      <div class="content" style="line-height: 28px;">
+        <div style="font-size: 15px; line-height: 22px;"><a href="https://aws.amazon.com/ec2/" target="_blank">Amazon EC2</a>是什麼東西，這裡就不多做介紹了，<br />這裡主要介紹 Amazon EC2 API Tools，這個tool讓developer用來管理EC2上的instances，<br />不管是create, terminate, stop, create key等等之類的操作都可以透過API tool來完成，<br />那什麼時候需要用到這個tool? 像是automation啊，或者如果你想要customize自己的AMI時，<br />還是得先安裝 Amazon EC2 API Tools以及<a href="http://aws.amazon.com/developertools/368">AMI Tools</a>，不過AMI就是另外一個課題了，有機會的話再開另一篇來講吧！<br />這裡就focus在下面兩個主題：<br />&nbsp;&nbsp;&nbsp;&nbsp;1. how to <span style="color: red;">setup</span> API tools?<br />&nbsp;&nbsp;&nbsp;&nbsp;2. how to <span style="color: red;">create</span> EC2 instance using API command line?<br />&nbsp;&nbsp;&nbsp;&nbsp;3. how to <span style="color: red;">grant permissions</span> to instance using API command line?<br />&nbsp;&nbsp;&nbsp;&nbsp;4. how to <span style="color: red;">terminate</span> instance using API command line?<br /><br />在開始之前，記得先去註冊AWS的帳號啊！（有一張信用卡就可以註冊了）<br /><br /><br /><span style="color: #e06666; font-size: 18px;">1. Get certificate and Private key </span><br /><br />因為tools需要先拿到cert and private key，才可以讓developer對自己的account做操作，<br />所以得先拿到！<br />怎麼拿呢？<br />先到<a href="https://console.aws.amazon.com/iam/home?#security_credential">Security credentials</a>的頁面，<br />進去以後，請點選紅色框框中的按鈕『Create new certificate』（如下圖），<br /><div class="separator" style="clear: both; text-align: center;"><a href="http://4.bp.blogspot.com/-canxBzIKYD8/U2iwOCeE_SI/AAAAAAAAFK0/QT56bsjEeUc/s1600/Screen+Shot+2014-05-06+at+4.50.31+PM.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="http://4.bp.blogspot.com/-canxBzIKYD8/U2iwOCeE_SI/AAAAAAAAFK0/QT56bsjEeUc/s1600/Screen+Shot+2014-05-06+at+4.50.31+PM.png" height="246" width="640" /></a></div><div class="separator" style="clear: both; text-align: center;"><br /></div>按下按鈕就建立好cert and private key了！就把cert and private key下載到『桌面』．<br />記得！！！一定要先下載private key！因為只有一次的機會！錯過就無法重新下載了！<br />cert也要一併下載下來．<br /><br /><br /><br /><span style="color: #e06666; font-size: 18px;">2. Download the API tools</span><br /><br />接著就去下載API tools，<br />先在home目錄底下建立一個.ec2的folder，<br />這folder會存放cert and private key，以及api tools，<br /><pre class="brush: bash">cd <br />mkdir .ec2  # create folder<br />cd .ec2 <br />wget http://s3.amazonaws.com/ec2-downloads/ec2-api-tools.zip # download tools<br />unzip ec2-api-tools.zip<br />mv ~/Desktop/*.pem . # move cert and private key<br /></pre><br /><br /><br /><span style="color: #e06666; font-size: 18px;">3. Environment setup</span><br /><br />接著要設定環境變數，<br />打開你的.bash_profile<br /><pre class="brush: java">vim ~/.bash_profile<br /></pre><br />並且insert下列的內容，<br /><pre class="brush: java">export EC2_HOME=~/.ec2    <br />export PATH=$PATH:$EC2_HOME/bin<br />export EC2_PRIVATE_KEY=$EC2_HOME/pk-xxxxxxxxxx.pem   # remember to replace xxxx to your file name<br />export EC2_CERT=$EC2_HOME/cert-xxxxxxxxxxx.pem       # remember to replace xxxx to your file name<br />export JAVA_HOME=/System/Library/Frameworks/JavaVM.framework/Home/    # because API tools are written in java<br />export EC2_URL=https://ec2.us-west-2.amazonaws.com   <br /></pre><br />其實設定都還蠻淺顯易懂的，<br />EC2_URL比較需要特別說明，<br />這個超重要！為什麼呢？<br />因為你不設的話，你待會下某些指令都會找不到東西！指令還得帶上--region option才行！<br />為了省下麻煩，就在bash_profile設定吧！當然你可以把us-west-2改成你想要的region！<br /><br />最後記得要讓bash_profile生效！<br /><pre class="brush: java">source ~/.bash_profile<br /></pre><br /><br /><span style="color: #e06666; font-size: 18px;">4. Gen key</span><br /><br />接著先建立key，這key是等等用來ssh連線到你的instance的！<br /><pre class="brush: java">ec2-add-keypair ec2-keypair<br /></pre>這指令會幫你gen key，gen完以後會顯示在console上，<br />請把它複製起來！（從-----BEGIN RSA PRIVATE KEY-----開始複製，一直到-----END RSA PRIVATE KEY-----）<br />然後建立一個ec2-keypair的檔案，把內容貼在裡面！<br /><pre class="brush: java">cd ~/.ec2<br />vim ec2-keypair<br /></pre><br /><br /><span style="color: #e06666; font-size: 18px;">5. Create instance</span><br /><br />在create之前，你應該要知道你想要create哪一類型的instance！像是ubuntu, centos, amazon linux....etc.<br />所以要透過下面的指令去查有哪些instance，<br /><pre class="brush: java">ec2-describe-images -a --filter architecture=x86_64 &gt;&gt; ~/image_list<br /></pre>-a意思就是show all<br />然後--filter出architecture是x86_64的image！<br />因為其實資料蠻亂的，建議你還是output到一個file來看你想要create哪一種instance！<br />這裡我選擇了ami-6ac2a85a，這個是ubuntu14.04的instance！<br /><br />接著就可以create了！下面的option應該就不用多作說明了，有玩ec2的應該都知道<br /><pre class="brush: java">ec2-run-instances  ami-6ac2a85a  --key ec2-keypair  --region us-west-2  --instance-type t1.micro<br /></pre><br /><br /><span style="color: #e06666; font-size: 18px;">6. Connect to instance</span><br /><br />一開始你想要ssh進去instance，一定是不行的！<br />因為預設的group permission是沒有開22 port的！<br />所以要用下面的指令去打開！<br /><pre class="brush: java">ec2-authorize default -p 22<br /></pre><br />打開以後就可以ssh進去了！<br /><pre class="brush: java">ssh -i ec2-keypair ec2-xxx-xxx-xxx-xxx.us-west-2.compute.amazonaws.com<br /></pre><br />喔！對了！如果你忘記自己instance的ip或者相關資訊，<br />可以透過下面指令來查！<br /><pre class="brush: java">ec2-describe-instances<br /></pre><br /><br /><br /><span style="color: #e06666; font-size: 18px;">7. Terminate instance</span><br /><br />要terminate一個instance非常簡單！<br />你只要知道自己的instance id就好了！（如果忘記id是什麼，一樣用ec2-describe-instances去查！）<br /><pre class="brush: java">ec2-terminate-instances i-xxxxxxx<br /></pre><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /></div>
+      </div>
+      <footer>
+        <p><a class="myButton" href="/2014/05/06/getting-started-with-amazon-ec2-api">read more &raquo;</a></p>
+        <div>
+          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- ken on github -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3783438370424072"
+     data-ad-slot="1516206098"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+        </div>
+      </footer>
+      <hr>
+    
       <h1><a style="color: #F22430" href="/2014/03/10/build-deb-package-from-source">Build a deb package from source</a></h1>
       <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
       <p class="author">
@@ -330,34 +358,6 @@
       </div>
       <footer>
         <p><a class="myButton" href="/2014/02/24/how-to-build-android-image">read more &raquo;</a></p>
-        <div>
-          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<!-- ken on github -->
-<ins class="adsbygoogle"
-     style="display:block"
-     data-ad-client="ca-pub-3783438370424072"
-     data-ad-slot="1516206098"
-     data-ad-format="auto"></ins>
-<script>
-(adsbygoogle = window.adsbygoogle || []).push({});
-</script>
-
-        </div>
-      </footer>
-      <hr>
-    
-      <h1><a style="color: #F22430" href="/2014/02/06/how-to-backup-and-restore-your-mongodb">How to Backup and Restore your MongoDB database?</a></h1>
-      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
-      <p class="author">
-      <div class="date">
-        <span>06 February 2014</span>
-      </div>
-      </p>
-      <div class="content" style="line-height: 28px;">
-        <div style="font-size: 15px; line-height: 22px;">這篇要講如何Backup和Restore MongoDB，<br />MongoDB本身提供了2種不同的backup/restore solutions，<br /><br /><ul><li>mongoexport/mongoimport</li><li>mongodump/mongorestore</li></ul><br />還有一些進階的，像是<a href="https://mms.mongodb.com/?pk_campaign=MongoDB-Org&amp;pk_kwd=Backup-Docs" target="_blank">MongoDB Management Service (MMS)</a>，<br />但這裡只介紹這2種比較基本的solutions，<br />那麼這兩種的差異在哪呢？<br />第一種的mongoexport/mongoimport其實不太算是backup/restore solution，<br />因為它只能用來backup collection中的data（collection可以想成relational database的table），<br />它無法backup整個db的狀態，<br />在官網中也說明了，<br />mongoexport/mongoimport在保存<a href="http://docs.mongodb.org/v2.2/reference/glossary/#term-bson" target="_blank">BSON</a>上是不可靠的，<br />所以mongoexport/mongoimport比較適合用在保存簡單的data，<br />但也可以勉強算是比較簡易型的backup/restore solution，<br />但儘量別拿來作為backup/restore的方式．原因前面說過了，<br />把它方法當作data的export和import就好．<br />如果想要備份較完整的db，那麼就要靠第二種mongodump/mongorestore，<br />下面分別是這兩種的使用方式．<br /><br /><span style="color: #e06666; font-size: 18px;">1. mongoexport/mongoimport</span><br /><br /><span style="color: #e06666; font-size: 16px;">1-1.Backup</span><br /><pre class="brush: java">mongoexport -h &lt;Host:Port&gt; -d &lt;DB_Name&gt; -c &lt;Collection_Name&gt; -u &lt;DB_User&gt; -p &lt;DB_Password&gt; -o &lt;Output_File_Name&gt;<br /></pre><br />-h：你的db uri和port number<br />-d：你要備份的database名稱<br />-c：要備份哪一個collection(table)<br />-u：db帳號<br />-p：db密碼<br />-o：要備份出來的檔案名稱<br /><br /><span style="color: #e06666; font-size: 16px;">1-2. Restore</span><br />備份成功以後，你可以試著drop那個collection，<br />接著在輸入下面的command，應該就會recover成功．<br /><pre class="brush: java">mongoimport -h &lt;Host:Port&gt; -d &lt;DB_Name&gt; -c &lt;Collection_Name&gt; -u &lt;DB_User&gt; -p &lt;DB_Password&gt; --file &lt;File_Name&gt;<br /></pre><br />參數大部分和backup一樣，<br />只有--file不同，<br />--file要接的是剛剛備份出來的檔案名稱，<br />輸入以後，看到下圖就代表recover成功了<br /><div class="separator" style="clear: both; text-align: center;"></div><br /><div class="separator" style="clear: both; text-align: center;"><a href="http://1.bp.blogspot.com/-c9hAXACpEJQ/UvOcUq3HNFI/AAAAAAAAFI4/YbP5amWS_7k/s1600/Screen+Shot+2014-02-06+at+10.29.31+PM.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="http://1.bp.blogspot.com/-c9hAXACpEJQ/UvOcUq3HNFI/AAAAAAAAFI4/YbP5amWS_7k/s1600/Screen+Shot+2014-02-06+at+10.29.31+PM.png" /></a></div><br /><br /><br /><span style="color: #e06666; font-size: 18px;">2. mongodump/mongorestore</span><br /><br /><span style="color: #e06666; font-size: 16px;">2-1.Backup</span><br /><pre class="brush: java">mongodump -h &lt;Host:Port&gt; -d &lt;DB_Name&gt; -c &lt;Collection_Name&gt; -u &lt;DB_User&gt; -p &lt;DB_Password&gt; -o &lt;Directory&gt;<br /></pre><br />參數也和上面一樣，<br />但-o是要接目錄位置，mongodump會在該目錄底下建立一個folder來存backup的檔案，<br /><br /><span style="color: #e06666; font-size: 16px;">2-2. Restore</span><br /><pre class="brush: java">mongorestore -h &lt;Host:Port&gt; -d &lt;DB_Name&gt; -c &lt;Collection_Name&gt; -u &lt;DB_User&gt; -p &lt;DB_Password&gt; &lt;Directory&gt;<br /></pre><br />參數也一樣，<br />但少了-o，<br />請在後面直接接上存放backup db的directory．<br />輸入以後，<br />你會發現mongorestore不只會幫你recover data，連該collection原有的index也會幫你建好．<br /><br /><br /><br />結論，<br />第一種儘量別拿來做backup/restore，其實就連MongoDB官網也沒有把mongoimport/mongoexport歸類在backup/restore的類別下，<br />就把第一種當作data的export吧！<br />第二種就是完整的backup/restore solution，就像mysqldump一樣！<br /><br /><br /><br /></div><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
-      </div>
-      <footer>
-        <p><a class="myButton" href="/2014/02/06/how-to-backup-and-restore-your-mongodb">read more &raquo;</a></p>
         <div>
           <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 <!-- ken on github -->

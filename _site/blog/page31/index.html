@@ -290,6 +290,34 @@
     </div>
     <!-- This loops through the paginated posts -->
     
+      <h1><a style="color: #F22430" href="/2011/11/09/android-sd-card">Android 強制安裝至 sd card</a></h1>
+      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
+      <p class="author">
+      <div class="date">
+        <span>09 November 2011</span>
+      </div>
+      </p>
+      <div class="content" style="line-height: 28px;">
+        下指令讓"所有"&nbsp;android app強制安裝到sd card中，<br />其實這個指令我還蠻常用到的，蠻常幫朋友下的。<br />但是每次都會稍微忘記!<br />所以記錄一下。<br /><br />首先要先下載<a href="http://dl.google.com/android/android-sdk_r15-windows.zip">android sdk</a>，<br />下載以後，解壓縮放置您要放的目錄，<br />這裡假設放置在C槽，假設目錄名稱為android-sdk，<br />然後將手機插上USB線!<br />接著打開cmd (命令提示字元)，<br />cd到C槽底下的android sdk目錄，在cd到platform-tools底下，<br />完整指令為<br /><pre class="brush: java">cd android-sdk/platform-tools<br /></pre><br />接著利用底下的adb.exe去執行強制安裝至sd card的指令，<br />指令如下：<br /><pre class="brush: java">adb shell pm setInstallLocation 2<br /></pre><br />2：代表讓所有app可以安裝至sd card<br />0：就是初始值，可以自己選擇<br />1：強制安裝在ROM裡面<br /><br />所以如果要恢復初始值的話，指令如下：<br /><pre class="brush: java">adb shell pm setInstallLocation 0<br /></pre><br />
+      </div>
+      <footer>
+        <p><a class="myButton" href="/2011/11/09/android-sd-card">read more &raquo;</a></p>
+        <div>
+          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- ken on github -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3783438370424072"
+     data-ad-slot="1516206098"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+        </div>
+      </footer>
+      <hr>
+    
       <h1><a style="color: #F22430" href="/2011/10/27/integervalueofcache">Integer.valueOf的Cache機制</a></h1>
       <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
       <p class="author">
@@ -330,34 +358,6 @@
       </div>
       <footer>
         <p><a class="myButton" href="/2011/10/24/class-c">read more &raquo;</a></p>
-        <div>
-          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<!-- ken on github -->
-<ins class="adsbygoogle"
-     style="display:block"
-     data-ad-client="ca-pub-3783438370424072"
-     data-ad-slot="1516206098"
-     data-ad-format="auto"></ins>
-<script>
-(adsbygoogle = window.adsbygoogle || []).push({});
-</script>
-
-        </div>
-      </footer>
-      <hr>
-    
-      <h1><a style="color: #F22430" href="/2011/07/22/displaying-recaptcha-without-plugins">Integrate CAPTCHA to your site (without plugin)-【2】</a></h1>
-      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
-      <p class="author">
-      <div class="date">
-        <span>22 July 2011</span>
-      </div>
-      </p>
-      <div class="content" style="line-height: 28px;">
-        在前一篇<a href="http://blog.kenyang.net/2011/05/integrate-captcha-to-your-site-using.html">筆記</a>有提到如何利用plugin去顯示一個驗證碼(captcha)的功能，<br /><br />而這篇是要教導大家如何用另一種方法(AJAX API)去顯示驗證碼，<br /><br />***記得*** 一樣要去申請api key，至於如何申請，請至<a href="http://blog.kenyang.net/2011/05/integrate-captcha-to-your-site-using.html">前一篇</a>檢閱。<br /><br />而使用AJAX API的優點，簡單來說，你在你的.jsp, .asp, .php....etc的頁面中，<br /><br />不會看到該language的語法，例如：&lt;% %&gt; ＜？　？＞, ...等等之類的。<br /><br />我們只要用簡單的javascript語法就可以顯示一個驗證碼。<br />首先我們得在我們頁面中，這裡假設是captcha.html中，<br /><br />【第一步】加入 Google的js檔案，如下:<br /><pre class="brush: js">&lt;script type="text/javascript" src="http://www.google.com/recaptcha/api/js/recaptcha_ajax.js"&gt;&lt;/script&gt;<br /></pre><br /><br /><br />【第二步】在captcha.html中加入一個div的element，如下:<br /><pre class="brush: html">&lt;div id="captcha"&gt;&lt;/div&gt;<br /></pre><br /><br /><br />【第三步】開始create一個驗證碼，請加入下列javascript語法：<br /><pre class="brush: js">&lt;script&gt;<br />     window.onload = function() {<br />          Recaptcha.create(<br />                   "xxxxxxx",  //你的api key<br />                   "captcha",  //第二步驟中div的id<br />                   {<br />                        theme: "red",<br />                        callback: Recaptcha.focus_response_field<br />                   }<br />          );<br />  <br />     }<br />&lt;/script&gt;<br /><br /></pre><br /><br />這樣就大功告成，至於如何驗證，<br />其實驗證方式也是有兩種，<br />兩種都是透過ajax，<br />第一種是寫一隻程式，這隻程式是用來接收參數並且驗證資料<br />並且用ajax向這隻程式傳遞參數。可以參考我前一篇的<a href="http://blog.kenyang.net/2011/05/integrate-captcha-to-your-site-using.html">驗證方法</a><br /><br />而第二種是直接向此連結<span class="Apple-style-span" style="font-family: Helvetica, Arial, sans-serif; font-size: x-small; line-height: 16px;">http://www.google.com/recaptcha/api/verify</span>發出request，<br />但是大概懂ajax的人都知道""基本上""是無法跨domain進行request，<br />當然有其他solution，但因為我先前已經有寫好上個方法的驗證方法，<br />所以我就直接用第一種方式，也較簡易!<br />但是還是建議大家直接用第二種方式，不然使用ajax api就失去了意義!<br /><br />而這篇是教導大家如何using ajax api去顯示一個驗證碼。<br />所以就不詳細說明如何利用ajax去進行驗證。(反正用jQuery的ajax api很簡單，就不贅述了!）<br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
-      </div>
-      <footer>
-        <p><a class="myButton" href="/2011/07/22/displaying-recaptcha-without-plugins">read more &raquo;</a></p>
         <div>
           <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 <!-- ken on github -->

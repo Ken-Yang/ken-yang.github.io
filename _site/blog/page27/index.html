@@ -290,6 +290,34 @@
     </div>
     <!-- This loops through the paginated posts -->
     
+      <h1><a style="color: #F22430" href="/2011/12/24/android-c2dm_22">Android C2DM (二)：流程</a></h1>
+      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
+      <p class="author">
+      <div class="date">
+        <span>24 December 2011</span>
+      </div>
+      </p>
+      <div class="content" style="line-height: 28px;">
+        <span style="font-size: large;"><b>前一篇在講<a href="http://blog.kenyang.net/2011/12/android-c2dm.html">參數說明</a></b></span><br /><span style="font-size: large;"><b>這篇專注於流程說明</b></span><br /><span style="font-size: large;"><b>第三篇在講<a href="http://blog.kenyang.net/2012/03/android-c2dm-sever.html">Server端的實作</a></b></span><br /><span style="font-size: large;"><b>第四篇在講<a href="http://blog.kenyang.net/2012/03/android-c2dm-android.html">Android端的實作</a></b></span><br /><br />Android C2DM的實作步驟大概分為下列三項：<br /><ul><li><b>Enabling C2DM </b>：在Android Device上啟動C2DM準備receive訊息。</li><li><b>Sending a message</b>：Server傳遞訊息至Device</li><li><b>Receiving a message</b>：Android上收來自C2DM Server的訊息</li></ul><div>下面是個三項的說明流程，</div><div><br /></div><div><b><span style="font-size: large;">1. Enabling C2DM</span></b></div><div><ol><li>首先要先啟動一個registration Intent到C2DM的SERVER (com.google.android.c2dm.intent.REGISTER)，且這Intent必須但兩個參數，第一個是<span style="color: red;">SENDER ID</span>，第二個是<span style="color: red;">application ID</span>。<a href="http://blog.kenyang.net/2011/12/android-c2dm.html">參數說明請看這。</a></li><li>如果這個registration成功了，C2DM的Server會回傳(broadcast)一個<span style="color: red;">registration ID</span>，這時候Android applicaiton要把這<span style="color: red;">registration ID</span>先存起來，待會用。(Google可能會一段時間就去refresh這個registration ID）</li><li>完成註冊以及取得<span style="color: red;">resgistration ID</span>以後，Android App必須把此ID傳到自己的server上去。Server一樣得把這ID存起來。</li></ol></div>註：register ID會存活直到你unregister，或者直到Google refresh為止。<br /><br /><br /><br /><div><span style="font-size: large;"><b>2. Sending a message</b></span></div><div><ol><li>在send a message之前，必須確認<b>Android app</b>和<b>Sever</b>上已經有<span style="color: red;"> resgistration&nbsp;&nbsp;ID</span>了，以及Sever必須有<span style="color: red;">ClientLogin authorization token</span>. 至於怎麼取得這個token，可以去看<a href="http://code.google.com/apis/accounts/docs/AuthForInstalledApps.html">Google官網說明</a></li><li>完成上面的以後，首先，Sever必須先send訊息至C2DM Sever上</li><li>Google收到以後，會先存起來，以免Android device是inactive的狀態。</li><li>當Device是online的狀態，Google就會send訊息至device上。</li></ol><div><br /></div></div><br /><br /><div><span style="font-size: large;"><b>3. Receiving a Message</b></span></div><div><ol><li>首先Android OS會先收到這則Message， </li><li>接著Android OS會把這則訊息，會根據package name發送到含有註冊com.google.android.c2dm.intent.RECEIVE的app上去</li><li>最後，該app就會從自己註冊的RECEIVER的Intent裡收到message，就可以處理資料了。</li></ol><br /><br /><span style="font-size: large;"><br /></span></div><span style="font-size: large;"><b>下一篇會講如何去實作。</b></span><br /><span style="font-size: large;"><b><br /></b></span><br /><span style="font-size: large;"><b><br /></b></span><br /><span style="font-size: large;"><b><br /></b></span><br /><br /><br /><br /><br />
+      </div>
+      <footer>
+        <p><a class="myButton" href="/2011/12/24/android-c2dm_22">read more &raquo;</a></p>
+        <div>
+          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- ken on github -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3783438370424072"
+     data-ad-slot="1516206098"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+        </div>
+      </footer>
+      <hr>
+    
       <h1><a style="color: #F22430" href="/2011/12/24/android-c2dm">Android C2DM (一)：元件參數說明</a></h1>
       <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
       <p class="author">
@@ -330,34 +358,6 @@
       </div>
       <footer>
         <p><a class="myButton" href="/2011/12/17/android-life-cycle">read more &raquo;</a></p>
-        <div>
-          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<!-- ken on github -->
-<ins class="adsbygoogle"
-     style="display:block"
-     data-ad-client="ca-pub-3783438370424072"
-     data-ad-slot="1516206098"
-     data-ad-format="auto"></ins>
-<script>
-(adsbygoogle = window.adsbygoogle || []).push({});
-</script>
-
-        </div>
-      </footer>
-      <hr>
-    
-      <h1><a style="color: #F22430" href="/2011/12/15/googe-app-engine-gae-domain">Googe App Engine (GAE) 設定 Domain</a></h1>
-      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
-      <p class="author">
-      <div class="date">
-        <span>15 December 2011</span>
-      </div>
-      </p>
-      <div class="content" style="line-height: 28px;">
-        恩，最近蠻常在GAE上面綁一個DOMAIN，<br />雖然蠻常操作，可是每次都還是要想一下，才想起來該怎麼用。<br /><br /><br />在GAE上大概分兩種設定domain，<br /><br /><ol><li>透過Google Apps去買Domain (這種方式在綁domain很簡單)</li><li>自己已經有domain了，想要只到我的GAE上去</li></ol><br />第一種很簡單，就不贅述，<br />第二種也沒難到哪去，只是要在我們買domain(例如：xxx.com)的地方新增一筆cname<br />且還要用我們的domain(例如：xxx.com)去申請Google Apps。<br />然後再verify我們的擁有權！<br /><br /><br />流程大概如下：<br /><table align="center" cellpadding="0" cellspacing="0" class="tr-caption-container" style="margin-left: auto; margin-right: auto; text-align: center;"><tbody><tr><td style="text-align: center;"><a href="http://2.bp.blogspot.com/-qEmR5Tyxz_Y/TuoWXEpiqkI/AAAAAAAAAYs/WcCJj8COmWU/s1600/1.PNG" imageanchor="1" style="margin-left: auto; margin-right: auto;"><img border="0" height="400" src="http://2.bp.blogspot.com/-qEmR5Tyxz_Y/TuoWXEpiqkI/AAAAAAAAAYs/WcCJj8COmWU/s400/1.PNG" width="127" /></a></td></tr><tr><td class="tr-caption" style="text-align: center;">【步驟一】<br />先登入到你的ＧＡＥ後台，然後點選你要設定的那個application id，然後在去點選圖中紅色的框框（Application Settings）</td></tr></tbody></table><br /><table align="center" cellpadding="0" cellspacing="0" class="tr-caption-container" style="margin-left: auto; margin-right: auto; text-align: center;"><tbody><tr><td style="text-align: center;"><a href="http://2.bp.blogspot.com/-KTRHVJtpp20/TuoWX8OQx5I/AAAAAAAAAY0/nxKNCYtdeIQ/s1600/2.PNG" imageanchor="1" style="margin-left: auto; margin-right: auto;"><img border="0" height="83" src="http://2.bp.blogspot.com/-KTRHVJtpp20/TuoWX8OQx5I/AAAAAAAAAY0/nxKNCYtdeIQ/s640/2.PNG" width="640" /></a></td></tr><tr><td class="tr-caption" style="text-align: center;">【步驟二】<br />點選以後，會看到此張圖，請再點選此圖中的Add Domain</td></tr></tbody></table><br /><table align="center" cellpadding="0" cellspacing="0" class="tr-caption-container" style="margin-left: auto; margin-right: auto; text-align: center;"><tbody><tr><td style="text-align: center;"><a href="http://4.bp.blogspot.com/-MieCzRbjvew/TuoWYtq9HlI/AAAAAAAAAY4/Ge8dRcYBi54/s1600/3.PNG" imageanchor="1" style="margin-left: auto; margin-right: auto;"><img border="0" height="192" src="http://4.bp.blogspot.com/-MieCzRbjvew/TuoWYtq9HlI/AAAAAAAAAY4/Ge8dRcYBi54/s640/3.PNG" width="640" /></a></td></tr><tr><td class="tr-caption" style="text-align: center;">【步驟三】<br />點完按鈕以後會看到此張圖，請先點選圖中的紅色框框（要先用自己的domain去註冊Google Apps）<br />ps: 綠色框框等等會用到</td></tr></tbody></table><br /><table align="center" cellpadding="0" cellspacing="0" class="tr-caption-container" style="margin-left: auto; margin-right: auto; text-align: center;"><tbody><tr><td style="text-align: center;"><a href="http://2.bp.blogspot.com/-8iiXp1bzKxQ/TuoWZs9PFOI/AAAAAAAAAZA/xYSnfvTTIPg/s1600/4.PNG" imageanchor="1" style="margin-left: auto; margin-right: auto;"><img border="0" height="252" src="http://2.bp.blogspot.com/-8iiXp1bzKxQ/TuoWZs9PFOI/AAAAAAAAAZA/xYSnfvTTIPg/s640/4.PNG" width="640" /></a></td></tr><tr><td class="tr-caption" style="text-align: center;">【步驟四】<br />點選以後會看到此圖，請在圖中的輸入框輸入您的domain，（例如：xxx.com）<br />填寫完以後，請點選Submit按鈕<br />點完按鈕以後，會要求你輸入資料<br />輸入完就點選送出</td></tr></tbody></table><br /><table align="center" cellpadding="0" cellspacing="0" class="tr-caption-container" style="margin-left: auto; margin-right: auto; text-align: center;"><tbody><tr><td style="text-align: center;"><a href="http://1.bp.blogspot.com/-dHi6mQ5lY4M/TuoWaklmzHI/AAAAAAAAAZM/2i4VjcDnr9U/s1600/5.PNG" imageanchor="1" style="margin-left: auto; margin-right: auto;"><img border="0" height="266" src="http://1.bp.blogspot.com/-dHi6mQ5lY4M/TuoWaklmzHI/AAAAAAAAAZM/2i4VjcDnr9U/s640/5.PNG" width="640" /></a></td></tr><tr><td class="tr-caption" style="text-align: center;">【步驟五】<br />之後會看到此畫面，會要求您驗證domain<br />有很多種驗證方式，這邊就不教了，因為很簡單。</td></tr></tbody></table><br /><table align="center" cellpadding="0" cellspacing="0" class="tr-caption-container" style="margin-left: auto; margin-right: auto; text-align: center;"><tbody><tr><td style="text-align: center;"><a href="http://4.bp.blogspot.com/-xWMZNlkcZds/TuoXsWT16xI/AAAAAAAAAZs/RHOgXrSgADM/s1600/6.PNG" imageanchor="1" style="margin-left: auto; margin-right: auto;"><img border="0" height="310" src="http://4.bp.blogspot.com/-xWMZNlkcZds/TuoXsWT16xI/AAAAAAAAAZs/RHOgXrSgADM/s400/6.PNG" width="400" /></a></td></tr><tr><td class="tr-caption" style="text-align: center;">【步驟六】<br />記得步驟三的綠色框框嗎？請回到那，並在那個框框輸入您的domain名稱（例如：xxx.com）<br />接著就會看到這個畫面，就輸入步驟四時填入的管理者帳號資訊</td></tr></tbody></table><div class="separator" style="clear: both; text-align: center;"></div><br /><table align="center" cellpadding="0" cellspacing="0" class="tr-caption-container" style="margin-left: auto; margin-right: auto; text-align: center;"><tbody><tr><td style="text-align: center;"><a href="http://2.bp.blogspot.com/-aU7kdYBZpOQ/TuoWcGmszhI/AAAAAAAAAZY/fdXkABFfnxY/s1600/7.PNG" imageanchor="1" style="margin-left: auto; margin-right: auto;"><img border="0" height="232" src="http://2.bp.blogspot.com/-aU7kdYBZpOQ/TuoWcGmszhI/AAAAAAAAAZY/fdXkABFfnxY/s640/7.PNG" width="640" /></a></td></tr><tr><td class="tr-caption" style="text-align: center;">【步驟七】<br />登入成功以後就會看到此畫面，就點選此圖中的紅色框框<br />輸入您的sub-domain名稱，（例如：www）<br />接著你就會有一列資料是www.xxx.com</td></tr></tbody></table><br /><table align="center" cellpadding="0" cellspacing="0" class="tr-caption-container" style="margin-left: auto; margin-right: auto; text-align: center;"><tbody><tr><td style="text-align: center;"><a href="http://4.bp.blogspot.com/-FJQhQeOM4bo/TuoWc5xTM4I/AAAAAAAAAZg/vv1drEI-9lM/s1600/8.PNG" imageanchor="1" style="margin-left: auto; margin-right: auto;"><img border="0" height="171" src="http://4.bp.blogspot.com/-FJQhQeOM4bo/TuoWc5xTM4I/AAAAAAAAAZg/vv1drEI-9lM/s640/8.PNG" width="640" /></a></td></tr><tr><td class="tr-caption" style="text-align: center;">【步驟八】<br />最後一步了，去到您購買domain的管理後台，這邊是以hinet為主，在後台上新增一筆cname，<br />且value為ghs.google.com<br />主機名稱（sub-domain）就是剛剛步驟七填寫的值</td></tr></tbody></table><br /><br /><br /><br /><br /><br /><br />
-      </div>
-      <footer>
-        <p><a class="myButton" href="/2011/12/15/googe-app-engine-gae-domain">read more &raquo;</a></p>
         <div>
           <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 <!-- ken on github -->

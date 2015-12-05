@@ -290,6 +290,34 @@
     </div>
     <!-- This loops through the paginated posts -->
     
+      <h1><a style="color: #F22430" href="/2011/03/10/implement-yahoo-login-using-bbauth">Implement Yahoo Login (Using BBAuth)</a></h1>
+      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
+      <p class="author">
+      <div class="date">
+        <span>10 March 2011</span>
+      </div>
+      </p>
+      <div class="content" style="line-height: 28px;">
+        想讓自己網站上的使用者不用註冊就可以使用自己的網站，<br /><br />只要有Yahoo帳號就可以登入自己的網站的話，<br /><br />可以導入Yahoo Login API，<br /><br />而Yahoo Login API主要分成三種，<br /><br />可以用下列三種認證/授權方式，<br /><br />1. OAuth<br /><br />2. OpenID<br /><br />3. BBAuth<br /><br />這邊選用第三種BBAuth，<br /><br />首先要先去註冊你的appid，<br /><br /><a href="https://developer.apps.yahoo.com/wsregapp/">點這裡來註冊</a><br /><br />點開以後，會看到如下圖（圖一）的表格，<br /><br />第一格Yahoo ID：不用自己填，會幫你填好<br /><br />第二格Authentication method：點選第二個（Browser Based Authentication）<br /><br />第三格Developer/Company Name：填寫自己的名稱或公司名稱<br /><br />第四格Product Name：填寫產品名稱<br /><br />第五格Web Application URL：是指你網站的網址（不能IP喔）<br /><br /><b>第六格BBAuth Success URL：這格很重要，意思是當使用者登入成功以後，下個頁面要轉到哪個頁面</b><br /><b><br /></b><br />第七格Contact Email：填入自己的信箱就好<br /><br />第八格Phone Number：填入電話，這格為optional，可以不填<br /><br />第九格Description of application：敘述<br /><br /><b>第十格Require Access Scope：這格也很重要！意思是說這個認證可以在Yahoo的哪些服務進行存取，這邊我們先勾選Single Sign On, no user data can be accessed就好</b><br /><b><br /></b><br />填寫完成以後就點選Continue，<br /><br /><table align="center" cellpadding="0" cellspacing="0" class="tr-caption-container" style="margin-left: auto; margin-right: auto; text-align: center;"><tbody><tr><td style="text-align: center;"><a href="https://lh6.googleusercontent.com/-Xzu1Zal2Yrc/TXgz2F15ZFI/AAAAAAAAARs/6U5eGC00EhM/s1600/1.png" imageanchor="1" style="margin-left: auto; margin-right: auto;"><img border="0" height="628" src="https://lh6.googleusercontent.com/-Xzu1Zal2Yrc/TXgz2F15ZFI/AAAAAAAAARs/6U5eGC00EhM/s640/1.png" width="640" /></a></td></tr><tr><td class="tr-caption" style="text-align: center;">圖一</td></tr></tbody></table>點完按鈕Continue以後，會看到下圖（圖二）<br /><br />這頁主要是要進行認證的動作，Yahoo要check這個domain是屬於你的！<br /><br />做法是在自己的domain的根目錄底下放置一個.html檔案，<br /><br />檔名yahoo會提供給你，這邊的檔名是ydnv6nnxP.html。<br /><br />將此檔案放置在domain根目錄底下，<br /><br />然後按下圖中的按鈕Check Domain，<br /><br />此時Yahoo就會去request該.html檔，如果有放置上去，<br /><br />就會通過驗證。就會如圖中的Result: <span class="Apple-style-span" style="color: #38761d;">Pass</span><br /><br />如果是Pass，就繼續往下一步，按下按鈕Continue<br /><br /><div class="separator" style="clear: both; text-align: center;"></div><div class="separator" style="clear: both; text-align: center;"></div><br /><table align="center" cellpadding="0" cellspacing="0" class="tr-caption-container" style="margin-left: auto; margin-right: auto; text-align: center;"><tbody><tr><td style="text-align: center;"><a href="https://lh6.googleusercontent.com/-Ti8XoBygyGE/TXgzHJLVt0I/AAAAAAAAARc/0CUUXbJLaDY/s1600/1.5.png" imageanchor="1" style="margin-left: auto; margin-right: auto;"><img border="0" height="304" src="https://lh6.googleusercontent.com/-Ti8XoBygyGE/TXgzHJLVt0I/AAAAAAAAARc/0CUUXbJLaDY/s640/1.5.png" width="640" /></a></td></tr><tr><td class="tr-caption" style="text-align: center;">圖二</td></tr></tbody></table><div class="separator" style="clear: both; text-align: -webkit-auto;"><br /></div><div class="separator" style="clear: both; text-align: -webkit-auto;">點完Continue按鈕以後，會看到下圖（圖三）的畫面</div><div class="separator" style="clear: both; text-align: -webkit-auto;"><br /></div><div class="separator" style="clear: both; text-align: -webkit-auto;">代表申請成功，Yahoo會給你app id和secret</div><br /><div class="separator" style="clear: both; text-align: center;"><br /></div><table align="center" cellpadding="0" cellspacing="0" class="tr-caption-container" style="margin-left: auto; margin-right: auto; text-align: center;"><tbody><tr><td style="text-align: center;"><a href="https://lh3.googleusercontent.com/-U7J5MM21LMY/TXgzHz4HlTI/AAAAAAAAARk/bLcaZyaNerU/s1600/2.png" imageanchor="1" style="margin-left: auto; margin-right: auto;"><img border="0" height="262" src="https://lh3.googleusercontent.com/-U7J5MM21LMY/TXgzHz4HlTI/AAAAAAAAARk/bLcaZyaNerU/s640/2.png" width="640" /></a></td></tr><tr><td class="tr-caption" style="text-align: center;">圖三</td></tr></tbody></table><br />申請完成以後就開始來寫code了！！<br /><br />這邊我以JSP/SERVLET為主，<br /><br /><pre class="brush: java">try{<br />     final String strAppId = "appID"; //應用程式碼<br />     final String strSecrect = "secect"; //驗證用<br />     String strTimeStamp = String.valueOf(new Date().getTime()/1000); //把毫秒轉成秒數<br />             <br />     //接下來這段主要是在做md5，<br />     MessageDigest Signature = MessageDigest.getInstance("MD5");<br />     //下面這行是Yahoo要求要進行md5的參數<br />     String tempMD5 = String.format("/WSLogin/V1/wslogin?appid=%s&amp;.intl=tw&amp;send_userhash=1&amp;ts=%s%s", strAppId, strTimeStamp, strSecrect);<br />     Signature.update(tempMD5.getBytes());<br /> <br />     byte[] Bt = Signature.digest();<br />     StringBuffer buffer = new StringBuffer();<br />     for (int i = 0; i &lt; Bt.length; ++i) {<br />          byte b = Bt[i];<br />          int value = (b &amp; 0x7F) + (b &lt; 0 ? 128 : 0);<br />          buffer.append(value &lt; 16 ? "0" : "");<br />          buffer.append(Integer.toHexString(value));<br />     }<br />     //md5 結束<br />           <br />     //進行完md5以後，就進行Redirect<br />     resp.sendRedirect(String.format("https://api.login.yahoo.com/WSLogin/V1/wslogin?appid=%s&amp;.intl=tw&amp;send_userhash=1&amp;ts=%s&amp;sig=%s", strAppId, strTimeStamp, buffer.toString()));<br />  <br />}catch (Exception e) {<br />     //MD5 Exception<br />}<br /></pre><br /><br />在進行完redirect以後，就會轉向Yahoo登入的頁面，<br /><br />登入完成就會將頁面導向之前<b>第六格BBAuth Success</b>的URL<br /><br />接下來有比較重要的幾點，<br /><br />由於Yahoo Login是無法取得使用者的資訊，<br /><br />它不同於Facebook、Goolge Login，<br /><br />可是一般的網站不是都要記住session嗎?<br /><br />可能是將使用者帳號之類的資訊存在session裡面，<br /><br />可是Yahoo卻無法存取到使用者相關資訊，<br /><br />但是!Yahoo會回傳一個userhash，到<b>第六格BBAuth Success</b>的URL中，<br /><br />而這個userhash是唯一的，不會有重複!<br /><br />所以我們一樣可以利用此userhash存在session裡面，<br /><br />還會回傳appid、token、appdata、ts、sig這些參數回來。<br /><br />但比較重要的是userhash，因為這個是Unique的identifier!!<br /><br />大致上這樣就完成一個Yahoo Login了。<br /><br /><br /><a href="http://developer.yahoo.com/bbauth/user.html">參考來源</a><br /><br /><br /><br /><br /><br />
+      </div>
+      <footer>
+        <p><a class="myButton" href="/2011/03/10/implement-yahoo-login-using-bbauth">read more &raquo;</a></p>
+        <div>
+          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- ken on github -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3783438370424072"
+     data-ad-slot="1516206098"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+        </div>
+      </footer>
+      <hr>
+    
       <h1><a style="color: #F22430" href="/2011/03/10/java-staticfinal">Java static,final 基本概念</a></h1>
       <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
       <p class="author">
@@ -330,34 +358,6 @@
       </div>
       <footer>
         <p><a class="myButton" href="/2011/02/08/implement-facebook-login">read more &raquo;</a></p>
-        <div>
-          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<!-- ken on github -->
-<ins class="adsbygoogle"
-     style="display:block"
-     data-ad-client="ca-pub-3783438370424072"
-     data-ad-slot="1516206098"
-     data-ad-format="auto"></ins>
-<script>
-(adsbygoogle = window.adsbygoogle || []).push({});
-</script>
-
-        </div>
-      </footer>
-      <hr>
-    
-      <h1><a style="color: #F22430" href="/2011/01/16/android-emulator-install-apk">Android emulator install apk</a></h1>
-      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
-      <p class="author">
-      <div class="date">
-        <span>16 January 2011</span>
-      </div>
-      </p>
-      <div class="content" style="line-height: 28px;">
-        今天要把某個app套入中華電信hami的SDK...<br /><br />因為一定要手機裝上Hami Store...但我不想在我手機上裝上這種東西....<br /><br />所以就用emulator...<br /><br />所以就利用指令在emulator上install Hami Store App!<br /><br />首先先切換至<b>Android_SDK</b>目錄底下!<br /><br />在切換至底下的<b>platform-tools(在某個版本之前是在tools底下，如果找不到的話，可以去tools底下找找)，</b><br /><b><br /></b><br />利用底下的adb.exe去執行安裝apk<br /><br />指令如下：<br /><br /><span class="Apple-style-span" style="color: blue;">adb install </span><span class="Apple-style-span" style="color: red;">path\your_apk_name.apk</span><br /><br />指令如圖：<br /><br /><div class="separator" style="clear: both; text-align: center;"><a href="http://2.bp.blogspot.com/_6SxqtkJQECI/TTIZ5QC6YtI/AAAAAAAAAQg/JC6lg7FNglQ/s1600/%25E6%2593%25B7%25E5%258F%2596.PNG" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="80" src="http://2.bp.blogspot.com/_6SxqtkJQECI/TTIZ5QC6YtI/AAAAAAAAAQg/JC6lg7FNglQ/s640/%25E6%2593%25B7%25E5%258F%2596.PNG" width="640" /></a></div><br /><br /><br />輸入指令完以後，<br /><br />如果安裝成功，則會顯示success字樣的訊息！！<br /><br /><br /><br /><br />
-      </div>
-      <footer>
-        <p><a class="myButton" href="/2011/01/16/android-emulator-install-apk">read more &raquo;</a></p>
         <div>
           <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 <!-- ken on github -->

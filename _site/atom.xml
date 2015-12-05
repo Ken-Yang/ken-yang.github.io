@@ -4,13 +4,428 @@
  <title>Ken Yang筆記</title>
  <link href="http://blog.kenyang.net/atom.xml" rel="self"/>
  <link href="http://blog.kenyang.net"/>
- <updated>2015-12-04T22:52:00+08:00</updated>
+ <updated>2015-12-05T21:36:46+08:00</updated>
  <id>http://blog.kenyang.net</id>
  <author>
    <name>Ken Yang</name>
    <email>ken@kenyang.net</email>
  </author>
 
+ 
+ <entry>
+   <title>JCConf Taiwan 2015   Day 2</title>
+   <link href="http://blog.kenyang.net/2015/12/05/jcconf-taiwan-2015-day-2"/>
+   <updated>2015-12-05T00:00:00+08:00</updated>
+   <id>http://blog.kenyang.net/2015/12/05/jcconf-taiwan-2015---day-2</id>
+   <content type="html">&lt;p&gt;&lt;font size=3&gt;&lt;/p&gt;
+
+&lt;p&gt;這篇只是紀錄Java Community Conference 2015的第二天筆記，&lt;br&gt;
+今天聽了以下幾個session，&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;阿里 JVM 的工作方向&lt;/li&gt;
+&lt;li&gt;Universal Scala&lt;br&gt;&lt;/li&gt;
+&lt;li&gt;Deploy your own Spark cluster in 4 minutes using sbt&lt;/li&gt;
+&lt;li&gt;Immutable Infrastructure：觀念與實作 &lt;/li&gt;
+&lt;li&gt;JDK8 JIT 行為和效能分析&lt;/li&gt;
+&lt;li&gt;自己的JVM自己救 - 解救 OOM 實務經驗談 &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;!--more--&gt;
+
+&lt;p&gt;&lt;/br&gt;&lt;/p&gt;
+
+&lt;hr&gt;
+
+&lt;h3 id=&quot;1-阿里-jvm-的工作方向&quot;&gt;1. 阿里 JVM 的工作方向&lt;/h3&gt;
+
+&lt;hr&gt;
+
+&lt;p&gt;主要在說他為什麼從facebook回中國阿里雲，&lt;br&gt;
+在fb調校php，在阿里雲調校jvm，&lt;br&gt;
+在講在阿里雲裡的JVM心路歷程。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Speaker&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;趙海平&lt;/li&gt;
+&lt;li&gt;work @阿里雲&lt;/li&gt;
+&lt;li&gt;previous work @FB&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;Coroutine&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;like wait,notify in Java&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;Java young generation, old generation&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;/br&gt;&lt;/p&gt;
+
+&lt;hr&gt;
+
+&lt;h3 id=&quot;2-universal-scala&quot;&gt;2. Universal Scala&lt;/h3&gt;
+
+&lt;hr&gt;
+
+&lt;p&gt;在講怎麼用scala在frontend與backend上。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Speaker&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Walter Chang&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;What is universal?&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;isomorphic&lt;/li&gt;
+&lt;li&gt;run the same code on both client and server&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;Functional language&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Pure functions &lt;a href=&quot;https://en.wikipedia.org/wiki/Pure_function&quot;&gt;Wiki&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;immutable 優點&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;no need to handle synchronization&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;val is immutable (like final in Java)&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;var i: Int = 123&lt;/li&gt;
+&lt;li&gt;var i = 123&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;var is mutable&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;case class&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;What is Scala.js&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;compile &lt;code&gt;Scala&lt;/code&gt; to &lt;code&gt;javascript&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;Example code&lt;/strong&gt;
+- &lt;a href=&quot;https://github.com/weihsiu/universal.git&quot;&gt;github&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;/br&gt;&lt;/p&gt;
+
+&lt;hr&gt;
+
+&lt;h3 id=&quot;3-deploy-your-own-spark-cluster-in-4-minutes-using-sbt&quot;&gt;3. Deploy your own Spark cluster in 4 minutes using sbt.&lt;/h3&gt;
+
+&lt;hr&gt;
+
+&lt;p&gt;介紹他們的tool（spark-deployer）&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Speaker&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Pishen Tsai&lt;/li&gt;
+&lt;li&gt;Works @KKBox&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;Tool: spark-deployer&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;https://github.com/KKBOX/spark-deployer&quot;&gt;Github&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;SBT plugin&lt;/li&gt;
+&lt;li&gt;productively used in KKBOX&lt;/li&gt;
+&lt;li&gt;100% scala&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;Current Solutions to deploy Spark cluster&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;spark-ec2&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;缺點 
+
+&lt;ul&gt;
+&lt;li&gt;command 太多&lt;/li&gt;
+&lt;li&gt;需要裝&lt;code&gt;sbt&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;需要裝&lt;code&gt;ec2&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;slow startup time (~20mins)&lt;/li&gt;
+&lt;li&gt;一小時算一次錢，三分之一錢花在deploy上&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;要用spark-ec2的flow
+
+&lt;ul&gt;
+&lt;li&gt;&lt;img src=&quot;/assets/2015-12-05-spark-ec2-flow.jpg&quot; alt=&quot;flow&quot;&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;spark-ec2的command
+
+&lt;ul&gt;
+&lt;li&gt;&lt;img src=&quot;/assets/2015-12-05-spark-ec2-cmd.jpg&quot; alt=&quot;command&quot;&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;amazon emr (elastic map reduce)&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;缺點
+
+&lt;ul&gt;
+&lt;li&gt;command 太多&lt;/li&gt;
+&lt;li&gt;需要裝&lt;code&gt;sbt&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;需要裝&lt;code&gt;emr&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;spark version is old&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;要用Amazon emr的flow
+
+&lt;ul&gt;
+&lt;li&gt;&lt;img src=&quot;/assets/2015-12-05-aws-emr-flow.jpg&quot; alt=&quot;flow&quot;&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;emr的cmd
+
+&lt;ul&gt;
+&lt;li&gt;&lt;img src=&quot;/assets/2015-12-05-aws-emr-cmd.jpg&quot; alt=&quot;cmd&quot;&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;spark-deployer&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;優點
+
+&lt;ul&gt;
+&lt;li&gt;只需要安裝&lt;code&gt;sbt&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;fast and parallel startup (~4mins)&lt;/li&gt;
+&lt;li&gt;Dynamic scale out&lt;/li&gt;
+&lt;li&gt;Flexible design &lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;用Spark deployer的flow
+
+&lt;ul&gt;
+&lt;li&gt;&lt;img src=&quot;/assets/2015-12-05-spark-deployer-flow.jpg&quot; alt=&quot;flow&quot;&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;用Spark deployer的cmd
+
+&lt;ul&gt;
+&lt;li&gt;&lt;img src=&quot;/assets/2015-12-05-spark-deployer-cmd.jpg&quot; alt=&quot;cmd&quot;&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;Prerequisite&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;java&lt;/li&gt;
+&lt;li&gt;sbt&lt;/li&gt;
+&lt;li&gt;AWS_ACCESS_KEY_ID&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;/br&gt;&lt;/p&gt;
+
+&lt;hr&gt;
+
+&lt;h3 id=&quot;4-immutable-infrastructure：觀念與實作&quot;&gt;4. Immutable Infrastructure：觀念與實作&lt;/h3&gt;
+
+&lt;hr&gt;
+
+&lt;p&gt;&lt;strong&gt;Speaker&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;葉秉哲&lt;/li&gt;
+&lt;li&gt;Works @gogolook&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;改題目&lt;/strong&gt; -&amp;gt; immutable infrastructure觀念與實作（建議）&lt;/p&gt;
+
+&lt;p&gt;因為talk是在下午第一場，怕大家看code太想睡覺，所以就不講detail實作&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;演算法的領域也說，immutable 的東西會比 mutable 的東西來得好設計&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;why immutable objects&lt;/strong&gt; &lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;simpler   to understand&lt;/li&gt;
+&lt;li&gt;iherently thread-safe&lt;/li&gt;
+&lt;li&gt;offer higher security than mutable objects&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;immutable object&lt;/strong&gt;&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;&lt;span class=&quot;n&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;s&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;quot;ABC&amp;quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;s&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;toLowerCase&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;strong&gt;java hotswap&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;jdk 1.4&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;Christian Posta said:&lt;/strong&gt;&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;don&amp;#39;t hotdeploy/redeploy/migrate your java service in production at runtime.&lt;br&gt;
+do have a very trong focus on your delivery pipeline/automation/testing to quickly make change to your app&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;&lt;strong&gt;What&amp;#39;s an immutable infrastructure&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;quote from Docker 大神&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;re-create images each time you change a line of code.&lt;br&gt;
+prevent modifications of running images.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;&lt;strong&gt;Why immutable infrastructure?&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Simplify change management
+
+&lt;ul&gt;
+&lt;li&gt;hard to keep or restore &amp;quot;desired state&amp;quot; in place&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;Enforce &lt;code&gt;dev/prod&lt;/code&gt; parity
+
+&lt;ul&gt;
+&lt;li&gt;configure &amp;amp; test &lt;code&gt;infra&lt;/code&gt; &lt;strong&gt;before&lt;/strong&gt; deployed to production environment&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;Reason about apps at a higher level
+
+&lt;ul&gt;
+&lt;li&gt;... than just &lt;code&gt;deployable pacakages&lt;/code&gt; containing the code (jar/war/zip/msi)&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;Why &lt;code&gt;NOT&lt;/code&gt; immutable infrastructure?&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Cost may be too high&lt;/li&gt;
+&lt;li&gt;DevOps maturity level&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;講者把image視為一種&lt;code&gt;母體&lt;/code&gt;&lt;/strong&gt;&lt;br&gt;
+主要分為以下三種，  &lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;VM image&lt;/li&gt;
+&lt;li&gt;Container image&lt;/li&gt;
+&lt;li&gt;Unikernel image
+
+&lt;ul&gt;
+&lt;li&gt;對現有container技術有一個比較激進的改良&lt;/li&gt;
+&lt;li&gt;傳統的vm，架構在hypervisor上，也打包一個os在裡面&lt;/li&gt;
+&lt;li&gt;docker不打包，但會共用底下os的東西，有安全性考量&lt;/li&gt;
+&lt;li&gt;所以有了&lt;code&gt;container per VM&lt;/code&gt;，但還是太肥了。&lt;/li&gt;
+&lt;li&gt;把作業系統也看成lib，不會把所有os通通包進來，只抽取它要的。&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://boxfuse.com/&quot;&gt;boxfuse&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;母體 =&amp;gt; 增生 =&amp;gt; 替換 =&amp;gt; 自動化&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;/br&gt;&lt;/p&gt;
+
+&lt;hr&gt;
+
+&lt;h3 id=&quot;5-jdk8-jit-行為和效能分析&quot;&gt;5. JDK8 JIT 行為和效能分析&lt;/h3&gt;
+
+&lt;hr&gt;
+
+&lt;p&gt;這個session是Jserv在講，&lt;br&gt;
+聽過Jserv演講過幾次，&lt;br&gt;
+也曾經在去旁聽過，他在台大講的Android Open Source，&lt;br&gt;
+給我的印象就是高手、講話很快、講話很有梗的。&lt;br&gt;
+其實我原本要去聽別場的&lt;code&gt;MySQL Connector/J&lt;/code&gt;，但一方面覺得實在太累了，&lt;br&gt;
+懶得換room，又想輕鬆一點，聽一下Jserv講講笑話，&lt;br&gt;
+Jserv一樣講得很專業，但真的是不同領域，幾乎都聽不懂。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Speaker&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Jserv&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;topic&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;How JIT works?&lt;/li&gt;
+&lt;li&gt;How to monitor the JIT?&lt;/li&gt;
+&lt;li&gt;How to figure out performance problem?&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;jserv自己準備的共筆&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;https://jcconf.hackpad.com/R0-13PeQD5hpDx#:h=JDK8-JIT-%E8%A1%8C%E7%82%BA%E5%92%8C%E6%95%88%E8%83%BD%E5%88%86%E6%9E%90&quot;&gt;url&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;hotspot&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt; template based interpreter&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;Jserv Said:&lt;/strong&gt;&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;ol&gt;
+&lt;li&gt;作業我自己改，門我自己開，助教負責笑&lt;br&gt;&lt;/li&gt;
+&lt;li&gt;台灣什麼東西都可以靠北&lt;/li&gt;
+&lt;li&gt;靠北JVM&lt;/li&gt;
+&lt;li&gt;怕沒人寫hackpad共筆，所以我自己寫&lt;/li&gt;
+&lt;li&gt;在聯發科工作的時候，大家都是看安兔兔的benchmark買手機&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;&lt;strong&gt;JVM如何支援動態語言&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;invokedynamic
+
+&lt;ul&gt;
+&lt;li&gt;lambda&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;java裡的method都是&lt;code&gt;ivnokevirtual&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;匿名class本質上會生出另一個class，inner class，和lambda不一樣&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;/br&gt;&lt;/p&gt;
+
+&lt;hr&gt;
+
+&lt;h3 id=&quot;6-自己的jvm自己救-解救-oom-實務經驗談&quot;&gt;6. 自己的JVM自己救 - 解救 OOM 實務經驗談&lt;/h3&gt;
+
+&lt;hr&gt;
+
+&lt;p&gt;這場我聽到放空了，不過前半段內容，大致上我都是先前就知道的。&lt;br&gt;
+例如：stack, heap差別...etc.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Shallow heap&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Retained heap&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;/br&gt;&lt;/p&gt;
+
+&lt;hr&gt;
+
+&lt;h3 id=&quot;感想&quot;&gt;感想&lt;/h3&gt;
+
+&lt;hr&gt;
+
+&lt;p&gt;參加完，不能說在知識上收穫很多，&lt;br&gt;
+但反而是一種開眼界的感覺，會覺得人外有人，天外有天，&lt;br&gt;
+覺得自己還得更加努力才行。&lt;/p&gt;
+
+&lt;p&gt;還想推薦一下MySQL的speaker (Ivan Tu)，雖然沒有去聽他的talk，&lt;br&gt;
+但在休息時間時，去到MySQL攤位，都會聽到他很熱情地講解。&lt;/p&gt;
+
+&lt;p&gt;&lt;/font&gt;&lt;/p&gt;
+</content>
+ </entry>
  
  <entry>
    <title>JCConf Taiwan 2015   Day 1</title>
@@ -1304,14 +1719,6 @@ mv完成以後，接著打開&lt;code&gt;index.html&lt;/code&gt;，&lt;br&gt;
    <updated>2014-07-07T11:06:00+08:00</updated>
    <id>http://blog.kenyang.net/2014/07/07/setting-up-load-balancing-with</id>
    <content type="html">&lt;div style=&quot;font-size: 15px; line-height: 22px;&quot;&gt;&lt;a href=&quot;http://blog.kenyang.net/2014/07/setting-up-high-availabilityha.html&quot;&gt;前一篇&lt;/a&gt;有講過了，&lt;br /&gt;Keepalived是一個routing software，&lt;br /&gt;它可以做到load balancing和high-availability，&lt;br /&gt;而&lt;a href=&quot;http://blog.kenyang.net/2014/07/setting-up-high-availabilityha.html&quot;&gt;前一篇&lt;/a&gt;也教怎麼set up HA，&lt;br /&gt;這篇會講怎麼set up load balancing，&lt;br /&gt;&lt;b&gt;&lt;strike&gt;理論上&lt;/strike&gt;&lt;/b&gt;架構應該要和下圖中一樣，才會比較合理，&lt;br /&gt;有N檯load-balancer，專門做load balancing，&lt;br /&gt;有N檯web！&lt;br /&gt;而這些load balancer，都會裝keepalived，然後去binding Virtual IP！&lt;br /&gt;&lt;br /&gt;&lt;div class=&quot;separator&quot; style=&quot;clear: both; text-align: center;&quot;&gt;&lt;a href=&quot;http://4.bp.blogspot.com/-rxBME9e5d4g/U7fayrtLTzI/AAAAAAAAFMk/yOp-1IBSHaQ/s1600/Network+Diagram.png&quot; imageanchor=&quot;1&quot; style=&quot;margin-left: 1em; margin-right: 1em;&quot;&gt;&lt;img border=&quot;0&quot; src=&quot;http://4.bp.blogspot.com/-rxBME9e5d4g/U7fayrtLTzI/AAAAAAAAFMk/yOp-1IBSHaQ/s1600/Network+Diagram.png&quot; /&gt;&lt;/a&gt;&lt;/div&gt;&lt;br /&gt;但基於測試方便加上懶得安裝這麼多檯機器來說明，&lt;br /&gt;先簡化成下圖，&lt;br /&gt;每一檯server身兼load balancer和web server，&lt;br /&gt;&lt;br /&gt;&lt;div class=&quot;separator&quot; style=&quot;clear: both; text-align: center;&quot;&gt;&lt;a href=&quot;http://4.bp.blogspot.com/-HUzm7NOhTrQ/U7fcTr3Rh3I/AAAAAAAAFMw/c4HRt5LI6sE/s1600/Network+Diagram+(1).png&quot; imageanchor=&quot;1&quot; style=&quot;margin-left: 1em; margin-right: 1em;&quot;&gt;&lt;img border=&quot;0&quot; src=&quot;http://4.bp.blogspot.com/-HUzm7NOhTrQ/U7fcTr3Rh3I/AAAAAAAAFMw/c4HRt5LI6sE/s1600/Network+Diagram+(1).png&quot; /&gt;&lt;/a&gt;&lt;/div&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;和&lt;a href=&quot;http://blog.kenyang.net/2014/07/setting-up-high-availabilityha.html&quot;&gt;前一篇&lt;/a&gt;一樣，假設我們有兩檯server，&lt;br /&gt;IP分別為&lt;br /&gt;&amp;nbsp;&amp;nbsp;1. 10.1.190.142&lt;br /&gt;&amp;nbsp;&amp;nbsp;2. 10.1.190.143&lt;br /&gt;&lt;br /&gt;virtual ip：10.1.190.150&lt;br /&gt;&lt;br /&gt;在開始之前，請先去完成&lt;a href=&quot;http://blog.kenyang.net/2014/07/setting-up-high-availabilityha.html&quot;&gt;前一篇&lt;/a&gt;的所有操作，&lt;br /&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;1. Generate hash &lt;/span&gt;&lt;br /&gt;&lt;br /&gt;首先，先gen hash，&lt;br /&gt;這hash是給load balancer用的，&lt;br /&gt;原因是load balancer會去確認每一檯的web server是活著的，&lt;br /&gt;確認時會帶著這個hash值！&lt;br /&gt;因為有兩檯機器，所以要gen 2組，&lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;root@host1:~$ genhash -s 10.1.190.142 -p 80 -u /index.html&lt;br /&gt;MD5SUM = 043e8a8eeaf59e7ef9c6b4cd6f71a7de&lt;br /&gt;&lt;br /&gt;root@host1:~$ genhash -s 10.1.190.143 -p 80 -u /index.html&lt;br /&gt;MD5SUM = 66d84fe2b7e20944dd5d077e768b2cfb&lt;br /&gt;&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;2. Write a script for handling iptables &lt;/span&gt;&lt;br /&gt;&lt;br /&gt;在這步驟，要寫一隻script，&lt;br /&gt;負責add和delete rule的，&lt;br /&gt;為什麼要add?&lt;br /&gt;因為當如果沒有add virtual ip進去rule，&lt;br /&gt;當load balancer把packet轉進來時，是送不進來的！&lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;#!/bin/bash                                                                                                                                                                 &lt;br /&gt;&lt;br /&gt;VIP=$2&lt;br /&gt;&lt;br /&gt;count=$(iptables -t nat -L| grep $VIP | wc -l)&lt;br /&gt;&lt;br /&gt;case &quot;$1&quot; in&lt;br /&gt;  --add)&lt;br /&gt;    if [[ $count == 0 ]]; then&lt;br /&gt;        iptables -A PREROUTING -t nat -d $VIP -p tcp -j REDIRECT&lt;br /&gt;    fi  &lt;br /&gt;    ;;  &lt;br /&gt;  --del)&lt;br /&gt;    if [[ $count &amp;gt; 0 ]]; then&lt;br /&gt;        iptables -D PREROUTING -t nat -d $VIP -p tcp -j REDIRECT&lt;br /&gt;    fi&lt;br /&gt;    ;;  &lt;br /&gt;esac&lt;br /&gt;&lt;br /&gt;exit 0&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;3. Configuration settings&lt;/span&gt;&lt;br /&gt;&lt;br /&gt;基本上設置跟第一篇沒有什麼太大差別，&lt;br /&gt;首先只有第&lt;span style=&quot;color: red;&quot;&gt;26,27&lt;/span&gt;行，多了兩個指令，&lt;br /&gt;分別是當這檯機器進入master模式時，要把rule刪除&lt;br /&gt;以及進入backup時，要把rule加進去!&lt;br /&gt;&lt;br /&gt;以及增加了&lt;span style=&quot;color: red;&quot;&gt;31~60&lt;/span&gt;行的setting,&lt;br /&gt;記得第一檯和第二檯都要進行設定，但一樣要把state,priority, router_id改成符合該host的設定！&lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;global_defs {&lt;br /&gt;  notification_email {&lt;br /&gt;    kenyang@xxx.com&lt;br /&gt;  }&lt;br /&gt;  notification_email_from xxxx@example.com&lt;br /&gt;  smtp_server 127.0.0.1&lt;br /&gt;  smtp_connect_timeout 30&lt;br /&gt;  router_id host1      # 用來識別是哪檯機器，如果postfix有安裝，在寄信的時候，title就會跟你說是哪檯機器有問題&lt;br /&gt;}&lt;br /&gt;&lt;br /&gt;vrrp_instance VI_1 {   # VI_1 可以改成自己想要的string&lt;br /&gt;&lt;br /&gt;  state MASTER         # MASTER意思是這檯為主要的機器&lt;br /&gt;&lt;br /&gt;  interface eth0       # 把virtual ip binding在eht0上&lt;br /&gt;&lt;br /&gt;  virtual_router_id 1  # 0~255之間，用來識別是哪一個instance&lt;br /&gt;  priority 100         &lt;br /&gt;&lt;br /&gt;  virtual_ipaddress {&lt;br /&gt;    10.1.190.150/24&lt;br /&gt;  }&lt;br /&gt;&lt;br /&gt;  smtp_alert           # 當有問題時要發信通知&lt;br /&gt;&lt;br /&gt;  notify_master &quot;/etc/keepalived/handle_iptable.sh --del 10.1.190.150&quot; # 當這檯機器進入master模式時，要把rule刪除&lt;br /&gt;  notify_backup &quot;/etc/keepalived/handle_iptable.sh --add 10.1.190.150&quot; # 當這檯機器進入backup模式時，要把rule加入&lt;br /&gt;}&lt;br /&gt;&lt;br /&gt;# virtual web server&lt;br /&gt;virtual_server 10.1.190.150 80 {&lt;br /&gt;  delay_loop 10              # n秒確認底下的web一次&lt;br /&gt;  lb_algo rr                 # 使用Round Robin的演算法做load balancing (rr, wrr, al, wlc, ......etc)&lt;br /&gt;  lb_kind DR                 # Forwarding的方法 （dr, nat, tun)&lt;br /&gt;  persistence_timeout 5      # timeout for persistent connection&lt;br /&gt;  protocol TCP &lt;br /&gt;&lt;br /&gt;  real_server 10.1.190.142 80 {&lt;br /&gt;    HTTP_GET {  # 使用HTTP_GET的方式進行確認web活著&lt;br /&gt;      url {&lt;br /&gt;        path /index.html&lt;br /&gt;        digest 043e8a8eeaf59e7ef9c6b4cd6f71a7de   # 剛剛第一步驟gen的hash&lt;br /&gt;      }   &lt;br /&gt;      connect_timeout 3&lt;br /&gt;      nb_get_retry 3&lt;br /&gt;      delay_before_retry 2&lt;br /&gt;    }   &lt;br /&gt;  }&lt;br /&gt;  real_server 10.1.190.143 80 {&lt;br /&gt;    HTTP_GET { # 使用HTTP_GET的方式進行確認web活著&lt;br /&gt;      url {&lt;br /&gt;        path /index.html&lt;br /&gt;        digest 66d84fe2b7e20944dd5d077e768b2cfb   # 剛剛第一步驟gen的hash&lt;br /&gt;      }   &lt;br /&gt;      connect_timeout 3&lt;br /&gt;      nb_get_retry 3&lt;br /&gt;      delay_before_retry 2&lt;br /&gt;    }   &lt;br /&gt;  }&lt;br /&gt;}   &lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;4. Verify&lt;/span&gt;&lt;br /&gt;&lt;br /&gt;完成上述設定以後，&lt;br /&gt;先把keepalived reload，&lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;service keepalived reload&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;reload完成以後，&lt;br /&gt;先在第一檯打下面的指令，&lt;br /&gt;為什麼是在第一檯打？因為現在第一檯是master，它搶到virtual ip，&lt;br /&gt;所以load balancing的工作是交由第一檯來做的！&lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;ipvsadm -ln&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;打完應該會看到下面的內容，&lt;br /&gt;10.1.190.150這檯底下有兩檯主機，&lt;br /&gt;分別是142, 143，&lt;br /&gt;load balancer就是透過上述的HTTP_GET去確認web server是活著的，&lt;br /&gt;比較特別的有兩個參數，&lt;br /&gt;&amp;nbsp;&amp;nbsp;1. ActiveConn: 簡言之這檯機器目前有幾個人連上來&lt;br /&gt;&amp;nbsp;&amp;nbsp;2. InActConn: 有幾檯機器的tcp status不是established&lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;Prot LocalAddress:Port Scheduler Flags&lt;br /&gt;  -&amp;gt; RemoteAddress:Port           Forward Weight ActiveConn InActConn&lt;br /&gt;TCP  10.1.190.150:80 rr persistent 5&lt;br /&gt;  -&amp;gt; 10.1.190.142:80              Route   1      0          0         &lt;br /&gt;  -&amp;gt; 10.1.190.143:80              Route   1      0          0    &lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;這時候在電腦上的browser瀏覽10.1.190.150，&lt;br /&gt;然後在手機（或者其他檯電腦上）也瀏覽10.1.190.150&lt;br /&gt;然後再馬上在第一檯機器打下面的指令&lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;ipvsadm -ln&lt;br /&gt;&lt;/pre&gt;應該會發現ActiveConn都變成1了！&lt;br /&gt;如果你有第三檯機器，你可以試試看再連線10.1.190.150!&lt;br /&gt;這時某一檯的ActiveConn會變成2！&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;/div&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;</content>
- </entry>
- 
- <entry>
-   <title>Setting up a High-Availability(HA) environment with Keepalived</title>
-   <link href="http://blog.kenyang.net/2014/07/06/setting-up-high-availabilityha"/>
-   <updated>2014-07-06T19:28:00+08:00</updated>
-   <id>http://blog.kenyang.net/2014/07/06/setting-up-high-availabilityha</id>
-   <content type="html">&lt;div style=&quot;font-size: 15px; line-height: 22px;&quot;&gt;Keepalived是一個routing software，&lt;br /&gt;它可以做到load balancing和high-availability，&lt;br /&gt;load balancing會倚靠lvs (linux virtual server, ipvsadm)來做到（但這篇只會做HA，下篇再講怎麼做load balancing），&lt;br /&gt;而high-availability是靠VRRP protocol來達成，&lt;br /&gt;那什麼是&lt;a href=&quot;http://en.wikipedia.org/wiki/Virtual_Router_Redundancy_Protocol&quot; target=&quot;_blank&quot;&gt;VRRP&lt;/a&gt;（Virtual Router Redundancy Protocol ）？&lt;br /&gt;簡單的說，就是為了當某個router故障，然後可以快速的failover，&lt;br /&gt;Keepalivied就是利用這protocol來達到HA．&lt;br /&gt;&lt;br /&gt;假設我們有兩檯web server，&lt;br /&gt;IP分別為&lt;br /&gt;&amp;nbsp;&amp;nbsp;1. 10.1.190.142&lt;br /&gt;&amp;nbsp;&amp;nbsp;2. 10.1.190.143&lt;br /&gt;&lt;br /&gt;在兩檯都安裝好keepalived的情況下，&lt;br /&gt;被設定為&quot;MASTER&quot;的那檯機器，會去binding 一個我們所指定的virtual ip！&lt;br /&gt;這裡先假設virtual ip為10.1.190.150&lt;br /&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;1. Install the packages &lt;/span&gt;&lt;br /&gt;&lt;br /&gt;首先先ssh到第一檯和第二檯上，安裝等等會用到的幾個packages，&lt;br /&gt;&amp;nbsp;&amp;nbsp;1. keepalived&lt;br /&gt;&amp;nbsp;&amp;nbsp;2. nginx: 你也可以選擇你想要用的web server&lt;br /&gt;&amp;nbsp;&amp;nbsp;3. postfix: optional, 安裝postfix的目的在於，server壞掉時，會寄信通知你&lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;apt-get install keepalived nginx postfix&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;2. Set up environment &lt;/span&gt;&lt;br /&gt;&lt;br /&gt;安裝好以後，先確認你的nginx是有起來的，&lt;br /&gt;開browser去打一下web server就可以簡單確認！&lt;br /&gt;&lt;br /&gt;接著先到第一檯機器上去進行keepalived的config設定 &lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;vim /etc/keepalived/keepalived.conf&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;內容如下：&lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;global_defs {&lt;br /&gt;  notification_email {&lt;br /&gt;    kenyang@xxx.com&lt;br /&gt;  }&lt;br /&gt;  notification_email_from xxxx@example.com&lt;br /&gt;  smtp_server 127.0.0.1&lt;br /&gt;  smtp_connect_timeout 30&lt;br /&gt;  router_id host1      # 用來識別是哪檯機器，如果postfix有安裝，在寄信的時候，title就會跟你說是哪檯機器有問題&lt;br /&gt;}&lt;br /&gt;&lt;br /&gt;vrrp_instance VI_1 {   # VI_1 可以改成自己想要的string&lt;br /&gt;&lt;br /&gt;  state MASTER         # MASTER意思是這檯為主要的機器&lt;br /&gt;&lt;br /&gt;  interface eth0       # 把virtual ip binding在eht0上&lt;br /&gt;&lt;br /&gt;  virtual_router_id 1  # 0~255之間，用來識別是哪一個instance&lt;br /&gt;  priority 100         &lt;br /&gt;&lt;br /&gt;  virtual_ipaddress {&lt;br /&gt;    10.1.190.150/24&lt;br /&gt;  }&lt;br /&gt;&lt;br /&gt;  smtp_alert           # 當有問題時要發信通知&lt;br /&gt;}&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;&lt;br /&gt;接著就到第二檯上去進行設定，&lt;br /&gt;其實內容大致上和第一檯一模一樣，&lt;br /&gt;只有router_id, state, priority需要變動&lt;br /&gt;內容如下，&lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;global_defs {&lt;br /&gt;  ... same with host1 ...&lt;br /&gt;  router_id host2  &lt;br /&gt;}&lt;br /&gt;&lt;br /&gt;vrrp_instance VI_1 {   # VI_1 可以改成自己想要的string&lt;br /&gt;  ... same with host 1 ....&lt;br /&gt;  state BACKUP&lt;br /&gt;  priority 50         &lt;br /&gt;}&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;完成設定以後，分別在兩檯機器上打開keepalived，&lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;service keepalived start&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;3. Verify &lt;/span&gt;&lt;br /&gt;&lt;br /&gt;最後就來驗證ha是work的，&lt;br /&gt;先到第一檯上去，因為第一檯設定為MASTER，&lt;br /&gt;因此理論上第一檯除了自己的IP (10.1.190.142)以外，&lt;br /&gt;還要拿到這個virtual ip (10.1.190.150)，&lt;br /&gt;打下面的指令可以驗證，&lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;root@host1:~$ ip a | grep eth0 | grep inet&lt;br /&gt;    inet 10.1.190.142/24 brd 10.1.190.255 scope global eth0&lt;br /&gt;    inet 10.1.190.150/24 scope global secondary eth0&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;接著打開web browser去連virtual ip (10.1.190.150)，&lt;br /&gt;都會導到第一檯的nginx去！&lt;br /&gt;這時候把第一檯關機！&lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;root@host1:~$ shutdown now&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;此時第二檯應該要拿到virtual ip，&lt;br /&gt;一樣打下面的指令做驗證&lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;root@host2:~$ ip a | grep eth0 | grep inet&lt;br /&gt;    inet 10.1.190.143/24 brd 10.1.190.255 scope global eth0&lt;br /&gt;    inet 10.1.190.150/24 scope global secondary eth0&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;然後再打開web browser去連virtual ip (10.1.190.150)，&lt;br /&gt;此時看到的內容會是第二檯nginx上的內容！&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;除此之外，如果postfix有設定成功，&lt;br /&gt;應該是會收到mail跟你說host2進入了MASTER模式，&lt;br /&gt;標題是：[host2] VRRP Instance VI_1 - Entering MASTER state&lt;br /&gt;內容是：=&gt; VRRP Instance is now owning VRRP VIPs &lt;=   下一篇再教怎麼用keepalived做load balance.           &lt;/div&gt;&lt;br /&gt;</content>
  </entry>
  
  
