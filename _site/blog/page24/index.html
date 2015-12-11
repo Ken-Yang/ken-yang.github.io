@@ -216,6 +216,8 @@
   
     
   
+    
+  
 
 
 
@@ -290,6 +292,34 @@
     </div>
     <!-- This loops through the paginated posts -->
     
+      <h1><a style="color: #F22430" href="/2012/03/04/c-webcam-using-emgu">C# 控制 Webcam 【using Emgu】</a></h1>
+      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
+      <p class="author">
+      <div class="date">
+        <span>04 March 2012</span>
+      </div>
+      </p>
+      <div class="content" style="line-height: 28px;">
+        這篇似乎是我歷年來第一篇有關M$的筆記.........<br />真是寫得有點心不甘情不願XD<br />畢竟本人真的是沒有很喜歡M$的東西，<br />當然不是因為M$不好，M$也有它好的一面，<br />只能說或許是習慣問題....<br /><br />OK，進入正題，<br />這篇主要是去說明如何利用C#去控制你的網路攝影機，<br />且是使用Emgu這套dll，<br />甚麼是Emgu呢?<br />他和OpenCV有點關聯，<br />OpenCV相信不管是Java, C, C++等language的開發者，都了解OpenCV是甚麼!?<br />簡單說，OpenCV是一套強大的影像處理library，由INTEL開發，<br />非常強大，甚至你可以利用OpenCV去做到OCR，很方便。<br />也由於OpenCV沒有支援C#，那C#要怎麼使用OpenCV呢?<br />就是靠<a href="http://www.emgu.com/wiki/index.php/Main_Page">Emgu</a>，<a href="http://www.emgu.com/wiki/index.php/Main_Page">Emgu</a>是一套允許OpenCV的function在C#等語言中被使用。<br /><br />但我們這邊並不會使用到OpenCV的功能，<br />就是簡單的介紹Emgu很基本的功能，<br />就是存取攝影機，<br />首先先去<a href="http://sourceforge.net/projects/emgucv/files/emgucv/2.3.0/">下載Emgu，並且安裝</a>，<br />安裝完成以後就可以開始寫程式....<br /><br />看你是要開啟一個WPF專案，還是一個Window Form專案，<br />建議你開啟Window Form，因為到時Webcam回傳回來的image型態，<br />可以直接在 Window Form中的pictureBox裡面使用。<br /><br />開啟以後，就在你的專案中加入reference，<br />加入以下四個dll，dll的位置就是在你安裝Emgu位置的bin底下：<br /><br /><ol><li>Emgu.CV.dll</li><li>Emgu.CV.ML.dll</li><li>Emgu.CV.UI.dll</li><li>Emgu.Util.dll</li></ol><br />加入以後，請先儲存你的專案，<br />儲存以後請在你安裝Emgu位置的bin底下找到兩個dll，<br /><br /><ol><li>opencv_core231.dll</li><li>opencv_highgui231.dll</li></ol><br />把這兩個dll放置到你的專案的/bin/Debug/底下。<br />因為Emgu.CV.dll會使用到上述兩個dll。<br /><br /><br />完成上述動作以後就開始寫code，<br />先import會使用到的lib，如下:<br /><pre class="brush: c-sharp">using Emgu.CV;<br />using Emgu.CV.Structure;<br /></pre><br /><br />先宣告一個Capture物件，如下:<br /><pre class="brush: c-sharp">private Capture cap = null;                 // Webcam物件<br /></pre>這個物件就是用來連結到你的webcam。<br /><br /><br />接著在Form1_Load event中，<br />連結到攝影機以及建立一個event用來抓取畫面，如下:<br /><pre class="brush: c-sharp">private void Form1_Load(object sender, EventArgs e)<br />{<br />     cap = new Capture(0); // 連結到攝影機0，如果你有兩台攝影機，第二台就是1<br />     Application.Idle += new EventHandler(Application_Idle); // 在Idle的event下，把畫面設定到pictureBox上(當然你也可以用timer事件)<br />}<br /></pre><br /><br />接下來要寫抓取畫面event的code，<br /><pre class="brush: c-sharp">        void Application_Idle(object sender, EventArgs e)<br />        {<br />             Image&lt;Bgr, Byte&gt; frame = cap.QueryFrame(); // 去query該畫面<br />             pictureBox1.Image = frame.ToBitmap(); // 把畫面轉換成bitmap型態，在餵給pictureBox元件<br />        }<br /></pre><br /><br />完成以後按下F5執行，應該就可以順利取得攝影機畫面瞜!<br /><br /><br /><br />
+      </div>
+      <footer>
+        <p><a class="myButton" href="/2012/03/04/c-webcam-using-emgu">read more &raquo;</a></p>
+        <div>
+          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- ken on github -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3783438370424072"
+     data-ad-slot="1516206098"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+        </div>
+      </footer>
+      <hr>
+    
       <h1><a style="color: #F22430" href="/2012/02/20/android-out-of-memory-oom">Android Out of Memory (OOM)</a></h1>
       <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
       <p class="author">
@@ -346,41 +376,13 @@
       </footer>
       <hr>
     
-      <h1><a style="color: #F22430" href="/2012/01/09/java-unboxingboxing">Java 拆箱(unboxing)、裝箱(boxing)</a></h1>
-      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
-      <p class="author">
-      <div class="date">
-        <span>09 January 2012</span>
-      </div>
-      </p>
-      <div class="content" style="line-height: 28px;">
-        <br /><br /><br />這篇要講到java拆箱(unboxing)、裝箱(boxing)、自動裝箱(auto-boxing)、自動拆箱(auto-unboxing)的概念了，<br />我舉個小例子來說明何謂拆箱(unboxing)、裝箱(boxing)、自動裝箱(auto-boxing))、自動拆箱(auto-unboxing)，<br />我用Integer和int來說明。<br /><pre class="brush: java">Integer A = new Integer(10);  // 裝箱<br />int B = A.intValue();   // 拆箱<br />B = A;    // 自動拆箱<br />A = 20;    // 自動裝箱</pre>上面的行為在Compilr中，<br /><span style="color: #38761d;"><b>A = 20;</b></span> 會被自動轉換成 <b><span style="color: #38761d;">A = new Integer(20);</span></b><br />我們稱之為自動裝箱。<br /><br /><b><span style="color: #38761d;">B=A; </span></b>&nbsp;會被自動轉換成<b><span style="color: #38761d;"> B = A.intValue();</span></b><br />稱之為自動拆箱<br /><br /><br />簡單的說，<br />把primitive轉成物件，稱之為裝箱，<br />把物件轉乘primitive，稱之為拆箱。<br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
-      </div>
-      <footer>
-        <p><a class="myButton" href="/2012/01/09/java-unboxingboxing">read more &raquo;</a></p>
-        <div>
-          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<!-- ken on github -->
-<ins class="adsbygoogle"
-     style="display:block"
-     data-ad-client="ca-pub-3783438370424072"
-     data-ad-slot="1516206098"
-     data-ad-format="auto"></ins>
-<script>
-(adsbygoogle = window.adsbygoogle || []).push({});
-</script>
-
-        </div>
-      </footer>
-      <hr>
-    
 
     <!-- Pagination links -->
     <div class="pagination">
       
         <a href="/blog/page23" class="previous">Previous</a>
       
-      <span class="page_number ">Page: 24 of 55</span>
+      <span class="page_number ">Page: 24 of 56</span>
       
         <a href="/blog/page25" class="next">Next</a>
       

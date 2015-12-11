@@ -216,6 +216,8 @@
   
     
   
+    
+  
 
 
 
@@ -289,6 +291,72 @@
 
     </div>
     <!-- This loops through the paginated posts -->
+    
+      <h1><a style="color: #F22430" href="/2015/12/01/create-a-iscsi-target-on-ubuntu">Create a iSCSI target on Ubuntu</a></h1>
+      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
+      <p class="author">
+      <div class="date">
+        <span>01 December 2015</span>
+      </div>
+      </p>
+      <div class="content" style="line-height: 28px;">
+        <p><font size=3>
+這篇會介紹如何在Ubuntu上，建立一個iSCSI Target Server，<br>
+提供給別人測試使用。</p>
+
+<p></br></p>
+
+<h4 id="install-tgt">Install tgt</h4>
+
+<hr>
+
+<p>首先要先安裝tgt這個package。  </p>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>apt-get install tgt
+</code></pre></div>
+<p></br></p>
+
+<h4 id="create-virtual-disks">Create virtual disks</h4>
+
+<hr>
+
+<p>這裡會用<code>dd</code>來建立幾個假的block device，<br>
+待會就把devices加入到iSCSI中。</p>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>dd <span class="k">if</span><span class="o">=</span>/dev/zero <span class="nv">of</span><span class="o">=</span>/var/tmp/iscsi-disk1 <span class="nv">bs</span><span class="o">=</span>1M <span class="nv">count</span><span class="o">=</span>100
+<span class="nv">$ </span>dd <span class="k">if</span><span class="o">=</span>/dev/zero <span class="nv">of</span><span class="o">=</span>/var/tmp/iscsi-disk2 <span class="nv">bs</span><span class="o">=</span>1M <span class="nv">count</span><span class="o">=</span>100
+</code></pre></div>
+<p></br></p>
+
+<h4 id="create-targets">Create targets</h4>
+
+<hr>
+
+<p>這裡建立了2個target，分別為，</p>
+
+<ul>
+<li>iqn.2015-07.net.kenyang:ken.iscsi.1</li>
+<li>iqn.2015-07.net.kenyang:ken.iscsi.2</li>
+</ul>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>tgtadm --lld iscsi --op new --mode target --tid <span class="m">1</span> -T iqn.2015-07.net.kenyang:ken.iscsi.1
+<span class="nv">$ </span>tgtadm --lld iscsi --op new --mode target --tid <span class="m">2</span> -T iqn.2015-07.net.kenyang:ken.iscsi.2
+</code></pre></div>
+      </div>
+      <footer>
+        <p><a class="myButton" href="/2015/12/01/create-a-iscsi-target-on-ubuntu">read more &raquo;</a></p>
+        <div>
+          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- ken on github -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3783438370424072"
+     data-ad-slot="1516206098"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+        </div>
+      </footer>
+      <hr>
     
       <h1><a style="color: #F22430" href="/2015/11/30/how-to-use-nodejs-mongodb-with-docker">How to use NodeJS & MongoDB with Docker?</a></h1>
       <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
@@ -422,101 +490,13 @@ $ lvs
       </footer>
       <hr>
     
-      <h1><a style="color: #F22430" href="/2015/11/27/do-not-allocate-all-the-lvm-space-with-preseed">Do not allocate all the LVM space with preseed</a></h1>
-      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
-      <p class="author">
-      <div class="date">
-        <span>27 November 2015</span>
-      </div>
-      </p>
-      <div class="content" style="line-height: 28px;">
-        <p><font size=3>
-使用Preseed file分割LVM時，<br>
-並無法做到只使用某部分的VG就好，<br>
-舉例來說，假設你有一個100G的硬碟，<br>
-然後preseed file如下，</p>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash">d-i partman-auto/expert_recipe string  <span class="se">\</span>
-      boot-root ::                                                  <span class="se">\</span>
-              <span class="m">20480</span> <span class="m">10</span> <span class="m">20480</span> ext4                                   <span class="se">\</span>
-                      <span class="nv">$lvmok</span><span class="o">{}</span> lv_name<span class="o">{</span> root <span class="o">}</span> <span class="nv">$defaultignore</span><span class="o">{</span> <span class="o">}</span>    <span class="se">\</span>
-                      method<span class="o">{</span> format <span class="o">}</span> format<span class="o">{</span> <span class="o">}</span>                    <span class="se">\</span>
-                      use_filesystem<span class="o">{</span> <span class="o">}</span> filesystem<span class="o">{</span> ext4 <span class="o">}</span>          <span class="se">\</span>
-                      mountpoint<span class="o">{</span> / <span class="o">}</span>                               <span class="se">\</span>
-              .                                                     <span class="se">\</span>
-              <span class="m">20480</span> <span class="m">10</span> <span class="m">20480</span> ext4                                   <span class="se">\</span>
-                      <span class="nv">$lvmok</span><span class="o">{</span> <span class="o">}</span> lv_name<span class="o">{</span> log <span class="o">}</span> <span class="nv">$defaultignore</span><span class="o">{</span> <span class="o">}</span>    <span class="se">\</span>
-                      method<span class="o">{</span> format <span class="o">}</span> format<span class="o">{</span> <span class="o">}</span>                    <span class="se">\</span>
-                      use_filesystem<span class="o">{</span> <span class="o">}</span> filesystem<span class="o">{</span> ext4 <span class="o">}</span>          <span class="se">\</span>
-                      mountpoint<span class="o">{</span> /var/log <span class="o">}</span>                        <span class="se">\</span>
-</code></pre></div>
-<p>我們分別給每個lv的大小為：</p>
-
-<ul>
-<li><code>root</code> : 20G</li>
-<li><code>log</code>  : 20G</li>
-</ul>
-
-<p>你可能會以為，剩下的60G不會被加到LV裡面，<br>
-但其實剩下的60G會通通被放到log裡面去。  </p>
-
-<p>不過有比較tricky的解法，可以參考下面的Preseed file，<br>
-我們多增加了一個LV，叫做<code>to_be_free</code>，<br>
-然後把所有的free space都指派給<code>to_be_free</code>，<br>
-最後在<code>late_command</code>裡，用<code>lvremove</code>把<code>to_be_free</code>砍掉，<br>
-這樣就可以做到把某部分space歸還了。  </p>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash">d-i partman-auto/expert_recipe string  <span class="se">\</span>
-      boot-root ::                                                  <span class="se">\</span>
-              <span class="m">20480</span> <span class="m">10</span> <span class="m">20480</span> ext4                                   <span class="se">\</span>
-                      <span class="nv">$lvmok</span><span class="o">{}</span> lv_name<span class="o">{</span> root <span class="o">}</span> <span class="nv">$defaultignore</span><span class="o">{</span> <span class="o">}</span>    <span class="se">\</span>
-                      method<span class="o">{</span> format <span class="o">}</span> format<span class="o">{</span> <span class="o">}</span>                    <span class="se">\</span>
-                      use_filesystem<span class="o">{</span> <span class="o">}</span> filesystem<span class="o">{</span> ext4 <span class="o">}</span>          <span class="se">\</span>
-                      mountpoint<span class="o">{</span> / <span class="o">}</span>                               <span class="se">\</span>
-              .                                                     <span class="se">\</span>
-              <span class="m">20480</span> <span class="m">10</span> <span class="m">20480</span> ext4                                   <span class="se">\</span>
-                      <span class="nv">$lvmok</span><span class="o">{</span> <span class="o">}</span> lv_name<span class="o">{</span> log <span class="o">}</span> <span class="nv">$defaultignore</span><span class="o">{</span> <span class="o">}</span>    <span class="se">\</span>
-                      method<span class="o">{</span> format <span class="o">}</span> format<span class="o">{</span> <span class="o">}</span>                    <span class="se">\</span>
-                      use_filesystem<span class="o">{</span> <span class="o">}</span> filesystem<span class="o">{</span> ext4 <span class="o">}</span>          <span class="se">\</span>
-                      mountpoint<span class="o">{</span> /var/log <span class="o">}</span>                        <span class="se">\</span>
-              .                                                     <span class="se">\</span>
-              <span class="m">1</span> <span class="m">10</span> -1 ext4                                          <span class="se">\</span>
-                      <span class="nv">$lvmok</span><span class="o">{</span> <span class="o">}</span> lv_name<span class="o">{</span> to_be_free <span class="o">}</span> <span class="nv">$defaultignore</span><span class="o">{</span> <span class="o">}</span>    <span class="se">\</span>
-                      method<span class="o">{</span> format <span class="o">}</span> format<span class="o">{</span> <span class="o">}</span>                    <span class="se">\</span>
-                      use_filesystem<span class="o">{</span> <span class="o">}</span> filesystem<span class="o">{</span> ext4 <span class="o">}</span>          <span class="se">\</span>
-                      mountpoint<span class="o">{</span> /to_be_free <span class="o">}</span>                     <span class="se">\</span>
-
-d-i preseed/late_command string <span class="se">\</span>
-umount /target/to_be_free/ <span class="p">;</span> <span class="se">\</span>
-lvremove -f /dev/*/*to_be_free &gt; /dev/null 2&gt;<span class="p">&amp;</span><span class="m">1</span> <span class="p">;</span> <span class="se">\</span>
-sed -i <span class="s1">&#39;/to_be_free/d&#39;</span> /target/etc/fstab <span class="p">;</span> <span class="se">\</span>
-</code></pre></div>
-<p></font></p>
-
-      </div>
-      <footer>
-        <p><a class="myButton" href="/2015/11/27/do-not-allocate-all-the-lvm-space-with-preseed">read more &raquo;</a></p>
-        <div>
-          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<!-- ken on github -->
-<ins class="adsbygoogle"
-     style="display:block"
-     data-ad-client="ca-pub-3783438370424072"
-     data-ad-slot="1516206098"
-     data-ad-format="auto"></ins>
-<script>
-(adsbygoogle = window.adsbygoogle || []).push({});
-</script>
-
-        </div>
-      </footer>
-      <hr>
-    
 
     <!-- Pagination links -->
     <div class="pagination">
       
         <a href="/" class="previous">Previous</a>
       
-      <span class="page_number ">Page: 2 of 55</span>
+      <span class="page_number ">Page: 2 of 56</span>
       
         <a href="/blog/page3" class="next">Next</a>
       

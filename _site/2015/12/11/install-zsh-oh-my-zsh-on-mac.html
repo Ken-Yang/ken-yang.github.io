@@ -5,8 +5,8 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-    <title>Android emulator install apk</title>
-    
+    <title>Install zsh and oh-my-zsh on Mac</title>
+    <meta name="description" content="">
     <meta name="author" content="Ken Yang">
 
     <!-- Enable responsive viewport -->
@@ -306,7 +306,7 @@
 
 
 <div class="page-header">
-  <h1>Android emulator install apk </h1>
+  <h1>Install zsh and oh-my-zsh on Mac </h1>
 </div>
 
 <div class="row post-full">
@@ -336,32 +336,139 @@
 
   <div class="col-xs-12">
     <div class="date">
-      <span>16 January 2011</span>
+      <span>11 December 2015</span>
     </div>
     <div class="content" style="line-height: 28px;">
-      今天要把某個app套入中華電信hami的SDK...<br /><br />因為一定要手機裝上Hami Store...但我不想在我手機上裝上這種東西....<br /><br />所以就用emulator...<br /><br />所以就利用指令在emulator上install Hami Store App!<br /><br />首先先切換至<b>Android_SDK</b>目錄底下!<br /><br />在切換至底下的<b>platform-tools(在某個版本之前是在tools底下，如果找不到的話，可以去tools底下找找)，</b><br /><b><br /></b><br />利用底下的adb.exe去執行安裝apk<br /><br />指令如下：<br /><br /><span class="Apple-style-span" style="color: blue;">adb install </span><span class="Apple-style-span" style="color: red;">path\your_apk_name.apk</span><br /><br />指令如圖：<br /><br /><div class="separator" style="clear: both; text-align: center;"><a href="http://2.bp.blogspot.com/_6SxqtkJQECI/TTIZ5QC6YtI/AAAAAAAAAQg/JC6lg7FNglQ/s1600/%25E6%2593%25B7%25E5%258F%2596.PNG" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="80" src="http://2.bp.blogspot.com/_6SxqtkJQECI/TTIZ5QC6YtI/AAAAAAAAAQg/JC6lg7FNglQ/s640/%25E6%2593%25B7%25E5%258F%2596.PNG" width="640" /></a></div><br /><br /><br />輸入指令完以後，<br /><br />如果安裝成功，則會顯示success字樣的訊息！！<br /><br /><br /><br /><br />
+      <p><font size=3></p>
+
+<p>今天把mac上面的default shell換成<code>zsh</code>，其實主要是看上了<code>oh-my-zsh</code>，所以才想換成zsh。<br>
+過程有點複雜，所以還是紀錄一下怎麼做。</p>
+
+<p></br></p>
+
+<hr>
+
+<h3 id="1-install-oh-my-zsh">1. Install oh-my-zsh</h3>
+
+<hr>
+
+<p>由於mac預設就有zsh了，所以不需要安裝，只需要把default shell改成zsh即可。</p>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>chsh -s /bin/zsh
+</code></pre></div>
+<p></br>
+接著就安裝<code>oh-my-zsh</code>，</p>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>curl -L https://github.com/robbyrussell/oh-my-zsh/raw/master/tools/install.sh <span class="p">|</span> sh
+</code></pre></div>
+<!--more-->
+
+<p></br></p>
+
+<hr>
+
+<h3 id="2-clone-cobalt2">2. Clone cobalt2</h3>
+
+<hr>
+
+<p>首先先去clone <code>cobalt2</code>下來，<code>cobalt2</code>是人家寫的theme，裡面主要有二個theme，</p>
+
+<ol>
+<li><strong>cobalt2.itermcolors</strong> : 給iTerm用的</li>
+<li><strong>cobalt2.zsh-theme</strong>   : 給zsh用的</li>
+</ol>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>git clone https://github.com/wesbos/Cobalt2-iterm.git  
+<span class="nv">$ </span><span class="nb">cd </span>Cobalt2-iterm
+<span class="nv">$ </span>mv cobalt2.zsh-theme ~/.oh-my-zsh/themes/
+</code></pre></div>
+<p></br>
+然後打開iterm，</p>
+
+<ol>
+<li>點選<code>Preferences</code></li>
+<li>點<code>Profiles</code></li>
+<li>點<code>+</code>按鈕新增一個Profile</li>
+<li>點<code>Colors</code></li>
+<li>點<code>Load Presets</code></li>
+<li>選擇<code>import</code></li>
+<li>找到剛剛clone下來的<code>cobalt2.itermcolors</code></li>
+<li>點左下角的<code>Other Actions</code></li>
+<li>選擇<code>Set as default</code></li>
+</ol>
+
+<p></br></p>
+
+<hr>
+
+<h3 id="3-install-font">3. Install font</h3>
+
+<hr>
+
+<p>由於oh-my-zsh中的theme，用了一些特殊符號，所以必須安裝額外的font，</p>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>git clone https://github.com/powerline/fonts.git
+<span class="nv">$ </span><span class="nb">cd </span>fonts
+<span class="nv">$ </span>./install.sh
+</code></pre></div>
+<p></br>
+接著一樣在打開iterm，</p>
+
+<ol>
+<li>點選<code>Preferences</code></li>
+<li>點<code>Profiles</code></li>
+<li>點<code>Text</code></li>
+<li>點<code>Change Font</code> （<strong>Regular</strong>和<strong>Non-ASCII</strong>都要改)</li>
+<li>選擇<code>inconsolata for powerline</code></li>
+</ol>
+
+<p></br></p>
+
+<hr>
+
+<h3 id="4-變更theme">4. 變更Theme</h3>
+
+<hr>
+
+<p>接著就可以把theme改成剛剛下載的cobalt2</p>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>vim ~/.zshrc
+</code></pre></div>
+<p></br>
+然後把ZSH_THEME換成cobalt2</p>
+<div class="highlight"><pre><code class="language-text" data-lang="text">ZSH_THEME=&quot;cobalt2&quot;
+</code></pre></div>
+<p>然後source一下，就完成了。
+<code>bash
+$ source ~/.zshrc
+</code></p>
+
+<p></br></p>
+
+<hr>
+
+<h3 id="5-客製化">5. 客製化</h3>
+
+<hr>
+
+<p>最後一步是客製化，如果你還是不喜歡cobalt2的theme，<br>
+你還是可以更改，只要去編輯<code>~/.oh-my-zsh/themes/cobalt2.zsh-theme</code>就好，<br>
+打開以後，看到最下面，應該會有下面幾個function。</p>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="c">## Main prompt</span>
+build_prompt<span class="o">()</span> <span class="o">{</span>
+  <span class="nv">RETVAL</span><span class="o">=</span><span class="nv">$?</span>
+  <span class="c">#prompt_status</span>
+  prompt_context
+  prompt_dir
+  prompt_git
+  prompt_end
+<span class="o">}</span>
+
+<span class="nv">PROMPT</span><span class="o">=</span><span class="s1">&#39;%{%f%b%k%}$(build_prompt) &#39;</span>
+</code></pre></div>
+<p>可以看到我把<code>prompt_status</code>就註解掉，因為我不想要prompt上有icon出現。</p>
+
+<p></font></p>
+
     </div>
 
     
 
-  
-    <ul class="tag_box inline">
-      <li><i class="glyphicon glyphicon-tags"></i></li>
-      
-      
-
-
-  
-     
-    	<li><a href="/tags.html#adb-ref">adb <span>1</span></a></li>
-     
-    	<li><a href="/tags.html#android-ref">android <span>64</span></a></li>
-    
-  
-
-
-
-    </ul>
     
   <div>
     <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
@@ -379,11 +486,11 @@
     <hr>
     <ul class="pagination">
     
-      <li class="prev"><a href="/2011/01/14/paper" title="碩一上報過的Paper">&laquo; Previous</a></li>
+      <li class="prev"><a href="/2015/12/05/jcconf-taiwan-2015-day-2" title="JCConf Taiwan 2015   Day 2">&laquo; Previous</a></li>
     
       <li><a href="/archive.html">Archive</a></li>
     
-      <li class="next"><a href="/2011/02/08/implement-facebook-login" title="實作 Facebook Login【舊版】">Next &raquo;</a></li>
+      <li class="next disabled"><a>Next &rarr;</a>
     
     </ul>
     <hr>

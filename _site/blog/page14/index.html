@@ -216,6 +216,8 @@
   
     
   
+    
+  
 
 
 
@@ -290,6 +292,34 @@
     </div>
     <!-- This loops through the paginated posts -->
     
+      <h1><a style="color: #F22430" href="/2013/06/04/android-remove-dedicated-menu-icon">Android remove dedicated menu icon.</a></h1>
+      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
+      <p class="author">
+      <div class="date">
+        <span>04 June 2013</span>
+      </div>
+      </p>
+      <div class="content" style="line-height: 28px;">
+        If you want to remove Action overflow button on newest apps (above 3.0),<br />please set your targetSdkVersion as 14.<br /><br /><pre class="brush: xml">&lt;uses-sdk android:minSdkVersion="7" <br />          android:targetSdkVersion="14" /&gt;<br /></pre><br /><div class="separator" style="clear: both; text-align: center;"><a href="http://1.bp.blogspot.com/-dc0MqLyM5So/Ua2xBjdSkMI/AAAAAAAAExY/bipZIap6ZDs/s1600/old_menu.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="41" src="http://1.bp.blogspot.com/-dc0MqLyM5So/Ua2xBjdSkMI/AAAAAAAAExY/bipZIap6ZDs/s320/old_menu.png" width="320" /></a></div><br /><br /><br />Cause Android decides whether to show the overflow button on the bottom bar based on which API level you used.<br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
+      </div>
+      <footer>
+        <p><a class="myButton" href="/2013/06/04/android-remove-dedicated-menu-icon">read more &raquo;</a></p>
+        <div>
+          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- ken on github -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3783438370424072"
+     data-ad-slot="1516206098"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+        </div>
+      </footer>
+      <hr>
+    
       <h1><a style="color: #F22430" href="/2013/05/02/nginx-flask-uwsgi-deployment">Nginx + Flask + uWSGI Deployment</a></h1>
       <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
       <p class="author">
@@ -346,41 +376,13 @@
       </footer>
       <hr>
     
-      <h1><a style="color: #F22430" href="/2013/03/14/android-fragment-activity">Android Fragment Activity</a></h1>
-      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
-      <p class="author">
-      <div class="date">
-        <span>14 March 2013</span>
-      </div>
-      </p>
-      <div class="content" style="line-height: 28px;">
-        <br /><br /><br /><div class="separator" style="clear: both; text-align: center;"><a href="http://1.bp.blogspot.com/-KxkFprmwl1k/UUGuGS_GmCI/AAAAAAAAElU/wCXiluz1MB0/s1600/fragments.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="368" src="http://1.bp.blogspot.com/-KxkFprmwl1k/UUGuGS_GmCI/AAAAAAAAElU/wCXiluz1MB0/s640/fragments.png" width="640" /></a></div><br /><br /><br />Android Fragment是3.0之後的版本才推出，<br />其主要目的是為了讓tablet更能夠有效地利用螢幕空間，<br />可以看到上面的圖片，<br />右邊是傳統的device，可以看到在List點擊以後，會去start Activity B，<br />然後跳離List頁面！<br />而左邊的tablet的行為就不一樣，而是點選List以後在右邊跳出Activity B！<br /><br /><br />運用Fragment還有個好處，<br />寫一次code就可以在tablet和handset裝置上有不同的user experience！<br />（有前提）<br /><br /><br />開始之前要先說明二件事情，<br />第一件事情，<br />Fragment一定要依附在Activity裡面！<br />簡言之，必須透過Activity去load Fragment進來！<br /><br />第二件事情，<br />一開始我們就有說過Fragment只能使用在3.0以上的裝置，<br />以下是不行的，那麼該怎麼辦呢？<br />Google有推出compatibility的lib使用！<br />所以如果想要你的app也能夠在2.x的裝置上面跑，<br />又希望能夠在大尺寸螢幕上的裝置有好的user experience的話，就要把這lib include進來！<br />但是！！！當然不是單單include進來就好了！<br />寫法還是有點點點點點點稍微的不同！<br />這篇會說明不同的點在哪邊！<br /><br /><br />而把fragment load進來大概分兩種方法！<br />1. 靜態（預設load）<br />2. 動態地載入<br /><br /><br /><br /><span style="font-size: large;"><b>先講第一種靜態！</b></span><br /><br />首先你要先定義一個layout，這layout是fragment裡面的樣式，<br />這裡先取名為fragment.xml，如下：<br /><pre class="brush: xml">&lt;?xml version="1.0" encoding="utf-8"?&gt;<br />&lt;LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"<br />    android:layout_width="match_parent"<br />    android:layout_height="match_parent"<br />    android:orientation="vertical" &gt;<br /><br />    &lt;TextView<br />        android:id="@+id/textView1"<br />        android:layout_width="wrap_content"<br />        android:layout_height="wrap_content"<br />        android:text="Fragment" /&gt;<br /><br />&lt;/LinearLayout&gt;<br /></pre><br /><br />接著你就要有一個Fragment，如下：<br />Fragment基本上有自己的lifecycle，而且還蠻多的（相較於activity）<br />雖然他有自己的lifecycle，不過我們剛剛說過Fragment必須被Activity load進來，<br />所以他的lifecycle會跟隨於Activity！<br /><pre class="brush: java">package net.kenyang.practicefragment;<br /><br /><br />import android.os.Bundle;<br />import android.support.v4.app.Fragment;// 如果要向下相容至2.x，請import這項，如果不向下，就import下面被註解的那項<br />//import android.app.Fragment;<br />import android.view.LayoutInflater;<br />import android.view.View;<br />import android.view.ViewGroup;<br /><br />public class FragmentA extends Fragment {<br /> @Override<br /> public void onCreate(Bundle savedInstanceState) {<br />  super.onCreate(savedInstanceState);<br /> }<br /> @Override<br /> public View onCreateView(LayoutInflater inflater, ViewGroup container,<br />   Bundle savedInstanceState) {<br />  <br />  // 取得剛剛上步驟的layout(fragment.xml)<br />        return inflater.inflate(R.layout.fragment, container, false);<br /> }<br />}<br /><br /></pre><br /><br /><br /><br />完成上述兩個步驟以後，<br />你得先建立一個activity的layout！<br />如下：<br /><pre class="brush: xml">&lt;LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"<br />    xmlns:tools="http://schemas.android.com/tools"<br />    android:layout_width="match_parent"<br />    android:orientation="horizontal"<br />    android:layout_height="match_parent"<br />    tools:context=".MainActivity" &gt;<br /><br />    &lt;TextView<br />        android:id="@+id/textView1"<br />        android:layout_weight="1"<br />        android:layout_width="wrap_content"<br />        android:layout_height="wrap_content"<br />        android:text="@string/hello_world" /&gt;<br /><br />    &lt;fragment<br />        android:id="@+id/first"<br />        android:name="net.kenyang.practicefragment.FragmentA"<br />        android:layout_weight="2"<br />        android:layout_width="match_parent"<br />        android:layout_height="match_parent" /&gt;<br /><br />&lt;/LinearLayout&gt;<br /></pre><br /><br />可以看到這xml當中有一個以往2.x沒有的element，就是fragment，<br />這個就是用來靜態地load fragment的！<br />而這element中還有一個attribute，就是 android:name，<br />這attribute是最重要的，請填入我們剛剛的Fragment name，記得要連接package name才行！<br /><br /><br /><br />接著就是來寫Activity了！<br />如下：<br /><pre class="brush: java">package net.kenyang.practicefragment;<br /><br />import android.os.Bundle;<br />import android.support.v4.app.FragmentActivity;<br /><br />//public class MainActivity extends Activity { // above 3.0<br />public class MainActivity extends FragmentActivity { // below 3.0<br /><br /> @Override<br /> protected void onCreate(Bundle savedInstanceState) {<br />  super.onCreate(savedInstanceState);<br />  setContentView(R.layout.activity_main);<br /> }<br /><br />}<br /><br /></pre><br /><br />這Activity中其實跟以往的沒有太大差別！<br />唯一差別在於第7和第8行！<br />如註解所說，如果你要向下相容，請使用FragmentActivity才行！<br /><br /><br />完成上述的實作就完成靜態的loading！<br /><br /><br /><br /><br /><b><span style="font-size: large;">現在要講動態的！</span></b><br /><br />首先先把上述activity的layout改成下述的設定：<br /><pre class="brush: xml">&lt;LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"<br />    xmlns:tools="http://schemas.android.com/tools"<br />    android:layout_width="match_parent"<br />    android:id="@+id/llParent"<br />    android:orientation="horizontal"<br />    android:layout_height="match_parent"<br />    tools:context=".MainActivity" &gt;<br /><br />    &lt;Button<br />        android:id="@+id/btnAdd"<br />        android:layout_width="wrap_content"<br />        android:layout_height="wrap_content"<br />        android:text="Add" /&gt;<br />&lt;/LinearLayout&gt;<br /></pre><br /><br />這個xml只是多了一個button，<br />以及在LinearLayout中加入了id，<br />加入id的目的是為了等等要把FragmentA丟入某一個指定的view中，<br />所以得知道該view的id！<br /><br /><br />接著就在MainActivity中，設定動態載入吧！<br /><pre class="brush: java">package net.kenyang.practicefragment;<br /><br />import android.os.Bundle;<br />import android.support.v4.app.Fragment;<br />import android.support.v4.app.FragmentActivity;<br />import android.support.v4.app.FragmentManager;<br />import android.support.v4.app.FragmentTransaction;<br />import android.view.View;<br />import android.view.View.OnClickListener;<br />import android.widget.Button;<br /><br />//public class MainActivity extends Activity { // above 3.0<br />public class MainActivity extends FragmentActivity { // below 3.0<br /> <br /> private Button btnAdd = null;<br /><br /> @Override<br /> protected void onCreate(Bundle savedInstanceState) {<br />  super.onCreate(savedInstanceState);<br />  setContentView(R.layout.activity_main);<br />  <br />  btnAdd = (Button) findViewById(R.id.btnAdd);<br />  btnAdd.setOnClickListener(new OnClickListener() {<br />   @Override<br />   public void onClick(View v) {<br />    FragmentManager fragmentManager = getSupportFragmentManager();  // 取得FragmentManager（如果不向下相容，就不用加Support）<br />    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();<br />    FragmentA f = new FragmentA();  // 把上面的FragmentA new出來！<br />    fragmentTransaction.add(R.id.llParent, f);  // 丟入到llParent之中<br />    fragmentTransaction.commit(); // 必須commit以後才會真正add<br />   }<br />  });<br />  <br /> }<br /><br />}<br /><br /></pre><br /><br /><br />完成上述步驟就可以動態載入了！<br /><br /><b><span style="color: red; font-size: large;">但是</span></b>！儘管你學會了這兩種方式，其實還是做不出第一張圖的效果！<br />看起來好像點了左邊的button，就可以在右邊add一個Fragment進來！<br />的確達到了在tablet上優化User Experience的效果！<br />但你會發現...如果你放在一般的device上面，還是像跟圖一中的左邊區塊一樣！！<br />並不是右邊的效果！那不是反而在一般device上的UX會比較差嗎？<br /><br />這是因為你還得善用layout以及layout-large才能完成！<br />就..在下一篇講解吧！<br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
-      </div>
-      <footer>
-        <p><a class="myButton" href="/2013/03/14/android-fragment-activity">read more &raquo;</a></p>
-        <div>
-          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<!-- ken on github -->
-<ins class="adsbygoogle"
-     style="display:block"
-     data-ad-client="ca-pub-3783438370424072"
-     data-ad-slot="1516206098"
-     data-ad-format="auto"></ins>
-<script>
-(adsbygoogle = window.adsbygoogle || []).push({});
-</script>
-
-        </div>
-      </footer>
-      <hr>
-    
 
     <!-- Pagination links -->
     <div class="pagination">
       
         <a href="/blog/page13" class="previous">Previous</a>
       
-      <span class="page_number ">Page: 14 of 55</span>
+      <span class="page_number ">Page: 14 of 56</span>
       
         <a href="/blog/page15" class="next">Next</a>
       

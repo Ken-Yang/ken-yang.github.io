@@ -5,10 +5,143 @@
         <description>Ken Yang筆記 - Ken Yang</description>
         <link>http://blog.kenyang.net</link>
         <atom:link href="http://blog.kenyang.net/rss.xml" rel="self" type="application/rss+xml" />
-        <lastBuildDate>Fri, 11 Dec 2015 20:23:00 +0800</lastBuildDate>
-        <pubDate>Fri, 11 Dec 2015 20:23:00 +0800</pubDate>
+        <lastBuildDate>Fri, 11 Dec 2015 21:10:35 +0800</lastBuildDate>
+        <pubDate>Fri, 11 Dec 2015 21:10:35 +0800</pubDate>
         <ttl>60</ttl>
 
+
+        <item>
+                <title>Install zsh and oh-my-zsh on Mac</title>
+                <description>&lt;p&gt;&lt;font size=3&gt;&lt;/p&gt;
+
+&lt;p&gt;今天把mac上面的default shell換成&lt;code&gt;zsh&lt;/code&gt;，其實主要是看上了&lt;code&gt;oh-my-zsh&lt;/code&gt;，所以才想換成zsh。&lt;br&gt;
+過程有點複雜，所以還是紀錄一下怎麼做。&lt;/p&gt;
+
+&lt;p&gt;&lt;/br&gt;&lt;/p&gt;
+
+&lt;hr&gt;
+
+&lt;h3 id=&quot;1-install-oh-my-zsh&quot;&gt;1. Install oh-my-zsh&lt;/h3&gt;
+
+&lt;hr&gt;
+
+&lt;p&gt;由於mac預設就有zsh了，所以不需要安裝，只需要把default shell改成zsh即可。&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;chsh -s /bin/zsh
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;/br&gt;
+接著就安裝&lt;code&gt;oh-my-zsh&lt;/code&gt;，&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;curl -L https://github.com/robbyrussell/oh-my-zsh/raw/master/tools/install.sh &lt;span class=&quot;p&quot;&gt;|&lt;/span&gt; sh
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;!--more--&gt;
+
+&lt;p&gt;&lt;/br&gt;&lt;/p&gt;
+
+&lt;hr&gt;
+
+&lt;h3 id=&quot;2-clone-cobalt2&quot;&gt;2. Clone cobalt2&lt;/h3&gt;
+
+&lt;hr&gt;
+
+&lt;p&gt;首先先去clone &lt;code&gt;cobalt2&lt;/code&gt;下來，&lt;code&gt;cobalt2&lt;/code&gt;是人家寫的theme，裡面主要有二個theme，&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;cobalt2.itermcolors&lt;/strong&gt; : 給iTerm用的&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;cobalt2.zsh-theme&lt;/strong&gt;   : 給zsh用的&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git clone https://github.com/wesbos/Cobalt2-iterm.git  
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cd &lt;/span&gt;Cobalt2-iterm
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;mv cobalt2.zsh-theme ~/.oh-my-zsh/themes/
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;/br&gt;
+然後打開iterm，&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;點選&lt;code&gt;Preferences&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;點&lt;code&gt;Profiles&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;點&lt;code&gt;+&lt;/code&gt;按鈕新增一個Profile&lt;/li&gt;
+&lt;li&gt;點&lt;code&gt;Colors&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;點&lt;code&gt;Load Presets&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;選擇&lt;code&gt;import&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;找到剛剛clone下來的&lt;code&gt;cobalt2.itermcolors&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;點左下角的&lt;code&gt;Other Actions&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;選擇&lt;code&gt;Set as default&lt;/code&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;&lt;/br&gt;&lt;/p&gt;
+
+&lt;hr&gt;
+
+&lt;h3 id=&quot;3-install-font&quot;&gt;3. Install font&lt;/h3&gt;
+
+&lt;hr&gt;
+
+&lt;p&gt;由於oh-my-zsh中的theme，用了一些特殊符號，所以必須安裝額外的font，&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git clone https://github.com/powerline/fonts.git
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cd &lt;/span&gt;fonts
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;./install.sh
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;/br&gt;
+接著一樣在打開iterm，&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;點選&lt;code&gt;Preferences&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;點&lt;code&gt;Profiles&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;點&lt;code&gt;Text&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;點&lt;code&gt;Change Font&lt;/code&gt; （&lt;strong&gt;Regular&lt;/strong&gt;和&lt;strong&gt;Non-ASCII&lt;/strong&gt;都要改)&lt;/li&gt;
+&lt;li&gt;選擇&lt;code&gt;inconsolata for powerline&lt;/code&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;&lt;/br&gt;&lt;/p&gt;
+
+&lt;hr&gt;
+
+&lt;h3 id=&quot;4-變更theme&quot;&gt;4. 變更Theme&lt;/h3&gt;
+
+&lt;hr&gt;
+
+&lt;p&gt;接著就可以把theme改成剛剛下載的cobalt2&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;vim ~/.zshrc
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;/br&gt;
+然後把ZSH_THEME換成cobalt2&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;ZSH_THEME=&amp;quot;cobalt2&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;然後source一下，就完成了。
+&lt;code&gt;bash
+$ source ~/.zshrc
+&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;/br&gt;&lt;/p&gt;
+
+&lt;hr&gt;
+
+&lt;h3 id=&quot;5-客製化&quot;&gt;5. 客製化&lt;/h3&gt;
+
+&lt;hr&gt;
+
+&lt;p&gt;最後一步是客製化，如果你還是不喜歡cobalt2的theme，&lt;br&gt;
+你還是可以更改，只要去編輯&lt;code&gt;~/.oh-my-zsh/themes/cobalt2.zsh-theme&lt;/code&gt;就好，&lt;br&gt;
+打開以後，看到最下面，應該會有下面幾個function。&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;c&quot;&gt;## Main prompt&lt;/span&gt;
+build_prompt&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;nv&quot;&gt;RETVAL&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$?&lt;/span&gt;
+  &lt;span class=&quot;c&quot;&gt;#prompt_status&lt;/span&gt;
+  prompt_context
+  prompt_dir
+  prompt_git
+  prompt_end
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;nv&quot;&gt;PROMPT&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;%{%f%b%k%}$(build_prompt) &amp;#39;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;可以看到我把&lt;code&gt;prompt_status&lt;/code&gt;就註解掉，因為我不想要prompt上有icon出現。&lt;/p&gt;
+
+&lt;p&gt;&lt;/font&gt;&lt;/p&gt;
+</description>
+                <link>http://blog.kenyang.net/2015/12/11/install-zsh-oh-my-zsh-on-mac</link>
+                <guid>http://blog.kenyang.net/2015/12/11/install-zsh-oh-my-zsh-on-mac</guid>
+                <pubDate>Fri, 11 Dec 2015 00:00:00 +0800</pubDate>
+        </item>
 
         <item>
                 <title>JCConf Taiwan 2015   Day 2</title>
@@ -1709,14 +1842,6 @@ mv完成以後，接著打開&lt;code&gt;index.html&lt;/code&gt;，&lt;br&gt;
                 <link>http://blog.kenyang.net/2014/08/27/how-to-create-x509-certificates-for</link>
                 <guid>http://blog.kenyang.net/2014/08/27/how-to-create-x509-certificates-for</guid>
                 <pubDate>Wed, 27 Aug 2014 16:14:00 +0800</pubDate>
-        </item>
-
-        <item>
-                <title>Setting up load balancing with Keepalived</title>
-                <description>&lt;div style=&quot;font-size: 15px; line-height: 22px;&quot;&gt;&lt;a href=&quot;http://blog.kenyang.net/2014/07/setting-up-high-availabilityha.html&quot;&gt;前一篇&lt;/a&gt;有講過了，&lt;br /&gt;Keepalived是一個routing software，&lt;br /&gt;它可以做到load balancing和high-availability，&lt;br /&gt;而&lt;a href=&quot;http://blog.kenyang.net/2014/07/setting-up-high-availabilityha.html&quot;&gt;前一篇&lt;/a&gt;也教怎麼set up HA，&lt;br /&gt;這篇會講怎麼set up load balancing，&lt;br /&gt;&lt;b&gt;&lt;strike&gt;理論上&lt;/strike&gt;&lt;/b&gt;架構應該要和下圖中一樣，才會比較合理，&lt;br /&gt;有N檯load-balancer，專門做load balancing，&lt;br /&gt;有N檯web！&lt;br /&gt;而這些load balancer，都會裝keepalived，然後去binding Virtual IP！&lt;br /&gt;&lt;br /&gt;&lt;div class=&quot;separator&quot; style=&quot;clear: both; text-align: center;&quot;&gt;&lt;a href=&quot;http://4.bp.blogspot.com/-rxBME9e5d4g/U7fayrtLTzI/AAAAAAAAFMk/yOp-1IBSHaQ/s1600/Network+Diagram.png&quot; imageanchor=&quot;1&quot; style=&quot;margin-left: 1em; margin-right: 1em;&quot;&gt;&lt;img border=&quot;0&quot; src=&quot;http://4.bp.blogspot.com/-rxBME9e5d4g/U7fayrtLTzI/AAAAAAAAFMk/yOp-1IBSHaQ/s1600/Network+Diagram.png&quot; /&gt;&lt;/a&gt;&lt;/div&gt;&lt;br /&gt;但基於測試方便加上懶得安裝這麼多檯機器來說明，&lt;br /&gt;先簡化成下圖，&lt;br /&gt;每一檯server身兼load balancer和web server，&lt;br /&gt;&lt;br /&gt;&lt;div class=&quot;separator&quot; style=&quot;clear: both; text-align: center;&quot;&gt;&lt;a href=&quot;http://4.bp.blogspot.com/-HUzm7NOhTrQ/U7fcTr3Rh3I/AAAAAAAAFMw/c4HRt5LI6sE/s1600/Network+Diagram+(1).png&quot; imageanchor=&quot;1&quot; style=&quot;margin-left: 1em; margin-right: 1em;&quot;&gt;&lt;img border=&quot;0&quot; src=&quot;http://4.bp.blogspot.com/-HUzm7NOhTrQ/U7fcTr3Rh3I/AAAAAAAAFMw/c4HRt5LI6sE/s1600/Network+Diagram+(1).png&quot; /&gt;&lt;/a&gt;&lt;/div&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;和&lt;a href=&quot;http://blog.kenyang.net/2014/07/setting-up-high-availabilityha.html&quot;&gt;前一篇&lt;/a&gt;一樣，假設我們有兩檯server，&lt;br /&gt;IP分別為&lt;br /&gt;&amp;nbsp;&amp;nbsp;1. 10.1.190.142&lt;br /&gt;&amp;nbsp;&amp;nbsp;2. 10.1.190.143&lt;br /&gt;&lt;br /&gt;virtual ip：10.1.190.150&lt;br /&gt;&lt;br /&gt;在開始之前，請先去完成&lt;a href=&quot;http://blog.kenyang.net/2014/07/setting-up-high-availabilityha.html&quot;&gt;前一篇&lt;/a&gt;的所有操作，&lt;br /&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;1. Generate hash &lt;/span&gt;&lt;br /&gt;&lt;br /&gt;首先，先gen hash，&lt;br /&gt;這hash是給load balancer用的，&lt;br /&gt;原因是load balancer會去確認每一檯的web server是活著的，&lt;br /&gt;確認時會帶著這個hash值！&lt;br /&gt;因為有兩檯機器，所以要gen 2組，&lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;root@host1:~$ genhash -s 10.1.190.142 -p 80 -u /index.html&lt;br /&gt;MD5SUM = 043e8a8eeaf59e7ef9c6b4cd6f71a7de&lt;br /&gt;&lt;br /&gt;root@host1:~$ genhash -s 10.1.190.143 -p 80 -u /index.html&lt;br /&gt;MD5SUM = 66d84fe2b7e20944dd5d077e768b2cfb&lt;br /&gt;&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;2. Write a script for handling iptables &lt;/span&gt;&lt;br /&gt;&lt;br /&gt;在這步驟，要寫一隻script，&lt;br /&gt;負責add和delete rule的，&lt;br /&gt;為什麼要add?&lt;br /&gt;因為當如果沒有add virtual ip進去rule，&lt;br /&gt;當load balancer把packet轉進來時，是送不進來的！&lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;#!/bin/bash                                                                                                                                                                 &lt;br /&gt;&lt;br /&gt;VIP=$2&lt;br /&gt;&lt;br /&gt;count=$(iptables -t nat -L| grep $VIP | wc -l)&lt;br /&gt;&lt;br /&gt;case &quot;$1&quot; in&lt;br /&gt;  --add)&lt;br /&gt;    if [[ $count == 0 ]]; then&lt;br /&gt;        iptables -A PREROUTING -t nat -d $VIP -p tcp -j REDIRECT&lt;br /&gt;    fi  &lt;br /&gt;    ;;  &lt;br /&gt;  --del)&lt;br /&gt;    if [[ $count &amp;gt; 0 ]]; then&lt;br /&gt;        iptables -D PREROUTING -t nat -d $VIP -p tcp -j REDIRECT&lt;br /&gt;    fi&lt;br /&gt;    ;;  &lt;br /&gt;esac&lt;br /&gt;&lt;br /&gt;exit 0&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;3. Configuration settings&lt;/span&gt;&lt;br /&gt;&lt;br /&gt;基本上設置跟第一篇沒有什麼太大差別，&lt;br /&gt;首先只有第&lt;span style=&quot;color: red;&quot;&gt;26,27&lt;/span&gt;行，多了兩個指令，&lt;br /&gt;分別是當這檯機器進入master模式時，要把rule刪除&lt;br /&gt;以及進入backup時，要把rule加進去!&lt;br /&gt;&lt;br /&gt;以及增加了&lt;span style=&quot;color: red;&quot;&gt;31~60&lt;/span&gt;行的setting,&lt;br /&gt;記得第一檯和第二檯都要進行設定，但一樣要把state,priority, router_id改成符合該host的設定！&lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;global_defs {&lt;br /&gt;  notification_email {&lt;br /&gt;    kenyang@xxx.com&lt;br /&gt;  }&lt;br /&gt;  notification_email_from xxxx@example.com&lt;br /&gt;  smtp_server 127.0.0.1&lt;br /&gt;  smtp_connect_timeout 30&lt;br /&gt;  router_id host1      # 用來識別是哪檯機器，如果postfix有安裝，在寄信的時候，title就會跟你說是哪檯機器有問題&lt;br /&gt;}&lt;br /&gt;&lt;br /&gt;vrrp_instance VI_1 {   # VI_1 可以改成自己想要的string&lt;br /&gt;&lt;br /&gt;  state MASTER         # MASTER意思是這檯為主要的機器&lt;br /&gt;&lt;br /&gt;  interface eth0       # 把virtual ip binding在eht0上&lt;br /&gt;&lt;br /&gt;  virtual_router_id 1  # 0~255之間，用來識別是哪一個instance&lt;br /&gt;  priority 100         &lt;br /&gt;&lt;br /&gt;  virtual_ipaddress {&lt;br /&gt;    10.1.190.150/24&lt;br /&gt;  }&lt;br /&gt;&lt;br /&gt;  smtp_alert           # 當有問題時要發信通知&lt;br /&gt;&lt;br /&gt;  notify_master &quot;/etc/keepalived/handle_iptable.sh --del 10.1.190.150&quot; # 當這檯機器進入master模式時，要把rule刪除&lt;br /&gt;  notify_backup &quot;/etc/keepalived/handle_iptable.sh --add 10.1.190.150&quot; # 當這檯機器進入backup模式時，要把rule加入&lt;br /&gt;}&lt;br /&gt;&lt;br /&gt;# virtual web server&lt;br /&gt;virtual_server 10.1.190.150 80 {&lt;br /&gt;  delay_loop 10              # n秒確認底下的web一次&lt;br /&gt;  lb_algo rr                 # 使用Round Robin的演算法做load balancing (rr, wrr, al, wlc, ......etc)&lt;br /&gt;  lb_kind DR                 # Forwarding的方法 （dr, nat, tun)&lt;br /&gt;  persistence_timeout 5      # timeout for persistent connection&lt;br /&gt;  protocol TCP &lt;br /&gt;&lt;br /&gt;  real_server 10.1.190.142 80 {&lt;br /&gt;    HTTP_GET {  # 使用HTTP_GET的方式進行確認web活著&lt;br /&gt;      url {&lt;br /&gt;        path /index.html&lt;br /&gt;        digest 043e8a8eeaf59e7ef9c6b4cd6f71a7de   # 剛剛第一步驟gen的hash&lt;br /&gt;      }   &lt;br /&gt;      connect_timeout 3&lt;br /&gt;      nb_get_retry 3&lt;br /&gt;      delay_before_retry 2&lt;br /&gt;    }   &lt;br /&gt;  }&lt;br /&gt;  real_server 10.1.190.143 80 {&lt;br /&gt;    HTTP_GET { # 使用HTTP_GET的方式進行確認web活著&lt;br /&gt;      url {&lt;br /&gt;        path /index.html&lt;br /&gt;        digest 66d84fe2b7e20944dd5d077e768b2cfb   # 剛剛第一步驟gen的hash&lt;br /&gt;      }   &lt;br /&gt;      connect_timeout 3&lt;br /&gt;      nb_get_retry 3&lt;br /&gt;      delay_before_retry 2&lt;br /&gt;    }   &lt;br /&gt;  }&lt;br /&gt;}   &lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;4. Verify&lt;/span&gt;&lt;br /&gt;&lt;br /&gt;完成上述設定以後，&lt;br /&gt;先把keepalived reload，&lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;service keepalived reload&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;reload完成以後，&lt;br /&gt;先在第一檯打下面的指令，&lt;br /&gt;為什麼是在第一檯打？因為現在第一檯是master，它搶到virtual ip，&lt;br /&gt;所以load balancing的工作是交由第一檯來做的！&lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;ipvsadm -ln&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;打完應該會看到下面的內容，&lt;br /&gt;10.1.190.150這檯底下有兩檯主機，&lt;br /&gt;分別是142, 143，&lt;br /&gt;load balancer就是透過上述的HTTP_GET去確認web server是活著的，&lt;br /&gt;比較特別的有兩個參數，&lt;br /&gt;&amp;nbsp;&amp;nbsp;1. ActiveConn: 簡言之這檯機器目前有幾個人連上來&lt;br /&gt;&amp;nbsp;&amp;nbsp;2. InActConn: 有幾檯機器的tcp status不是established&lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;Prot LocalAddress:Port Scheduler Flags&lt;br /&gt;  -&amp;gt; RemoteAddress:Port           Forward Weight ActiveConn InActConn&lt;br /&gt;TCP  10.1.190.150:80 rr persistent 5&lt;br /&gt;  -&amp;gt; 10.1.190.142:80              Route   1      0          0         &lt;br /&gt;  -&amp;gt; 10.1.190.143:80              Route   1      0          0    &lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;這時候在電腦上的browser瀏覽10.1.190.150，&lt;br /&gt;然後在手機（或者其他檯電腦上）也瀏覽10.1.190.150&lt;br /&gt;然後再馬上在第一檯機器打下面的指令&lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;ipvsadm -ln&lt;br /&gt;&lt;/pre&gt;應該會發現ActiveConn都變成1了！&lt;br /&gt;如果你有第三檯機器，你可以試試看再連線10.1.190.150!&lt;br /&gt;這時某一檯的ActiveConn會變成2！&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;/div&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;</description>
-                <link>http://blog.kenyang.net/2014/07/07/setting-up-load-balancing-with</link>
-                <guid>http://blog.kenyang.net/2014/07/07/setting-up-load-balancing-with</guid>
-                <pubDate>Mon, 07 Jul 2014 11:06:00 +0800</pubDate>
         </item>
 
 

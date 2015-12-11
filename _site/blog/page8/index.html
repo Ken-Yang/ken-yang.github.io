@@ -216,6 +216,8 @@
   
     
   
+    
+  
 
 
 
@@ -290,6 +292,34 @@
     </div>
     <!-- This loops through the paginated posts -->
     
+      <h1><a style="color: #F22430" href="/2014/07/06/setting-up-high-availabilityha">Setting up a High-Availability(HA) environment with Keepalived</a></h1>
+      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
+      <p class="author">
+      <div class="date">
+        <span>06 July 2014</span>
+      </div>
+      </p>
+      <div class="content" style="line-height: 28px;">
+        <div style="font-size: 15px; line-height: 22px;">Keepalived是一個routing software，<br />它可以做到load balancing和high-availability，<br />load balancing會倚靠lvs (linux virtual server, ipvsadm)來做到（但這篇只會做HA，下篇再講怎麼做load balancing），<br />而high-availability是靠VRRP protocol來達成，<br />那什麼是<a href="http://en.wikipedia.org/wiki/Virtual_Router_Redundancy_Protocol" target="_blank">VRRP</a>（Virtual Router Redundancy Protocol ）？<br />簡單的說，就是為了當某個router故障，然後可以快速的failover，<br />Keepalivied就是利用這protocol來達到HA．<br /><br />假設我們有兩檯web server，<br />IP分別為<br />&nbsp;&nbsp;1. 10.1.190.142<br />&nbsp;&nbsp;2. 10.1.190.143<br /><br />在兩檯都安裝好keepalived的情況下，<br />被設定為"MASTER"的那檯機器，會去binding 一個我們所指定的virtual ip！<br />這裡先假設virtual ip為10.1.190.150<br /><br /><span style="color: #e06666; font-size: 18px;">1. Install the packages </span><br /><br />首先先ssh到第一檯和第二檯上，安裝等等會用到的幾個packages，<br />&nbsp;&nbsp;1. keepalived<br />&nbsp;&nbsp;2. nginx: 你也可以選擇你想要用的web server<br />&nbsp;&nbsp;3. postfix: optional, 安裝postfix的目的在於，server壞掉時，會寄信通知你<br /><pre class="brush: bash">apt-get install keepalived nginx postfix<br /></pre><br /><br /><span style="color: #e06666; font-size: 18px;">2. Set up environment </span><br /><br />安裝好以後，先確認你的nginx是有起來的，<br />開browser去打一下web server就可以簡單確認！<br /><br />接著先到第一檯機器上去進行keepalived的config設定 <br /><pre class="brush: bash">vim /etc/keepalived/keepalived.conf<br /></pre><br />內容如下：<br /><pre class="brush: bash">global_defs {<br />  notification_email {<br />    kenyang@xxx.com<br />  }<br />  notification_email_from xxxx@example.com<br />  smtp_server 127.0.0.1<br />  smtp_connect_timeout 30<br />  router_id host1      # 用來識別是哪檯機器，如果postfix有安裝，在寄信的時候，title就會跟你說是哪檯機器有問題<br />}<br /><br />vrrp_instance VI_1 {   # VI_1 可以改成自己想要的string<br /><br />  state MASTER         # MASTER意思是這檯為主要的機器<br /><br />  interface eth0       # 把virtual ip binding在eht0上<br /><br />  virtual_router_id 1  # 0~255之間，用來識別是哪一個instance<br />  priority 100         <br /><br />  virtual_ipaddress {<br />    10.1.190.150/24<br />  }<br /><br />  smtp_alert           # 當有問題時要發信通知<br />}<br /></pre><br /><br />接著就到第二檯上去進行設定，<br />其實內容大致上和第一檯一模一樣，<br />只有router_id, state, priority需要變動<br />內容如下，<br /><pre class="brush: bash">global_defs {<br />  ... same with host1 ...<br />  router_id host2  <br />}<br /><br />vrrp_instance VI_1 {   # VI_1 可以改成自己想要的string<br />  ... same with host 1 ....<br />  state BACKUP<br />  priority 50         <br />}<br /></pre><br />完成設定以後，分別在兩檯機器上打開keepalived，<br /><pre class="brush: bash">service keepalived start<br /></pre><br /><br /><span style="color: #e06666; font-size: 18px;">3. Verify </span><br /><br />最後就來驗證ha是work的，<br />先到第一檯上去，因為第一檯設定為MASTER，<br />因此理論上第一檯除了自己的IP (10.1.190.142)以外，<br />還要拿到這個virtual ip (10.1.190.150)，<br />打下面的指令可以驗證，<br /><pre class="brush: bash">root@host1:~$ ip a | grep eth0 | grep inet<br />    inet 10.1.190.142/24 brd 10.1.190.255 scope global eth0<br />    inet 10.1.190.150/24 scope global secondary eth0<br /></pre><br />接著打開web browser去連virtual ip (10.1.190.150)，<br />都會導到第一檯的nginx去！<br />這時候把第一檯關機！<br /><pre class="brush: bash">root@host1:~$ shutdown now<br /></pre><br />此時第二檯應該要拿到virtual ip，<br />一樣打下面的指令做驗證<br /><pre class="brush: bash">root@host2:~$ ip a | grep eth0 | grep inet<br />    inet 10.1.190.143/24 brd 10.1.190.255 scope global eth0<br />    inet 10.1.190.150/24 scope global secondary eth0<br /></pre><br />然後再打開web browser去連virtual ip (10.1.190.150)，<br />此時看到的內容會是第二檯nginx上的內容！<br /><br /><br />除此之外，如果postfix有設定成功，<br />應該是會收到mail跟你說host2進入了MASTER模式，<br />標題是：[host2] VRRP Instance VI_1 - Entering MASTER state<br />內容是：=> VRRP Instance is now owning VRRP VIPs <=   下一篇再教怎麼用keepalived做load balance.           </div><br />
+      </div>
+      <footer>
+        <p><a class="myButton" href="/2014/07/06/setting-up-high-availabilityha">read more &raquo;</a></p>
+        <div>
+          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- ken on github -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3783438370424072"
+     data-ad-slot="1516206098"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+        </div>
+      </footer>
+      <hr>
+    
       <h1><a style="color: #F22430" href="/2014/05/06/getting-started-with-amazon-ec2-api">Getting started with Amazon EC2 API Tools</a></h1>
       <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
       <p class="author">
@@ -346,41 +376,13 @@
       </footer>
       <hr>
     
-      <h1><a style="color: #F22430" href="/2014/02/24/how-to-build-android-image">How to build Android image?</a></h1>
-      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
-      <p class="author">
-      <div class="date">
-        <span>24 February 2014</span>
-      </div>
-      </p>
-      <div class="content" style="line-height: 28px;">
-        <div style="font-size: 15px; line-height: 22px;">因緣際會下，剛好有機會可以練習如何build android source code，<br />（是android source code！不是app！）<br /><br />不過練習完以後，發現其實build android真的很簡單！<br />難的在於prepare build environment.....<br />所以這篇會從頭做起，從一個完全乾淨的ubuntu 12.04開始做起！<br /><br /><br /><br /><span style="color: #e06666; font-size: 18px;">1. install ubuntu 12.04</span><br /><br />第一步就是去下載<a href="http://www.ubuntu.com/download" target="_blank">ubuntu 12.04 64 bits</a>，<br />要裝server版或者是desktop版都可以，<br />安裝desktop版的好處就是你build好image的時候，<br />要測試很簡單！<br />像我是用server版build，因為沒有x-window，我也不想再裝！<br />就只好把build好的image抓出來，抓到我自己的mac上，<br />然後透過emulator來測試！<br /><br /><br /><span style="color: #e06666; font-size: 18px;">2. install add-apt-repository</span><br /><br />剛安裝完的ubuntu預設是沒有add-apt-repository這個package的，<br />所以得手動安裝，請安裝下列兩項packages<br /><pre class="brush: java">sudo apt-get install software-properties-common<br />sudo apt-get install python-software-properties<br /></pre><br /><br /><span style="color: #e06666; font-size: 18px;">3. install sun-java6-sdk</span><br /><br />那因為不能用openjdk build android，<br />所以得換成sun(oracle)的版本，<br /><pre class="brush: java">sudo add-apt-repository ppa:webupd8team/java<br />sudo apt-get update<br />sudo apt-get install oracle-java6-installer<br /></pre><br /><br /><span style="color: #e06666; font-size: 18px;">4. install required packages</span><br /><br />安裝一些必要的packages，<br /><pre class="brush: java">sudo apt-get install git gnupg flex bison gperf build-essential \<br />  zip curl libc6-dev libncurses5-dev:i386 x11proto-core-dev \<br />  libx11-dev:i386 libreadline6-dev:i386 libgl1-mesa-glx:i386 \<br />  libgl1-mesa-dev g++-multilib mingw32 tofrodos \<br />  python-markdown libxml2-utils xsltproc zlib1g-dev:i386<br />sudo ln -s /usr/lib/i386-linux-gnu/mesa/libGL.so.1 /usr/lib/i386-linux-gnu/libGL.so<br /></pre><br /><br /><span style="color: #e06666; font-size: 18px;">5.&nbsp;Configuring USB Access</span><br /><br />因為linux預設無法access到USB device，<br />所以得加一些udev的rule，<br />先在udev底下建立一個檔案,<br /><pre class="brush: java">sudo vim /etc/udev/rules.d/51-android.rules<br /></pre><br />然後貼入下列的內容！注意！！請把owner改成你自己的ubuntu user name！<br /><pre class="brush: java"># adb protocol on passion (Nexus One)<br />SUBSYSTEM=="usb", ATTR{idVendor}=="18d1", ATTR{idProduct}=="4e12", MODE="0600", OWNER="ken"<br /># fastboot protocol on passion (Nexus One)<br />SUBSYSTEM=="usb", ATTR{idVendor}=="0bb4", ATTR{idProduct}=="0fff", MODE="0600", OWNER="ken"<br /># adb protocol on crespo/crespo4g (Nexus S)<br />SUBSYSTEM=="usb", ATTR{idVendor}=="18d1", ATTR{idProduct}=="4e22", MODE="0600", OWNER="ken"<br /># fastboot protocol on crespo/crespo4g (Nexus S)<br />SUBSYSTEM=="usb", ATTR{idVendor}=="18d1", ATTR{idProduct}=="4e20", MODE="0600", OWNER="ken"<br /># adb protocol on stingray/wingray (Xoom)<br />SUBSYSTEM=="usb", ATTR{idVendor}=="22b8", ATTR{idProduct}=="70a9", MODE="0600", OWNER="ken"<br /># fastboot protocol on stingray/wingray (Xoom)<br />SUBSYSTEM=="usb", ATTR{idVendor}=="18d1", ATTR{idProduct}=="708c", MODE="0600", OWNER="ken"<br /># adb protocol on maguro/toro (Galaxy Nexus)<br />SUBSYSTEM=="usb", ATTR{idVendor}=="04e8", ATTR{idProduct}=="6860", MODE="0600", OWNER="ken"<br /># fastboot protocol on maguro/toro (Galaxy Nexus)<br />SUBSYSTEM=="usb", ATTR{idVendor}=="18d1", ATTR{idProduct}=="4e30", MODE="0600", OWNER="ken"<br /># adb protocol on panda (PandaBoard)<br />SUBSYSTEM=="usb", ATTR{idVendor}=="0451", ATTR{idProduct}=="d101", MODE="0600", OWNER="ken"<br /># adb protocol on panda (PandaBoard ES)<br />SUBSYSTEM=="usb", ATTR{idVendor}=="18d1", ATTR{idProduct}=="d002", MODE="0600", OWNER="ken"<br /># fastboot protocol on panda (PandaBoard)<br />SUBSYSTEM=="usb", ATTR{idVendor}=="0451", ATTR{idProduct}=="d022", MODE="0600", OWNER="ken"<br /># usbboot protocol on panda (PandaBoard)<br />SUBSYSTEM=="usb", ATTR{idVendor}=="0451", ATTR{idProduct}=="d00f", MODE="0600", OWNER="ken"<br /># usbboot protocol on panda (PandaBoard ES)<br />SUBSYSTEM=="usb", ATTR{idVendor}=="0451", ATTR{idProduct}=="d010", MODE="0600", OWNER="ken"<br /># adb protocol on grouper/tilapia (Nexus 7)<br />SUBSYSTEM=="usb", ATTR{idVendor}=="18d1", ATTR{idProduct}=="4e42", MODE="0600", OWNER="ken"<br /># fastboot protocol on grouper/tilapia (Nexus 7)<br />SUBSYSTEM=="usb", ATTR{idVendor}=="18d1", ATTR{idProduct}=="4e40", MODE="0600", OWNER="ken"<br /># adb protocol on manta (Nexus 10)<br />SUBSYSTEM=="usb", ATTR{idVendor}=="18d1", ATTR{idProduct}=="4ee2", MODE="0600", OWNER="ken"<br /># fastboot protocol on manta (Nexus 10)<br />SUBSYSTEM=="usb", ATTR{idVendor}=="18d1", ATTR{idProduct}=="4ee0", MODE="0600", OWNER=“ken"<br /></pre><br /><br /><span style="color: #e06666; font-size: 18px;">6. install&nbsp;Repo</span><br /><br />接著要安裝Repo這個tool，<br />Repo是一個讓你可以輕鬆使用git的tool，<br /><br />先在你的home目錄建立一個bin目錄，<br /><pre class="brush: java">mkdir ~/bin<br />PATH=~/bin:$PATH<br /></pre><br />開始下載repo tool<br /><pre class="brush: java">curl http://commondatastorage.googleapis.com/git-repo-downloads/repo > ~/bin/repo<br />chmod a+x ~/bin/repo<br /></pre><br /><br /><span style="color: #e06666; font-size: 18px;">7. Initialize a Repo client and Download Android source</span><br /><br />安裝好repo以後，就開始來設定他，<br />首先先建立一個資料夾，這資料夾準備用來存android source code，<br /><pre class="brush: java">mkdir WORKING_DIRECTORY<br />cd WORKING_DIRECTORY<br /></pre><br />接著就init，其實就跟git差不多，<br />最後-b的意思就是checkout哪個branch的意思，<br /><pre class="brush: java">repo init -u https://android.googlesource.com/platform/manifest -b android-4.4.2_r2<br /></pre><br /><br />設定完repo以後，就開始下載android source吧！<br /><pre class="brush: java">repo sync<br /></pre><br /><span style="color: #e06666; font-size: 18px;">8.&nbsp;change the default shell environment</span><br /><br />完成下載以後，在開始build之前，還有一些要設定，<br />ubuntu的預設的shell是dash，<br />那據說用dash build會fail，<br />所以要把它換成bash，就使用下面的指令，<br />使用以後，就選No！就完成了！<br /><pre class="brush: java">sudo dpkg-reconfigure dash<br /></pre><br /><br /><span style="color: #e06666; font-size: 18px;">9.&nbsp;Initialize build environment</span><br /><br />接著就要initialize你的build environment,<br />很簡單，靠下面一個script就可做到,<br /><pre class="brush: java">. build/envsetup.sh<br /></pre><br /><br /><span style="color: #e06666; font-size: 18px;">10.&nbsp;Choose a Target</span><br /><br />接著就要選擇你要build的target，<br />有很多種可以選，可以來這看（<a href="http://source.android.com/source/building-devices.html">點我</a>）<br />那因為我們等等是用emulator去做測試，<br />所以我們是選擇aosp_arm-eng!<br /><pre class="brush: java">lunch aosp_arm-eng<br /></pre><br /><br /><span style="color: #e06666; font-size: 18px;">11.&nbsp;build code</span><br /><br />接著就可以開始build，<br />直接下make就可以build，後面會帶一個參數是-jN，<br />N是一個數字，通常取決於你的hardware thread的數量！<br />build還蠻花時間的，我的機器在沒有做cache的情況下，build了差不多2小時..<br />所以耐心等待吧！<br /><pre class="brush: java">make -j4<br /></pre><br />build成功以後，應該會看到下面的字樣，<br /><pre class="brush: java">Install system fs image: out/target/product/generic/system.img <br />out/target/product/generic/system.img+ maxsize=588791808 blocksize=2112 total=576716800 reserve=5947392<br /></pre><br /><br /><span style="color: #e06666; font-size: 18px;">12. Test</span><br /><br />接著就要來測試剛剛build好的image是否可以使用，<br />如果你是使用desktop的ubuntu，<br />理論上你只要下下面的指令就可以測試，<br /><pre class="brush: java">emulator<br /></pre><br />但剛好我是使用server版本去build...<br />我又懶得裝ubuntu-desktop，<br />我就只好抓回來我的mac環境來測試！<br />注意！前提是你的mac環境已經有android-sdk，而且你也把system.img也抓回來了！<br /><br />首先請先建立一個avd，就是emulator，<br />注意！emulator的api level要是19！<br />為什麼呢？<br />因為我們剛剛checkout branch的時候是4.4.2！<br />你可以利用下面的指令來建立一個avd，<br /><pre class="brush: java">cd ~/your_android_sdk_dir/tools<br />./android create avd -n test-emulator -t 15 -c 100M --abi armeabi-v7a<br /></pre><br />接著就把你的system.img複製到剛剛建立的avd資料夾下！<br />只要搬到該資料夾下，等emluator啟動時，就會試著去load那個system.img!<br /><pre class="brush: java">cp system.img ~/.android/test-emulator<br /></pre><br />啟動emulator<br /><pre class="brush: java">./emulator -avd test-emulator<br /></pre><br />理論上看到android字樣的開機畫面，應該就代表build成功了！<br /><br /><br /><br /><br /><br /><br /><br /><br /></div><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
-      </div>
-      <footer>
-        <p><a class="myButton" href="/2014/02/24/how-to-build-android-image">read more &raquo;</a></p>
-        <div>
-          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<!-- ken on github -->
-<ins class="adsbygoogle"
-     style="display:block"
-     data-ad-client="ca-pub-3783438370424072"
-     data-ad-slot="1516206098"
-     data-ad-format="auto"></ins>
-<script>
-(adsbygoogle = window.adsbygoogle || []).push({});
-</script>
-
-        </div>
-      </footer>
-      <hr>
-    
 
     <!-- Pagination links -->
     <div class="pagination">
       
         <a href="/blog/page7" class="previous">Previous</a>
       
-      <span class="page_number ">Page: 8 of 55</span>
+      <span class="page_number ">Page: 8 of 56</span>
       
         <a href="/blog/page9" class="next">Next</a>
       
