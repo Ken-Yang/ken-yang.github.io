@@ -292,6 +292,34 @@
     </div>
     <!-- This loops through the paginated posts -->
     
+      <h1><a style="color: #F22430" href="/2011/03/31/ubuntu-install-vsftpd">ubuntu install vsftpd</a></h1>
+      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
+      <p class="author">
+      <div class="date">
+        <span>31 March 2011</span>
+      </div>
+      </p>
+      <div class="content" style="line-height: 28px;">
+        今天剛灌好ubuntu server，順便把vsftpd裝起來，<br />但是發現一直找不到該package，<br />結果發現其實只是沒有更新sources.list，<br />只要下<br /><div style="background: #E3F0FA; border: 1px dashed #89A6C6; margin-left: 10px; margin-top: 10px; padding-left: 10px; width: 200px;">sudo apt-get update </div><br />更新完以後，就可以找到了。<br />只要下<br /><div style="background: #E3F0FA; border: 1px dashed #89A6C6; margin-left: 10px; margin-top: 10px; padding-left: 10px; width: 200px;">sudo apt-get install vsftpd </div>就可以安裝起來。<br />安裝完成以後，就針對設定檔進行一些微調<br />像是我不希望我的ftp server可以匿名登入，<br />那麼我就要去設定檔把匿名登入關掉，<br />首先先用編輯器開啟設定檔<br /><div style="background: #E3F0FA; border: 1px dashed #89A6C6; margin-left: 10px; margin-top: 10px; padding-left: 10px; width: 200px;">sudo vim /etc/vsftpd.conf</div>打開以後，把<br /><br />anonymous_enable=YES<br />改成<br /><br />anonymous_enable=no<br /><br />接著存檔離開。<br />並重新啟動<br /><div style="background: #E3F0FA; border: 1px dashed #89A6C6; margin-left: 10px; margin-top: 10px; padding-left: 10px; width: 300px;">sudo /etc/init.d/vsftpd restart</div><br />這樣即可。<br />詳細設定檔可以去鳥哥看<br /><br />
+      </div>
+      <footer>
+        <p><a class="myButton" href="/2011/03/31/ubuntu-install-vsftpd">read more &raquo;</a></p>
+        <div>
+          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- ken on github -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3783438370424072"
+     data-ad-slot="1516206098"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+        </div>
+      </footer>
+      <hr>
+    
       <h1><a style="color: #F22430" href="/2011/03/18/gaej-datastoreneedindexexception-no">GAE/J DatastoreNeedIndexException: no matching index found解決方式</a></h1>
       <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
       <p class="author">
@@ -332,34 +360,6 @@
       </div>
       <footer>
         <p><a class="myButton" href="/2011/03/10/implement-yahoo-login-using-bbauth">read more &raquo;</a></p>
-        <div>
-          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<!-- ken on github -->
-<ins class="adsbygoogle"
-     style="display:block"
-     data-ad-client="ca-pub-3783438370424072"
-     data-ad-slot="1516206098"
-     data-ad-format="auto"></ins>
-<script>
-(adsbygoogle = window.adsbygoogle || []).push({});
-</script>
-
-        </div>
-      </footer>
-      <hr>
-    
-      <h1><a style="color: #F22430" href="/2011/03/10/java-staticfinal">Java static,final 基本概念</a></h1>
-      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
-      <p class="author">
-      <div class="date">
-        <span>10 March 2011</span>
-      </div>
-      </p>
-      <div class="content" style="line-height: 28px;">
-        從很久以前我就了解到，<br /><br />不僅僅要知道know how，<br /><br />還要知道know why，<br /><br />舉個例子，當我派工作給底下的人做時，<br /><br />例如要他做出一個發送mail的功能出來，<br /><br />恩，拜Google大神所賜，通常很快都可以找到發送mail的code。<br /><br />但是當我細下去問每一行code的用途時，<br /><br />大多是...."恩...不知道"。<br /><br />我覺得此風不可長。<br /><br />甚至有些學弟們搞不清楚何時要用static、final。<br /><br />也不懂甚麼是interface、abstract等等之類的。<br /><br />因為他們也不知道這些東西的作用。<br /><br />所以用這篇文章來稍微解說一下。<br /><br /><span class="Apple-style-span" style="font-size: x-large;"><b>static：</b></span><br /><br />靜態的意思<br /><br />可以用來宣告一個函數或者變數，<br /><br />只要記得當一個函數或者變數被宣告為static時，<br /><br />他就具有唯一值的概念！！<br /><br />他就永遠只佔著那一組記憶體空間。<br /><br />不管該類別被new幾個object，該值永遠都會是一樣的！<br /><br />舉個例子！<br /><br />我們看到下面code的例子<br /><br /><pre class="brush: java">class test{<br />     static int iValue = 0;<br />     public test() {<br />     }<br />}<br />public class main {<br />     public static void main(String[] argv)  {<br />          test test1 = new test();<br />          test test2 = new test();<br />          System.out.println(test1.iValue);<br />          test2.iValue  = 10;<br />          System.out.println(test2.iValue);<br />          System.out.println(test1.iValue);<br />     } <br />}<br /><br /><br /></pre><br />我們把test這個類別裡的資料成員iValue宣告為static，<br /><br />然後再main裡面分別去new兩個object出來。<br /><br />分別是test1, test2，<br /><br />然後先印出test1的iValue出來，（印出0，當然！一開始是0）<br /><br />接著我們用test2這個object去將iValue設值設為10，<br /><br />接著再去印出test2的iValue出來，（印出10出來，當然！因為設成10了阿）<br /><br />重點來了！<br /><br />這時候再印出test1的iValue出來！<br /><br />大部分的人會覺得，應該是印出0阿，<br /><br />但是印出的是10。<br /><br />原因是因為我們將iValue宣告成static了。<br /><br />而iValue成為一個共同的變數。<br /><br />這就是static 的一個特性！<br /><br /><b><span class="Apple-style-span" style="font-size: large;">特性一：永遠會是一個唯一值！！</span></b><br /><b><br /></b><br />且static 還有一個特性，<br /><br /><b><span class="Apple-style-span" style="font-size: large;">特性二：static可以透過類別直接存取使用！</span></b><br /><br />意思是我們其實不需要new 一個object出來。<br /><br />也可以透過類別直接去存取該變數<br /><br />例子如下！<br /><br /><pre class="brush: java">class test{<br />     static int iValue = 0;<br />     public test() {<br />     }<br />}<br />public class main {<br />     public static void main(String[] argv)  {<br />          System.out.println(test.iValue);<br />     }<br />}<br /><br /><br /></pre><br />你會發現在main中，我們並沒有new一個object出來！！<br /><br />也可以存取到test這個類別中的資料成員（iValue）<br /><br />static的介紹大概到這，<br /><br />接著介紹final<br /><br /><span class="Apple-style-span" style="font-size: x-large;">final：</span><br /><br />相較於static，final的概念就容易了解許多！<br /><br />可以用來宣告一個類別、函數、或者變數。<br /><br />類別：當宣告在類別上時，該類別就無法被繼承！<br /><br />函數：當一個函數被宣告為final時，則繼承他的子類別無法覆寫<br /><br />變數：當一個變數被宣告為final時，意思是他是一個常數，是無法被修改的。<br /><br /><br /><span class="Apple-style-span" style="font-size: large;">注意！</span><br /><br />使用static final需要注意一點！！<br /><br />如上面所述說的，當我們有一個常數要宣告時，<br /><br />會宣告如下<br /><br /><pre class="brush: java">public static final String strValue = "ken";<br /></pre><br />為什麼宣告這樣會有個風險呢？<br /><br />因為java在進行compile的時候，<br /><br />會將宣告成static final的變數，直接包進去程式裡面。<br /><br />什麼意思呢？<br /><br /><pre class="brush: java">System.out.println(strValue);<br /></pre><br />當你有類似存取strValue的code時， <br /><br />我們去把java會把compile成的class，decompile來看 <br /><br />會發現它變成如下的code <br /><br /><pre class="brush: java">System.out.println("ken");<br /></pre><br /><br />好啊好啊，那到底風險又在哪？<br /><br />當然啦，如果你今天有用一些好用的IDE進行開發，<br /><br />應該是不會遇到這樣的風險，<br /><br />以Eclipse為例，只要你一儲存或者執行，Eclipse就會幫你進行compile！<br />（如果有勾選Build Automatically的話）<br /><br />可是如果你今天是徒法煉鋼！<br /><br />自己下指令進行compile的時候...<br /><br />又剛好你程式改了，把strValue的值改為"yang"，<br /><br />又剛好你忘記進行compile....<br /><br />這時候...如果有人去存取strValue就會出錯!!<br /><br />那怎麼解決???<br /><br />我們可以利用static block來進行宣告的動作!!!<br /><br />如下：<br /><br /><pre class="brush: java">static String strValue;<br />static{<br />     strValue = "ken";<br />}<br /></pre><br />如果用這樣的宣告方式，即可避免上面述說的問題！<br /><br /><br />原諒我，太累了。<br /><br />今天就先講解static,final 基本概念<br /><br />下篇在講解interface, abstract!!<br /><br /><br /><br /><br /><br /><br /><br /><br />
-      </div>
-      <footer>
-        <p><a class="myButton" href="/2011/03/10/java-staticfinal">read more &raquo;</a></p>
         <div>
           <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 <!-- ken on github -->

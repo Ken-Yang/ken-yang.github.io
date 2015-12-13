@@ -5,8 +5,8 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-    <title>Android C2DM (三)：實作之Sever篇</title>
-    
+    <title>Android Fingerprint API</title>
+    <meta name="description" content="">
     <meta name="author" content="Ken Yang">
 
     <!-- Enable responsive viewport -->
@@ -306,7 +306,7 @@
 
 
 <div class="page-header">
-  <h1>Android C2DM (三)：實作之Sever篇 </h1>
+  <h1>Android Fingerprint API </h1>
 </div>
 
 <div class="row post-full">
@@ -336,10 +336,159 @@
 
   <div class="col-xs-12">
     <div class="date">
-      <span>23 March 2012</span>
+      <span>12 December 2015</span>
     </div>
     <div class="content" style="line-height: 28px;">
-      <span style="color: red; font-size: large;">這篇是舊版的，已經被deprecated，新版為GCM，新版的實作請看</span><br /><a href="http://blog.kenyang.net/2013/07/android-gcm-google-cloud.html"><span style="color: blue; font-size: large;">新版的Server篇</span></a><br /><br /><br /><br /><br /><br />最後一篇進入到了Android C2DM的coding了!!<br />哈! 這篇存在草稿也三個月了..........<br />今天終於有一點點時間來修改!<br /><br /><br /><span style="font-size: large;"><b>第一篇在講<a href="http://blog.kenyang.net/2011/12/android-c2dm.html">參數說明</a></b></span><br /><span style="font-size: large;"><b>第二篇在講<a href="http://blog.kenyang.net/2011/12/android-c2dm_22.html">流程說明</a></b></span><br /><span style="font-size: large;"><b>這篇專注於server端的實作</b></span><br /><span style="font-size: large;"><b>下一篇才會專注於<a href="http://blog.kenyang.net/2012/03/android-c2dm-android.html">android端的實作</a></b></span><br /><br /><br /><br /><br />OK，<br />在coding之前，請先去<a href="http://code.google.com/android/c2dm/signup.html">Google官網註冊你的app</a>，<br />比較要注意的是下面兩項<br /><div><ol><li><span style="background-color: white; font-family: Arial, sans-serif; font-size: 13px; font-weight: bold;">Package name of your Android app&nbsp;</span><span class="ss-required-asterisk" style="background-color: white; color: #c43b1d; font-family: Arial, sans-serif; font-size: 13px; font-weight: bold;">*</span></li><li><span style="background-color: white; font-family: Arial, sans-serif; font-size: 13px; font-weight: bold;">Role (sender) account email&nbsp;</span><span class="ss-required-asterisk" style="background-color: white; color: #c43b1d; font-family: Arial, sans-serif; font-size: 13px; font-weight: bold;">*</span></li></ol></div>第1項，是指你的Android app的package name，這裡一定要填對，不然C2DM Server不知道送到哪個app去。<br />第2項，是指用來傳遞訊息的帳號，也就是開發者的帳號，這裡的建議是不要用個人帳號，建議新申請另一個帳號來使用。<br /><br />完成上面註冊動作以後，就可以開始coding了!<br />網路上的code教學都是拿<a href="http://code.google.com/android/c2dm/index.html#Examples">Google官網上面放的範例（JumpNote）</a>，<br />我覺得這樣不太native，畢竟這是別人寫的app！<br />所以我直接講最基本的流程！<br /><br /><br />接下來的code大概會分成下面幾種：<br /><br /><ol><li>實作Server端：使用Google Client Login API取得Auth token，並且存起來。</li><li>實作Server端：Sending Message to C2DM Server。</li><li>Android端：基本的設定。</li><li>Android端：向C2DM 註冊，並且取得registration id。</li><li>Android端：傳送 Registration Id 到我們的Server</li></ol><br />因為其實有點多，所以就分成兩篇來打，<br />一篇為Sever篇，就是此篇！<br />另一篇為Android篇，就是下篇！<br /><br /><span style="font-size: large;"><b>【1.&nbsp; 使用<a href="https://developers.google.com/accounts/docs/AuthForInstalledApps">Google Client Login API</a>取得Auth token&nbsp;】</b></span><br /><br />因為得把token傳至C2DM Server，<br />C2DM Sever才知道你有登入，且是合格的。<br /><br />至於Google Client Login API的流程在這就不贅述，<br />就直接實做! 但大家可以去<a href="https://developers.google.com/accounts/docs/AuthForInstalledApps">Google Client Login API官網</a>看!!!<br /><br />這裡我是架在<a href="http://code.google.com/intl/zh-TW/appengine/">Google App Engine</a>上，把<a href="http://code.google.com/intl/zh-TW/appengine/">GAE</a>當作我們的Sever。<br />由於auth token可以重複使用，<br />所以我們可能可以每段時間去執行ClientLogin，<br />並取得auth token!<br />這時候就可以用GAE的cron，可能設定每天去登入一次以取得token。<br /><br />而Client Login的code如下：<br /><pre class="brush: java">String strClientLoginUrl = "https://www.google.com/accounts/ClientLogin"; // client login的url<br />String strAccountType = "accountType=HOSTED_OR_GOOGLE&amp;";// 你要登入的帳號型態，這裡就輸入HOSTED_OR_GOOGLE<br />String strEmail = "Email=test@gmail.com&amp;";     // 你的email!!<br />String strPasswd= "Passwd=123456&amp;";            // 你的密碼<br />String strService= "service=ac2dm&amp;";           // 你登入以後，要拿這token存取Google哪個Service，這裡是ac2dm<br />String strSource= "source=KenYang-AndroidC2DM-1.0";// 這個只是用來identify你的application，格式要companyName-applicationName-versionID<br /><br /><br />HttpURLConnection conn = (HttpURLConnection) new URL(strClientLoginUrl).openConnection();<br />conn.setDoOutput(true);  <br />conn.setUseCaches(false);  <br />conn.setRequestMethod("POST");  // 設定request Method為POST<br />conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");  <br /><br /><br />// 送出資料<br />OutputStream out = conn.getOutputStream();  <br />String strPostData = strAccountType+strEmail+strPasswd+strService+strSource;<br />out.write(strPostData.getBytes());  <br />out.close();  <br /><br />// 取得response code，成功的話就是200<br />resp.getWriter().println(conn.getResponseCode()+ "&lt;/br&gt;");<br /><br />// 把資料讀進來並且印出來<br />BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream(),"utf-8"));<br />String strLine = "";<br />while((strLine=reader.readLine())!=null){<br /> resp.getWriter().println(strLine+"&lt;/br&gt;");<br />}<br /><br /><br /><br /></pre><br />正常來說，如果你帳號沒有問題，<br />或者密碼沒有輸入錯誤，<br />或者的確有這帳號存在！<br />那麼response code會是200!<br />就代表登入成功!<br />此時就要取得auth token。<br /><br />印出來的資料如下：<br /><pre class="brush: java">SID=DQAAAGgA...7Zg8CTN<br />LSID=DQAAAGsA...lk8BBbG<br />Auth=DQAAAGgA...dk3fA5N<br /></pre><br />這時候，只要取得最後那一行資料即可！<br />就是Auth那一行！！！<br />然後把Auth存起來！<br />這裡我是先存在GAE的datastore！<br />以利待會使用!<br /><br /><br /><br /><br /><span style="font-size: large;"><b>【2.&nbsp;&nbsp;傳送資料至C2DM Server&nbsp;】</b></span><br /><br />至於傳送甚麼資料，可以來這<a href="http://%E3%80%901.%20%20%E4%BD%BF%E7%94%A8google%20client%20login%20api%E5%8F%96%E5%BE%97auth%20token%20%E3%80%91%20%20%E5%9B%A0%E7%82%BA%E5%BE%97%E6%8A%8Atoken%E5%82%B3%E8%87%B3c2dm%20server%EF%BC%8C/">官網</a>看詳細參數說明!<br />這邊就簡單地說明幾種"必需"的參數!<br /><br /><ol><li><span style="background-color: white; color: #007000; font-family: monospace; font-size: 14px; line-height: 17px; text-align: left;">registration_id</span>&nbsp;：android 裝置的id，一定要傳這資料給C2DM Server，C2DM才知道訊息要傳給誰，至於這個值，是來自android device的!</li><li><span style="background-color: white; color: #007000; font-family: monospace; font-size: 14px; line-height: 17px; text-align: left;">collapse_key</span>&nbsp;：這個value可以是隨意的值，這個參數的用意是怕android device的狀態是離線狀態，一旦狀態恢復為連線，避免使用者突然收到大量訊息!(這個參數可以每次都不一樣，也可以每次都一樣)</li><li><span style="background-color: white; color: #007000; font-family: monospace; font-size: 14px; line-height: 17px; text-align: left;">data.&lt;key&gt;</span>&nbsp;：這個參數就是你要傳給android device的訊息了! 型態為key-value。如data.keyName=value</li><li><span style="background-color: white; color: #007000; font-family: monospace; font-size: 14px; line-height: 17px; text-align: left;">GoogleLogin auth</span>&nbsp;：這個不是要post的參數，而是要送出的header值! 而值就是上面存在datastore裡面的Auth!</li></ol><br /><br /><br />實際的code如下：<br /><pre class="brush: java">String strSendUrl = "https://android.apis.google.com/c2dm/send";  // c2dm的url<br />String strRegistrationId = "registration_id="+req.getParameter("device_token")+"&amp;"; // 接收來自android傳來的參數<br />String strCollapse= "collapse_key=1&amp;";    // 這個參數上面說明了<br />String strAuth = "xxxxxx";                 // 從datastore撈出來的值，這裡就不寫有關datastore的操作了<br />String strData  = "data.keyHello=fromKen";    // 你要送的訊息<br /><br />String strPostData = strRegistrationId+strCollapse+strData;<br /><br />HttpURLConnection conn = (HttpURLConnection) new URL(strSendUrl).openConnection();<br />conn.setDoOutput(true);  <br />conn.setUseCaches(false);  <br />conn.setRequestMethod("POST");  <br />conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");  <br />conn.setRequestProperty("Authorization", "GoogleLogin auth=" + strAuth);  // 設定header<br />conn.setRequestProperty("Content-Length", Integer.toString(strPostData.getBytes().length)); // 告訴c2dm要傳送的資料長度<br /><br />// 送出資料<br />OutputStream out = conn.getOutputStream();  <br />out.write(strPostData.getBytes());  <br />out.close();  <br /><br />// 看response code, 200為OK<br />resp.getWriter().println(conn.getResponseCode()+ "&lt;/br&gt;&lt;/br&gt;"); <br /><br /></pre><br /><br /><br /><br />完成上面的步驟，server端就完成了！<br />但還要完成android端，才能真正收到訊息！<br />下一篇會專注於android端的實作<br /><br /><br /><br /><br /><br /><br />
+      <p><font size=3></p>
+
+<p>Google在Android 6.0中，釋放了對<a href="http://developer.android.com/intl/zh-tw/reference/android/hardware/fingerprint/FingerprintManager.html">Fingerprint</a>操作的API，<br>
+而最近剛好也買了Nexus 6P，因此有了機會來玩看看。</p>
+
+<p></br></p>
+
+<hr>
+
+<h3 id="1-androidmanifest-xml">1. AndroidManifest.xml</h3>
+
+<hr>
+
+<p>首先要在<code>AndroidManifest.xml</code>中設定permission，</p>
+<div class="highlight"><pre><code class="language-xml" data-lang="xml"><span class="nt">&lt;uses-permission</span> <span class="na">android:name=</span><span class="s">&quot;android.permission.USE_FINGERPRINT&quot;</span> <span class="nt">/&gt;</span>
+</code></pre></div>
+<p></br></p>
+
+<hr>
+
+<h3 id="2-check-requirement">2. Check Requirement</h3>
+
+<hr>
+
+<p>接著要檢查device上，是否有fingerprint reader，以及是否有設置了至少一枚fingerprint。下面這段code，主要檢查了三件事情：  </p>
+
+<ol>
+<li><strong>isKeyguardSecure</strong> : 是否有設定screen lock</li>
+<li><strong>isHardwareDetected</strong> : device是否有fingerprint reader</li>
+<li><strong>hasEnrolledFingerprints</strong> : 是否有設定至少一枚指紋</li>
+</ol>
+
+<!--more-->
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span class="kd">private</span> <span class="n">KeyguardManager</span> <span class="n">km</span><span class="o">;</span>
+<span class="kd">private</span> <span class="n">FingerprintManager</span> <span class="n">fm</span><span class="o">;</span>
+<span class="kd">private</span> <span class="n">CancellationSignal</span> <span class="n">cancellationSignal</span><span class="o">;</span>
+
+<span class="nd">@Override</span>
+<span class="kd">protected</span> <span class="kt">void</span> <span class="nf">onCreate</span><span class="o">(</span><span class="n">Bundle</span> <span class="n">savedInstanceState</span><span class="o">)</span> <span class="o">{</span>
+    <span class="kd">super</span><span class="o">.</span><span class="na">onCreate</span><span class="o">(</span><span class="n">savedInstanceState</span><span class="o">);</span>
+    <span class="n">setContentView</span><span class="o">(</span><span class="n">R</span><span class="o">.</span><span class="na">layout</span><span class="o">.</span><span class="na">activity_main</span><span class="o">);</span>
+
+    <span class="n">km</span> <span class="o">=</span> <span class="o">(</span><span class="n">KeyguardManager</span><span class="o">)</span><span class="n">getSystemService</span><span class="o">(</span><span class="n">Activity</span><span class="o">.</span><span class="na">KEYGUARD_SERVICE</span><span class="o">);</span>
+    <span class="n">fm</span> <span class="o">=</span> <span class="n">getSystemService</span><span class="o">(</span><span class="n">FingerprintManager</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+
+    <span class="k">if</span> <span class="o">(!</span><span class="n">km</span><span class="o">.</span><span class="na">isKeyguardSecure</span><span class="o">())</span> <span class="o">{</span>
+       <span class="n">Toast</span><span class="o">.</span><span class="na">makeText</span><span class="o">(</span><span class="k">this</span><span class="o">,</span>
+                <span class="s">&quot;Secure lock screen hasn&#39;t set up.\n&quot;</span>
+                <span class="o">+</span> <span class="s">&quot;Go to &#39;Settings -&gt; Security -&gt; Fingerprint&#39; to set up a fingerprint&quot;</span><span class="o">,</span>
+                <span class="n">Toast</span><span class="o">.</span><span class="na">LENGTH_LONG</span><span class="o">).</span><span class="na">show</span><span class="o">();</span>
+        <span class="k">return</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="k">if</span> <span class="o">(!</span><span class="n">isHardwareDetected</span><span class="o">())</span> <span class="o">{</span>
+        <span class="n">Toast</span><span class="o">.</span><span class="na">makeText</span><span class="o">(</span><span class="k">this</span><span class="o">,</span>
+                <span class="s">&quot;No Fingerprint reader&quot;</span><span class="o">,</span>
+                <span class="n">Toast</span><span class="o">.</span><span class="na">LENGTH_LONG</span><span class="o">).</span><span class="na">show</span><span class="o">();</span>
+        <span class="k">return</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="k">if</span> <span class="o">(!</span><span class="n">fm</span><span class="o">.</span><span class="na">hasEnrolledFingerprints</span><span class="o">())</span> <span class="o">{</span>
+        <span class="n">Toast</span><span class="o">.</span><span class="na">makeText</span><span class="o">(</span><span class="k">this</span><span class="o">,</span>
+                <span class="s">&quot;Go to &#39;Settings -&gt; Security -&gt; Fingerprint&#39; and register at least one fingerprint&quot;</span><span class="o">,</span>
+                <span class="n">Toast</span><span class="o">.</span><span class="na">LENGTH_LONG</span><span class="o">).</span><span class="na">show</span><span class="o">();</span>
+        <span class="k">return</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div>
+<p></br></p>
+
+<hr>
+
+<h3 id="3-authenticate">3. Authenticate</h3>
+
+<hr>
+
+<p>如果通過上述的檢查之後，就可以透過<code>FingerprintManager</code>進行<code>Authenticate</code>的動作，method call為：</p>
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kt">void</span> <span class="nf">authenticate</span> <span class="o">(</span><span class="n">FingerprintManager</span><span class="o">.</span><span class="na">CryptoObject</span> <span class="n">crypto</span><span class="o">,</span> 
+                          <span class="n">CancellationSignal</span> <span class="n">cancel</span><span class="o">,</span> 
+                          <span class="kt">int</span> <span class="n">flags</span><span class="o">,</span> 
+                          <span class="n">FingerprintManager</span><span class="o">.</span><span class="na">AuthenticationCallback</span> <span class="n">callback</span><span class="o">,</span> 
+                          <span class="n">Handler</span> <span class="n">handler</span><span class="o">)</span>
+</code></pre></div>
+<p>一共要帶入5個參數，分別為：</p>
+
+<ol>
+<li><code>CryptoObject</code> : Android 6.0中crypto objects的wrapper class，可以透過它讓authenticate過程更為secure，但也可以不使用。</li>
+<li><code>CancellationSignal</code> : 用來Cancel <em>authenticate</em>的object</li>
+<li><code>flags</code> : 只是一個flag，且目前只能代入0</li>
+<li><code>AuthenticationCallback</code> : callback來接受authenticate成功與否，有三個callback method，
+
+<ul>
+<li>onAuthenticationError</li>
+<li>onAuthenticationFailed</li>
+<li>onAuthenticationSucceeded </li>
+</ul></li>
+<li><code>Handler</code> : optional的參數，如果有使用，FingerprintManager會透過它來傳遞訊息</li>
+</ol>
+
+<p></br></p>
+
+<p>了解參數以後就可以開始進行<strong>authenticate</strong>，</p>
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span class="nd">@Override</span>
+<span class="kd">protected</span> <span class="kt">void</span> <span class="nf">onCreate</span><span class="o">(</span><span class="n">Bundle</span> <span class="n">savedInstanceState</span><span class="o">)</span> <span class="o">{</span>
+    <span class="o">....</span> <span class="n">ignore</span> <span class="o">...</span>
+    <span class="n">startListening</span><span class="o">();</span>
+<span class="o">}</span>
+
+<span class="kd">private</span> <span class="kt">void</span> <span class="nf">startListening</span><span class="o">()</span> <span class="o">{</span>
+
+    <span class="n">cancellationSignal</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">CancellationSignal</span><span class="o">();</span>
+
+    <span class="n">fm</span><span class="o">.</span><span class="na">authenticate</span><span class="o">(</span><span class="kc">null</span><span class="o">,</span>
+                    <span class="n">cancellationSignal</span><span class="o">,</span>
+                    <span class="mi">0</span><span class="o">,</span>
+                    <span class="k">new</span> <span class="n">FingerprintManager</span><span class="o">.</span><span class="na">AuthenticationCallback</span><span class="o">()</span> <span class="o">{</span>
+                        <span class="nd">@Override</span>
+                        <span class="kd">public</span> <span class="kt">void</span> <span class="nf">onAuthenticationError</span><span class="o">(</span><span class="kt">int</span> <span class="n">errorCode</span><span class="o">,</span> <span class="n">CharSequence</span> <span class="n">errString</span><span class="o">)</span> <span class="o">{</span>
+                            <span class="n">Log</span><span class="o">.</span><span class="na">e</span><span class="o">(</span><span class="s">&quot;&quot;</span><span class="o">,</span> <span class="s">&quot;error &quot;</span> <span class="o">+</span> <span class="n">errorCode</span> <span class="o">+</span> <span class="s">&quot; &quot;</span> <span class="o">+</span> <span class="n">errString</span><span class="o">);</span>
+                        <span class="o">}</span>
+
+                        <span class="nd">@Override</span>
+                        <span class="kd">public</span> <span class="kt">void</span> <span class="nf">onAuthenticationFailed</span><span class="o">()</span> <span class="o">{</span>
+                            <span class="n">Log</span><span class="o">.</span><span class="na">e</span><span class="o">(</span><span class="s">&quot;&quot;</span><span class="o">,</span> <span class="s">&quot;onAuthenticationFailed&quot;</span><span class="o">);</span>
+                        <span class="o">}</span>
+
+                        <span class="nd">@Override</span>
+                        <span class="kd">public</span> <span class="kt">void</span> <span class="nf">onAuthenticationSucceeded</span><span class="o">(</span><span class="n">FingerprintManager</span><span class="o">.</span><span class="na">AuthenticationResult</span> <span class="n">result</span><span class="o">)</span> <span class="o">{</span>
+                            <span class="n">Log</span><span class="o">.</span><span class="na">i</span><span class="o">(</span><span class="s">&quot;&quot;</span><span class="o">,</span> <span class="s">&quot;onAuthenticationSucceeded&quot;</span><span class="o">);</span>
+                        <span class="o">}</span>
+                    <span class="o">},</span>
+                    <span class="kc">null</span><span class="o">);</span>
+
+<span class="o">}</span>
+
+<span class="nd">@Override</span>
+<span class="kd">public</span> <span class="kt">void</span> <span class="nf">onPause</span><span class="o">()</span> <span class="o">{</span>
+    <span class="kd">super</span><span class="o">.</span><span class="na">onPause</span><span class="o">();</span>
+    <span class="n">cancellationSignal</span><span class="o">.</span><span class="na">cancel</span><span class="o">();</span>
+    <span class="n">cancellationSignal</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+<span class="o">}</span>
+</code></pre></div>
+<p></br></p>
+
+<p>這樣就完成了一個簡單的example，但這example並沒有使用<code>CryptoObject</code>，所以如果你想要更安全一點，記得請加上<code>CryptoObject</code>。</p>
+
+<p></br></p>
+
+<p></font></p>
+
     </div>
 
     
@@ -354,6 +503,8 @@
   
      
     	<li><a href="/tags.html#android-ref">android <span>65</span></a></li>
+     
+    	<li><a href="/tags.html#fingerprint-ref">fingerprint <span>1</span></a></li>
     
   
 
@@ -377,11 +528,11 @@
     <hr>
     <ul class="pagination">
     
-      <li class="prev"><a href="/2012/03/04/c-webcam-using-emgu" title="C# 控制 Webcam 【using Emgu】">&laquo; Previous</a></li>
+      <li class="prev"><a href="/2015/12/11/install-zsh-oh-my-zsh-on-mac" title="Install zsh and oh-my-zsh on Mac">&laquo; Previous</a></li>
     
       <li><a href="/archive.html">Archive</a></li>
     
-      <li class="next"><a href="/2012/03/25/android-c2dm-android" title="Android C2DM (四)：實作之Android篇">Next &raquo;</a></li>
+      <li class="next disabled"><a>Next &rarr;</a>
     
     </ul>
     <hr>

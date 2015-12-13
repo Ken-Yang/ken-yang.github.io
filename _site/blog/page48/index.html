@@ -292,6 +292,34 @@
     </div>
     <!-- This loops through the paginated posts -->
     
+      <h1><a style="color: #F22430" href="/2010/09/02/android-asynctask-sample">android AsyncTask sample</a></h1>
+      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
+      <p class="author">
+      <div class="date">
+        <span>02 September 2010</span>
+      </div>
+      </p>
+      <div class="content" style="line-height: 28px;">
+        android 的AsyncTask<br /><br />如果你可能要去download、request一個蠻龐大的網頁或者檔案時，<br /><br />如果是在主要的activity、widget或其他中去作，<br /><br />那麼想必你的activity、widget或其他的UI會像是被lock住!<br /><br />很LAG的感覺!<br /><br />那麼就使用AsyncTask吧!<br /><br />顧名思義，就是非同步排程(應該可以這樣翻)==<br /><br />AsyncTask的好處就是可以在background執行，<br /><br />並不影響前端的UI<br /><br />下面就是實作方法<br /><br />先去new一個class並繼承AsyncTask<br /><br /><pre class="brush: java">public class downloadTask extends AsyncTask&lt;String, Void , String&gt;{<br /> <br /> public static int iFileSize   = 0;<br /> public static double dReadSum   = 0;<br /> public static boolean bIsDownload = false;<br /> <br /> @Override<br /> protected void onProgressUpdate(Void... values) {<br />  <br />  //此method是在呼叫publishProgress()時的才會trigger到的<br />  //可以當配progressBar來使用，這裡不多作說明。<br />  <br />  super.onProgressUpdate(values);<br /><br /> }<br /><br /> <br /> @Override<br /> protected void onPreExecute() {<br />  //此method是在執行doInBackground以前，才會呼叫的<br />  super.onPreExecute();<br /> }<br /> <br /> @Override<br /> protected void onPostExecute(String result) {<br />  //此method是在doInBackground完成以後，才會呼叫的<br />  super.onPostExecute(result);<br />  if (iFileSize == dReadSum){<br />   Log.d("main","下載完成");<br />  }<br />  <br /> }<br /><br />  /*<br />  *注意!strUrlFile是一個array..代表著在呼叫此class時<br />  *可以帶入很多個參數(strUrlFile)，<br />  *如:new downloadTask().execute("http://www.xxx","http://www.xxx");<br />  */ <br /> protected String doInBackground(String... strUrlFile) {<br />     URL urlFileLocation = null;<br />   HttpURLConnection connFile = null;<br />   try {<br />    int iUrlCount = strUrlFile.length;<br />   for (int i =0 ; i &lt; iUrlCount ; i++){<br />    urlFileLocation  = new URL(strUrlFile[i]);   <br />    connFile    = (HttpURLConnection) urlFileLocation.openConnection();   <br />    connFile.setDoInput(true);<br />    <br />    InputStream is = connFile.getInputStream();<br />    iFileSize  = connFile.getContentLength();    //取得檔案大小<br />    <br />    byte[] buffer = new byte[1024];<br />    int len1 = 0;<br />    dReadSum  = 0;<br />    <br />    while ( (len1 = is.read(buffer)) != -1) {<br />     dReadSum += len1;<br />     publishProgress(dReadSum*100/iFileSize);<br />    }<br />   }<br />    <br />    <br />   } catch (Exception e) {<br />    Log.d("main","download---" + e.toString());<br />   }<br />   <br />        return "";<br />     }<br /><br />   <br /> }<br /></pre><br /><br /><br />呼叫此Class就只要一行:<br /><br /><pre class="brush: java"> new downloadTask().execute("http://www.xxx"); <br />/*<br />*注意，參數其實是可以很多個，如下<br />*new downloadTask().execute("http://www.xxx","http://www.xxx");<br />*這樣子此task就會去download兩次<br />*/<br /></pre><br /><br /><br /><br /><br /><br /><br /><br /><br />
+      </div>
+      <footer>
+        <p><a class="myButton" href="/2010/09/02/android-asynctask-sample">read more &raquo;</a></p>
+        <div>
+          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- ken on github -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3783438370424072"
+     data-ad-slot="1516206098"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+        </div>
+      </footer>
+      <hr>
+    
       <h1><a style="color: #F22430" href="/2010/09/01/android-parse-xml">android parse xml</a></h1>
       <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
       <p class="author">
@@ -332,34 +360,6 @@
       </div>
       <footer>
         <p><a class="myButton" href="/2010/08/31/android-service-keep-alive-or-another">read more &raquo;</a></p>
-        <div>
-          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<!-- ken on github -->
-<ins class="adsbygoogle"
-     style="display:block"
-     data-ad-client="ca-pub-3783438370424072"
-     data-ad-slot="1516206098"
-     data-ad-format="auto"></ins>
-<script>
-(adsbygoogle = window.adsbygoogle || []).push({});
-</script>
-
-        </div>
-      </footer>
-      <hr>
-    
-      <h1><a style="color: #F22430" href="/2010/08/19/android-sdcard">android 偵測 sdcard</a></h1>
-      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
-      <p class="author">
-      <div class="date">
-        <span>19 August 2010</span>
-      </div>
-      </p>
-      <div class="content" style="line-height: 28px;">
-        最近在寫一些有關檔案的操作，<br /><br />要把檔案寫到sdcard裡去<br /><br />至於怎麼寫，這裡就不多說<br /><br />在寫檔之前，好的programmer一定要注意到防呆!<br /><br />就是detect sdcard的狀態<br /><br />是否有被mount上去?<br /><br />之前都直接寫一個function去取得目前sdcard的狀態，如下   <br /><pre class="brush: java"> private static final boolean fnIsSDcard(){<br />  return Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED);  <br /> }<br /></pre><br /><br /><br />但是在我的需求中，這種寫法會有問題，<br /><br />因為我的檔案較大，在寫的過程中會耗費比較久的時間，<br /><br />如果在寫檔的過程中，sdcard被unmounted了! 很好，這個process會被killed掉!<br /><br />因為這是process中有參照到sdcard裡的位置，所以android os會強制kill掉!<br /><br />所以我就在想...sdcard有沒有event listener啊??<br /><br />但是沒有，所以我透過Service和BroadcastReceiver去實作<br /><br />首先先新增一個class，然後要extends Service，如下<br /><br /><br /><pre class="brush: java">public class serviceSDcard extends Service {<br /> @Override<br /> public IBinder onBind(Intent intent) {<br />  return null;<br /> }<br /><br /> @Override<br /> public void onStart(Intent intent, int startId) {<br />  //新增一個IntentFilter<br />  IntentFilter intentFilter = new IntentFilter();   <br />  //並且新增兩個action，告知此 service什麼時候的動作才要通知你<br />  intentFilter.addAction(Intent.ACTION_MEDIA_MOUNTED); //如果sdcard被掛載上去時通知<br />  intentFilter.addAction(Intent.ACTION_MEDIA_UNMOUNTED); //如果sdcard被卸載時通知<br />  intentFilter.addDataScheme("file"); <br />  intentFilter.addDataAuthority("*", null);<br />  registerReceiver(receiver, intentFilter);    //註冊一個BroadcastReceiver<br />  super.onStart(intent, startId);<br /> }<br /> private BroadcastReceiver receiver = new BroadcastReceiver() {<br />  <br />  @Override<br />  public void onReceive(Context context, Intent intent) {<br />   try {<br />    <br />    if (intent.getAction().equals(Intent.ACTION_MEDIA_UNMOUNTED)){<br />     //sdcard被卸載時的動作<br />     <br />    }else{<br />     //sdcard被掛載時的動作<br />    }<br />    <br />    <br />   } catch (Exception e) {<br />    Log.d("main", e.toString());<br />   }<br />  <br />  }<br /> };<br />}<br /></pre><br /><br /><br />一個Service就完成了，現在就要把Service啟動!<br /><br />在主要執行的activity中去startService();，如下<br /><br /><br /><pre class="brush: java">public class main extends Activity {<br />    @Override<br />    public void onCreate(Bundle savedInstanceState) {<br />        super.onCreate(savedInstanceState);<br />        setContentView(R.layout.main);<br />        Intent intent = new Intent(this,serviceSDcard.class);<br />        startService(intent);<br />    }<br />}<br /></pre><br /><br /><br /><br />這樣就完成啦! 記得要在manifest.xml中新增一個service喔!!如下:<br /><br /><br /><pre class="brush: java">&lt;service android:name=".serviceSDcard"&gt;&lt;/service&gt;<br /></pre><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
-      </div>
-      <footer>
-        <p><a class="myButton" href="/2010/08/19/android-sdcard">read more &raquo;</a></p>
         <div>
           <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 <!-- ken on github -->

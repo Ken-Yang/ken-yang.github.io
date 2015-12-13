@@ -63,6 +63,7 @@ http://blog.kenyang.net/blog/page54/
 http://blog.kenyang.net/blog/page55/
 http://blog.kenyang.net/blog/page56/
 
+http://blog.kenyang.net/2015/12/12/android-fingerprint-api
 http://blog.kenyang.net/2015/12/11/install-zsh-oh-my-zsh-on-mac
 http://blog.kenyang.net/2015/12/05/jcconf-taiwan-2015-day-2
 http://blog.kenyang.net/2015/12/04/jcconf-taiwan-2015-day-1

@@ -292,6 +292,34 @@
     </div>
     <!-- This loops through the paginated posts -->
     
+      <h1><a style="color: #F22430" href="/2010/08/01/drawable-bitmap">Drawable 轉換 Bitmap</a></h1>
+      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
+      <p class="author">
+      <div class="date">
+        <span>01 August 2010</span>
+      </div>
+      </p>
+      <div class="content" style="line-height: 28px;">
+        在實做widget的時候，<br /><br />要在前景把圖片換掉<br /><br />發現只有<br /><br />setImageViewBitmap<br />setImageViewResource<br />setImageViewUri<br /><br />這三個method可以用<br /><br />但是我的圖片是從sqllite中抓出來的!<br /><br />只能先存成drawable!!<br /><br /><pre class="brush: java">ByteArrayInputStream stream = new ByteArrayInputStream( cursor.getBlob(1)); <br />Drawable p_pic              = Drawable.createFromStream(stream, "p_pic"); <br />//fnCastToBitmap是等等自己撰寫的function..<br />Bitmap bitmapTmp = fnCastToBitmap(p_pic);<br /></pre><br /><br /><br />但是這樣的drawable根本沒有id，無法使用setImageViewResource來抓圖!<br /><br />所以只好把它轉成bitmap..<br /><br />如下段CODE:<br /><br /><pre class="brush: java"><br />public Bitmap fnCastToBitmap(Drawable drawable){<br /><br />     //先設定一個config給等等要產生的bitmap，先判斷他的透明度，在判斷他的格式 <br />     Bitmap.Config config =<br />      drawable.getOpacity() != PixelFormat.OPAQUE <br />      ? Bitmap.Config.ARGB_8888 <br />      : Bitmap.Config.RGB_565;<br /><br />     //產生一個bitmap...寬跟高如原來圖的一樣  <br />     Bitmap bitmap = Bitmap.createBitmap( drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(),  config );<br /><br />     //在建立一個canvas，並把圖畫在上面去即可!!!<br />     Canvas canvas = new Canvas(bitmap);<br />     drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());<br />     drawable.draw(canvas);<br />            <br /> <br />     return bitmap;<br />}<br /><br /></pre><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
+      </div>
+      <footer>
+        <p><a class="myButton" href="/2010/08/01/drawable-bitmap">read more &raquo;</a></p>
+        <div>
+          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- ken on github -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3783438370424072"
+     data-ad-slot="1516206098"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+        </div>
+      </footer>
+      <hr>
+    
       <h1><a style="color: #F22430" href="/2010/07/26/android-tab-activity">Android tab activity</a></h1>
       <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
       <p class="author">
@@ -332,34 +360,6 @@
       </div>
       <footer>
         <p><a class="myButton" href="/2010/07/21/android-appsd-card">read more &raquo;</a></p>
-        <div>
-          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<!-- ken on github -->
-<ins class="adsbygoogle"
-     style="display:block"
-     data-ad-client="ca-pub-3783438370424072"
-     data-ad-slot="1516206098"
-     data-ad-format="auto"></ins>
-<script>
-(adsbygoogle = window.adsbygoogle || []).push({});
-</script>
-
-        </div>
-      </footer>
-      <hr>
-    
-      <h1><a style="color: #F22430" href="/2010/07/11/chrome-app">如何製作一個chrome extension</a></h1>
-      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
-      <p class="author">
-      <div class="date">
-        <span>11 July 2010</span>
-      </div>
-      </p>
-      <div class="content" style="line-height: 28px;">
-        <br />如何製作一個chrome extension!<br /><br />其實chrome extension大概分為兩種!<br /><br />一種是serverless的<br /><br />一種是extings Web server的!<br /><br />這邊主要作serverless的介紹!<br /><br />1.首先先建立一個資料夾，例如: C:/chrome_app/<br /><br />2.在資料夾裡面建立一個檔名為manifest的json檔案，如：manifest.json<br /><br />內容格式如下：<br /><br /><pre class="brush: jscript">{<br />  "name": "just sample",<br />  "version": "1.0",<br />  "description": "hello, this is ken's sample",<br />  "browser_action": {<br />      "default_icon": "icon.png",<br />      "popup"       : "popup.html"<br />  }<br />}<br /></pre><br /><br />name &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; ：你的chrome app 名稱<br />vserions &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;：你的版本別<br />description&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;：敘述<br />browser_action &nbsp;：是這支app的一些基本設定，有很多種，大家可以去看官方的說明文件<br />default_icon &nbsp; &nbsp; &nbsp;&nbsp;：是這支app的logo<br />popup &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; ：是當按下這支app時，所呈現的畫面頁面<br /><br /><br />3.接著就把你的icon放到C:/chrome_app/底下去<br /><br />4.在資料夾裡面建立一個檔名為popup.html的檔案<br /><br />內容格式如下：<br /><br /><br /><pre class="brush: html">&lt;html&gt;<br /> <br /> &lt;body &gt;<br />     &lt;img src="http://www.google.com/ig/images/weather/sunny.gif" /&gt;<br />&lt;/body&gt;<br /> <br />&lt;/html&gt;<br /><br /><br /><br /><br /></pre>這樣一個簡易的APP就完成了!<br /><br /><br />那要放上去我們的瀏覽器呢?<br /><br />其實這分成兩種<br /><br />一種是本地端的使用<br /><br />一種是放在Google擴充功能上給大家使用<br /><br />先教第一種!<br /><br />首先先點選瀏覽器上的扳手按鈕<br /><br />在點選擴充功能<br /><br />在點選載入未封裝功能<br /><br />這樣就完成了啊!!!<br /><br />第二種是上傳至google去<br /><br />先至此網站<a href="https://chrome.google.com/extensions/developer/dashboard?hl=zh-TW">https://chrome.google.com/extensions/developer/dashboard?hl=zh-TW</a><br /><br />接著就add new item<br /><br />並且把剛剛的資料夾壓縮成zip檔案<br /><br />然後上傳上去即可!<br /><br />之後會請你做一些chrome的說明!<br /><br />例如放圖片之類的!<br /><br />這邊是簡易的使用啦!<br /><br />日後有機會再作深入的介紹!<br /><br /><br />我也做了一個正妹報時的Chrome的擴充功能<br /><br /><a href="https://chrome.google.com/extensions/detail/bagkcnhpbahjemhkogojcondikbciebp?hl=en">https://chrome.google.com/extensions/detail/bagkcnhpbahjemhkogojcondikbciebp?hl=en</a><br /><br />可以安裝玩看看!<br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
-      </div>
-      <footer>
-        <p><a class="myButton" href="/2010/07/11/chrome-app">read more &raquo;</a></p>
         <div>
           <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 <!-- ken on github -->

@@ -4,13 +4,170 @@
  <title>Ken Yang筆記</title>
  <link href="http://blog.kenyang.net/atom.xml" rel="self"/>
  <link href="http://blog.kenyang.net"/>
- <updated>2015-12-11T21:10:35+08:00</updated>
+ <updated>2015-12-13T14:35:26+08:00</updated>
  <id>http://blog.kenyang.net</id>
  <author>
    <name>Ken Yang</name>
    <email>ken@kenyang.net</email>
  </author>
 
+ 
+ <entry>
+   <title>Android Fingerprint API</title>
+   <link href="http://blog.kenyang.net/2015/12/12/android-fingerprint-api"/>
+   <updated>2015-12-12T00:00:00+08:00</updated>
+   <id>http://blog.kenyang.net/2015/12/12/android-fingerprint-api</id>
+   <content type="html">&lt;p&gt;&lt;font size=3&gt;&lt;/p&gt;
+
+&lt;p&gt;Google在Android 6.0中，釋放了對&lt;a href=&quot;http://developer.android.com/intl/zh-tw/reference/android/hardware/fingerprint/FingerprintManager.html&quot;&gt;Fingerprint&lt;/a&gt;操作的API，&lt;br&gt;
+而最近剛好也買了Nexus 6P，因此有了機會來玩看看。&lt;/p&gt;
+
+&lt;p&gt;&lt;/br&gt;&lt;/p&gt;
+
+&lt;hr&gt;
+
+&lt;h3 id=&quot;1-androidmanifest-xml&quot;&gt;1. AndroidManifest.xml&lt;/h3&gt;
+
+&lt;hr&gt;
+
+&lt;p&gt;首先要在&lt;code&gt;AndroidManifest.xml&lt;/code&gt;中設定permission，&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-xml&quot; data-lang=&quot;xml&quot;&gt;&lt;span class=&quot;nt&quot;&gt;&amp;lt;uses-permission&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;android:name=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;android.permission.USE_FINGERPRINT&amp;quot;&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;/&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;/br&gt;&lt;/p&gt;
+
+&lt;hr&gt;
+
+&lt;h3 id=&quot;2-check-requirement&quot;&gt;2. Check Requirement&lt;/h3&gt;
+
+&lt;hr&gt;
+
+&lt;p&gt;接著要檢查device上，是否有fingerprint reader，以及是否有設置了至少一枚fingerprint。下面這段code，主要檢查了三件事情：  &lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;isKeyguardSecure&lt;/strong&gt; : 是否有設定screen lock&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;isHardwareDetected&lt;/strong&gt; : device是否有fingerprint reader&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;hasEnrolledFingerprints&lt;/strong&gt; : 是否有設定至少一枚指紋&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;!--more--&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;&lt;span class=&quot;kd&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;KeyguardManager&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;km&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;kd&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;FingerprintManager&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;fm&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;kd&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;CancellationSignal&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;cancellationSignal&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+
+&lt;span class=&quot;nd&quot;&gt;@Override&lt;/span&gt;
+&lt;span class=&quot;kd&quot;&gt;protected&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;onCreate&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Bundle&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;savedInstanceState&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;kd&quot;&gt;super&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;onCreate&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;savedInstanceState&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;setContentView&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;R&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;layout&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;activity_main&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+
+    &lt;span class=&quot;n&quot;&gt;km&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;KeyguardManager&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;getSystemService&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Activity&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;KEYGUARD_SERVICE&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;fm&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;getSystemService&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;FingerprintManager&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;class&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+
+    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(!&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;km&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;isKeyguardSecure&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;())&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+       &lt;span class=&quot;n&quot;&gt;Toast&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;makeText&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt;
+                &lt;span class=&quot;s&quot;&gt;&amp;quot;Secure lock screen hasn&amp;#39;t set up.\n&amp;quot;&lt;/span&gt;
+                &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;quot;Go to &amp;#39;Settings -&amp;gt; Security -&amp;gt; Fingerprint&amp;#39; to set up a fingerprint&amp;quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt;
+                &lt;span class=&quot;n&quot;&gt;Toast&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;LENGTH_LONG&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;show&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+
+    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(!&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;isHardwareDetected&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;())&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;Toast&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;makeText&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt;
+                &lt;span class=&quot;s&quot;&gt;&amp;quot;No Fingerprint reader&amp;quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt;
+                &lt;span class=&quot;n&quot;&gt;Toast&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;LENGTH_LONG&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;show&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+
+    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(!&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;fm&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;hasEnrolledFingerprints&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;())&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;Toast&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;makeText&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt;
+                &lt;span class=&quot;s&quot;&gt;&amp;quot;Go to &amp;#39;Settings -&amp;gt; Security -&amp;gt; Fingerprint&amp;#39; and register at least one fingerprint&amp;quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt;
+                &lt;span class=&quot;n&quot;&gt;Toast&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;LENGTH_LONG&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;show&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;/br&gt;&lt;/p&gt;
+
+&lt;hr&gt;
+
+&lt;h3 id=&quot;3-authenticate&quot;&gt;3. Authenticate&lt;/h3&gt;
+
+&lt;hr&gt;
+
+&lt;p&gt;如果通過上述的檢查之後，就可以透過&lt;code&gt;FingerprintManager&lt;/code&gt;進行&lt;code&gt;Authenticate&lt;/code&gt;的動作，method call為：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;authenticate&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;FingerprintManager&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;CryptoObject&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;crypto&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; 
+                          &lt;span class=&quot;n&quot;&gt;CancellationSignal&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;cancel&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; 
+                          &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;flags&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; 
+                          &lt;span class=&quot;n&quot;&gt;FingerprintManager&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;AuthenticationCallback&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;callback&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; 
+                          &lt;span class=&quot;n&quot;&gt;Handler&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;handler&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;一共要帶入5個參數，分別為：&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;code&gt;CryptoObject&lt;/code&gt; : Android 6.0中crypto objects的wrapper class，可以透過它讓authenticate過程更為secure，但也可以不使用。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;CancellationSignal&lt;/code&gt; : 用來Cancel &lt;em&gt;authenticate&lt;/em&gt;的object&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;flags&lt;/code&gt; : 只是一個flag，且目前只能代入0&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;AuthenticationCallback&lt;/code&gt; : callback來接受authenticate成功與否，有三個callback method，
+
+&lt;ul&gt;
+&lt;li&gt;onAuthenticationError&lt;/li&gt;
+&lt;li&gt;onAuthenticationFailed&lt;/li&gt;
+&lt;li&gt;onAuthenticationSucceeded &lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Handler&lt;/code&gt; : optional的參數，如果有使用，FingerprintManager會透過它來傳遞訊息&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;&lt;/br&gt;&lt;/p&gt;
+
+&lt;p&gt;了解參數以後就可以開始進行&lt;strong&gt;authenticate&lt;/strong&gt;，&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;&lt;span class=&quot;nd&quot;&gt;@Override&lt;/span&gt;
+&lt;span class=&quot;kd&quot;&gt;protected&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;onCreate&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Bundle&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;savedInstanceState&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;....&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ignore&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;...&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;startListening&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;kd&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;startListening&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+
+    &lt;span class=&quot;n&quot;&gt;cancellationSignal&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;CancellationSignal&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
+
+    &lt;span class=&quot;n&quot;&gt;fm&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;authenticate&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kc&quot;&gt;null&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt;
+                    &lt;span class=&quot;n&quot;&gt;cancellationSignal&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt;
+                    &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt;
+                    &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;FingerprintManager&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;AuthenticationCallback&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+                        &lt;span class=&quot;nd&quot;&gt;@Override&lt;/span&gt;
+                        &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;onAuthenticationError&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;errorCode&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;CharSequence&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;errString&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+                            &lt;span class=&quot;n&quot;&gt;Log&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;e&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;&amp;quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;quot;error &amp;quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;errorCode&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;quot; &amp;quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;errString&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+                        &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+
+                        &lt;span class=&quot;nd&quot;&gt;@Override&lt;/span&gt;
+                        &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;onAuthenticationFailed&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+                            &lt;span class=&quot;n&quot;&gt;Log&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;e&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;&amp;quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;quot;onAuthenticationFailed&amp;quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+                        &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+
+                        &lt;span class=&quot;nd&quot;&gt;@Override&lt;/span&gt;
+                        &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;onAuthenticationSucceeded&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;FingerprintManager&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;AuthenticationResult&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;result&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+                            &lt;span class=&quot;n&quot;&gt;Log&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;&amp;quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;quot;onAuthenticationSucceeded&amp;quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+                        &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+                    &lt;span class=&quot;o&quot;&gt;},&lt;/span&gt;
+                    &lt;span class=&quot;kc&quot;&gt;null&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;nd&quot;&gt;@Override&lt;/span&gt;
+&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;onPause&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;kd&quot;&gt;super&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;onPause&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;cancellationSignal&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;cancel&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;cancellationSignal&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;null&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;/br&gt;&lt;/p&gt;
+
+&lt;p&gt;這樣就完成了一個簡單的example，但這example並沒有使用&lt;code&gt;CryptoObject&lt;/code&gt;，所以如果你想要更安全一點，記得請加上&lt;code&gt;CryptoObject&lt;/code&gt;。&lt;/p&gt;
+
+&lt;p&gt;&lt;/br&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;/font&gt;&lt;/p&gt;
+</content>
+ </entry>
  
  <entry>
    <title>Install zsh and oh-my-zsh on Mac</title>
@@ -1836,14 +1993,6 @@ mv完成以後，接著打開&lt;code&gt;index.html&lt;/code&gt;，&lt;br&gt;
    <updated>2014-09-04T16:26:00+08:00</updated>
    <id>http://blog.kenyang.net/2014/09/04/how-to-build-your-own-debian-package</id>
    <content type="html">&lt;div style=&quot;font-size: 15px; line-height: 22px;&quot;&gt;其實不久前有寫一篇講怎麼&lt;a href=&quot;http://blog.kenyang.net/2014/03/build-deb-package-from-source.html&quot;&gt;build deb package&lt;/a&gt;，&lt;br /&gt;不過那篇的code source並不是來自於自己的source，&lt;br /&gt;那麼假設你今天自己有一個web，你想把這web打包成一個deb供人安裝，那該怎麼做呢？&lt;br /&gt;這篇主要就是講怎麼create一個自己的deb package．&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;1. Install necessary package&lt;/span&gt;&lt;br /&gt;&lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;sudo apt-get install dh-make&lt;br /&gt;&lt;/pre&gt;dh-make是用來準備debian package所需要的files，&lt;br /&gt;等等會用來gen template files．&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;2. Prepare environment&lt;/span&gt;&lt;br /&gt;&lt;br /&gt;這裡先create一個folder，名稱為www，&lt;br /&gt;www底下也要create一些web所需的資料夾和檔案，像是images, css ,js...etc&lt;br /&gt;www的目錄結構大概就長這樣，&lt;br /&gt;&lt;br /&gt;www&lt;br /&gt;├── css&lt;br /&gt;│   └── main.css&lt;br /&gt;├── images&lt;br /&gt;│   └── a.png&lt;br /&gt;└── static&lt;br /&gt;└── index.html&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;我們要把folder底下的東西都打包進去debian package，&lt;br /&gt;並且讓其他人在安裝這個debian package時，可以安裝到我們所指定的path底下！&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;3. Generate template files&lt;/span&gt;&lt;br /&gt;&lt;br /&gt;在這步要用前面安裝的dh_make來generate出debian package所需要的template files,&lt;br /&gt;在generate之前，先設定一個環境變數，&lt;br /&gt;這環境變數是用來記錄這個debian package的作者是誰&lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;export DEBFULLNAME=&quot;Ken Yang&quot;&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;dh_make --single --packagename ken-sdk_0.1 --native -e xxxx@gmail.com&lt;br /&gt;&lt;/pre&gt;--packagename要注意一下，&lt;br /&gt;--packagename分為兩個部分，&lt;br /&gt;前面的部分ken-sdk是package name，&lt;br /&gt;package name只能用-來分隔，不能用底線！&lt;br /&gt;而後面的_0.1是version number，&lt;br /&gt;--natvie，意思是這個debian不是從一個既有的tarball gen出來的！&lt;br /&gt;&lt;br /&gt;generate完成以後，你會發現在www folder底下多了一個debian folder，&lt;br /&gt;這debian folder裡面是放一些build debian package所需要的template files，&lt;br /&gt;而既然是template files，那麼就有一些不需要的file或者需要被修改的file，&lt;br /&gt;首先先刪除不需要的file吧！&lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;sudo rm debian/*.ex debian/*.EX&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;接著就來修改這個template，&lt;br /&gt;首先要先改control這file，&lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;vim debian/control&lt;br /&gt;&lt;/pre&gt;打開以後，會看到很多information，&lt;br /&gt;你比較需要改的大概就只有Depends (dependency)，和Description了！&lt;br /&gt;改完儲存以後即可！&lt;br /&gt;&lt;br /&gt;接下來要改copyright，&lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;vim debian/copyright&lt;br /&gt;&lt;/pre&gt;打開以後，大概就只有年份和作者名稱要改而已！&lt;br /&gt;&lt;br /&gt;剩下其他的file，像是README, docs就看你要不要改了，&lt;br /&gt;記得rules千萬別改！rules是build package的起頭！&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;4. Build debian package&lt;/span&gt;&lt;br /&gt;&lt;br /&gt;在完成template的修改，準備開始build之前，&lt;br /&gt;我們還有最後一個步驟，就是要指定哪些files or folder是你要放進去這個debian package的！&lt;br /&gt;而就是靠一個檔案去記錄！&lt;br /&gt;這個檔案名稱很重要，要跟你前面的package name一模一樣，&lt;br /&gt;我們前面的package name是ken-sdk，&lt;br /&gt;所以這個file要叫做ken-sdk.install，&lt;br /&gt;裡面的格式就像下面一樣，&lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;images/* /opt/www/image&lt;br /&gt;css/* /opt/www/css&lt;br /&gt;js/* /opt/www/js&lt;br /&gt;&lt;/pre&gt;第一格參數：現在www folder底下路徑的檔案&lt;br /&gt;第二格參數：將來這deb package被安裝時，這些files要被安裝到哪裡&lt;br /&gt;儲存以後，就可以開始build，指令如下：&lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;dpkg-buildpackage -rfakeroot -b&lt;br /&gt;&lt;/pre&gt;-rfakeroot：使用root的權限&lt;br /&gt;-b：單純只是binary，不要去build source&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;5. Verify&lt;/span&gt;&lt;br /&gt;&lt;br /&gt;完成以後，&lt;br /&gt;debian package會放在folder的上層目錄，&lt;br /&gt;應該會有一個ken-sdk_0.1_amd64.deb，&lt;br /&gt;有一個快速verify你要的files有沒有被包進去，&lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;lesspipe ken-sdk_0.1_amd64.deb&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;當然你也可以安裝起來看看，&lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;sudo dpkg --install ../ken-sdk_0.1_amd64.deb&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;接著就去看剛剛指定的folder（/opt/www），是否有我們原本的檔案！&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;6. Advance: Pre-Install or Post-Install&lt;/span&gt;&lt;br /&gt;&lt;br /&gt;如果你想要在這package完成安裝或者開始安裝之前，做一些前置作業，&lt;br /&gt;那麼就可以靠preinst和postinst這兩個檔案，&lt;br /&gt;preinst就是安裝之前，&lt;br /&gt;postinst就是安裝完成之後，&lt;br /&gt;相反地，如果你想要在這package被remove時，也做一些操作，&lt;br /&gt;那麼就要有prerm和postrm這兩個檔案！&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;7. Advance: Update pacakge&lt;/span&gt;&lt;br /&gt;&lt;br /&gt;如果你這package想要更新，&lt;br /&gt;變成0.2版本，你可以直接編輯change log，但有點麻煩！&lt;br /&gt;可以透過指令快速達成！&lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;dch -v 0.2 &quot;Update package.&quot;&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;之後一樣直接dpkg-buildpackage -rfakeroot -b就可以了！&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;/div&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;</content>
- </entry>
- 
- <entry>
-   <title>How to create X.509 certificates for Amazon IAM user?</title>
-   <link href="http://blog.kenyang.net/2014/08/27/how-to-create-x509-certificates-for"/>
-   <updated>2014-08-27T16:14:00+08:00</updated>
-   <id>http://blog.kenyang.net/2014/08/27/how-to-create-x509-certificates-for</id>
-   <content type="html">&lt;div style=&quot;font-size: 15px; line-height: 22px;&quot;&gt;You will need X.509 certificates when you send a SOAP request to AWS or use command line tool.&lt;br /&gt;There are two ways to create X.509 certificates.&lt;br /&gt;&lt;br /&gt;(1) If you are not using IAM account:&lt;br /&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;You can create certificate on &lt;a href=&quot;https://console.aws.amazon.com/iam/home?nc1=h_m_sc#security_credential&quot;&gt;AWS console&lt;/a&gt;.&lt;br /&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Each account only have a maximum of two certificates at a time.&lt;br /&gt;&lt;div class=&quot;separator&quot; style=&quot;clear: both; text-align: center;&quot;&gt;&lt;a href=&quot;http://3.bp.blogspot.com/-rmeTV_n3DBc/U_2LJy60heI/AAAAAAAAFQI/lJt0rEcs3xY/s1600/Screen%2BShot%2B2014-08-27%2Bat%2B3.39.21%2BPM.png&quot; imageanchor=&quot;1&quot; style=&quot;margin-left: 1em; margin-right: 1em;&quot;&gt;&lt;img border=&quot;0&quot; src=&quot;http://3.bp.blogspot.com/-rmeTV_n3DBc/U_2LJy60heI/AAAAAAAAFQI/lJt0rEcs3xY/s400/Screen%2BShot%2B2014-08-27%2Bat%2B3.39.21%2BPM.png&quot; /&gt;&lt;/a&gt;&lt;/div&gt;&lt;br /&gt;&lt;br /&gt;(2) If you are using IAM account:&lt;br /&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;You need to create certificate by yourself.&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;1. Create private key&lt;/span&gt;&lt;br /&gt;&lt;br /&gt;You need to create a private key first before create a certificate, &lt;br /&gt;because you will use this private key to create a certificate.&lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;openssl genrsa 2048 &gt; private-key.pem&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;2. Create certificate&lt;/span&gt;&lt;br /&gt;&lt;br /&gt;Once you finished the step one, you can use the private key to create a certificate.&lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;openssl req -new -x509 -nodes -sha1 -days 99999 -key private-key.pem -outform PEM &gt; cert.pem  &lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;3. Copy the content of certificate&lt;/span&gt;&lt;br /&gt;&lt;br /&gt;After you finished all the steps, just copy the content of the certificate.&lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;ken@build:~$ cat cert.pem &lt;br /&gt;-----BEGIN CERTIFICATE-----&lt;br /&gt;MIIDXzCCAkegAwIBAgIJAJxcjyc5F908MA0GCSqGSIb3DQEBBQUAMEUxCzAJBgNV&lt;br /&gt;BAYTAkFVMRMwEQYDVQQIDApTb21lLVN0YXRlMSEwHwYDVQQKDBhJbnRlcm5ldCBX&lt;br /&gt;aWRnaXRzIFB0eSBMdGQwIBcNMTQwODI3MDc1NDAyWhgPMjI4ODA2MTAwNzU0MDJa&lt;br /&gt;MEUxCzAJBgNVBAYTAkFVMRMwEQYDVQQIDApTb21lLVN0YXRlMSEwHwYDVQQKDBhJ&lt;br /&gt;bnRlcm5ldCBXaWRnaXRzIFB0eSBMdGQwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAw&lt;br /&gt;ggEKAoIBAQCk8L/z2O84OcRno7YgGu0UkjnABuXhIM96RfZZKhqg74hga7nsLPLK&lt;br /&gt;CzhtslDKAOEjxASo7L0Iq6/5kxJZp4cZakKacDOvnnv2HwQxCXGUEadXcmeknfAh&lt;br /&gt;SvyRYS3FrKj4/oth+pwUm6nvd9fGYg01rJITUQupeADCqhSJUypZbQUypmPxf8Sg&lt;br /&gt;ek7ZW5ErPuyZZ+WmL6TzZaQXfZqvPrN25hRg7AboB8SIKgusUrLK6WgnISlJ7fDh&lt;br /&gt;kCpsy8qSD+Lu74h2hW6TiLy2qJbcTKn8sKb1C4XgWb1FBMzqfJQWtCMVWtDoyzZH&lt;br /&gt;Vj07gzeTDkQ1EvUKHk26x6MEsOlcTV9XAgMBAAGjUDBOMB0GA1UdDgQWBBQOYnDF&lt;br /&gt;FYz2o3+AlVHWwPIzlcFs4DAfBgNVHSMEGDAWgBQOYnDFFYz2o3+AlVHWwPIzlcFs&lt;br /&gt;4DAMBgNVHRMEBTADAQH/MA0GCSqGSIb3DQEBBQUAA4IBAQBPE3ikbJ/vH6QfkwUK&lt;br /&gt;qot+nU15keDSZ2c6itRnNuwjfF8lsZQCJ66w2H+HXCLBjnPymemcTPTMUqfovpFs&lt;br /&gt;oNohRuQS6IoIrvgXAbb2X4BhygPDNSQPktGVo8qjKUyxYZa4Su8NFkb+OzZWDR4K&lt;br /&gt;KN+OLFfaT6cx8o9o5M7cmNRokFisWynJ33EoKj1lW5YIwTwb1VKz4hXW+gKZFX7u&lt;br /&gt;pgE1yzkOcoUW5EykNsGUaqLSdycxmDO866IFn6px9etxpIkQwUi+rb78tX6pNtpa&lt;br /&gt;IBTsfPBqovXRdMe6mq5uO8x4Nrb47w8DZkrQSTMt1ll4t0bUL15o/6cQ5ajGaaGA&lt;br /&gt;QVtO&lt;br /&gt;-----END CERTIFICATE-----&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;4. Upload the content of certificate&lt;/span&gt;&lt;br /&gt;&lt;br /&gt;Go to the &lt;a href=&quot;https://console.aws.amazon.com/iam/home?#users&quot;&gt;IAM management console&lt;/a&gt;.&lt;br /&gt;1. Select an IAM user &lt;br /&gt;2. Click &quot;User Actions&quot; &lt;br /&gt;3, Click &quot;Manage Signing Certificates&quot;&lt;br /&gt;4. Click &quot;Upload Signing Certificates&quot;&lt;br /&gt;5. Paste the content&lt;br /&gt;6. Click &quot;Upload Signing Certificates&quot;&lt;br /&gt;&lt;br /&gt;Done. Now you can send a SOAP request to AWS or use the command line tools.&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;/div&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;</content>
  </entry>
  
  

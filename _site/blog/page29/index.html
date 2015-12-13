@@ -292,6 +292,34 @@
     </div>
     <!-- This loops through the paginated posts -->
     
+      <h1><a style="color: #F22430" href="/2011/12/13/telnet-post">如何用Telnet POST資料</a></h1>
+      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
+      <p class="author">
+      <div class="date">
+        <span>13 December 2011</span>
+      </div>
+      </p>
+      <div class="content" style="line-height: 28px;">
+        有極少數的網站開發者，<br />在處理有關input資料時，只會在client端進行validate（用Javascript），<br />往往忽略了server端的驗證。<br /><br />如果這時候，hacker寫個小軟體利用telnet發送一個post到你的server，<br />那就爆了!<br />當然，hacker也可以直接寫個form，然後action是對你的server，<br />這樣就避掉client端的js，只不過這邊要說明怎麼用telnet去發出一個request。<br /><br /><br /><br />假設對方做一個輸入mail的page，<br />然後該page有驗證，如果你輸入不是mail的格式，<br />就不會將資料傳到他的server，以及新增至DB。<br />這時候我們就可以利用telnet，跳過他前端的驗證機制!<br /><br /><br />首先打開你的cmd!<br /><br />接著輸入下圖中的指令：<br /><br /><a href="http://4.bp.blogspot.com/-3Q5xiAZwjPY/TuZIO7ov11I/AAAAAAAAAYU/Q2RQKz0vGIg/s1600/1.PNG" imageanchor="1" style="clear: left; float: left; margin-bottom: 1em; margin-right: 1em;"><img border="0" height="48" src="http://4.bp.blogspot.com/-3Q5xiAZwjPY/TuZIO7ov11I/AAAAAAAAAYU/Q2RQKz0vGIg/s400/1.PNG" width="400" /></a><br /><br /><br /><br /><br /><br />恩，上圖中的網址，記得改成連線的網址，圖中只是範例，<br />你連不到的！<br /><br />連到以後，按下鍵盤的&nbsp;<span class="Apple-style-span" style="font-size: large;">CTRL+]</span>　按鍵<br />接著輸入下圖中的指令，set localecho，輸入完成，按2下enter，<br />這段的目的是讓你等等輸入指令時看得到自己在輸入甚麼，<br />如果沒有這段，等等輸入指令，你是看不到自己在打啥！<br /><br /><a href="http://3.bp.blogspot.com/-OipJ3-j6jOI/TuZIPZO6UBI/AAAAAAAAAYY/iCJeMLTTC1o/s1600/2.PNG" imageanchor="1" style="clear: left; float: left; margin-bottom: 1em; margin-right: 1em;"><img border="0" height="151" src="http://3.bp.blogspot.com/-OipJ3-j6jOI/TuZIPZO6UBI/AAAAAAAAAYY/iCJeMLTTC1o/s400/2.PNG" style="cursor: move;" width="400" /></a><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />接著就可以輸入發送POST的指令了！可以看下圖！<br />建議你，先在記事本上打一打，再貼上，因為在CMD輸入錯了，<br />是不能按DELETE或者Backspace的<br /><br /><div class="separator" style="clear: both; text-align: center;"><a href="http://1.bp.blogspot.com/-CjCQk5V-DRk/TuZIP39S0WI/AAAAAAAAAYg/RWNn_jH76UM/s1600/3.png" imageanchor="1" style="clear: left; float: left; margin-bottom: 1em; margin-right: 1em;"><img border="0" height="169" src="http://1.bp.blogspot.com/-CjCQk5V-DRk/TuZIP39S0WI/AAAAAAAAAYg/RWNn_jH76UM/s640/3.png" width="640" /></a></div><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />第一行，記得是POST，然後/yyyy，就是你要收資料的page，要改成自己的喔!<br />第二行，HOST就是主機名稱，<br />第三行，就是告訴server，會有表單的資料傳遞過來<br /><form>第四行，content-lengh，就是你要傳的資料有多長，因為我們的資料是mail=88811，所以是10<br />第五行，就是response完，連線就斷掉。<br /><br />上面都是http header，當然還有很多，你可以自己偽造!<br />例如cookie、date等等之類的!<br />記得header與data之間要空一行空白，<br />接著才可以輸入資料<br />就是圖中的mail=88811。<br />這樣就完成了，你就輸入一個不是正確mail格式的mail給他!<br />且如果他 server沒有進行驗證，這時候就錯誤了!<br />當然你可以把mail的問題放大，可能是sql injection，或者是XSS之類的問題!<br /><br /><br /><br /><br /><br /><br /><br /><br /><br /></form><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
+      </div>
+      <footer>
+        <p><a class="myButton" href="/2011/12/13/telnet-post">read more &raquo;</a></p>
+        <div>
+          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- ken on github -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3783438370424072"
+     data-ad-slot="1516206098"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+        </div>
+      </footer>
+      <hr>
+    
       <h1><a style="color: #F22430" href="/2011/12/12/chrome-xss">Chrome 防範XSS機制</a></h1>
       <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
       <p class="author">
@@ -332,34 +360,6 @@
       </div>
       <footer>
         <p><a class="myButton" href="/2011/12/08/hadoop-datanode">read more &raquo;</a></p>
-        <div>
-          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<!-- ken on github -->
-<ins class="adsbygoogle"
-     style="display:block"
-     data-ad-client="ca-pub-3783438370424072"
-     data-ad-slot="1516206098"
-     data-ad-format="auto"></ins>
-<script>
-(adsbygoogle = window.adsbygoogle || []).push({});
-</script>
-
-        </div>
-      </footer>
-      <hr>
-    
-      <h1><a style="color: #F22430" href="/2011/12/08/android-listview-cachecolorhint">Android ListView cacheColorHint</a></h1>
-      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
-      <p class="author">
-      <div class="date">
-        <span>08 December 2011</span>
-      </div>
-      </p>
-      <div class="content" style="line-height: 28px;">
-        <br />在Android中實作ListView的時候，<br />如果要customize一個畫面比較漂亮的ListView，<br />可能會用到Background，如下圖（圖一）<br /><br /><table cellpadding="0" cellspacing="0" class="tr-caption-container" style="float: left; margin-right: 1em; text-align: left;"><tbody><tr><td style="text-align: center;"><a href="http://3.bp.blogspot.com/-GDs-YW3SsIo/Tt6rsL-FQMI/AAAAAAAAAYE/JKRq0y4sLek/s1600/p1.png" imageanchor="1" style="clear: left; margin-bottom: 1em; margin-left: auto; margin-right: auto; text-align: left;"><img border="0" height="400" src="http://3.bp.blogspot.com/-GDs-YW3SsIo/Tt6rsL-FQMI/AAAAAAAAAYE/JKRq0y4sLek/s400/p1.png" width="240" /></a></td></tr><tr><td class="tr-caption" style="text-align: center;">圖一</td></tr></tbody></table><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />但是如果再做上下滾動的時候你會發現，背景圖片不見了!<br />背景會變成黑色!　且還會有點卡卡的感覺。<br />如下圖（圖二）。<br /><br /><br /><table cellpadding="0" cellspacing="0" class="tr-caption-container" style="float: left; margin-right: 1em; text-align: left;"><tbody><tr><td style="text-align: center;"><a href="http://4.bp.blogspot.com/-3JAqS4L3IQc/Tt6rtFwR9CI/AAAAAAAAAYI/ueVgGYgFiSg/s1600/p2.png" imageanchor="1" style="clear: left; margin-bottom: 1em; margin-left: auto; margin-right: auto;"><img border="0" height="400" src="http://4.bp.blogspot.com/-3JAqS4L3IQc/Tt6rtFwR9CI/AAAAAAAAAYI/ueVgGYgFiSg/s400/p2.png" width="240" /></a></td></tr><tr><td class="tr-caption" style="text-align: center;">圖二</td></tr></tbody></table><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />原因在於Android在ListView 的Background會做一個Optimization的動作，<br />就是利用一個attributes，<span class="Apple-style-span" style="background-color: white; color: #007000; font-family: monospace; font-size: 13px; line-height: 13px;">android:cacheColorHint</span><br />default值就是現在的顏色dark，<br />為了要關掉這個Optimization，只要把<span class="Apple-style-span" style="background-color: white; color: #007000; font-family: monospace; font-size: 13px; line-height: 13px;">android:cacheColorHint</span>改成如下，<br /><span class="Apple-style-span" style="background-color: white; color: #007000; font-family: monospace; font-size: 13px; line-height: 13px;">android:cacheColorHint="#00000000"</span><br />這樣就不會發生上述的問題了。<br /><br /><br /><br /><br /><br /><br />
-      </div>
-      <footer>
-        <p><a class="myButton" href="/2011/12/08/android-listview-cachecolorhint">read more &raquo;</a></p>
         <div>
           <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 <!-- ken on github -->
