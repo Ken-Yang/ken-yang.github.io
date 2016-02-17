@@ -292,6 +292,34 @@
     </div>
     <!-- This loops through the paginated posts -->
     
+      <h1><a style="color: #F22430" href="/2012/03/25/android-c2dm-android">Android C2DM (四)：實作之Android篇</a></h1>
+      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
+      <p class="author">
+      <div class="date">
+        <span>25 March 2012</span>
+      </div>
+      </p>
+      <div class="content" style="line-height: 28px;">
+        <span style="color: red; font-size: large;">這篇是舊版的，已經被deprecated，新版為GCM，新版的實作請看</span><br /><a href="http://blog.kenyang.net/2013/07/android-gcm-google-cloud_1.html"><span style="color: blue; font-size: large;">新版的Android篇</span></a><br /><br /><br /><br /><br /><span style="font-size: large;"><b>這篇主要在說明Android端的實作</b></span><br /><span style="font-size: large;"><b>第一篇在講<a href="http://blog.kenyang.net/2011/12/android-c2dm.html">參數說明</a></b></span><br /><span style="font-size: large;"><b>第二篇在講<a href="http://blog.kenyang.net/2011/12/android-c2dm_22.html">流程說明</a></b></span><br /><span style="font-size: large;"><b>第三篇在講<a href="http://blog.kenyang.net/2012/03/android-c2dm-sever.html">server端的實作</a></b></span><br /><br /><br />這篇主要會完成下列項目：<br /><ol style="background-color: white; color: #333333; font-family: Verdana, Arial, sans-serif; font-size: 13px; line-height: 16px; text-align: left;"><li>基本的manifest設定(加入receiver,permission)。</li><li>向C2DM 註冊。</li><li>接收自C2DM Sever回傳的registration id&nbsp;並傳送 Registration Id 到我們的Server，以及<span style="background-color: white;">接收Message</span></li></ol><div style="text-align: left;"><span style="color: #333333; font-family: Verdana, Arial, sans-serif; font-size: x-small;"><span style="line-height: 16px;"><br /></span></span></div><div style="text-align: left;"><span style="color: #333333; font-family: Verdana, Arial, sans-serif; font-size: x-small;"><span style="line-height: 16px;"><br /></span></span></div><div style="text-align: left;"><b style="background-color: white; color: #333333; font-family: Verdana, Arial, sans-serif; font-size: large; line-height: 16px;">【1. &nbsp;設定Manifest資料 】</b>&nbsp;<span style="color: #333333; font-family: Verdana, Arial, sans-serif; font-size: x-small;"><span style="line-height: 16px;"><br /></span></span></div><div style="text-align: left;"><span style="color: #333333; font-family: Verdana, Arial, sans-serif;"><span style="line-height: 16px;">這步驟，分了兩個部分!</span></span><br /><span style="color: #333333; font-family: Verdana, Arial, sans-serif;"><span style="line-height: 16px;">第一個就是要先加入一個receiver，</span></span><br /><span style="color: #333333; font-family: Verdana, Arial, sans-serif;"><span style="line-height: 16px;">記得下面的category android:name，</span></span><br /><span style="color: #333333; font-family: Verdana, Arial, sans-serif;"><span style="line-height: 16px;">裡面的value要改成自己的package name</span></span><br /><span style="color: #333333; font-family: Verdana, Arial, sans-serif;"><span style="line-height: 16px;">如下：</span></span></div><pre class="brush: xml">&lt;!-- 用來接收C2DM Server的receiver，且要有send的permssion --&gt;<br />        &lt;receiver android:name=".C2DMReceiver" android:permission="com.google.android.c2dm.permission.SEND"&gt;<br />            &lt;!-- Receive the actual message --&gt;<br />           &lt;intent-filter&gt;<br />               &lt;action android:name="com.google.android.c2dm.intent.RECEIVE" /&gt;<br />               &lt;category android:name="net.kenyang.android" /&gt;<br />           &lt;/intent-filter&gt;<br />           <br />           &lt;!-- Receive the registration id --&gt;<br />           &lt;intent-filter&gt;<br />               &lt;action android:name="com.google.android.c2dm.intent.REGISTRATION" /&gt;<br />               &lt;category android:name="net.kenyang.android" /&gt;<br />           &lt;/intent-filter&gt;<br />       &lt;/receiver&gt;<br /><br /></pre><br /><br />第二部分就是加入應有的permission，<br /><pre class="brush: xml">&lt;!-- 下面的net.kenyang記得要改成自己的package name --&gt;<br />&lt;permission   android:name="net.kenyang.android.permission.C2D_MESSAGE" android:protectionLevel="signature" /&gt;<br />&lt;uses-permission  android:name="net.kenyang.android.permission.C2D_MESSAGE" /&gt;<br />&lt;uses-permission  android:name="com.google.android.c2dm.permission.RECEIVE" /&gt;<br />&lt;uses-permission android:name="android.permission.INTERNET"/&gt;<br /><br /></pre><br /><b style="background-color: white; color: #333333; font-family: Verdana, Arial, sans-serif; font-size: large; line-height: 16px; text-align: left;"><br class="Apple-interchange-newline" />【2. &nbsp;向C2DM註冊 】</b><span style="text-align: left;">&nbsp;</span><br /><br />這一步驟就是啟動C2DM，並告訴C2DM要註冊，<br /><pre class="brush: java">Intent registrationIntent = new Intent("com.google.android.c2dm.intent.REGISTER");<br />registrationIntent.putExtra("app", PendingIntent.getBroadcast(SelectLoginMode.this, 0, new Intent(), 0)); // boilerplate<br />registrationIntent.putExtra("sender", "xxxxx@gmail.com"); // 記得這邊要填入當初你在第三篇註冊的MAIL<br />startService(registrationIntent);<br /><br /></pre><br /><b style="background-color: white; color: #333333; font-family: Verdana, Arial, sans-serif; font-size: large; line-height: 16px; text-align: left;">【3. &nbsp;接收與傳送資料 】</b><span style="text-align: left;">&nbsp;</span><br /><br />這一步驟就是寫一個receiver，<br />這個receiver會<br /><br /><ol><li>接收C2DM傳來的registration id，</li><li>也會接收C2DM傳來的message(這個message就是我們Server傳給C2DM的message)</li><li>並且將registration id傳送到我們第三篇實作的server上面去</li></ol><br /><br />我們先在receiver中寫一個函數將registration id傳送至我們第三篇實作的server上面去，<br />server只要收到，就會傳送資料到C2DM上!<br /><pre class="brush: java">private void fnRegistrationDone(final String strRegistrationId){<br />  try{<br />   Thread thread = new Thread(new Runnable() {<br />    <br />    @Override<br />    public void run() {<br />     HttpURLConnection conn = (HttpURLConnection) new URL("http://c2dm.kenyang.net/registration").openConnection();<br />     conn.setDoOutput(true);  <br />     conn.setUseCaches(false);  <br />     conn.setRequestMethod("GET");  // 因為在GAE上面的servlet，我是用get method<br />     conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");  <br />     conn.setRequestProperty("Content-Length", strRegistrationId.getBytes().length); // 告訴c2dm要傳送的資料長度<br />      <br />     // 送出資料<br />     OutputStream out = conn.getOutputStream();  <br />     out.write(strRegistrationId.getBytes());  <br />     out.close();  <br />      <br />     conn.fnClose();<br />     // 到這，一個註冊就完成，接著就是等著收資料<br />          <br />    }<br />   });<br />   thread.start();<br /><br />  }catch (Exception e) {<br />  }<br />  <br /> }<br /><br /></pre><br /><br />接著開始寫接收資料(registration_id, message)的code，如下：<br /><pre class="brush: java">@Override<br /> public void onReceive(Context context, Intent intent) {<br />  <br />  // 接收到C2DM的訊息<br />  if (intent.getAction().equals("com.google.android.c2dm.intent.REGISTRATION")) {<br />      <br />   String strRegistrationId = intent.getStringExtra("registration_id"); <br />   // 如果註冊失敗<br />      if (intent.getStringExtra("error") != null) {<br />          <br />    Log.d("Ken.yang", "c2dm registration fail");<br />    <br />   // Registration 成功<br />      } else if (strRegistrationId != null) {<br />       // 把registration_id傳到我們server(呼叫我們上面寫的函數)<br />       fnRegistrationDone(strRegistrationId);<br />        <br />      }<br />   <br />  } else if (intent.getAction().equals("com.google.android.c2dm.intent.RECEIVE")) {<br />   <br />   // 接收來自C2DM的MESSAGE，這message就是我們server傳給C2DM的 (可以看第三篇)<br />   if (intent.getExtras().containsKey("keyHello")){<br />    strValue =  intent.getExtras().getString("keyHello");<br />    Log.d("Ken.yang", "C2DM=== receive" + strValue);<br />   }<br />  }<br /> }<br /> <br /><br /></pre><br />完成上面步驟，就完成c2dm了！<br />也可以收到訊息了！！！！<br />因為我們<a href="http://blog.kenyang.net/2012/03/android-c2dm-sever.html">第三篇</a>server上傳送的訊息是fromKen，<br />所以這裡收到的也是fromKen!!<br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
+      </div>
+      <footer>
+        <p><a class="myButton" href="/2012/03/25/android-c2dm-android">read more &raquo;</a></p>
+        <div>
+          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- ken on github -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3783438370424072"
+     data-ad-slot="1516206098"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+        </div>
+      </footer>
+      <hr>
+    
       <h1><a style="color: #F22430" href="/2012/03/23/android-c2dm-sever">Android C2DM (三)：實作之Sever篇</a></h1>
       <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
       <p class="author">
@@ -332,34 +360,6 @@
       </div>
       <footer>
         <p><a class="myButton" href="/2012/03/04/c-webcam-using-emgu">read more &raquo;</a></p>
-        <div>
-          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<!-- ken on github -->
-<ins class="adsbygoogle"
-     style="display:block"
-     data-ad-client="ca-pub-3783438370424072"
-     data-ad-slot="1516206098"
-     data-ad-format="auto"></ins>
-<script>
-(adsbygoogle = window.adsbygoogle || []).push({});
-</script>
-
-        </div>
-      </footer>
-      <hr>
-    
-      <h1><a style="color: #F22430" href="/2012/02/20/android-out-of-memory-oom">Android Out of Memory (OOM)</a></h1>
-      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
-      <p class="author">
-      <div class="date">
-        <span>20 February 2012</span>
-      </div>
-      </p>
-      <div class="content" style="line-height: 28px;">
-        呼，這篇文章放在我的草稿已經有兩個月了，<br />一直遲遲沒有完成，<br />一來是家裡太忙，<br />一來也是因為最近都在搞Kinect和Nxt Robot的應用(千百個不願意)<br />今天決定花點時間把這篇文章修完，<br />其實有很多篇都在草稿，有十幾篇要寫完，但先挑選這篇，<br />畢竟OOM是個很嚴重的問題。<br /><br /><b style="font-size: x-large;">【</b><span style="font-size: large;"><b>何謂OOM呢?</b></span><b style="font-size: x-large;">】</b><br />OOM (Out of Memory)，就是溢存的意思，<br />白話點就是超出記憶體大小了，<br />每個APP，都會有配置一定大小的heap size，<br />但這個heap size在每支設備上都不同，<br />像在Nexus one就是24mb，HTC Sensation只有16mb，<br />大小都不一定的，所以我們在寫app時，<br />必須做好記憶體的控管，<br /><br />有些人可能會納悶，不是用JAVA寫的嗎?<br />JAVA無法對記憶體有更進一步的操作(配置、釋放)阿，<br />怎麼做好記憶體的控管呢?<br />恩，沒有錯。<br /><br /><span style="font-size: large;"><b>【那OOM的問題會發生在哪?】</b></span><br />就是在圖片的使用!!!!!!<br />你每調用一張圖片，在android上都會做到auto scale的動作，<br />在做auto scale的動作是用C去配置記憶體的，<br />因此就會占用記憶體，<br />如果沒有做好控管，就會發生溢存!<br />那怎麼做好控管呢?<br /><br /><br />你們有時會發現有些APP好大喔，<br />有部分原因可能是引用其他外部的lib，<br />很少是因為程式碼寫太多....<br />大部分的問題就是在圖片太多，且太大，<br />沒有好好善用draw9patch，<a href="http://blog.kenyang.net/2010/05/draw-9-patch.html">何謂draw9patch可以來這看</a><br />當然draw9patch並不適用所有的案例，<br />甚至連根據dpi的不同，放圖片在不同的資料夾，<br />這方法我也覺得不適用所有案例，<br />我大多都還是去取得螢幕大小，自己去做到裁切圖片的動作，<br />個人覺得這樣是最精準的(畢竟android device實在太多..................)。<br /><br /><br />網路上有些解法是，<br />在做重新裁切或者取得圖片的動作時，<br />把圖片品質設小一點。<br />當然這也是一種解法啦。<br />但個人看法，認為這解法治標不治本，<br />怎麼說呢? 畢竟如果圖片一多，<br />OOM的問題還是會發生。<br /><br /><br />所以最根本的解法在於recycle!<br />但是recycle的時機很重要，<br />畢竟如果圖片還在使用中就進行recycle的話，<br />可是會發生crash的。<br /><br />我的建議是在Android Life Cycle中的onDestroy中進行recycle，<br />此時最為保險。當然如果你能保證你的圖片用不到了，就可以進行recycle了。<br />不一定要照我的建議而做。<br /><br /><br />這裡有個情境，假設我有4個畫面，A,B,C,D。<br />A有按鈕跳到B<br />B有按鈕跳到C<br />C有按鈕跳到D<br />每個畫面都有一張不同的背景圖，<br />怎麼設背景圖呢?<br />大部分人會在layout.xml中去做設定，<br />或者會在程式中設定，<br />如下：<br /><pre class="brush: java">linearLayout.setBackgroundDrawable(getResources().getDrawable(R.drawable.bg_normal));<br /></pre>這樣看似沒有甚麼問題，<br />但如果ABCD畫面換來換去，經過多次換來換去以後，<br />這時候heapSize就會越來越小....<br />最後就會發生OOM!<br /><br />所以較好的做法就是在lifecycle中的onCreate中，<br />去做init的動作，<br />先宣告二個全域的變數<br />一個是用來存圖片的BitmapDrawable<br />一個是放置圖片的LinearLayout，如下：<br /><pre class="brush: java">private LinearLayout llBackgroundPanel = null;<br />private BitmapDrawable bmpDrawImg  = null;<br /><br /></pre><br />接著在onCreate中去呼叫一個自己寫好的函數（fnSetBackground)<br />這個函數就是用來設背景圖片的，如下:<br /><pre class="brush: java">@Override<br />public void onCreate(Bundle savedInstanceState) {<br />    super.onCreate(savedInstanceState);<br />    setContentView(R.layout.a);<br />    fnSetBackground(); // 呼叫函數<br />}<br /><br /></pre><br />而函數內容如下：<br /><pre class="brush: java">public void fnSetBackground(){<br />    // 先取得LinearLayout<br />    llBackgroundPanel = (LinearLayout) findViewById(R.id.llBackgroundPanelChangePwd);<br />    // 取得該張圖片，並放置在變數bmpDrawImg中<br />    bmpDrawImg = new BitmapDrawable(getResources().openRawResource(R.drawable.bg_normal));<br />    // 最後就是設定圖片<br />    llBackgroundPanel.setBackgroundDrawable(bmpDrawImg);<br />}<br /></pre><br />完成上面步驟，只是設置圖片而已，<br />還是無法解決OOM的問題，下面才是解決的方式，<br />在lifecycle中的onDestroy中去進行清空，<br /><pre class="brush: java">@Override<br />protected void onDestroy() {<br />    super.onDestroy();<br />    // 每個Drawable被加到VIEW上面都會產生一個callback，所以在recycle圖片之前，必須先把callback設成null<br />    // 設成null以後，背景圖片自然就會不見，就會變成黑的背景。bmpDrawImg的狀態就會是沒有被使用中。<br />    llBackgroundPanel.getBackground().setCallback(null); <br /> <br />    // 先判斷bmpDrawImg 是否為null，如果不是null，且bmpDrawImg 還沒有被recycle的話就進行recycle<br />    if (null != bmpDrawImg &amp;&amp; !bmpDrawImg.getBitmap().isRecycled()){<br />        bmpDrawImg.getBitmap().recycle();<br />    }<br />    System.gc();<br />}<br /></pre><br /><br />照著上面的方法實作就能避免掉OOM的問題，<br />我寫在destroy的原因在於，<br />android lifecycle的特性，<br />當你A按下按鈕到B，<br />這時候在B畫面中按下返回按鈕(back)，<br />是不是就回到A了呢?<br />第一次按下返回按鈕，B會去調用onDestroy這個method，<br />如果這時候沒有進行recycle，那麼那塊記憶體空間就不會被釋放，<br />就會被占用著....<br />如果沒有進行RECYCLE，<br />久而久之，你持續返回A，又跳到B，重複著這動作好幾次，<br />圖片就被產生好幾次，<br />很快就會發生OOM，至於多快，就視你的圖片大小瞜!<br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
-      </div>
-      <footer>
-        <p><a class="myButton" href="/2012/02/20/android-out-of-memory-oom">read more &raquo;</a></p>
         <div>
           <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 <!-- ken on github -->
@@ -420,7 +420,7 @@
 
     <div id="footer">
       <div class="container">
-        <p>&copy; 2015 Ken Yang
+        <p>&copy; 2016 Ken Yang
           with help from <a href="http://jekyllbootstrap.com" target="_blank" title="The Definitive Jekyll Blogging Framework">Jekyll Bootstrap</a>
           and <a href="http://getbootstrap.com" target="_blank">Bootstrap</a>
         </p>

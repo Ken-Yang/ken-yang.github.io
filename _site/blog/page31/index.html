@@ -292,6 +292,34 @@
     </div>
     <!-- This loops through the paginated posts -->
     
+      <h1><a style="color: #F22430" href="/2011/11/18/java-thread-run-vs-start">Java Thread: run() vs start()</a></h1>
+      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
+      <p class="author">
+      <div class="date">
+        <span>18 November 2011</span>
+      </div>
+      </p>
+      <div class="content" style="line-height: 28px;">
+        Java Thread: run() vs start()<br /><br />剛在寫ANDROID，在使用到 audioRecord，所以用到了thread!<br />突然忘記要用run呢? 還是要用start?<br />查了一下資料，才找出差異性。<br /><br /><br />使用run呢，他是循序性的，也就是說他會跑完run裡面的程式，才會跳脫。<br />而start不是。<br />用個簡單的範例說明一下：<br /><pre class="brush: java">Thread t1 = new Thread(new Runnable() {<br /> @Override<br /> public void run() {<br />  for (int i = 0; i &lt; 1000; i++) {<br />   System.out.println("t1");<br />  }<br />});<br /><br />Thread t2 = new Thread(new Runnable() {<br /> @Override<br /> public void run() {<br />  for (int i = 0; i &lt; 1000; i++) {<br />   System.out.println("t2");<br />  }<br /> }<br />});<br /><br /></pre>上面我們宣告了2個thread，一個是t1，一個是t2。<br />都做完一千次才會停止。<br />他們分別會去印出自己是t1還是t2。<br />&nbsp;如果我們是使用run，如下： <br /><pre class="brush: java">t1.run();<br />t2.run();<br /></pre><br />那麼印出來的值一定是像下面一樣<br />&nbsp;<span class="Apple-style-span" style="color: red;">t1 -&gt; t1</span><span class="Apple-style-span" style="color: red;">&nbsp;</span><span class="Apple-style-span" style="color: red;">-&gt; t1 -&gt; .........t1 -&gt; </span><span class="Apple-style-span" style="color: blue;">&nbsp;t2 -&gt; t2 -&gt; ......t2</span><span class="Apple-style-span" style="color: red;">　</span><br />會先印完1000次的t1，才開始印1000次的t2。    但如果我們是使用start，如下：<br /><pre class="brush: java">t1.start();<br />t2.start();<br /></pre><br />結果就會相互交叉，<br />可能是<span class="Apple-style-span" style="color: red;">t1</span>-&gt;<span class="Apple-style-span" style="color: red;">t1</span>-&gt;<span class="Apple-style-span" style="color: blue;">t2</span>-&gt;<span class="Apple-style-span" style="color: red;">t1</span>-&gt;<span class="Apple-style-span" style="color: blue;">t2</span>..........<br />以此類推。<br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
+      </div>
+      <footer>
+        <p><a class="myButton" href="/2011/11/18/java-thread-run-vs-start">read more &raquo;</a></p>
+        <div>
+          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- ken on github -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3783438370424072"
+     data-ad-slot="1516206098"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+        </div>
+      </footer>
+      <hr>
+    
       <h1><a style="color: #F22430" href="/2011/11/17/c-reference">C++: Reference (參考)</a></h1>
       <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
       <p class="author">
@@ -332,34 +360,6 @@
       </div>
       <footer>
         <p><a class="myButton" href="/2011/11/16/c-pointer">read more &raquo;</a></p>
-        <div>
-          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<!-- ken on github -->
-<ins class="adsbygoogle"
-     style="display:block"
-     data-ad-client="ca-pub-3783438370424072"
-     data-ad-slot="1516206098"
-     data-ad-format="auto"></ins>
-<script>
-(adsbygoogle = window.adsbygoogle || []).push({});
-</script>
-
-        </div>
-      </footer>
-      <hr>
-    
-      <h1><a style="color: #F22430" href="/2011/11/09/android-sd-card">Android 強制安裝至 sd card</a></h1>
-      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
-      <p class="author">
-      <div class="date">
-        <span>09 November 2011</span>
-      </div>
-      </p>
-      <div class="content" style="line-height: 28px;">
-        下指令讓"所有"&nbsp;android app強制安裝到sd card中，<br />其實這個指令我還蠻常用到的，蠻常幫朋友下的。<br />但是每次都會稍微忘記!<br />所以記錄一下。<br /><br />首先要先下載<a href="http://dl.google.com/android/android-sdk_r15-windows.zip">android sdk</a>，<br />下載以後，解壓縮放置您要放的目錄，<br />這裡假設放置在C槽，假設目錄名稱為android-sdk，<br />然後將手機插上USB線!<br />接著打開cmd (命令提示字元)，<br />cd到C槽底下的android sdk目錄，在cd到platform-tools底下，<br />完整指令為<br /><pre class="brush: java">cd android-sdk/platform-tools<br /></pre><br />接著利用底下的adb.exe去執行強制安裝至sd card的指令，<br />指令如下：<br /><pre class="brush: java">adb shell pm setInstallLocation 2<br /></pre><br />2：代表讓所有app可以安裝至sd card<br />0：就是初始值，可以自己選擇<br />1：強制安裝在ROM裡面<br /><br />所以如果要恢復初始值的話，指令如下：<br /><pre class="brush: java">adb shell pm setInstallLocation 0<br /></pre><br />
-      </div>
-      <footer>
-        <p><a class="myButton" href="/2011/11/09/android-sd-card">read more &raquo;</a></p>
         <div>
           <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 <!-- ken on github -->
@@ -420,7 +420,7 @@
 
     <div id="footer">
       <div class="container">
-        <p>&copy; 2015 Ken Yang
+        <p>&copy; 2016 Ken Yang
           with help from <a href="http://jekyllbootstrap.com" target="_blank" title="The Definitive Jekyll Blogging Framework">Jekyll Bootstrap</a>
           and <a href="http://getbootstrap.com" target="_blank">Bootstrap</a>
         </p>

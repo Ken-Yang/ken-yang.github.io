@@ -5,10 +5,102 @@
         <description>Ken Yang筆記 - Ken Yang</description>
         <link>http://blog.kenyang.net</link>
         <atom:link href="http://blog.kenyang.net/rss.xml" rel="self" type="application/rss+xml" />
-        <lastBuildDate>Sun, 13 Dec 2015 14:35:26 +0800</lastBuildDate>
-        <pubDate>Sun, 13 Dec 2015 14:35:26 +0800</pubDate>
+        <lastBuildDate>Wed, 17 Feb 2016 15:25:33 +0800</lastBuildDate>
+        <pubDate>Wed, 17 Feb 2016 15:25:33 +0800</pubDate>
         <ttl>60</ttl>
 
+
+        <item>
+                <title>Heroku Redis: Connecting in Python</title>
+                <description>&lt;p&gt;&lt;font size=3&gt;&lt;/p&gt;
+
+&lt;p&gt;這篇要講怎麼在Heroku上，使用它的&lt;a href=&quot;https://devcenter.heroku.com/articles/heroku-redis&quot;&gt;Heroku Redis&lt;/a&gt;，&lt;br&gt;
+大致上分為三個步驟，分別為安裝，配置，寫code。&lt;/p&gt;
+
+&lt;p&gt;&lt;/br&gt;&lt;/p&gt;
+
+&lt;hr&gt;
+
+&lt;h3 id=&quot;1-installing-cli&quot;&gt;1. Installing CLI&lt;/h3&gt;
+
+&lt;hr&gt;
+
+&lt;p&gt;第一步驟是要先安裝heroku-redis的command line tools，
+但如果你不想要用command line，你也可以至heroku的後台裡面的Add-ons加一台redis。&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;heroku plugins:install heroku-redis
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;/br&gt;&lt;/p&gt;
+
+&lt;hr&gt;
+
+&lt;h3 id=&quot;2-provisioning-the-add-on&quot;&gt;2. Provisioning the add-on&lt;/h3&gt;
+
+&lt;hr&gt;
+
+&lt;p&gt;接著要配置一台Redis server，有二個比較特別的參數，&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;hobby-dev: 這個是這台server的&lt;a href=&quot;http://elements.heroku.com/addons/heroku-redis&quot;&gt;Plan &amp;amp; Pricing&lt;/a&gt;，hobby-dev是免費的。&lt;/li&gt;
+&lt;li&gt;sushi: 你的heroku app name&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;heroku addons:create heroku-redis:hobby-dev -a sushi
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;/br&gt;
+當你成功配置一台redis以後，你可以透過下面的指令找到該台redis URL，
+&amp;lt;!--more--&amp;gt;
+&lt;code&gt;bash
+$ heroku config | grep REDIS
+&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;/br&gt;&lt;/p&gt;
+
+&lt;hr&gt;
+
+&lt;h3 id=&quot;3-connecting-in-python&quot;&gt;3. Connecting in Python&lt;/h3&gt;
+
+&lt;hr&gt;
+
+&lt;p&gt;要在Python中使用Redis，你必須安裝&lt;code&gt;redis&lt;/code&gt;這個package，&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;pip install redis
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;pip freeze &amp;gt; requirements.txt
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;/br&gt;
+接著就可以用這個&lt;code&gt;redis&lt;/code&gt;這個package連結至redis server，&lt;br&gt;
+下面的example是用Flask這個framework來做示範，分別有&lt;code&gt;get&lt;/code&gt;和&lt;code&gt;set&lt;/code&gt;這二個URL。&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;os&lt;/span&gt;
+&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;redis&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;r&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;redis&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;from_url&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;os&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;environ&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;get&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;REDIS_URL&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;
+
+&lt;span class=&quot;nd&quot;&gt;@app.route&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;#39;/get&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;get&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;():&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;r&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;get&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;name&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;is&lt;/span&gt; &lt;span class=&quot;bp&quot;&gt;None&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;quot;no such key in Redis&amp;quot;&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;r&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;get&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;name&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;nd&quot;&gt;@app.route&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;#39;/set&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;set&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;():&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;r&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;setex&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;#39;name&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;#39;Ken Yang&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;quot;set done&amp;quot;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h2 id=&quot;&quot;&gt;&lt;/br&gt;&lt;/h2&gt;
+
+&lt;h3 id=&quot;4-testing-in-local-environment&quot;&gt;4. Testing in local environment&lt;/h3&gt;
+
+&lt;hr&gt;
+
+&lt;p&gt;如果你想要在local測試，需要把REDIS_URL的參數寫在.env裡面才行。&lt;br&gt;
+否則會找不到Redis在哪。&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;heroku config:get REDIS_URL -s  &amp;gt;&amp;gt; .env
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;heroku &lt;span class=&quot;nb&quot;&gt;local &lt;/span&gt;web
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;/font&gt;&lt;/p&gt;
+</description>
+                <link>http://blog.kenyang.net/2016/02/15/heroku-redis-connecting-in-python</link>
+                <guid>http://blog.kenyang.net/2016/02/15/heroku-redis-connecting-in-python</guid>
+                <pubDate>Mon, 15 Feb 2016 00:00:00 +0800</pubDate>
+        </item>
 
         <item>
                 <title>Android Fingerprint API</title>
@@ -1983,14 +2075,6 @@ mv完成以後，接著打開&lt;code&gt;index.html&lt;/code&gt;，&lt;br&gt;
                 <link>http://blog.kenyang.net/2014/09/24/android-orm-lib-greedao</link>
                 <guid>http://blog.kenyang.net/2014/09/24/android-orm-lib-greedao</guid>
                 <pubDate>Wed, 24 Sep 2014 10:04:00 +0800</pubDate>
-        </item>
-
-        <item>
-                <title>How to build your own debian package?</title>
-                <description>&lt;div style=&quot;font-size: 15px; line-height: 22px;&quot;&gt;其實不久前有寫一篇講怎麼&lt;a href=&quot;http://blog.kenyang.net/2014/03/build-deb-package-from-source.html&quot;&gt;build deb package&lt;/a&gt;，&lt;br /&gt;不過那篇的code source並不是來自於自己的source，&lt;br /&gt;那麼假設你今天自己有一個web，你想把這web打包成一個deb供人安裝，那該怎麼做呢？&lt;br /&gt;這篇主要就是講怎麼create一個自己的deb package．&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;1. Install necessary package&lt;/span&gt;&lt;br /&gt;&lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;sudo apt-get install dh-make&lt;br /&gt;&lt;/pre&gt;dh-make是用來準備debian package所需要的files，&lt;br /&gt;等等會用來gen template files．&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;2. Prepare environment&lt;/span&gt;&lt;br /&gt;&lt;br /&gt;這裡先create一個folder，名稱為www，&lt;br /&gt;www底下也要create一些web所需的資料夾和檔案，像是images, css ,js...etc&lt;br /&gt;www的目錄結構大概就長這樣，&lt;br /&gt;&lt;br /&gt;www&lt;br /&gt;├── css&lt;br /&gt;│   └── main.css&lt;br /&gt;├── images&lt;br /&gt;│   └── a.png&lt;br /&gt;└── static&lt;br /&gt;└── index.html&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;我們要把folder底下的東西都打包進去debian package，&lt;br /&gt;並且讓其他人在安裝這個debian package時，可以安裝到我們所指定的path底下！&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;3. Generate template files&lt;/span&gt;&lt;br /&gt;&lt;br /&gt;在這步要用前面安裝的dh_make來generate出debian package所需要的template files,&lt;br /&gt;在generate之前，先設定一個環境變數，&lt;br /&gt;這環境變數是用來記錄這個debian package的作者是誰&lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;export DEBFULLNAME=&quot;Ken Yang&quot;&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;dh_make --single --packagename ken-sdk_0.1 --native -e xxxx@gmail.com&lt;br /&gt;&lt;/pre&gt;--packagename要注意一下，&lt;br /&gt;--packagename分為兩個部分，&lt;br /&gt;前面的部分ken-sdk是package name，&lt;br /&gt;package name只能用-來分隔，不能用底線！&lt;br /&gt;而後面的_0.1是version number，&lt;br /&gt;--natvie，意思是這個debian不是從一個既有的tarball gen出來的！&lt;br /&gt;&lt;br /&gt;generate完成以後，你會發現在www folder底下多了一個debian folder，&lt;br /&gt;這debian folder裡面是放一些build debian package所需要的template files，&lt;br /&gt;而既然是template files，那麼就有一些不需要的file或者需要被修改的file，&lt;br /&gt;首先先刪除不需要的file吧！&lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;sudo rm debian/*.ex debian/*.EX&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;接著就來修改這個template，&lt;br /&gt;首先要先改control這file，&lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;vim debian/control&lt;br /&gt;&lt;/pre&gt;打開以後，會看到很多information，&lt;br /&gt;你比較需要改的大概就只有Depends (dependency)，和Description了！&lt;br /&gt;改完儲存以後即可！&lt;br /&gt;&lt;br /&gt;接下來要改copyright，&lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;vim debian/copyright&lt;br /&gt;&lt;/pre&gt;打開以後，大概就只有年份和作者名稱要改而已！&lt;br /&gt;&lt;br /&gt;剩下其他的file，像是README, docs就看你要不要改了，&lt;br /&gt;記得rules千萬別改！rules是build package的起頭！&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;4. Build debian package&lt;/span&gt;&lt;br /&gt;&lt;br /&gt;在完成template的修改，準備開始build之前，&lt;br /&gt;我們還有最後一個步驟，就是要指定哪些files or folder是你要放進去這個debian package的！&lt;br /&gt;而就是靠一個檔案去記錄！&lt;br /&gt;這個檔案名稱很重要，要跟你前面的package name一模一樣，&lt;br /&gt;我們前面的package name是ken-sdk，&lt;br /&gt;所以這個file要叫做ken-sdk.install，&lt;br /&gt;裡面的格式就像下面一樣，&lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;images/* /opt/www/image&lt;br /&gt;css/* /opt/www/css&lt;br /&gt;js/* /opt/www/js&lt;br /&gt;&lt;/pre&gt;第一格參數：現在www folder底下路徑的檔案&lt;br /&gt;第二格參數：將來這deb package被安裝時，這些files要被安裝到哪裡&lt;br /&gt;儲存以後，就可以開始build，指令如下：&lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;dpkg-buildpackage -rfakeroot -b&lt;br /&gt;&lt;/pre&gt;-rfakeroot：使用root的權限&lt;br /&gt;-b：單純只是binary，不要去build source&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;5. Verify&lt;/span&gt;&lt;br /&gt;&lt;br /&gt;完成以後，&lt;br /&gt;debian package會放在folder的上層目錄，&lt;br /&gt;應該會有一個ken-sdk_0.1_amd64.deb，&lt;br /&gt;有一個快速verify你要的files有沒有被包進去，&lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;lesspipe ken-sdk_0.1_amd64.deb&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;當然你也可以安裝起來看看，&lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;sudo dpkg --install ../ken-sdk_0.1_amd64.deb&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;接著就去看剛剛指定的folder（/opt/www），是否有我們原本的檔案！&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;6. Advance: Pre-Install or Post-Install&lt;/span&gt;&lt;br /&gt;&lt;br /&gt;如果你想要在這package完成安裝或者開始安裝之前，做一些前置作業，&lt;br /&gt;那麼就可以靠preinst和postinst這兩個檔案，&lt;br /&gt;preinst就是安裝之前，&lt;br /&gt;postinst就是安裝完成之後，&lt;br /&gt;相反地，如果你想要在這package被remove時，也做一些操作，&lt;br /&gt;那麼就要有prerm和postrm這兩個檔案！&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;7. Advance: Update pacakge&lt;/span&gt;&lt;br /&gt;&lt;br /&gt;如果你這package想要更新，&lt;br /&gt;變成0.2版本，你可以直接編輯change log，但有點麻煩！&lt;br /&gt;可以透過指令快速達成！&lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;dch -v 0.2 &quot;Update package.&quot;&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;之後一樣直接dpkg-buildpackage -rfakeroot -b就可以了！&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;/div&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;</description>
-                <link>http://blog.kenyang.net/2014/09/04/how-to-build-your-own-debian-package</link>
-                <guid>http://blog.kenyang.net/2014/09/04/how-to-build-your-own-debian-package</guid>
-                <pubDate>Thu, 04 Sep 2014 16:26:00 +0800</pubDate>
         </item>
 
 

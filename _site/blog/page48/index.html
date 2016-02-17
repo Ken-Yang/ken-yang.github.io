@@ -292,6 +292,34 @@
     </div>
     <!-- This loops through the paginated posts -->
     
+      <h1><a style="color: #F22430" href="/2010/09/04/android-create-db-on-sdcard">android create DB on sdcard（DB 1/2）</a></h1>
+      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
+      <p class="author">
+      <div class="date">
+        <span>04 September 2010</span>
+      </div>
+      </p>
+      <div class="content" style="line-height: 28px;">
+        android create db on sdcard<br /><br />把DB建立在SD Card上其實很簡單。<br /><br />先建立一個有關db操作的class，<br /><br />注意，此範例尚無新增、查詢等method，將在<a href="http://ken-note.blogspot.com/2010/09/android-insert-value-to-dbselect-value.html">下一篇</a>介紹如何新增、查詢<br /><br />此範例單純只有在sd card建立sqlite datebase<br /><br />如下<br /><br /><pre class="brush: java">public class db_sample {<br /> public static final String STR_TABLE_NAME    = "table_name"; //table名稱<br /> public static final String STR_FIELD_ID     = "field_id";  //欄位名稱 <br /> public static final String STR_FIELD_NAME    = "field_name"; //欄位名稱<br /> private static Context context;         <br /> <br /> public db_sample(Context context) {<br />  this.context = context; //new這個class時，一定要傳入context，因為openOrCreateDatabase是由context底下的method<br /> }<br /> <br /> //建立table的method<br /> public static final void fnCreateDB(){<br />  //MODE_WORLD_WRITEABLE，只能有寫的權限<br />  SQLiteDatabase dbwrite <br />      = context.openOrCreateDatabase("/sdcard/hi_test.db", context.MODE_WORLD_WRITEABLE, null);<br />  <br />  //建立table<br />  String sql = <br />    String.format("CREATE TABLE %s (%s INTEGER primary key autoincrement, %s text )"<br />        , STR_TABLE_NAME  <br />        , STR_FIELD_ID    <br />        , STR_FIELD_NAME   <br />    ); <br />  dbwrite.execSQL(sql);<br /> }<br /> <br /> <br />}<br /><br /></pre><br /><br /><br />接著就在需要的地方呼叫即可～<br /><br /><pre class="brush: java">public class test extends Activity{<br /> @Override<br /> protected void onCreate(Bundle savedInstanceState) {<br />  super.onCreate(savedInstanceState);<br />  db_sample db = new db_sample(this);<br />  db.fnCreateDB();<br />  <br /> }<br /><br />}<br /></pre><br /><br />
+      </div>
+      <footer>
+        <p><a class="myButton" href="/2010/09/04/android-create-db-on-sdcard">read more &raquo;</a></p>
+        <div>
+          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- ken on github -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3783438370424072"
+     data-ad-slot="1516206098"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+        </div>
+      </footer>
+      <hr>
+    
       <h1><a style="color: #F22430" href="/2010/09/02/android-asynctask-sample">android AsyncTask sample</a></h1>
       <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
       <p class="author">
@@ -332,34 +360,6 @@
       </div>
       <footer>
         <p><a class="myButton" href="/2010/09/01/android-parse-xml">read more &raquo;</a></p>
-        <div>
-          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<!-- ken on github -->
-<ins class="adsbygoogle"
-     style="display:block"
-     data-ad-client="ca-pub-3783438370424072"
-     data-ad-slot="1516206098"
-     data-ad-format="auto"></ins>
-<script>
-(adsbygoogle = window.adsbygoogle || []).push({});
-</script>
-
-        </div>
-      </footer>
-      <hr>
-    
-      <h1><a style="color: #F22430" href="/2010/08/31/android-service-keep-alive-or-another">android service keep alive or another way??</a></h1>
-      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
-      <p class="author">
-      <div class="date">
-        <span>31 August 2010</span>
-      </div>
-      </p>
-      <div class="content" style="line-height: 28px;">
-        android service crashed (restart)<br /><br />如果你有支APP有個SERVICE是可能每隔一段時間去做一次的!<br /><br />那麼我建議你改用AlarmManager。<br /><br />最近發現自己寫的某支APP裡面的service會被android os restart!<br /><br />大概知道是因為是background service的關係，<br /><br />想要讓一個service keep alive。<br /><br />當然有解決方法，在2.0以前的device，<br /><br />可以使用setForeground(true);<br /><br />但是2.0以上，這個method，失效了。<br /><br />改成startForeground(id, notification)。<br /><br />但我改用了AlarmManager<br /><br />原因當然有很多，像是其實啟動一個service，就是啟動一個process。<br /><br />想必就消耗掉一點memory...<br /><br />當然還有其他原因，大家可以去Google一下。<br /><br />實作方法如下:<br /><br /><pre class="brush: java">public void onUpdate(Context context, AppWidgetManager appWidgetManager,int[] appWidgetIds) {<br />   Intent intent = new Intent(context, receiverChange.class);  //放入你每隔一段時間要執行的class<br />   PendingIntent pendingIntent   = PendingIntent.getBroadcast(context, 0, intent, 0);<br />   AlarmManager alarmManager  = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);<br />   //接著就是set一個repeat，這裡是設定每隔一分鐘去執行<br />   alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,  System.currentTimeMillis() , (60*1000), pendingIntent);<br /> }<br /></pre><br /><br />然後您每隔一段時間要做的事情就寫在一個BroadcastReceiver裡面<br /><br /><pre class="brush: java">public class receiverChangePicture extends BroadcastReceiver {<br /> @Override<br /> public void onReceive(Context context, Intent intent) {<br />  Log.d("main","hi I receive message every minutes..");<br /> }<br /><br />}<br /></pre><br /><br /><br />這樣就完成了，但是注意此實作方法只限定於有週期性要執行的code才適用!!!!<br /><br />如果今天你是要偵測sd card的狀態，那麼建議你還是用service!(就如同我上篇文章所說的)<br /><br />以alarmManager來實作，只是節省一點成本罷了!<br /><br /><br /><br /><br /><br /><br /><br />
-      </div>
-      <footer>
-        <p><a class="myButton" href="/2010/08/31/android-service-keep-alive-or-another">read more &raquo;</a></p>
         <div>
           <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 <!-- ken on github -->
@@ -420,7 +420,7 @@
 
     <div id="footer">
       <div class="container">
-        <p>&copy; 2015 Ken Yang
+        <p>&copy; 2016 Ken Yang
           with help from <a href="http://jekyllbootstrap.com" target="_blank" title="The Definitive Jekyll Blogging Framework">Jekyll Bootstrap</a>
           and <a href="http://getbootstrap.com" target="_blank">Bootstrap</a>
         </p>

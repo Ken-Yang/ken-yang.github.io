@@ -292,6 +292,34 @@
     </div>
     <!-- This loops through the paginated posts -->
     
+      <h1><a style="color: #F22430" href="/2010/10/28/ftp">主動式與被動式FTP 差別</a></h1>
+      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
+      <p class="author">
+      <div class="date">
+        <span>28 October 2010</span>
+      </div>
+      </p>
+      <div class="content" style="line-height: 28px;">
+        FTP是一個特殊的protocol之一，<br /><br />其他的protocol，如:http、pop3、....等等之類的，<br /><br />都只需要1個connection、1個port。<br /><br />但是FTP則不是，FTP需要2個connection、2個port。<br /><br />一個是Command connection / port，用來傳遞client與FTP Server之間的command。(通常設在port 21)<br /><br />另一個是Data&nbsp;connection /&nbsp;port，是用來傳遞資料的。(通常設在port 20)<br /><br /><br />一般的人都會認為關掉20、21port，FTP Server就會無法運作，<br /><br />從某種角度來說，這樣的觀念是正確的，但是其實是錯誤的觀念！！<br /><br />但這是在傳統式模式FTP的條件下，這樣的觀念才是正確的。<br /><br />FTP主要分成兩種模式：<br /><span class="Apple-style-span" style="color: red;"><b>1.主動式（POST）</b></span><br /><span class="Apple-style-span" style="color: red;"><b>2.被動式</b></span><span class="Apple-style-span" style="color: red;"><b>（PASV）</b></span><br /><br />傳統的FTP是採用主動式的模式進行連線，<br /><br />底下為主動式FTP運作圖<br /><br /><div class="separator" style="clear: both; text-align: center;"><a href="http://1.bp.blogspot.com/_6SxqtkJQECI/TMjo0nS6Y0I/AAAAAAAAALI/hEnR6232wkg/s1600/%E4%B8%BB%E5%8B%95%E5%BC%8F.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="295" src="http://1.bp.blogspot.com/_6SxqtkJQECI/TMjo0nS6Y0I/AAAAAAAAALI/hEnR6232wkg/s400/%E4%B8%BB%E5%8B%95%E5%BC%8F.png" width="400" /></a></div><br /><br /><span class="Apple-style-span" style="color: red;">1. client端會開啟一個大於</span><span class="Apple-style-span" style="color: red;">1024</span><span class="Apple-style-span" style="color: red;">的</span><span class="Apple-style-span" style="color: red;">port&nbsp;</span>( port x )<span class="Apple-style-span" style="color: red;">對FTP Server的port 21進行connection</span><br /><br /><span class="Apple-style-span" style="color: red;">2. FTP Server會回應client端的connection，告知Client端收到連線了</span><br /><br /><span class="Apple-style-span" style="color: blue;">3. FTP Server的port 20會主動和 Client端的port 1025</span>(port x+1)<span class="Apple-style-span" style="color: blue;">進行連線(進行資料傳輸)</span><br /><span class="Apple-style-span" style="color: blue;"><br /></span><br /><span class="Apple-style-span" style="color: blue;">4. Client會回應Server端的連線。</span><br /><br />看完步驟說明，大家會發現一個問題，<br /><br />一開始client端會開啟兩個port，<br /><br />port x (connection port)和port x+1 (data port)<br /><br />在connection port沒有甚麼問題存在，<br /><br />問題出在data port，<br /><br />因為client端並不是自己建立一個connection，而是自行開啟一個port等待FTP Server連線進來<br /><br />這很有可能被Client端的防火牆過濾掉<br /><br /><br /><br />因此為了解決FTP連線到Client端被過濾掉的問題，所以發展出另一種連線模式<br /><br />就是被動式模式<br /><br />被動式模式不管是command &nbsp;connection或是data connection都是由client端建立的<br /><br />底下為運作圖<br /><br /><div class="separator" style="clear: both; text-align: center;"><a href="http://2.bp.blogspot.com/_6SxqtkJQECI/TMjugUmILnI/AAAAAAAAALM/tu85ED5r1KA/s1600/%E8%A2%AB%E5%8B%95%E5%BC%8F.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="296" src="http://2.bp.blogspot.com/_6SxqtkJQECI/TMjugUmILnI/AAAAAAAAALM/tu85ED5r1KA/s400/%E8%A2%AB%E5%8B%95%E5%BC%8F.png" width="400" /></a></div><br /><br /><div style="margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px;"><span class="Apple-style-span" style="color: red;">1. 首先，client端會開啟一個大於</span><span class="Apple-style-span" style="color: red;">1024</span><span class="Apple-style-span" style="color: red;">的</span><span class="Apple-style-span" style="color: red;">port&nbsp;</span>( port x )<span class="Apple-style-span" style="color: red;">對FTP Server的port 21進行connection</span></div><div style="margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px;"><br /></div><div style="margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px;"><span class="Apple-style-span" style="color: red;">2. FTP Server會回應client端的connection，並告知Client端，Server開啟了port 1200等待資料連線</span></div><br /><div style="margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px;"><span class="Apple-style-span" style="color: blue;">3. Client端的port 1026會和</span><span class="Apple-style-span" style="color: blue;">FTP Server的port 1200</span><span class="Apple-style-span" style="color: blue;">進行資料連線</span></div><div style="margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px;"><span class="Apple-style-span" style="color: blue;"><br /></span></div><div style="margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px;"><span class="Apple-style-span" style="color: blue;">4.&nbsp;Server會回應Client端的連線。</span></div><br /><br /><br /><br />使用了被動模式，解決了client端的問題，<br /><br />可是相反的，也把這些問題帶給了server。<br /><br /><br /><br /><br /><br />至於要用哪種模式，是由client端決定的，<br /><br />client端會在command connection時發出POST或PASV的命令<br /><br />但是server可以決定是否支援這些模式。<br /><br /><br /><br />
+      </div>
+      <footer>
+        <p><a class="myButton" href="/2010/10/28/ftp">read more &raquo;</a></p>
+        <div>
+          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- ken on github -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3783438370424072"
+     data-ad-slot="1516206098"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+        </div>
+      </footer>
+      <hr>
+    
       <h1><a style="color: #F22430" href="/2010/10/28/android-multiple-language">android multiple language</a></h1>
       <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
       <p class="author">
@@ -332,34 +360,6 @@
       </div>
       <footer>
         <p><a class="myButton" href="/2010/10/26/drawable-hdpildpimdpi">read more &raquo;</a></p>
-        <div>
-          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<!-- ken on github -->
-<ins class="adsbygoogle"
-     style="display:block"
-     data-ad-client="ca-pub-3783438370424072"
-     data-ad-slot="1516206098"
-     data-ad-format="auto"></ins>
-<script>
-(adsbygoogle = window.adsbygoogle || []).push({});
-</script>
-
-        </div>
-      </footer>
-      <hr>
-    
-      <h1><a style="color: #F22430" href="/2010/10/15/spring-mvcspringjar-spring-webmvc">Spring MVC sample</a></h1>
-      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
-      <p class="author">
-      <div class="date">
-        <span>15 October 2010</span>
-      </div>
-      </p>
-      <div class="content" style="line-height: 28px;">
-        <br />要使用Spring MVC架構，請先去下載Spring的jar檔，<br /><br />一個是spring-webmvc.jar<br /><br />一個是spring.jar<br /><br />一個是commons-logging.jar<br /><br />接著打開web.xml設定servlet-mapping<br /><br />跟他說當user &nbsp;request到哪個url時，要呼叫到Spring &nbsp;的dispatch，<br /><br />透過該dispatch，在引導該url至該controller<br /><br />如下:<br /><br /><pre class="brush: xml">&lt;servlet-mapping&gt;<br />    &lt;servlet-name&gt;springmvc&lt;/servlet-name&gt;<br />    &lt;url-pattern&gt;/html/*&lt;/url-pattern&gt;<br />&lt;/servlet-mapping&gt;<br /><br /></pre><br /><br /><br /><br />上面的範例是指當user request到/html/底下任何的page<br /><br />都會導引到servlet-name為springmvc的servlet去<br /><br />但是我們現在沒有servlet-name為springmvc的servlet<br /><br />所以也要在設定<br /><br />如下:<br /><br /><pre class="brush: xml">&lt;servlet&gt;<br />    &lt;servlet-name&gt;springmvc&lt;/servlet-name&gt;<br />    &lt;servlet-class&gt;org.springframework.web.servlet.DispatcherServlet&lt;/servlet-class&gt;<br />    &lt;load-on-startup&gt;1&lt;/load-on-startup&gt;<br />    &lt;init-param&gt;<br />        &lt;param-name&gt;contextConfigLocation&lt;/param-name&gt;<br />        &lt;param-value&gt;/WEB-INF/spring-mvc-config.xml&lt;/param-value&gt;<br />    &lt;/init-param&gt;<br />&lt;/servlet&gt;<br /></pre><br /><br /><br /><br /><br /><br />上面的範例意思是當您的servlet-mapping裡servlet-name為springmvc時<br /><br />會mapping到此org.springframework.web.servlet.DispatcherServlet class<br /><br />且你要指定該dispatch的config location<br /><br />這裡預設為/WEB-INF/spring-mvc-config.xml<br /><br />在這個檔案裡面會主要會放置了url-mapping<br /><br />用來告訴dipatch該怎麼分配至應該分配的controller<br /><br /><br />對了！！有個很重要的東西要注意到，<br /><br />在web.xml中的root element裡面的attribute一定要設為2.4，一開始建立project是預設2.5，<br /><br />在controller return view的時候，view會無法使用${}tag<br /><br />如下:<br /><br /><pre class="brush: xml">&lt;web-app <br />version="2.4"<br />xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"<br />xmlns="http://java.sun.com/xml/ns/javaee"<br />xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_4.xsd"<br />xsi:schemaLocation="http://java.sun.com/xml/ns/javaee<br />http://java.sun.com/xml/ns/javaee/web-app_2_4.xsd" &gt;<br /><br /></pre><br /><br /><br /><br /><br /><br />接著就會說到該spring-mvc-config.xml的檔案架構<br /><br />如下:<br /><br /><pre class="brush: xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;<br />&lt;beans xmlns="http://www.springframework.org/schema/beans"<br /> xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"<br /> xsi:schemaLocation="http://www.springframework.org/schema/beans<br /> http://www.springframework.org/schema/beans/spring-beans-2.5.xsd"&gt;<br /><br /><br />    &lt;!-- <br />        (1)<br />        會先看這個urlMapping<br />        這裡的設置意思是當您的page是在/html/action/*<br />        意思是/html底下的/action/底下的任何page，<br />        則就呼叫bean id為customerController的class  <br />    --&gt;<br />    &lt;bean id="urlMapping"<br />         class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping"&gt;<br />        &lt;property name="mappings"&gt;<br />            &lt;value&gt;         <br />                /action/*=customController<br />            &lt;/value&gt;<br />        &lt;/property&gt;<br />    &lt;/bean&gt;<br /><br />    &lt;!-- <br />     (2)<br />     因為上面的設定是當/html/action/底下任何page會指定到此bean<br />     也就是說他會呼叫到net.ken.test.mvc此package底下的.multiActionController<br />     等等會說明multiActionController此檔案<br />     --&gt;        <br />    &lt;bean id="customController" class="net.ken.test.mvc.multiActionController"&gt;&lt;/bean&gt;    <br />     <br />     <br />    &lt;!-- <br />      (3)<br />      這裡是指你要對應到的view的路徑名稱<br />     --&gt; <br />    &lt;bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver"&gt;<br />    &lt;property name="viewClass" value="org.springframework.web.servlet.view.JstlView"/&gt;<br />       &lt;property name="prefix" value="/jsp/"/&gt;<br />       &lt;property name="suffix" value=".jsp"/&gt;<br />   &lt;/bean&gt; <br />     <br /><br />     <br />&lt;/beans&gt;<br /></pre><br /><br /><br /><br />接著就來撰寫multiActionController此controller的code <br /><br /><pre class="brush: java">package springmvc.web;<br /><br />import org.springframework.web.servlet.mvc.multiaction.MultiActionController;<br /><br /><br />import javax.servlet.http.HttpServletRequest;<br />import javax.servlet.http.HttpServletResponse;<br />import org.springframework.web.servlet.ModelAndView;<br /> <br /><br />//首先要繼承MultiActionController<br />public class CustomerController extends MultiActionController{<br /><br /><br /> //這邊的method命名規則是根據您的page名稱來命名，如果您的page是在/html/action/Add.do<br /> //則會呼叫到下面這個method。<br /> public ModelAndView Add(HttpServletRequest request,<br />  HttpServletResponse response) throws Exception {<br />  <br /> /*<br />  * 會return一個型態為ModelAndView的物件回去，<br />  * 第一個參數為view的名稱，就是要接收此物件的jsp檔案名稱，在此例子就是說會傳到hello_world.jsp此page去<br />  * 第二個是view要接收的參數名稱<br />  * 第三個是參數的值<br />  */<br />  return new ModelAndView("hello_world", "message","testAddCustomer() method");<br /> <br /> }<br /> <br /> public ModelAndView Delete(HttpServletRequest request,<br />  HttpServletResponse response) throws Exception {<br /> <br />  return new ModelAndView("hello_world", "message","testDeleteCustomer() method");<br /> <br /> }<br /> <br /> public ModelAndView Update(HttpServletRequest request,<br />  HttpServletResponse response) throws Exception {<br /> <br />  return new ModelAndView("hello_world", "message","testUpdateCustomer() method");<br /> <br /> }<br /> <br /> <br />}<br /><br /><br /></pre><br /><br />接著來寫個接收modelAndView的code吧!（就是hello_world.jsp）<br /><br />${message}的意思就是接收上面ModelAndView此物件的第二個參數的參數名稱 <br /><br /><pre class="brush: html">&lt;html&gt;<br />&lt;body&gt;<br /> &lt;p&gt;This is my message: ${message} &lt;/p&gt;<br />&lt;/body&gt;<br />&lt;/html&gt;<br /><br /></pre><br /><br /><br /><br />最後就寫個簡單的html來測試是否work， <br /><br />你會發現點選第一個link，<br /><br />您的page就會show出<b><span class="Apple-style-span" style="color: red;">This is my message: testAddCustomer() method</span></b>此訊息 <br /><br /><br /><pre class="brush: html">&lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"&gt;<br /><br />&lt;html&gt;<br />  &lt;head&gt;<br />    &lt;meta http-equiv="content-type" content="text/html; charset=UTF-8"&gt;<br />    &lt;title&gt;Hello App Engine&lt;/title&gt;<br />  &lt;/head&gt;<br /><br />  &lt;body&gt;<br />    &lt;h1&gt;Hello App Engine!&lt;/h1&gt;<br /> <br />    &lt;table&gt;<br />      &lt;tr&gt;<br />        &lt;td&gt;&lt;a href="/html/action/Add.htm"&gt;Go to Add() &lt;/a&gt;&lt;/td&gt;<br />      &lt;/tr&gt;<br />      &lt;tr&gt;<br />        &lt;td&gt;&lt;a href="/html/action/Delete.htm"&gt;Go to Delete() &lt;/a&gt;&lt;/td&gt;<br />      &lt;/tr&gt;<br />      &lt;tr&gt;<br />        &lt;td&gt;&lt;a href="/html/action/Update.htm"&gt;Go to Update() &lt;/a&gt;&lt;/td&gt;<br />      &lt;/tr&gt;<br /> <br />    &lt;/table&gt;<br />  &lt;/body&gt;<br />&lt;/html&gt;<br /></pre><br /><br /><br /><br />這篇教學寫得好亂，真不好意思。<br /><br />有不清楚的再問我吧！<br /><br />
-      </div>
-      <footer>
-        <p><a class="myButton" href="/2010/10/15/spring-mvcspringjar-spring-webmvc">read more &raquo;</a></p>
         <div>
           <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 <!-- ken on github -->
@@ -420,7 +420,7 @@
 
     <div id="footer">
       <div class="container">
-        <p>&copy; 2015 Ken Yang
+        <p>&copy; 2016 Ken Yang
           with help from <a href="http://jekyllbootstrap.com" target="_blank" title="The Definitive Jekyll Blogging Framework">Jekyll Bootstrap</a>
           and <a href="http://getbootstrap.com" target="_blank">Bootstrap</a>
         </p>

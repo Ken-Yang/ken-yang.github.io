@@ -4,13 +4,105 @@
  <title>Ken Yang筆記</title>
  <link href="http://blog.kenyang.net/atom.xml" rel="self"/>
  <link href="http://blog.kenyang.net"/>
- <updated>2015-12-13T14:35:26+08:00</updated>
+ <updated>2016-02-17T15:25:33+08:00</updated>
  <id>http://blog.kenyang.net</id>
  <author>
    <name>Ken Yang</name>
    <email>ken@kenyang.net</email>
  </author>
 
+ 
+ <entry>
+   <title>Heroku Redis: Connecting in Python</title>
+   <link href="http://blog.kenyang.net/2016/02/15/heroku-redis-connecting-in-python"/>
+   <updated>2016-02-15T00:00:00+08:00</updated>
+   <id>http://blog.kenyang.net/2016/02/15/heroku-redis-connecting-in-python</id>
+   <content type="html">&lt;p&gt;&lt;font size=3&gt;&lt;/p&gt;
+
+&lt;p&gt;這篇要講怎麼在Heroku上，使用它的&lt;a href=&quot;https://devcenter.heroku.com/articles/heroku-redis&quot;&gt;Heroku Redis&lt;/a&gt;，&lt;br&gt;
+大致上分為三個步驟，分別為安裝，配置，寫code。&lt;/p&gt;
+
+&lt;p&gt;&lt;/br&gt;&lt;/p&gt;
+
+&lt;hr&gt;
+
+&lt;h3 id=&quot;1-installing-cli&quot;&gt;1. Installing CLI&lt;/h3&gt;
+
+&lt;hr&gt;
+
+&lt;p&gt;第一步驟是要先安裝heroku-redis的command line tools，
+但如果你不想要用command line，你也可以至heroku的後台裡面的Add-ons加一台redis。&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;heroku plugins:install heroku-redis
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;/br&gt;&lt;/p&gt;
+
+&lt;hr&gt;
+
+&lt;h3 id=&quot;2-provisioning-the-add-on&quot;&gt;2. Provisioning the add-on&lt;/h3&gt;
+
+&lt;hr&gt;
+
+&lt;p&gt;接著要配置一台Redis server，有二個比較特別的參數，&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;hobby-dev: 這個是這台server的&lt;a href=&quot;http://elements.heroku.com/addons/heroku-redis&quot;&gt;Plan &amp;amp; Pricing&lt;/a&gt;，hobby-dev是免費的。&lt;/li&gt;
+&lt;li&gt;sushi: 你的heroku app name&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;heroku addons:create heroku-redis:hobby-dev -a sushi
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;/br&gt;
+當你成功配置一台redis以後，你可以透過下面的指令找到該台redis URL，
+&amp;lt;!--more--&amp;gt;
+&lt;code&gt;bash
+$ heroku config | grep REDIS
+&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;/br&gt;&lt;/p&gt;
+
+&lt;hr&gt;
+
+&lt;h3 id=&quot;3-connecting-in-python&quot;&gt;3. Connecting in Python&lt;/h3&gt;
+
+&lt;hr&gt;
+
+&lt;p&gt;要在Python中使用Redis，你必須安裝&lt;code&gt;redis&lt;/code&gt;這個package，&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;pip install redis
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;pip freeze &amp;gt; requirements.txt
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;/br&gt;
+接著就可以用這個&lt;code&gt;redis&lt;/code&gt;這個package連結至redis server，&lt;br&gt;
+下面的example是用Flask這個framework來做示範，分別有&lt;code&gt;get&lt;/code&gt;和&lt;code&gt;set&lt;/code&gt;這二個URL。&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;os&lt;/span&gt;
+&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;redis&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;r&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;redis&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;from_url&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;os&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;environ&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;get&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;REDIS_URL&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;
+
+&lt;span class=&quot;nd&quot;&gt;@app.route&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;#39;/get&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;get&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;():&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;r&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;get&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;name&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;is&lt;/span&gt; &lt;span class=&quot;bp&quot;&gt;None&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;quot;no such key in Redis&amp;quot;&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;r&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;get&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;name&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;nd&quot;&gt;@app.route&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;#39;/set&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;set&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;():&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;r&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;setex&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;#39;name&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;#39;Ken Yang&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;quot;set done&amp;quot;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h2 id=&quot;&quot;&gt;&lt;/br&gt;&lt;/h2&gt;
+
+&lt;h3 id=&quot;4-testing-in-local-environment&quot;&gt;4. Testing in local environment&lt;/h3&gt;
+
+&lt;hr&gt;
+
+&lt;p&gt;如果你想要在local測試，需要把REDIS_URL的參數寫在.env裡面才行。&lt;br&gt;
+否則會找不到Redis在哪。&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;heroku config:get REDIS_URL -s  &amp;gt;&amp;gt; .env
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;heroku &lt;span class=&quot;nb&quot;&gt;local &lt;/span&gt;web
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;/font&gt;&lt;/p&gt;
+</content>
+ </entry>
  
  <entry>
    <title>Android Fingerprint API</title>
@@ -1985,14 +2077,6 @@ mv完成以後，接著打開&lt;code&gt;index.html&lt;/code&gt;，&lt;br&gt;
    <updated>2014-09-24T10:04:00+08:00</updated>
    <id>http://blog.kenyang.net/2014/09/24/android-orm-lib-greedao</id>
    <content type="html">&lt;div style=&quot;font-size: 15px; line-height: 22px;&quot;&gt;&lt;a href=&quot;http://en.wikipedia.org/wiki/Object-relational_mapping&quot;&gt;ORM&lt;/a&gt;應該不用多做解釋了，&lt;br /&gt;而Android自己本身並沒有ORM的任何lib可用，&lt;br /&gt;但有很多熱心的人做了third-party lib，像是&lt;a href=&quot;http://ormlite.com/&quot;&gt;OrmLite&lt;/a&gt;、&lt;a href=&quot;http://greendao-orm.com/&quot;&gt;greenDao&lt;/a&gt;，&lt;br /&gt;本篇要講的是greenDao，&lt;br /&gt;為什麼我使用greenDao呢？&lt;br /&gt;其實網路上不少人在做OrmLite和greenDao的&lt;a href=&quot;https://github.com/littleinc/android-orm-benchmark&quot;&gt;benchmark&lt;/a&gt;，&lt;br /&gt;greenDao的performance真是一片倒，&lt;br /&gt;也因此我選擇了greenDao，&lt;br /&gt;不過說實在的，greenDao一開始的前置作業真是有點麻煩！&lt;br /&gt;所以特地寫一篇來記錄！&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;1. Clone the repository&lt;/span&gt;&lt;br /&gt;&lt;br /&gt;先把greenDao的repository clone下來，&lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;git clone https://github.com/greenrobot/greenDAO.git&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;2. Download jar&lt;/span&gt;&lt;br /&gt;&lt;br /&gt;這就是我說的，前置作業很麻煩！&lt;br /&gt;有3個必要的jar檔，竟然沒有在repository中！&lt;br /&gt;要自行去下載！不過用gradle和marven就不用自行去下載，&lt;br /&gt;anyway我用的是eclipse，所以得去下載！&lt;br /&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;1. &lt;a href=&quot;http://mvnrepository.com/artifact/org.freemarker/freemarker/2.3.20&quot;&gt;freemaker.jar&lt;/a&gt;&lt;br /&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;2. &lt;a href=&quot;http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22de.greenrobot%22%20AND%20a%3A%22greendao-generator%22&quot;&gt;greendao-generator-1.3.0&lt;/a&gt;&lt;br /&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;3. &lt;a href=&quot;http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22de.greenrobot%22%20AND%20a%3A%22greendao%22&quot;&gt;greendao-1.3.7.jar&lt;/a&gt;&lt;br /&gt;前面兩個jar是為了build出dao而用的，&lt;br /&gt;而後面第三個jar給我們app使用的！&lt;br /&gt;在開始之前，先說明一下整體流程，&lt;br /&gt;大致上分為兩個步驟，&lt;br /&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;1. 產生 DAO files&lt;br /&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;2. 把DAO files 加到自己的android project中&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;3. Generate DAO files&lt;/span&gt;&lt;br /&gt;&lt;br /&gt;還記得第一步驟clone下來的repository嗎？&lt;br /&gt;repository中有很多份中有很多個project，&lt;br /&gt;我們只會用到DaoExampleGenerator，&lt;br /&gt;首先先開啟你的eclipse，&lt;br /&gt;點選【File】-&gt;【Import】-&gt;【General】-&gt;【Existing Projects into Workspace】-&gt;選擇【DaoExampleGenerator】project&lt;br /&gt;import進來以後應該會很多error，&lt;br /&gt;因為少了2個jar檔，就把【freemaker.jar】和【greendao-generator-1.3.0】import進來吧！&lt;br /&gt;&lt;br /&gt;接著打開ExampleDaoGenerator這個class，&lt;br /&gt;這隻java會幫你generate出4個files，&lt;br /&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;1. DaoMaster&lt;br /&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;2. DaoSession&lt;br /&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;3. Model&lt;br /&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;4. ModelDao&lt;br /&gt;DAO就是用來負責db的一切操作, create table, insert, delete, query...etc.&lt;br /&gt;model就單純是一個object而已！&lt;br /&gt;這四個files都要加到我們的android project之中，&lt;br /&gt;&lt;br /&gt;接著來說明一下ExampleDaoGenerator裡面在做什麼，(我把原本的code改成我的sample了)&lt;br /&gt;&lt;pre class=&quot;brush: java&quot;&gt;public static void main(String[] args) throws Exception {&lt;br /&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;// 第一個參數是db的版本，第二個是package名稱&lt;br /&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Schema schema = new Schema(1, &quot;net.kenyang.dao&quot;); &lt;br /&gt;&lt;br /&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;addNote(schema);&lt;br /&gt;&lt;br /&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;// 產生上述說明的files&lt;br /&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;new DaoGenerator().generateAll(schema, &quot;../&quot;);&lt;br /&gt;}&lt;br /&gt;&lt;br /&gt;private static void addNote(Schema schema) {&lt;br /&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;// 這裡可以想像就是增加一個table，有三個欄位，且都是not null&lt;br /&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Entity note = schema.addEntity(&quot;Note&quot;);&lt;br /&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;note.addIdProperty();&lt;br /&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;note.addStringProperty(&quot;title&quot;).notNull();&lt;br /&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;note.addDateProperty(&quot;date&quot;).notNull();&lt;br /&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;note.addIntProperty(&quot;category&quot;).notNull();&lt;br /&gt;        &lt;br /&gt;}&lt;br /&gt;&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;接著只要按下run以後，這些files就會被產生出來！&lt;br /&gt;接著就把這些files搬移到你的android project當中，&lt;br /&gt;請注意！！由於我們上面的schema是&quot;net.kenyang.dao&quot;，&lt;br /&gt;那麼你的android project中也要有這個package，並且把這些files放置在該package當中！&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;4. Insert, select, delete&lt;/span&gt;&lt;br /&gt;&lt;br /&gt;完成上面的前置作業以後，在開始之前，&lt;br /&gt;請記得把第二步驟下載的greendao-1.3.7.jar加到android project中，&lt;br /&gt;接著就可以開始使用了！&lt;br /&gt;&lt;br /&gt;insert&lt;br /&gt;&lt;pre class=&quot;brush: java&quot;&gt;DevOpenHelper helper = new DevOpenHelper(this, &quot;expense&quot;, null);&lt;br /&gt;DaoMaster daoMaster = new DaoMaster(helper.getWritableDatabase());&lt;br /&gt;DaoSession daoSession = daoMaster.newSession();&lt;br /&gt;&lt;br /&gt;NoteDao noteDao = session.getNoteDao();&lt;br /&gt;Note note = new Note(null, &quot;hello&quot;, new Date(), 0);&lt;br /&gt;noteDao.insert(note);&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;select&lt;br /&gt;&lt;pre class=&quot;brush: java&quot;&gt;QueryBuilder&amp;lt;Note&amp;gt; query = noteDao.queryBuilder();&lt;br /&gt;// 查詢如果日期小於今天，並且照日期排序&lt;br /&gt;query.where(Properties.Date.le(calendar.getTime())).orderDesc(Properties.Date);&lt;br /&gt;for (Note n : query.list()) {&lt;br /&gt;     Log.e(&quot;ken&quot;, n.getTitle());       &lt;br /&gt;}&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;update&lt;br /&gt;&lt;pre class=&quot;brush: java&quot;&gt;public void fnUpdate(long id) {&lt;br /&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Note note = noteDao.load(id);&lt;br /&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;note.setTitle(&quot;change title&quot;);&lt;br /&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;noteDao.update(note);&lt;br /&gt;}&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;delete &lt;br /&gt;&lt;pre class=&quot;brush: java&quot;&gt;public void fnDelete(long id) {&lt;br /&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;noteDao.deleteByKey(id);&lt;br /&gt;}&lt;br /&gt;&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;比原本的SQLiteOpenHelper好用太多了啊！&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;/div&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;</content>
- </entry>
- 
- <entry>
-   <title>How to build your own debian package?</title>
-   <link href="http://blog.kenyang.net/2014/09/04/how-to-build-your-own-debian-package"/>
-   <updated>2014-09-04T16:26:00+08:00</updated>
-   <id>http://blog.kenyang.net/2014/09/04/how-to-build-your-own-debian-package</id>
-   <content type="html">&lt;div style=&quot;font-size: 15px; line-height: 22px;&quot;&gt;其實不久前有寫一篇講怎麼&lt;a href=&quot;http://blog.kenyang.net/2014/03/build-deb-package-from-source.html&quot;&gt;build deb package&lt;/a&gt;，&lt;br /&gt;不過那篇的code source並不是來自於自己的source，&lt;br /&gt;那麼假設你今天自己有一個web，你想把這web打包成一個deb供人安裝，那該怎麼做呢？&lt;br /&gt;這篇主要就是講怎麼create一個自己的deb package．&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;1. Install necessary package&lt;/span&gt;&lt;br /&gt;&lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;sudo apt-get install dh-make&lt;br /&gt;&lt;/pre&gt;dh-make是用來準備debian package所需要的files，&lt;br /&gt;等等會用來gen template files．&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;2. Prepare environment&lt;/span&gt;&lt;br /&gt;&lt;br /&gt;這裡先create一個folder，名稱為www，&lt;br /&gt;www底下也要create一些web所需的資料夾和檔案，像是images, css ,js...etc&lt;br /&gt;www的目錄結構大概就長這樣，&lt;br /&gt;&lt;br /&gt;www&lt;br /&gt;├── css&lt;br /&gt;│   └── main.css&lt;br /&gt;├── images&lt;br /&gt;│   └── a.png&lt;br /&gt;└── static&lt;br /&gt;└── index.html&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;我們要把folder底下的東西都打包進去debian package，&lt;br /&gt;並且讓其他人在安裝這個debian package時，可以安裝到我們所指定的path底下！&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;3. Generate template files&lt;/span&gt;&lt;br /&gt;&lt;br /&gt;在這步要用前面安裝的dh_make來generate出debian package所需要的template files,&lt;br /&gt;在generate之前，先設定一個環境變數，&lt;br /&gt;這環境變數是用來記錄這個debian package的作者是誰&lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;export DEBFULLNAME=&quot;Ken Yang&quot;&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;dh_make --single --packagename ken-sdk_0.1 --native -e xxxx@gmail.com&lt;br /&gt;&lt;/pre&gt;--packagename要注意一下，&lt;br /&gt;--packagename分為兩個部分，&lt;br /&gt;前面的部分ken-sdk是package name，&lt;br /&gt;package name只能用-來分隔，不能用底線！&lt;br /&gt;而後面的_0.1是version number，&lt;br /&gt;--natvie，意思是這個debian不是從一個既有的tarball gen出來的！&lt;br /&gt;&lt;br /&gt;generate完成以後，你會發現在www folder底下多了一個debian folder，&lt;br /&gt;這debian folder裡面是放一些build debian package所需要的template files，&lt;br /&gt;而既然是template files，那麼就有一些不需要的file或者需要被修改的file，&lt;br /&gt;首先先刪除不需要的file吧！&lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;sudo rm debian/*.ex debian/*.EX&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;接著就來修改這個template，&lt;br /&gt;首先要先改control這file，&lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;vim debian/control&lt;br /&gt;&lt;/pre&gt;打開以後，會看到很多information，&lt;br /&gt;你比較需要改的大概就只有Depends (dependency)，和Description了！&lt;br /&gt;改完儲存以後即可！&lt;br /&gt;&lt;br /&gt;接下來要改copyright，&lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;vim debian/copyright&lt;br /&gt;&lt;/pre&gt;打開以後，大概就只有年份和作者名稱要改而已！&lt;br /&gt;&lt;br /&gt;剩下其他的file，像是README, docs就看你要不要改了，&lt;br /&gt;記得rules千萬別改！rules是build package的起頭！&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;4. Build debian package&lt;/span&gt;&lt;br /&gt;&lt;br /&gt;在完成template的修改，準備開始build之前，&lt;br /&gt;我們還有最後一個步驟，就是要指定哪些files or folder是你要放進去這個debian package的！&lt;br /&gt;而就是靠一個檔案去記錄！&lt;br /&gt;這個檔案名稱很重要，要跟你前面的package name一模一樣，&lt;br /&gt;我們前面的package name是ken-sdk，&lt;br /&gt;所以這個file要叫做ken-sdk.install，&lt;br /&gt;裡面的格式就像下面一樣，&lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;images/* /opt/www/image&lt;br /&gt;css/* /opt/www/css&lt;br /&gt;js/* /opt/www/js&lt;br /&gt;&lt;/pre&gt;第一格參數：現在www folder底下路徑的檔案&lt;br /&gt;第二格參數：將來這deb package被安裝時，這些files要被安裝到哪裡&lt;br /&gt;儲存以後，就可以開始build，指令如下：&lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;dpkg-buildpackage -rfakeroot -b&lt;br /&gt;&lt;/pre&gt;-rfakeroot：使用root的權限&lt;br /&gt;-b：單純只是binary，不要去build source&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;5. Verify&lt;/span&gt;&lt;br /&gt;&lt;br /&gt;完成以後，&lt;br /&gt;debian package會放在folder的上層目錄，&lt;br /&gt;應該會有一個ken-sdk_0.1_amd64.deb，&lt;br /&gt;有一個快速verify你要的files有沒有被包進去，&lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;lesspipe ken-sdk_0.1_amd64.deb&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;當然你也可以安裝起來看看，&lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;sudo dpkg --install ../ken-sdk_0.1_amd64.deb&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;接著就去看剛剛指定的folder（/opt/www），是否有我們原本的檔案！&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;6. Advance: Pre-Install or Post-Install&lt;/span&gt;&lt;br /&gt;&lt;br /&gt;如果你想要在這package完成安裝或者開始安裝之前，做一些前置作業，&lt;br /&gt;那麼就可以靠preinst和postinst這兩個檔案，&lt;br /&gt;preinst就是安裝之前，&lt;br /&gt;postinst就是安裝完成之後，&lt;br /&gt;相反地，如果你想要在這package被remove時，也做一些操作，&lt;br /&gt;那麼就要有prerm和postrm這兩個檔案！&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;7. Advance: Update pacakge&lt;/span&gt;&lt;br /&gt;&lt;br /&gt;如果你這package想要更新，&lt;br /&gt;變成0.2版本，你可以直接編輯change log，但有點麻煩！&lt;br /&gt;可以透過指令快速達成！&lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;dch -v 0.2 &quot;Update package.&quot;&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;之後一樣直接dpkg-buildpackage -rfakeroot -b就可以了！&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;/div&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;</content>
  </entry>
  
  
