@@ -218,6 +218,8 @@
   
     
   
+    
+  
 
 
 
@@ -292,6 +294,34 @@
     </div>
     <!-- This loops through the paginated posts -->
     
+      <h1><a style="color: #F22430" href="/2013/07/01/android-gcm-google-cloud_1">Android GCM (Google Cloud Messaging)：Android Client Side</a></h1>
+      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
+      <p class="author">
+      <div class="date">
+        <span>01 July 2013</span>
+      </div>
+      </p>
+      <div class="content" style="line-height: 28px;">
+        <a href="http://blog.kenyang.net/2013/07/android-gcm-google-cloud.html">前篇文章</a>已經說明過GCM，以及和前身C2DM的差異！<br /><br />這篇主要會講解Android端如何實作，其實和以前在C2DM時差不多<br />如果要看差異以及一些參數說明，可以到下面幾篇文章去看<br />第一篇在講<a href="http://blog.kenyang.net/2011/12/android-c2dm.html">參數說明</a><br />第二篇在講<a href="http://blog.kenyang.net/2011/12/android-c2dm_22.html">流程說明</a><br /><br /><br /><br />這裡就直接進入主題，<br />首先一樣要在Manifest檔案中，要有下列的permission，<br /><pre class="brush: xml">    &lt;permission android:name="net.kenyang.gcm.permission.C2D_MESSAGE" android:protectionLevel="signature" /&gt;<br />    &lt;uses-permission android:name="net.kenyang.gcm.permission.C2D_MESSAGE" /&gt;<br />    &lt;uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" /&gt;<br />    &lt;uses-permission android:name="android.permission.INTERNET" /&gt;<br />    &lt;uses-permission android:name="android.permission.GET_ACCOUNTS" /&gt;<br />    &lt;uses-permission android:name="android.permission.WAKE_LOCK" /&gt;<br /></pre><br /><br />接著就是要新增一個receiver，<br />而receiver必須聆聽兩個事件，分別為receive以及registration！<br /><pre class="brush: xml">    &lt;receiver<br />        android:name="net.kenyang.gcm.GcmBroadcastReceiver"<br />        android:permission="com.google.android.c2dm.permission.SEND" &gt;<br />        &lt;intent-filter&gt;<br />            &lt;action android:name="com.google.android.c2dm.intent.RECEIVE" /&gt;<br />            &lt;action android:name="com.google.android.c2dm.intent.REGISTRATION" /&gt;<br />            &lt;category android:name="net.kenyang" /&gt;<br />        &lt;/intent-filter&gt;<br />    &lt;/receiver&gt;<br /></pre><br /><br />再寫code之前，請先確定你的eclipse有裝下面的兩個plugin，<br /><br /><div class="separator" style="clear: both; text-align: center;"></div><div class="separator" style="clear: both; text-align: center;"><a href="http://2.bp.blogspot.com/-yuDunk2TmxY/UdE32LO-2TI/AAAAAAAAE4M/bNuog0GEZj0/s632/Screen+Shot+2013-07-01+at+4.08.26+PM.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="http://2.bp.blogspot.com/-yuDunk2TmxY/UdE32LO-2TI/AAAAAAAAE4M/bNuog0GEZj0/s1600/Screen+Shot+2013-07-01+at+4.08.26+PM.png" /></a></div><br /><br />安裝完成以後，請去到你的sdk folder裡面找到下面兩個jar檔，並且include他們兩個！<br /><br /><ol><li>android-sdk-macosx/extras/google/gcm/gcm-client/dist/gcm.jar &nbsp;</li><li>android-sdk-macosx/extras/google/google_play_services/libproject/google-play-services_lib/libs/google-play-services.jar</li></ol><br /><br /><br />接著開始寫code，<br />android分為三個部分，<br /><br /><ol><li>向Google 註冊，並且取得registration id</li><li>傳送id給我們的server</li><li>準備接收資料</li></ol><br /><br />首先是註冊，記得改成你的sender_id！<br />sender_id就是你的project id，可以到<a href="https://code.google.com/apis/console">api console</a>去看你的id，<br />會有下圖，project number就是你的project id了！<br /><div class="separator" style="clear: both; text-align: center;"><a href="http://2.bp.blogspot.com/-N3KeToOerFE/UdE67sRKpaI/AAAAAAAAE4c/0auECVD3lL4/s487/Screen+Shot+2013-07-01+at+4.19.48+PM.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="http://2.bp.blogspot.com/-N3KeToOerFE/UdE67sRKpaI/AAAAAAAAE4c/0auECVD3lL4/s487/Screen+Shot+2013-07-01+at+4.19.48+PM.png" /></a></div><br />記得把它填入sender_id中！<br /><br /><pre class="brush: java"> <br /><br />    GoogleCloudMessaging gcm;<br />    String SENDER_ID = "xxxxxxxxxxx";<br />    @Override<br />    protected void onCreate(Bundle savedInstanceState) {<br />        super.onCreate(savedInstanceState);<br />        setContentView(R.layout.activity_main);<br />  <br />        tvRegisterMsg = (TextView) findViewById(R.id.tvRegisterMsg);<br />        context = getApplicationContext();<br />  <br />        // initial GCM<br />        gcm = GoogleCloudMessaging.getInstance(this);<br /><br />        // register with Google.<br />        new AsyncTask&lt;Void,String,String&gt;() {<br />            @Override<br />            protected String doInBackground(Void... params) {<br />                String msg = "";<br />                try {<br />                    if (gcm == null) {<br />                        gcm = GoogleCloudMessaging.getInstance(context);<br />                    }<br />                    strRegId = gcm.register(SENDER_ID);<br />                    msg = "Device registered, registration id=" + strRegId;<br />                 <br />                    // send id to our server<br />                    sendRegIdToServer(strRegId);<br />                } catch (IOException ex) {<br />                    msg = "Error :" + ex.getMessage();<br />                }<br />                return msg;<br />            }<br /><br />            @Override<br />            protected void onPostExecute(String msg) {<br />                tvRegisterMsg.append(msg + "\n");<br />            }<br /><br />        }.execute(null, null, null);<br />    }<br /><br /></pre><br /><br /><br />接著是第二部分，把id傳送到我們的server，<br /><pre class="brush: java"> private void sendRegIdToServer(final String strId) {<br />  new AsyncTask&lt;Void,String,String&gt;() {<br />   @Override<br />   protected String doInBackground(Void... params) {<br />    String strResponseCode = &quot;&quot;;<br />    try {<br />     HttpRequestBase request =null;<br />     request = new HttpGet(new URI(&quot;http://your_server/storeRegId?id=&quot;+strId));<br /><br />     request.addHeader(&quot;User-Agent&quot;, &quot;Android&quot;);<br />     HttpResponse response =  Connection.connect((HttpGet)request);<br />     <br />     strResponseCode =  String.valueOf(response.getStatusLine().getStatusCode());<br />    } catch (ClientProtocolException e) {<br />     // TODO Auto-generated catch block<br />     e.printStackTrace();<br />    } catch (IOException e) {<br />     // TODO Auto-generated catch block<br />     e.printStackTrace();<br />    } catch (URISyntaxException e) {<br />     // TODO Auto-generated catch block<br />     e.printStackTrace();<br />    }<br />    <br />    return strResponseCode;<br />   }<br />   <br />   @Override<br />   protected void onPostExecute(String msg) {<br />    tvRegisterMsg.append(&quot;status code:  &quot; + msg + &quot;\n&quot;);<br />   }<br />   <br />  }.execute(null, null, null);<br /> }<br /><br /></pre><br />到了此步驟你在畫面上應該會看到registration_id和status code是200！<br />如果是上述的結果的話，就代表你向Google註冊成功了！以及也把registration id傳送給我們的server知道了！<br /><br />接著就來implement receiver的部分！<br />這個receiver會接收來自Google Server的資料，<br />並且把資料丟到我們的notification bar當中！<br /><br /><pre class="brush: java">public class GcmBroadcastReceiver extends BroadcastReceiver {<br /> static final String TAG = "GCMDemo";<br /> public static final int NOTIFICATION_ID = 1;<br /> private NotificationManager mNotificationManager;<br /> NotificationCompat.Builder builder;<br /> Context ctx;<br /><br /> @Override<br /> public void onReceive(Context context, Intent intent) {<br />  GoogleCloudMessaging gcm = GoogleCloudMessaging.getInstance(context);<br />  ctx = context;<br />  String messageType = gcm.getMessageType(intent);<br />  if (GoogleCloudMessaging.MESSAGE_TYPE_SEND_ERROR.equals(messageType)) {<br />   sendNotification("Send error: " + intent.getExtras().toString());<br />  } else if (GoogleCloudMessaging.MESSAGE_TYPE_DELETED .equals(messageType)) {<br />   sendNotification("Deleted messages on server: " + intent.getExtras().toString());<br />  } else {<br />   sendNotification("Received: " + intent.getExtras().toString());<br />  }<br />  setResultCode(Activity.RESULT_OK);<br /> }<br /><br /> // Put the GCM message into a notification and post it.<br /> private void sendNotification(String msg) {<br />  mNotificationManager = (NotificationManager) ctx.getSystemService(Context.NOTIFICATION_SERVICE);<br /><br />  PendingIntent contentIntent = PendingIntent.getActivity(ctx, 0,<br />    new Intent(ctx, Main.class), 0);<br /><br />  NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(ctx)<br />    .setSmallIcon(R.drawable.ic_launcher)<br />    .setContentTitle("GCM Notification")<br />    .setStyle(new NotificationCompat.BigTextStyle().bigText(msg))<br />    .setContentText(msg);<br /><br />  mBuilder.setContentIntent(contentIntent);<br />  mNotificationManager.notify(NOTIFICATION_ID, mBuilder.build());<br /> }<br />}<br /></pre><br /><br />完成上述以後你就可以開始測試！<br />只要打開瀏覽器，然後輸入你的site，（http://your_site/<b>send</b>），<br />接著你的device上應該就會收到訊息了！<br />訊息會是一個json格式！<br /><br /><br /><br /><br /><br /><br />
+      </div>
+      <footer>
+        <p><a class="myButton" href="/2013/07/01/android-gcm-google-cloud_1">read more &raquo;</a></p>
+        <div>
+          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- ken on github -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3783438370424072"
+     data-ad-slot="1516206098"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+        </div>
+      </footer>
+      <hr>
+    
       <h1><a style="color: #F22430" href="/2013/07/01/android-gcm-google-cloud">Android GCM (Google Cloud Messaging)：Server Side</a></h1>
       <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
       <p class="author">
@@ -348,41 +378,13 @@
       </footer>
       <hr>
     
-      <h1><a style="color: #F22430" href="/2013/06/04/android-remove-dedicated-menu-icon">Android remove dedicated menu icon.</a></h1>
-      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
-      <p class="author">
-      <div class="date">
-        <span>04 June 2013</span>
-      </div>
-      </p>
-      <div class="content" style="line-height: 28px;">
-        If you want to remove Action overflow button on newest apps (above 3.0),<br />please set your targetSdkVersion as 14.<br /><br /><pre class="brush: xml">&lt;uses-sdk android:minSdkVersion="7" <br />          android:targetSdkVersion="14" /&gt;<br /></pre><br /><div class="separator" style="clear: both; text-align: center;"><a href="http://1.bp.blogspot.com/-dc0MqLyM5So/Ua2xBjdSkMI/AAAAAAAAExY/bipZIap6ZDs/s1600/old_menu.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="41" src="http://1.bp.blogspot.com/-dc0MqLyM5So/Ua2xBjdSkMI/AAAAAAAAExY/bipZIap6ZDs/s320/old_menu.png" width="320" /></a></div><br /><br /><br />Cause Android decides whether to show the overflow button on the bottom bar based on which API level you used.<br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
-      </div>
-      <footer>
-        <p><a class="myButton" href="/2013/06/04/android-remove-dedicated-menu-icon">read more &raquo;</a></p>
-        <div>
-          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<!-- ken on github -->
-<ins class="adsbygoogle"
-     style="display:block"
-     data-ad-client="ca-pub-3783438370424072"
-     data-ad-slot="1516206098"
-     data-ad-format="auto"></ins>
-<script>
-(adsbygoogle = window.adsbygoogle || []).push({});
-</script>
-
-        </div>
-      </footer>
-      <hr>
-    
 
     <!-- Pagination links -->
     <div class="pagination">
       
         <a href="/blog/page13" class="previous">Previous</a>
       
-      <span class="page_number ">Page: 14 of 56</span>
+      <span class="page_number ">Page: 14 of 57</span>
       
         <a href="/blog/page15" class="next">Next</a>
       

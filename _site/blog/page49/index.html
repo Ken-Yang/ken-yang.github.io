@@ -218,6 +218,8 @@
   
     
   
+    
+  
 
 
 
@@ -292,6 +294,34 @@
     </div>
     <!-- This loops through the paginated posts -->
     
+      <h1><a style="color: #F22430" href="/2010/09/01/android-parse-xml">android parse xml</a></h1>
+      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
+      <p class="author">
+      <div class="date">
+        <span>01 September 2010</span>
+      </div>
+      </p>
+      <div class="content" style="line-height: 28px;">
+        android parse xml<br /><br />在anroid parse xml其實有蠻多方法的<br /><br />例如SAX(Simple API for XML)、DOM...<br /><br />大家都知道用SAX來parse會較省記憶體。<br /><br />但用SAX的麻煩就是必須自己去寫content handler...<br /><br />但如果您的XML檔並不大，且去讀取的次數沒有很頻繁，<br /><br />那麼還是建議您用DOM吧!較簡單!<br /><br />實作方法如下:<br /><br /><pre class="brush: java"> private static DocumentBuilder documentBuilder  = null;  <br /> private static Document document        = null;<br /> private static NodeList elements        = null;<br /> private static int iElementLength= 0;<br /><br /> @Override<br /> public void onStart(Intent intent, int startId) {<br />  super.onStart(intent, startId);<br />  try{<br />   <br />   URL urlUpdate = new URL("http://www.xxx.xxx/xxx.xml");<br />   documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();  <br />   document = documentBuilder.parse(urlUpdate.openStream());      <br />   document.getDocumentElement().normalize();  <br />   <br />   /*<br />   *其實簡單到我也不知該怎麼寫註解了，<br />   *先get到你要的tag吧，記得回傳型態是NodeList，<br />   *不要看我命名為elements，就以為他是Element<br />   */<br />   elements  = document.getElementsByTagName("update_images");<br />   iElementLength=elements.getLength();<br />   if (iElementLength ==0 )<br />    return;<br />    <br />   for (int i = 0; i &lt; iElementLength ; i++) {<br />    Element element = (Element) elements.item(i);<br />    Log.d("main",element.getAttribute("pic_name"));<br />   }<br />  }catch (Exception e) {<br />   Log.d("main",String.valueOf(e.toString()));<br />  }<br />   <br /> }<br /></pre><br /><br />大概就是這樣!<br /><br />
+      </div>
+      <footer>
+        <p><a class="myButton" href="/2010/09/01/android-parse-xml">read more &raquo;</a></p>
+        <div>
+          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- ken on github -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3783438370424072"
+     data-ad-slot="1516206098"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+        </div>
+      </footer>
+      <hr>
+    
       <h1><a style="color: #F22430" href="/2010/08/31/android-service-keep-alive-or-another">android service keep alive or another way??</a></h1>
       <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
       <p class="author">
@@ -348,41 +378,13 @@
       </footer>
       <hr>
     
-      <h1><a style="color: #F22430" href="/2010/08/07/android-progressbar-in-appwidget">android ProgressBar in AppWidget</a></h1>
-      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
-      <p class="author">
-      <div class="date">
-        <span>07 August 2010</span>
-      </div>
-      </p>
-      <div class="content" style="line-height: 28px;">
-        android ProgressBar in AppWidget<br /><br />會產生一些問題!<br /><br />基本上在顯示，或者設定目前progress都是沒問題的!!<br /><br />但是當你要把ProgressBar 設為Invisible的時候就會產生BUG!<br /><br />目前看來似乎是android本身的bug...<br /><br />至少找資料找到現在...蠻多人都說這樣的!<br /><br /><pre class="brush: java">Views.setViewVisibility(R.id.TextView01, View.VISIBLE);<br /></pre><br />以往只要打這行code就能把某個元件Invisible或者GONE掉<br /><br />但是如果元件是Progress Bar的話!<br /><br />會無法動作!!<br /><br />所以在這建議大家使用兩個layout<br /><br />一個是有progress bar，一個沒有!<br /><br />如下!<br /><br /><br /><pre class="brush: java">RemoteViews withProgressViews= new RemoteViews(this.getPackageName(),R.layout.progress_layout);//這個是有Progress的<br /><br />RemoteViews withoutProgressViews= new RemoteViews(this.getPackageName(),R.layout.init_layout);//這沒有Progress的<br /><br />app_manager.updateAppWidget(appWidgetId, withProgressViews/withoutProgressViews);//在透過app_manager去更新妳widget的layout樣式<br /><br /></pre><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
-      </div>
-      <footer>
-        <p><a class="myButton" href="/2010/08/07/android-progressbar-in-appwidget">read more &raquo;</a></p>
-        <div>
-          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<!-- ken on github -->
-<ins class="adsbygoogle"
-     style="display:block"
-     data-ad-client="ca-pub-3783438370424072"
-     data-ad-slot="1516206098"
-     data-ad-format="auto"></ins>
-<script>
-(adsbygoogle = window.adsbygoogle || []).push({});
-</script>
-
-        </div>
-      </footer>
-      <hr>
-    
 
     <!-- Pagination links -->
     <div class="pagination">
       
         <a href="/blog/page48" class="previous">Previous</a>
       
-      <span class="page_number ">Page: 49 of 56</span>
+      <span class="page_number ">Page: 49 of 57</span>
       
         <a href="/blog/page50" class="next">Next</a>
       

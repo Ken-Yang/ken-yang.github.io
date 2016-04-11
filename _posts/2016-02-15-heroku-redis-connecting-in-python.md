@@ -44,7 +44,9 @@ $ heroku addons:create heroku-redis:hobby-dev -a sushi
 
 </br>
 當你成功配置一台redis以後，你可以透過下面的指令找到該台redis URL，
+
 <!--more-->
+
 ```bash
 $ heroku config | grep REDIS
 ```

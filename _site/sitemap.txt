@@ -62,7 +62,9 @@ http://blog.kenyang.net/blog/page53/
 http://blog.kenyang.net/blog/page54/
 http://blog.kenyang.net/blog/page55/
 http://blog.kenyang.net/blog/page56/
+http://blog.kenyang.net/blog/page57/
 
+http://blog.kenyang.net/2016/04/07/getting-started-with-kubernetes
 http://blog.kenyang.net/2016/02/15/heroku-redis-connecting-in-python
 http://blog.kenyang.net/2015/12/12/android-fingerprint-api
 http://blog.kenyang.net/2015/12/11/install-zsh-oh-my-zsh-on-mac

@@ -218,6 +218,8 @@
   
     
   
+    
+  
 
 
 
@@ -292,6 +294,34 @@
     </div>
     <!-- This loops through the paginated posts -->
     
+      <h1><a style="color: #F22430" href="/2010/11/19/requestdispatcherspringmvc">RequestDispatcher和springmvc的差別</a></h1>
+      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
+      <p class="author">
+      <div class="date">
+        <span>19 November 2010</span>
+      </div>
+      </p>
+      <div class="content" style="line-height: 28px;">
+        <br />今天就在想RequestDispatcher和springmvc的差別<br /><br />通常會用springmvc，是因為想要做到MVC的架構，<br /><br />如果單單透過servlet，是無法達到該效果。<br /><br />但是如果透過servlet的RequestDispatcher是可以的!<br /><br />我就突然想到，那這樣我通通用RequestDispatcher不就好了<br /><br />但再仔細想想兩者間的差別，大概的想法如下<br /><br /><br />如果透過RequestDispatcher<br /><br />譬如說我要看會員列表(/action/member/list)<br /><br />就得在web.xml中部屬一個mapping<br /><br />mapping到某隻 servlet（讀取會員清單的操作）<br /><br />再透過RequestDispatcher把會員清單資料傳到應對應到的頁面<br /><br /><br />如果要新增一個會員(/action/member/insert)<br /><br />一樣得在web.xml中mapping到某個servlet<br /><br />這時候在web.xml會有2個serlvet mapping<br /><br /><br /><br />如果是透過springmvc<br /><br />是先透過在web.xml中springmvc設定的DispatcherServlet<br /><br />然後再透過該DispatcherServlet定義的config檔案<br /><br />看要Dispatch到哪個Controller<br /><br />看到這，似乎兩者之間看起來差不多?<br /><br />但是如果我們同樣需要兩個功能<br /><br />一個是新增會員，一個是讀取會員列表<br /><br />我們不需要像上面一樣定義到兩個servlet<br /><br />我們只需要定義一個專門在處理會員的controller<br /><br />然後透過controller去控制<br /><br />該controller裡面就會有兩個method<br /><br />public ModelAndView <span class="Apple-style-span" style="color: red;">list</span>(HttpServletRequest req, HttpServletResponse resp)<br />public ModelAndView <span class="Apple-style-span" style="color: red;">insert</span>(HttpServletRequest req, HttpServletResponse resp)<br /><br /><br /><br />這是我想到的地方，<br /><br />如果有誤，歡迎更正。謝謝<br /><br /><br /><br /><br /><br />
+      </div>
+      <footer>
+        <p><a class="myButton" href="/2010/11/19/requestdispatcherspringmvc">read more &raquo;</a></p>
+        <div>
+          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- ken on github -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3783438370424072"
+     data-ad-slot="1516206098"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+        </div>
+      </footer>
+      <hr>
+    
       <h1><a style="color: #F22430" href="/2010/11/19/cssfooter">css固定footer</a></h1>
       <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
       <p class="author">
@@ -348,41 +378,13 @@
       </footer>
       <hr>
     
-      <h1><a style="color: #F22430" href="/2010/11/06/apache">Apache 限制目錄瀏覽</a></h1>
-      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
-      <p class="author">
-      <div class="date">
-        <span>06 November 2010</span>
-      </div>
-      </p>
-      <div class="content" style="line-height: 28px;">
-        前天去看了社群網站<br /><br />片頭有講到哈佛裡面的有些宿舍網站的apache 沒有拿掉index，<br /><br />因此有目錄瀏覽的功能，這樣該目錄底下所有的檔案都會被使用者看見，<br /><br />那該怎麼關掉呢?<br /><br />打開httpd.conf<br /><br />找到這行<br /><b><br /></b><br /><b>Options Indexes FollowSymLinks</b><br /><br />然後把<b>Indexes </b>拿掉<br /><br />然後重開apache，該目錄底下的檔案就不會被顯示出來!<br /><br />且會response 403 Forbidden。<br /><br />如果你要有些特定目錄是允許使用者看見的，<br /><br />那麼就在該目錄底下，把index放上去即可。<br /><br />假設<br /><br />test1底下的/images是允許被看見的<br /><br />test2底下是不允許的<br /><br />那麼設置就如下<br /><br /><br /><br /><br /><pre class="brush: xml">&lt;Directory "D:/test1/images"&gt; <br />     .....<br />     # 可以被看見的<br />     Options Indexes FollowSymLinks<br />     .....<br />&lt;/Directory&gt;<br />&lt;Directory "D:/test2/images"&gt; <br />     .....<br />     # 不可以被看見的<br />     Options FollowSymLinks<br />     .....<br />&lt;/Directory&gt;<br /><br /></pre><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
-      </div>
-      <footer>
-        <p><a class="myButton" href="/2010/11/06/apache">read more &raquo;</a></p>
-        <div>
-          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<!-- ken on github -->
-<ins class="adsbygoogle"
-     style="display:block"
-     data-ad-client="ca-pub-3783438370424072"
-     data-ad-slot="1516206098"
-     data-ad-format="auto"></ins>
-<script>
-(adsbygoogle = window.adsbygoogle || []).push({});
-</script>
-
-        </div>
-      </footer>
-      <hr>
-    
 
     <!-- Pagination links -->
     <div class="pagination">
       
         <a href="/blog/page40" class="previous">Previous</a>
       
-      <span class="page_number ">Page: 41 of 56</span>
+      <span class="page_number ">Page: 41 of 57</span>
       
         <a href="/blog/page42" class="next">Next</a>
       

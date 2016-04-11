@@ -5,10 +5,285 @@
         <description>Ken Yang筆記 - Ken Yang</description>
         <link>http://blog.kenyang.net</link>
         <atom:link href="http://blog.kenyang.net/rss.xml" rel="self" type="application/rss+xml" />
-        <lastBuildDate>Wed, 17 Feb 2016 15:25:33 +0800</lastBuildDate>
-        <pubDate>Wed, 17 Feb 2016 15:25:33 +0800</pubDate>
+        <lastBuildDate>Mon, 11 Apr 2016 22:19:38 +0800</lastBuildDate>
+        <pubDate>Mon, 11 Apr 2016 22:19:38 +0800</pubDate>
         <ttl>60</ttl>
 
+
+        <item>
+                <title>Getting started with Kubernetes</title>
+                <description>&lt;p&gt;&lt;font size=3&gt;&lt;/p&gt;
+
+&lt;p&gt;Docker玩了一陣子，總覺得沒有玩一些container management的service好像少了點什麼，&lt;/br&gt;
+剛好team裡用到&lt;a href=&quot;http://kubernetes.io/docs/&quot;&gt;Kubernetes&lt;/a&gt;，所以這裡就記錄一下怎麼使用&lt;a href=&quot;http://kubernetes.io/docs/&quot;&gt;Kubernetes&lt;/a&gt;。&lt;/br&gt;
+然後這篇會把Kubernetes架在Google Cloud Platform上面，所以還得去安裝Google Cloud SDK。&lt;/p&gt;
+
+&lt;p&gt;&lt;/br&gt;&lt;/p&gt;
+
+&lt;hr&gt;
+
+&lt;h3 id=&quot;1-downloading-kubernetes&quot;&gt;1. Downloading Kubernetes&lt;/h3&gt;
+
+&lt;hr&gt;
+
+&lt;p&gt;第一步驟要先安裝Kubernetes，安裝方式有好幾種，&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;tarball解開&lt;/li&gt;
+&lt;li&gt;Build from source&lt;/li&gt;
+&lt;li&gt;Homebrew&lt;/li&gt;
+&lt;li&gt;Remote shell script &lt;/li&gt;
+&lt;li&gt;用Google Cloud SDK安裝&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;各個的詳細步驟可以去&lt;a href=&quot;http://kubernetes.io/docs/getting-started-guides/binary_release/&quot;&gt;Kubernetes安裝頁面&lt;/a&gt;看，我自己是選擇透過Google Cloud SDK來安裝，所以首先要先安裝Google Cloud SDK。&lt;/p&gt;
+
+&lt;p&gt;&lt;/br&gt;
+&lt;strong&gt;安裝Google Cloud SDK&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;Google Cloud SDK這個tool讓你可以對Google Cloud Platform進行操作。安裝指令如下，Default installation path會在你的home目錄底下，&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;curl https://sdk.cloud.google.com &lt;span class=&quot;p&quot;&gt;|&lt;/span&gt; bash
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;/br&gt;
+接著要restart shell和設定gcloud environment，&lt;code&gt;gcloud init&lt;/code&gt;這個指令會彈出browser要你login，以及要你輸入default zone，我是選asia-east1-a。&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;exec&lt;/span&gt; -l &lt;span class=&quot;nv&quot;&gt;$SHELL&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;gcloud init
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;/br&gt;
+&lt;strong&gt;安裝kubectl&lt;/strong&gt;&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;gcloud components install kubectl
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;/br&gt;&lt;/p&gt;
+
+&lt;!--more--&gt;
+
+&lt;hr&gt;
+
+&lt;h3 id=&quot;2-setup-google-cloud&quot;&gt;2. Setup Google Cloud&lt;/h3&gt;
+
+&lt;hr&gt;
+
+&lt;p&gt;在這步驟要做幾件事情，&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;註冊&lt;a href=&quot;https://console.cloud.google.com/&quot;&gt;Google Cloud&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Create project&lt;/li&gt;
+&lt;li&gt;打開billing&lt;/li&gt;
+&lt;li&gt;開啟Container Engine API.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;&lt;/br&gt;
+&lt;strong&gt;Step 1. 註冊&lt;a href=&quot;https://console.cloud.google.com/&quot;&gt;Google Cloud&lt;/a&gt;&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;點了上面的連結至console以後，就發現其實是以前的Google App Engine+Google APIs的後台，&lt;/br&gt;
+只不過好久沒用了，發現改版改好多..
+然後又發現新註冊的user有免費300美金的quota可以使用，&lt;/br&gt;
+舊有的用戶還沒有這300美金可以用，所以建議可以乾脆註冊新帳號使用比較好。&lt;/p&gt;
+
+&lt;p&gt;&lt;/br&gt;
+&lt;strong&gt;Step 2: Create project&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;有了帳號以後，就去Create project，Create時的project名稱，&lt;/br&gt;
+如果project名稱沒有重複的話，應該就會是你的&lt;code&gt;PROJECT_ID&lt;/code&gt;。&lt;/p&gt;
+
+&lt;p&gt;&lt;/br&gt;
+&lt;strong&gt;Step 3: 打開billing&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;這一步驟就是&lt;a href=&quot;https://console.developers.google.com/billing&quot;&gt;點這個連結&lt;/a&gt;去打開Billing，進去以後要填寫信用卡資料，目的是將來要收費，&lt;/br&gt;不過如果你是新註冊的話，一開始先不用擔心這個問題，因為有300美金可以使用。&lt;/p&gt;
+
+&lt;p&gt;&lt;/br&gt;
+&lt;strong&gt;Step 4: 開啟Container Engine API&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;接著要去Enable Container Engine API，&lt;a href=&quot;https://console.cloud.google.com/project/_/kubernetes/list&quot;&gt;點這個連結&lt;/a&gt;去enable，進去以後就選取剛剛create的project，然後按下Continue。(如下圖)&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/2016-04-08-enable-container-api.png&quot; alt=&quot;cmd&quot;&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;/br&gt;&lt;/p&gt;
+
+&lt;hr&gt;
+
+&lt;h3 id=&quot;3-create-your-node-js-application&quot;&gt;3. Create your Node.js application&lt;/h3&gt;
+
+&lt;hr&gt;
+
+&lt;p&gt;接著來寫一個簡單的Node.js application，等等會把這application包成docker image，&lt;/br&gt;
+先create一個folder，然後建立一個server.js，&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;mkdir hellonode-app
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cd &lt;/span&gt;hellonode-app
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;vim server.js
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;/br&gt;
+再把下面的內容貼入到server.js當中，下面的內容就是建立一個http server，且listen在8080 port上，&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;http&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;require&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;http&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;handleRequest&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;request&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;response&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;nx&quot;&gt;response&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;writeHead&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;200&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+  &lt;span class=&quot;nx&quot;&gt;response&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;end&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;quot;Hello World!&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;www&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;http&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;createServer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;handleRequest&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;nx&quot;&gt;www&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;listen&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;8080&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;/br&gt;&lt;/p&gt;
+
+&lt;hr&gt;
+
+&lt;h3 id=&quot;4-create-and-push-a-docker-container-image&quot;&gt;4. Create and Push a Docker container image&lt;/h3&gt;
+
+&lt;hr&gt;
+
+&lt;p&gt;接著要把上面的application變成一個docker image以及把image push上去，所以首先要先建立一個&lt;code&gt;Dockerfile&lt;/code&gt;，Dockerfile作用在之前的&lt;a href=&quot;http://blog.kenyang.net/2015/11/30/how-to-use-nodejs-mongodb-with-docker&quot;&gt;文章&lt;/a&gt;就有解釋過了，
+&lt;/br&gt;
+簡單說就是用來定義這個image的資訊。&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;FROM node:0.12
+EXPOSE 8080
+COPY server.js .
+CMD node server.js
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;/br&gt;
+有了&lt;code&gt;Dockerfile&lt;/code&gt;以後，就可以來build image了，記得把下面的&lt;code&gt;ken-kubernetes-lab&lt;/code&gt;換成你們自己的project id，&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;docker build -t gcr.io/ken-kubernetes-lab/hello-node:v1 .
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;/br&gt;
+build完以後，可以在自己local測試看看，&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;docker run -d -p 8080:8080 gcr.io/ken-kubernetes-lab/hello-node:v1
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;curl http://localhost:8080
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;/br&gt;
+接著就可以把image push上去Google Container Registry，&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;gcloud docker push gcr.io/ken-kubernetes-lab/hello-node:v1
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h2 id=&quot;&quot;&gt;&lt;/br&gt;&lt;/h2&gt;
+
+&lt;h3 id=&quot;5-create-a-cluster&quot;&gt;5. Create a cluster&lt;/h3&gt;
+
+&lt;hr&gt;
+
+&lt;p&gt;接著去console，建立一個cluster，如下圖。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/2016-04-08-create-cluster.png&quot; alt=&quot;cmd&quot;&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;/br&gt;
+建完以後，就把cluster的info餵給kubectl，記得把&lt;code&gt;cluster-1&lt;/code&gt;改成你的cluster名稱。&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;gcloud container clusters get-credentials cluster-1
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h2 id=&quot;&quot;&gt;&lt;/br&gt;&lt;/h2&gt;
+
+&lt;h3 id=&quot;6-create-a-pod&quot;&gt;6. Create a pod&lt;/h3&gt;
+
+&lt;hr&gt;
+
+&lt;p&gt;&lt;code&gt;pod&lt;/code&gt;在kubernetes的定義是&lt;code&gt;pods are the smallest deployable units of computing that can be created and managed in Kubernetes.&lt;/code&gt;，
+&lt;/br&gt;
+簡單說，如果你要在kubernetes的cluster裡面run起來&lt;code&gt;一組&lt;/code&gt;container，就得有一個pod，&lt;/br&gt;
+&lt;code&gt;一組&lt;/code&gt;container的意思是，這個pod裡面由一個以上的container所組成。
+&lt;/br&gt;&lt;/br&gt;
+用kubectl run來建立一個pod:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;kubectl run hello-node --image&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;gcr.io/ken-kubernetes-lab/hello-node:v1 --port&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;8080
+deployment &lt;span class=&quot;s2&quot;&gt;&amp;quot;hello-node&amp;quot;&lt;/span&gt; created
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;如上面的output所示，&lt;code&gt;kubectl run&lt;/code&gt;建立了一個&lt;code&gt;deployment&lt;/code&gt;，&lt;code&gt;deployment&lt;/code&gt;主要是用來建立或者scale一個pod的一種方式，以這個例子來說，deployment管理了1個pod replica，想看deployment的資訊，就打：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;kubectl get deployments
+NAME         DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
+hello-node   &lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;         &lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;         &lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;            &lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;           3d
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h2 id=&quot;&quot;&gt;&lt;/br&gt;&lt;/h2&gt;
+
+&lt;h3 id=&quot;7-allow-external-traffic&quot;&gt;7. Allow external traffic&lt;/h3&gt;
+
+&lt;hr&gt;
+
+&lt;p&gt;pod預設只能被內部access，如果想要讓外部存取，必須把&lt;code&gt;pod&lt;/code&gt; expose成一個&lt;code&gt;service&lt;/code&gt;:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;kubectl expose deployment hello-node --type&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;quot;LoadBalancer&amp;quot;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;你會發現上面的指令，我們是expose deployment這個object出來，而不是pod，&lt;/br&gt;
+如上面所說，deployment可能會管理多個pods，所以可以透過deployment來當作load balancer。
+取得service ip的指令，請打:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;kubectl get services hello-node
+NAME         CLUSTER-IP       EXTERNAL-IP       PORT&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;S&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;    AGE
+hello-node   10.123.244.242   130.211.247.198   8080/TCP   3d
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;code&gt;EXTERNAL_IP&lt;/code&gt;可能需要一點點時間才會顯示出來，所以如果&lt;code&gt;EXTERNAL_IP&lt;/code&gt;一開始是空白的，請等一下再試一次。&lt;/p&gt;
+
+&lt;h2 id=&quot;&quot;&gt;&lt;/br&gt;&lt;/h2&gt;
+
+&lt;h3 id=&quot;8-scale-up-your-website&quot;&gt;8. Scale up your website&lt;/h3&gt;
+
+&lt;hr&gt;
+
+&lt;p&gt;Kubernetes其中最強大的一點就是可以很輕鬆的scale你的application，
+&lt;/br&gt;
+假設你的application突然需要更多的capacity，你可以簡單地叫&lt;code&gt;deployment&lt;/code&gt;去建立新的replica:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;kubectl scale deployment hello-node --replicas&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;4
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;現在你的application就有4個replicas，每一個獨立地在cluster中運作，且load balancer去serve traffice。&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;kubectl get deployments
+NAME         DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
+hello-node   &lt;span class=&quot;m&quot;&gt;4&lt;/span&gt;         &lt;span class=&quot;m&quot;&gt;4&lt;/span&gt;         &lt;span class=&quot;m&quot;&gt;4&lt;/span&gt;            &lt;span class=&quot;m&quot;&gt;4&lt;/span&gt;           3d
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;kubectl get pods
+NAME                          READY     STATUS    RESTARTS   AGE
+hello-node-3344141985-j2zun   1/1       Running   &lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;          2m
+hello-node-3344141985-j70fh   1/1       Running   &lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;          2m
+hello-node-3344141985-lzynx   1/1       Running   &lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;          3d
+hello-node-3344141985-x3ycw   1/1       Running   &lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;          2m
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h2 id=&quot;&quot;&gt;&lt;/br&gt;&lt;/h2&gt;
+
+&lt;h3 id=&quot;9-roll-out-an-upgrade-to-your-website&quot;&gt;9. Roll out an upgrade to your website&lt;/h3&gt;
+
+&lt;hr&gt;
+
+&lt;p&gt;假設你的application有bug fixes，Kubernetes也可以輕易地幫助你deploy新版本上去。&lt;/br&gt;
+首先，先來改剛剛的&lt;code&gt;server.js&lt;/code&gt;，修改response message:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;  &lt;span class=&quot;nx&quot;&gt;response&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;end&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;quot;Hello Kubernetes World!&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;接著可以build及publish新版本至registry:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;docker build -t gcr.io/ken-kubernetes-lab/hello-node:v2 . 
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;gcloud docker push gcr.io/ken-kubernetes-lab/hello-node:v2
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;push完成以後，我們就有一個v2版本的image可以使用，接下來只要透過&lt;code&gt;kubectl edit&lt;/code&gt;指令就可以進行update，
+&lt;/br&gt;
+這個指令會打開一個text editor，內容是一個deployment的yaml config，&lt;/br&gt;
+我們只需要把&lt;strong&gt;&lt;code&gt;gcr.io/ken-kubernetes-lab/hello-node:v1&lt;/code&gt;&lt;/strong&gt;改成&lt;strong&gt;&lt;code&gt;gcr.io/ken-kubernetes-lab/hello-node:v2&lt;/code&gt;&lt;/strong&gt;就好。&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;kubectl edit deployment hello-node
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;編輯完成以後，可以去看看pods有什麼變化:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;kubectl get pods
+NAME                          READY     STATUS        RESTARTS   AGE
+hello-node-3344141985-j2zun   1/1       Terminating   &lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;          19m
+hello-node-3344141985-j70fh   1/1       Terminating   &lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;          19m
+hello-node-3344141985-lzynx   1/1       Terminating   &lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;          3d
+hello-node-3344141985-x3ycw   1/1       Terminating   &lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;          19m
+hello-node-3422850722-b0niu   1/1       Running       &lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;          13s
+hello-node-3422850722-gu7c3   1/1       Running       &lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;          19s
+hello-node-3422850722-oaqw7   1/1       Running       &lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;          19s
+hello-node-3422850722-ria1t   1/1       Running       &lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;          13s
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;從output中會發現，deployment建立新的pod，把舊版的pod關掉了。&lt;/p&gt;
+
+&lt;h2 id=&quot;&quot;&gt;&lt;/br&gt;&lt;/h2&gt;
+
+&lt;h3 id=&quot;10-delete&quot;&gt;10. Delete&lt;/h3&gt;
+
+&lt;hr&gt;
+
+&lt;p&gt;由於只有300美金啊，雖然我開了三天也才花費五塊美金，不過沒在用還是關掉吧！&lt;/br&gt;
+刪除Deployment時，也會一併刪除pod；刪除service會刪除load balancer。&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;kubectl delete service,deployment hello-node
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;最後記得cluster也要刪除:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;gcloud container clusters delete cluster-1
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;/br&gt;
+&lt;/br&gt;
+&lt;/br&gt;
+&lt;/br&gt;
+&lt;/br&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;/font&gt;&lt;/p&gt;
+</description>
+                <link>http://blog.kenyang.net/2016/04/07/getting-started-with-kubernetes</link>
+                <guid>http://blog.kenyang.net/2016/04/07/getting-started-with-kubernetes</guid>
+                <pubDate>Thu, 07 Apr 2016 00:00:00 +0800</pubDate>
+        </item>
 
         <item>
                 <title>Heroku Redis: Connecting in Python</title>
@@ -46,12 +321,11 @@
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;heroku addons:create heroku-redis:hobby-dev -a sushi
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;&lt;/br&gt;
-當你成功配置一台redis以後，你可以透過下面的指令找到該台redis URL，
-&amp;lt;!--more--&amp;gt;
-&lt;code&gt;bash
-$ heroku config | grep REDIS
-&lt;/code&gt;&lt;/p&gt;
+當你成功配置一台redis以後，你可以透過下面的指令找到該台redis URL，&lt;/p&gt;
 
+&lt;!--more--&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;heroku config &lt;span class=&quot;p&quot;&gt;|&lt;/span&gt; grep REDIS
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;&lt;/br&gt;&lt;/p&gt;
 
 &lt;hr&gt;
@@ -2067,14 +2341,6 @@ mv完成以後，接著打開&lt;code&gt;index.html&lt;/code&gt;，&lt;br&gt;
                 <link>http://blog.kenyang.net/2014/10/01/android-set-up-javadocs-and-source-for</link>
                 <guid>http://blog.kenyang.net/2014/10/01/android-set-up-javadocs-and-source-for</guid>
                 <pubDate>Wed, 01 Oct 2014 18:17:00 +0800</pubDate>
-        </item>
-
-        <item>
-                <title>Android ORM lib: greeDao</title>
-                <description>&lt;div style=&quot;font-size: 15px; line-height: 22px;&quot;&gt;&lt;a href=&quot;http://en.wikipedia.org/wiki/Object-relational_mapping&quot;&gt;ORM&lt;/a&gt;應該不用多做解釋了，&lt;br /&gt;而Android自己本身並沒有ORM的任何lib可用，&lt;br /&gt;但有很多熱心的人做了third-party lib，像是&lt;a href=&quot;http://ormlite.com/&quot;&gt;OrmLite&lt;/a&gt;、&lt;a href=&quot;http://greendao-orm.com/&quot;&gt;greenDao&lt;/a&gt;，&lt;br /&gt;本篇要講的是greenDao，&lt;br /&gt;為什麼我使用greenDao呢？&lt;br /&gt;其實網路上不少人在做OrmLite和greenDao的&lt;a href=&quot;https://github.com/littleinc/android-orm-benchmark&quot;&gt;benchmark&lt;/a&gt;，&lt;br /&gt;greenDao的performance真是一片倒，&lt;br /&gt;也因此我選擇了greenDao，&lt;br /&gt;不過說實在的，greenDao一開始的前置作業真是有點麻煩！&lt;br /&gt;所以特地寫一篇來記錄！&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;1. Clone the repository&lt;/span&gt;&lt;br /&gt;&lt;br /&gt;先把greenDao的repository clone下來，&lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;git clone https://github.com/greenrobot/greenDAO.git&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;2. Download jar&lt;/span&gt;&lt;br /&gt;&lt;br /&gt;這就是我說的，前置作業很麻煩！&lt;br /&gt;有3個必要的jar檔，竟然沒有在repository中！&lt;br /&gt;要自行去下載！不過用gradle和marven就不用自行去下載，&lt;br /&gt;anyway我用的是eclipse，所以得去下載！&lt;br /&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;1. &lt;a href=&quot;http://mvnrepository.com/artifact/org.freemarker/freemarker/2.3.20&quot;&gt;freemaker.jar&lt;/a&gt;&lt;br /&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;2. &lt;a href=&quot;http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22de.greenrobot%22%20AND%20a%3A%22greendao-generator%22&quot;&gt;greendao-generator-1.3.0&lt;/a&gt;&lt;br /&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;3. &lt;a href=&quot;http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22de.greenrobot%22%20AND%20a%3A%22greendao%22&quot;&gt;greendao-1.3.7.jar&lt;/a&gt;&lt;br /&gt;前面兩個jar是為了build出dao而用的，&lt;br /&gt;而後面第三個jar給我們app使用的！&lt;br /&gt;在開始之前，先說明一下整體流程，&lt;br /&gt;大致上分為兩個步驟，&lt;br /&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;1. 產生 DAO files&lt;br /&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;2. 把DAO files 加到自己的android project中&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;3. Generate DAO files&lt;/span&gt;&lt;br /&gt;&lt;br /&gt;還記得第一步驟clone下來的repository嗎？&lt;br /&gt;repository中有很多份中有很多個project，&lt;br /&gt;我們只會用到DaoExampleGenerator，&lt;br /&gt;首先先開啟你的eclipse，&lt;br /&gt;點選【File】-&gt;【Import】-&gt;【General】-&gt;【Existing Projects into Workspace】-&gt;選擇【DaoExampleGenerator】project&lt;br /&gt;import進來以後應該會很多error，&lt;br /&gt;因為少了2個jar檔，就把【freemaker.jar】和【greendao-generator-1.3.0】import進來吧！&lt;br /&gt;&lt;br /&gt;接著打開ExampleDaoGenerator這個class，&lt;br /&gt;這隻java會幫你generate出4個files，&lt;br /&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;1. DaoMaster&lt;br /&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;2. DaoSession&lt;br /&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;3. Model&lt;br /&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;4. ModelDao&lt;br /&gt;DAO就是用來負責db的一切操作, create table, insert, delete, query...etc.&lt;br /&gt;model就單純是一個object而已！&lt;br /&gt;這四個files都要加到我們的android project之中，&lt;br /&gt;&lt;br /&gt;接著來說明一下ExampleDaoGenerator裡面在做什麼，(我把原本的code改成我的sample了)&lt;br /&gt;&lt;pre class=&quot;brush: java&quot;&gt;public static void main(String[] args) throws Exception {&lt;br /&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;// 第一個參數是db的版本，第二個是package名稱&lt;br /&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Schema schema = new Schema(1, &quot;net.kenyang.dao&quot;); &lt;br /&gt;&lt;br /&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;addNote(schema);&lt;br /&gt;&lt;br /&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;// 產生上述說明的files&lt;br /&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;new DaoGenerator().generateAll(schema, &quot;../&quot;);&lt;br /&gt;}&lt;br /&gt;&lt;br /&gt;private static void addNote(Schema schema) {&lt;br /&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;// 這裡可以想像就是增加一個table，有三個欄位，且都是not null&lt;br /&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Entity note = schema.addEntity(&quot;Note&quot;);&lt;br /&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;note.addIdProperty();&lt;br /&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;note.addStringProperty(&quot;title&quot;).notNull();&lt;br /&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;note.addDateProperty(&quot;date&quot;).notNull();&lt;br /&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;note.addIntProperty(&quot;category&quot;).notNull();&lt;br /&gt;        &lt;br /&gt;}&lt;br /&gt;&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;接著只要按下run以後，這些files就會被產生出來！&lt;br /&gt;接著就把這些files搬移到你的android project當中，&lt;br /&gt;請注意！！由於我們上面的schema是&quot;net.kenyang.dao&quot;，&lt;br /&gt;那麼你的android project中也要有這個package，並且把這些files放置在該package當中！&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;4. Insert, select, delete&lt;/span&gt;&lt;br /&gt;&lt;br /&gt;完成上面的前置作業以後，在開始之前，&lt;br /&gt;請記得把第二步驟下載的greendao-1.3.7.jar加到android project中，&lt;br /&gt;接著就可以開始使用了！&lt;br /&gt;&lt;br /&gt;insert&lt;br /&gt;&lt;pre class=&quot;brush: java&quot;&gt;DevOpenHelper helper = new DevOpenHelper(this, &quot;expense&quot;, null);&lt;br /&gt;DaoMaster daoMaster = new DaoMaster(helper.getWritableDatabase());&lt;br /&gt;DaoSession daoSession = daoMaster.newSession();&lt;br /&gt;&lt;br /&gt;NoteDao noteDao = session.getNoteDao();&lt;br /&gt;Note note = new Note(null, &quot;hello&quot;, new Date(), 0);&lt;br /&gt;noteDao.insert(note);&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;select&lt;br /&gt;&lt;pre class=&quot;brush: java&quot;&gt;QueryBuilder&amp;lt;Note&amp;gt; query = noteDao.queryBuilder();&lt;br /&gt;// 查詢如果日期小於今天，並且照日期排序&lt;br /&gt;query.where(Properties.Date.le(calendar.getTime())).orderDesc(Properties.Date);&lt;br /&gt;for (Note n : query.list()) {&lt;br /&gt;     Log.e(&quot;ken&quot;, n.getTitle());       &lt;br /&gt;}&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;update&lt;br /&gt;&lt;pre class=&quot;brush: java&quot;&gt;public void fnUpdate(long id) {&lt;br /&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Note note = noteDao.load(id);&lt;br /&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;note.setTitle(&quot;change title&quot;);&lt;br /&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;noteDao.update(note);&lt;br /&gt;}&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;delete &lt;br /&gt;&lt;pre class=&quot;brush: java&quot;&gt;public void fnDelete(long id) {&lt;br /&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;noteDao.deleteByKey(id);&lt;br /&gt;}&lt;br /&gt;&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;比原本的SQLiteOpenHelper好用太多了啊！&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;/div&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;</description>
-                <link>http://blog.kenyang.net/2014/09/24/android-orm-lib-greedao</link>
-                <guid>http://blog.kenyang.net/2014/09/24/android-orm-lib-greedao</guid>
-                <pubDate>Wed, 24 Sep 2014 10:04:00 +0800</pubDate>
         </item>
 
 

@@ -218,6 +218,8 @@
   
     
   
+    
+  
 
 
 
@@ -292,6 +294,34 @@
     </div>
     <!-- This loops through the paginated posts -->
     
+      <h1><a style="color: #F22430" href="/2012/01/06/facebook-login">實作Facebook Login 【新版】</a></h1>
+      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
+      <p class="author">
+      <div class="date">
+        <span>06 January 2012</span>
+      </div>
+      </p>
+      <div class="content" style="line-height: 28px;">
+        今天發現前陣子有使用到Facebook登入的案子，<br />突然掛了! 不能使用Facebook登入了....<br />去查了一下，原來Facebook API改版....<br />老實說，我覺得這樣機制很差....應該也保留舊有機制，而不是連通知都沒有就改版了!<br /><br />Ok, fine! 其實也沒有太大差別!<br />主要是改一些參數名稱!<br />至於前面的註冊手續都相同! 可以來<a href="http://blog.kenyang.net/2011/02/implement-facebook-login.html">前一篇</a>看!<br /><br /><br />至於coding實作如下，<br />一樣得嵌入js檔，<br /><pre class="brush: html">&lt;script src="http://connect.facebook.net/en_US/all.js"&gt;&lt;/script&gt;<br /></pre><br />接著一樣要init，但是多了一個參數，就是oauth，以及從以前的response.session改成response.authResponse<br /><pre class="brush: javascript">&lt;script&gt;<br /> //先做init的動作，輸入自己的app id<br /> FB.init({ <br />    appId:'你自己的app id', <br />    cookie:true, <br />    status:true, <br />    xfbml:true,<br />    oauth : true // 多了這個參數<br /> });<br /> <br /><br /><br /><br /> //下面是實作一個登入的function<br />function fnLoginFb(){<br />    FB.login(function(response) {<br />        //先判斷是否已經登入了，如果是，就直接<br />        if (response.authResponse){  <br />            FB.api('/me', function(response) {<br />                alert(response.email);<br />            });<br />        //下面是沒有登入時才會做的，會去subscribe一個event，就是去監聽一個login event（也就是說login成功以後，會接收到訊息）<br />        }else{<br />            FB.Event.subscribe('auth.login', function(response) {<br />                if (response.authResponse) {<br />                    FB.api('/me', function(response) {<br />                        alert(response.email);<br />                    });          <br />                }<br />            }); <br />        }<br /><br />    }, {scope:'email'});<br /><br />} <br /><br /><br /><br />&lt;/script&gt;<br /></pre><br />然後下面就是實作FB登入的按鈕了!<br /><pre class="brush: html"><div id="fb-root"><br /></div><br /><a href="http://www.blogger.com/blogger.g?blogID=866973865356001297#"><img src="/images/fb_login.jpg" /></a> <br /><br /></pre><br /><br />
+      </div>
+      <footer>
+        <p><a class="myButton" href="/2012/01/06/facebook-login">read more &raquo;</a></p>
+        <div>
+          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- ken on github -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3783438370424072"
+     data-ad-slot="1516206098"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+        </div>
+      </footer>
+      <hr>
+    
       <h1><a style="color: #F22430" href="/2011/12/30/galaxy-nexus_30">Galaxy Nexus 使用心得</a></h1>
       <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
       <p class="author">
@@ -348,41 +378,13 @@
       </footer>
       <hr>
     
-      <h1><a style="color: #F22430" href="/2011/12/27/android-httpurlconnection-multipartform">Android HttpURLConnection 上傳檔案 (multipart/form-data)</a></h1>
-      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
-      <p class="author">
-      <div class="date">
-        <span>27 December 2011</span>
-      </div>
-      </p>
-      <div class="content" style="line-height: 28px;">
-        在Android實作(模擬)一個form，<br />不管method是用POST或者GET傳遞普通參數(type="text/password/hidden")，都很簡單!<br /><br />那要傳遞type="fiile"的呢?<br />也就是說要上傳一個檔案呢?<br />在Android裡面就稍嫌複雜了一點點點點!<br /><br />這篇將會結合使用camera，將上傳照相完以後的相片!<br />至於怎麼<a href="http://blog.kenyang.net/2010/10/android-camera.html">取得camera的照完相的照片</a>，可以去看我先前PO的教學! <a href="http://blog.kenyang.net/2010/10/android-camera.html">來這看!</a><br />這邊就不多說怎麼取得，就假設已經取得照片了!<br /><br />我們知道在HTML裡，要上傳含有file的參數，<br />&lt;form&gt;必須加上enctype="multipart/form-data"<br /><br />在實作之前，必須說明一下發出這個form的request的格式會怎樣!<br /><pre class="brush: xml">--==============<br />Content-Disposition: form-data; name="image"; filename="image.jpg"<br />Content-Type: image/jpeg<br /><br />!@#!FAWE@#$!A=fj2j12r<br />--==============--<br /><br /></pre><b><span style="font-size: large;"><br /></span></b><br /><b><span style="font-size: large;"><br /></span></b><br /><b><span style="font-size: large;">第一行是<span style="color: #38761d;">--==============</span>，</span></b><br />是由--加上boundary組成的<br />boundary很重要! 是用來區隔參數的!!<br />也就是說，如果裡有很2個參數，<br />那這2個參數前面都會有這一行!!!<br />對了，boundary可以自己設定，但是前提是要告訴server你的boundary是甚麼!<br />等等會說明到! 這裡的boundary假設是===========<br /><br /><br /><b><span style="font-size: large;">第二行Content-Disposition: form-data; name="image"; filename="image.jpg"</span></b><br />這是宣告你的參數名稱，以及他的當案名稱<br /><br /><br /><b><span style="font-size: large;">第三行Content-Type: image/jpeg</span></b><br />是宣告你的file是甚麼型態，因為我們這邊是拿圖片說明，<br />所以就是jpeg。<br /><br /><br /><span style="font-size: large;"><b>第四行是空白行，</b></span><br />在你寫入參數之前，前面一定是一行空白行<br /><br /><br /><b><span style="font-size: large;">第五行!@#!FAWE@#$!A=fj2j12r</span></b><br />這行就是資料行了，開始寫入資料，因為是上傳圖片，<br />所以這樣看一定是亂碼!<br />如果今天type不是file，是text，<br />那麼就會是明文!<br /><br /><br /><span style="font-size: large;"><b>第六行<span style="color: #38761d;">--==============--</span></b></span><br />最後一個參數傳遞完，一定要加上這一行，<br />告訴server，傳完了!<br /><br /><br /><br />了解格式後，現在就來實作，<br />而在Android的實作如下，<br /><pre class="brush: java">	// 先取得圖片<br />	// uriFilePath是當初設定照相完，要存在哪<br />	// 如果忘記可以去看文章上面說的教學文<br />	FileInputStream fileInputStream = new FileInputStream(new File(uriFilePath.getPath()));<br /><br />	final String BOUNDARY 	= "==================================";<br />	final String HYPHENS 	= "--";<br />	final String CRLF 		= "\r\n";<br />	URL url 				= new URL("http://xxx.xxx.xxx/uploadImage");	<br />	HttpURLConnection conn 	= (HttpURLConnection) url.openConnection();<br />	conn.setRequestMethod("POST");						// method一定要是POST<br />	conn.setDoOutput(true);<br />	conn.setDoInput(true);<br />	conn.setUseCaches(false);	<br />	<br />	// 把Content Type設為multipart/form-data<br />	// 以及設定Boundary，Boundary很重要!<br />	// 當你不只一個參數時，Boundary是用來區隔參數的	<br />	conn.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + BOUNDARY);<br />	<br />	<br />	// 下面是開始寫參數<br />	String strContentDisposition = "Content-Disposition: form-data; name=\"image\"; filename=\"image\"";<br />    String strContentType = "Content-Type: image/jpeg";<br />	DataOutputStream dataOS = new DataOutputStream(conn.getOutputStream());<br />	dataOS.writeBytes(HYPHENS+BOUNDARY+CRLF);		// 寫--==================================<br />	dataOS.writeBytes(strContentDisposition+CRLF);	// 寫(Disposition)<br />	dataOS.writeBytes(contentType+CRLF);			// 寫(Content Type)<br />	dataOS.writeBytes(CRLF);		<br />	<br />	int iBytesAvailable = fileInputStream.available();<br />	byte[] byteData = new byte[iBytesAvailable];<br />    int iBytesRead = fileInputStream.read(byteData, 0, iBytesAvailable);<br />	while (iBytesRead &gt; 0) {<br />		dataOS.write(byteData, 0, iBytesAvailable);	// 開始寫內容<br />		iBytesAvailable = fileInputStream.available();<br />		iBytesRead = fileInputStream.read(byteData, 0, iBytesAvailable);<br />	}<br />	dataOS.writeBytes(CRLF);	<br />	dataOS.writeBytes(HYPHENS+BOUNDARY+HYPHENS);	// (結束)寫--==================================--		<br />	file.close();<br />	dataOS.flush();<br />	dataOS.close();<br /><br /></pre><br />這樣完成了!!<br /><br />
-      </div>
-      <footer>
-        <p><a class="myButton" href="/2011/12/27/android-httpurlconnection-multipartform">read more &raquo;</a></p>
-        <div>
-          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<!-- ken on github -->
-<ins class="adsbygoogle"
-     style="display:block"
-     data-ad-client="ca-pub-3783438370424072"
-     data-ad-slot="1516206098"
-     data-ad-format="auto"></ins>
-<script>
-(adsbygoogle = window.adsbygoogle || []).push({});
-</script>
-
-        </div>
-      </footer>
-      <hr>
-    
 
     <!-- Pagination links -->
     <div class="pagination">
       
         <a href="/blog/page26" class="previous">Previous</a>
       
-      <span class="page_number ">Page: 27 of 56</span>
+      <span class="page_number ">Page: 27 of 57</span>
       
         <a href="/blog/page28" class="next">Next</a>
       

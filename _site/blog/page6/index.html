@@ -218,6 +218,8 @@
   
     
   
+    
+  
 
 
 
@@ -292,6 +294,34 @@
     </div>
     <!-- This loops through the paginated posts -->
     
+      <h1><a style="color: #F22430" href="/2014/11/24/mogilefs-distributed-filesystem">MogileFS: Distributed filesystem</a></h1>
+      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
+      <p class="author">
+      <div class="date">
+        <span>24 November 2014</span>
+      </div>
+      </p>
+      <div class="content" style="line-height: 28px;">
+        <div style="font-size: 15px; line-height: 22px;"><br /><a href="https://github.com/mogilefs/">MogileFS</a>是分散式檔案系統(DFS)的一種，<br />在MogileFS中，主要分成2個角色，<br />&nbsp;&nbsp;&nbsp;&nbsp; 1. tracker: 記錄有哪些storage<br />&nbsp;&nbsp;&nbsp;&nbsp; 2. storage node: 單純放檔案的角色<br />其實還有第三個角色，是tracker的DB，<br />這db角色是用來存放storage在哪裡、有幾個storage等資訊，<br />以及每個檔案類型要replicate幾份等等之類的資訊，<br />不過我會把tracker's DB和tracker本身歸類在一起，<br />因為它們兩個一定得在同檯機器上，而且缺一不可，<br />但tracker和storage不一定要在同檯機器上面！<br /><br />如果說為什麼要用mogilefs的話，大概有以下2個原因吧，<br />&nbsp;&nbsp;&nbsp;&nbsp; 1. 自動作replicate<br />&nbsp;&nbsp;&nbsp;&nbsp; 2. application level，不需要特別的kernel module（setup簡單)<br /><br /><span style="color: #e06666; font-size: 18px;">1. Install mogilefs</span><br /><br />安裝mogilefs方式大概有三種，用cpan, apt, 拿source自己build，<br />個人偏好用apt-get安裝，<br />這裡選擇在ubuntu 14.04上安裝，<br /><pre class="brush: bash">apt-get install python-software-properties<br />add-apt-repository ppa:saz/mogilefs<br />apt-get update<br />apt-get install mogilefsd mogstored mogilefs-utils<br /></pre><br />這樣就完成安裝，接下來要setup mogilefs,<br /><br /><span style="color: #e06666; font-size: 18px;">2. Setup mogilefs tracker</span><br /><br />前面有說到有tracker就一定要有db，<br />所以請先安裝好mysql，安裝好以後就執行下面的command，<br />記得把password換成你想要使用的密碼！<br /><pre class="brush: java">mysql> CREATE DATABASE mogilefs;<br />mysql> CREATE USER 'mogilefs'@'%' IDENTIFIED BY 'password';<br />mysql> GRANT SELECT,INSERT,UPDATE,DELETE,CREATE,ALTER ON mogilefs.* TO 'mogilefs'@'%';<br />mysql> flush privileges;<br /></pre><br />接著要編輯/etc/mogilefs/mogilefsd.conf這個檔案，<br />這個檔案，其實只有在tracker的角色上才需要去編輯，<br />意思是說如果你有三檯機器，那麼只有其中一檯才需要去設定這個檔案！<br />只要改下面兩個設定就好，<br /><pre class="brush: bash">db_pass = password<br />listen = 10.0.0.172:7001<br /></pre>db_pass就是上一步驟你所輸入的密碼，<br />listen就是這個tracker要listen在哪個ip以及哪一個port上面！<br /><br />接著使用下面的command進行db setup，<br />一樣記得把password換成跟上面一樣的！<br /><pre class="brush: bash">mogdbsetup --dbhost=10.0.0.172:7001 --dbname=mogilefs --dbuser=mogilefs --dbpassword=password<br /></pre><br />接著編輯.mogilefs.conf，這檔案會記錄著你的tracker在哪裡，<br />然後mogilefs會去問這tracker所有storage的資訊．<br /><pre class="brush: bash">echo "trackers = 10.0.0.172:7001" > ~/.mogilefs.conf<br /></pre><br /><br /><span style="color: #e06666; font-size: 18px;">3. Setup mogilefs storage node</span><br /><br />tracker的目的在於記錄著有哪些storage可以用，<br />所以在完成setup tracker以後，接著就要來setup storage，<br />首先，先增加一個store host，<br /><pre class="brush: bash">mogadm --trackers=10.0.0.172:7001 host add store1 --ip=10.0.0.172 --status=alive<br /></pre>--trackers：指定加在哪個tracker上<br />store1：是你的host name，<br />--ip：就是那一顆storage在哪裡<br /><br />那麼有了host以後，<br />就要有device，一個host裡面可以有很多個device，<br />可以把device想像成local disk、NFS...etc.<br />所以接著要告訴host有哪些device，<br /><pre class="brush: bash">mogadm --trackers=10.0.0.172:7001 device add store1 1 --status=alive<br /></pre>比較特別參數是“1”，<br />1的意思是device 1，<br /><br />再來還要增加一個domain，等等後面會說明這domain的用途<br /><pre class="brush: bash">mogadm domain add ken-storage<br /></pre><br />完成增加一個device了，<br />接著mogilefs store會去找那個device，<br />所以接著要去create folder，之後檔案都會放在那folder裡面，<br /><pre class="brush: bash">mkdir -p /var/mogdata/dev1<br />chown mogstored /var/mogdata/dev1<br /></pre><br />這樣storage也設定完成了，<br />那麼該怎麼知道有設定成功？<br />可以透過mogadm check指令去看，<br />如果是成功的話，應該會看到下面的畫面，<br /><pre class="brush: bash">root@ip-10-0-0-172:~# mogadm check<br />Checking trackers...<br />  10.0.0.172:7001 ... OK<br /><br />Checking hosts...<br />  [ 1] store1 ... OK<br /><br />Checking devices...<br />  host device         size(G)    used(G)    free(G)   use%   ob state   I/O%<br />  ---- ------------ ---------- ---------- ---------- ------ ---------- -----<br />  [ 1] dev1             7.324      1.480      5.844  20.21%  writeable   N/A<br />  ---- ------------ ---------- ---------- ---------- ------<br />             total:     7.324      1.480      5.844  20.21%<br /></pre><br /><br /><br /><span style="color: #e06666; font-size: 18px;">4. Test using command line</span><br /><br />測試之前，請先建立一個tmp file（hello.txt）<br />上傳檔案，<br /><pre class="brush: bash">mogupload  --file="./hello.txt" --domain=ken-storage --key="first-file"<br /></pre>下載檔案<br /><pre class="brush: bash">mogfetch --key="first-file" --file="./output-file" --domain=ken-storage<br /></pre>刪除檔案<br /><pre class="brush: bash">mogdelete --key="first-file"  --domain=ken-storage<br /></pre><br /><br /><span style="color: #e06666; font-size: 18px;">5. Advance: Replication </span><br /><br />完成上面的基本操作以後，<br />並沒有發揮mogilefs replicate的功能，<br />那要做到replication也很簡單，<br />記得上面我們有add domain嗎？<br />domain其實有點難解釋，可以把它想像成像是AWS S3的bucket，<br />而這bucket下有許多policy，<br />所以我們現在就要替這這bucket(domain)加replicate的policy，<br /><pre class="brush: bash">mogadm class add ken-storage txt --mindevcount=2<br /></pre>這指令的意思是，當檔案的class是txt時，請replicate 2份！<br /><br />完成replication設定以後，<br />因為前面的設定都只有一個device，<br />只有一個deivce情況下，mogilefsd是不會進行replication的，<br />所以我們得再增加一個device，<br />建議你不要在同一檯機器上多增加一個device，畢竟沒有太大意義，<br />你在同一檯機器上做replication....?<br />如果這檯機器掛了，檔案就通通不見了，<br />所以會建議你在第二檯機器上增加一個device，<br />第二檯機器上就單純是storage node的角色了，<br />所以只需要做下面設定，記得把ip換成第二檯的ip！（只要改10.0.0.199的部分）<br /><pre class="brush: bash">echo "trackers = 10.0.0.172:7001" > ~/.mogilefs.conf<br />mogadm --trackers=10.0.0.172:7001 host add store2 --ip=10.0.0.199 --status=alive<br />mogadm --trackers=10.0.0.172:7001 device add store2 2 --status=alive<br />mkdir -p /var/mogdata/dev2<br />chown mogstored /var/mogdata/dev2<br /></pre><br /><span style="color: #e06666; font-size: 18px;">6. Test Replication</span><br /><br />其實跟第四步驟是一樣的，只是多一個參數--class，<br />這class就和上一步驟所填寫的一樣即可．這樣hello.txt就會被複製到另外一檯機器上去！<br /><pre class="brush: bash">mogupload  --file="./hello.txt" --domain=ken-storage --key="first-file" --class=txt<br /></pre><br />如果replication失敗，那麼在db裡面的table file_to_replication將會有那筆資料，<br />你也可以透過/var/log/syslog看是什麼error message，<br />我自己使用的mogilefs版本，就有遇到一個<a href="http://www.php-oa.com/2013/11/01/mogilefs-job-replicate-died.html">syscal module的版本問題</a>，<br />透過<a href="http://www.php-oa.com/2013/11/01/mogilefs-job-replicate-died.html">連結</a>的中的方法去解決的！<br /><br /><br /><span style="color: #e06666; font-size: 18px;">7. Advance: Integrate it with application </span><br /><br />當然有了mogilefs以後，不可能都透過command line去操作呀，<br />如果我想要整合在我的application裡怎麼辦？<br />其實也很簡單，看你用什麼language，至少我用的language(java, python)都有相關的lib可以使用，<br />這裡使用pyhton來作為說明，<br />用<a href="https://github.com/AloneRoad/pymogile">pymogile</a>來作為操作mogile的lib，<br />安裝pymogile，<br /><pre class="brush: bash">git clone https://github.com/AloneRoad/pymogile.git<br />cd pymogile/<br />python setup.py install<br /></pre><br />下面是一個簡單的example用pymogile操作mogilefs，<br /><pre class="brush: python">from pymogile import Client, MogileFSError<br /><br />datastore = Client(domain='ken-storage', trackers=['10.0.0.172:7001'])<br />key_id='replicate'<br /><br />def upload_file():<br />    fp = datastore.new_file(key_id)<br />    fp.write('test')<br />    fp.close()<br /><br />def get_path():<br />    print datastore.get_paths(key_id)<br /><br />def get_data():<br />    print datastore.get_file_data(key_id)<br /><br />upload_file()<br />get_path()<br />get_data()<br /></pre><br /><br /><br /><br /><br /><br /></div><br /><br /><br />
+      </div>
+      <footer>
+        <p><a class="myButton" href="/2014/11/24/mogilefs-distributed-filesystem">read more &raquo;</a></p>
+        <div>
+          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- ken on github -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3783438370424072"
+     data-ad-slot="1516206098"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+        </div>
+      </footer>
+      <hr>
+    
       <h1><a style="color: #F22430" href="/2014/10/23/create-local-package-repository-on">Create local package repository on Ubuntu</a></h1>
       <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
       <p class="author">
@@ -348,41 +378,13 @@
       </footer>
       <hr>
     
-      <h1><a style="color: #F22430" href="/2014/10/13/android-backup-service-api-backup">Android Backup service API  (backup internal database)</a></h1>
-      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
-      <p class="author">
-      <div class="date">
-        <span>13 October 2014</span>
-      </div>
-      </p>
-      <div class="content" style="line-height: 28px;">
-        <div style="font-size: 15px; line-height: 22px;">這篇要講Android自己的<a href="http://developer.android.com/training/cloudsync/backupapi.html">backup service</a>，<br />其實使用起來蠻簡單的，<br />主要分成下面4個步驟，<br /><br /><span style="color: #e06666; font-size: 18px;">1. Register for Android Backup Service</span>  <br /><br />首先要先去註冊一個API Key，先到這個<a href="https://developer.android.com/google/backup/signup.html?csw=1">網站</a>，<br />進去以後輸入你的package name，接著就會給你一組API key．<br />這樣就註冊完成．<br /><br /><span style="color: #e06666; font-size: 18px;">2. Configuration</span>  <br /><br />完成上面的註冊以後，接著要對你的project做configuration，<br />先開啟你的AndroidManifest.xml，<br />先在application element加上一個android:backupAgent這個attribute，<br />這個attribute的名字，就是待會你新增的class名稱，<br /><pre class="brush: java">&lt;application android:label=&quot;MyApp&quot;<br />             android:backupAgent=&quot;ExpenseBackupAgent&quot;&gt;<br /></pre><br />接著在application之中，加入下段的meta data，<br />記得把xxxxxxxxxx換成你剛剛註冊的API Key，<br /><pre class="brush: java">&lt;meta-data android:name=&quot;com.google.android.backup.api_key&quot;<br />android:value=&quot;xxxxxxxxxxxxxxxxxxx&quot; /&gt;<br /></pre><br /><span style="color: #e06666; font-size: 18px;">3. Backup internal database</span>  <br /><br />接著新增一個Class，這個Class要繼承BackupAgentHelper，<br />記得這Class名稱要跟你manifest.xml中的一樣！<br />這裡要題外話一下，其實你也可以繼承BackupAgent，<br />當你如果需要做到更複雜的backup時，<br />例如你不想backup整份file，你只想backup某個"部分"的data，<br />這時候你只能透過BackupAgent去做到，<br />而BackupAgentHelper其實也只是BackupAgent的一個wrapper，<br />讓你更輕易的backup和restore罷了．<br />回到主題，先新增一個class繼承BackupAgentHelper，內容如下，<br />在onCreate裡面用到了FileBackupHelper，<br />最原始的FileBackupHelper是真的用來backup某個file，<br />但因為我們這裡要backup db，<br />所以我們要override掉getFilesDir，<br />在getFilesDir中去拿db的路徑，<br />然後透過FileBackupHelper去做backup！<br />只要透過下面的code就可以幫你自動backup和restore了！<br /><br /><pre class="brush: java">public class ExpenseBackupAgent extends BackupAgentHelper {<br />    private static final String DB_NAME = "expense"; // db名稱<br />    private static final String TAG = ExpenseBackupAgent.class<br />            .getCanonicalName();<br /><br />    @Override<br />    public void onCreate() {<br />        Log.e(TAG, "backu db");<br />        FileBackupHelper dbs = new FileBackupHelper(this, DB_NAME);<br />        addHelper("dbs", dbs);<br />    }<br /><br />    @Override<br />    public File getFilesDir() {<br />        final File f = getDatabasePath(DB_NAME);<br />        return f.getParentFile();<br />    }<br />}<br /><br /></pre><br />雖然說backup和restore都是自動的，<br />那麼要怎麼主動的去request backup？<br />那就要用BackupManager了，<br />透過dataChanged，會去幫你queue這個backup的job，<br />為什麼是說queue呢？因為backup不會馬上執行的！<br />都是批次的執行！<br /><pre class="brush: java">BackupManager bm = new BackupManager(this);<br />bm.dataChanged();<br /></pre><br /><span style="color: #e06666; font-size: 18px;">4. Test</span>  <br /><br />上面說到了Backup都是批次執行，不是即時的，那我該怎測試呢？<br />要透過adb了，<br /><pre class="brush: bash">adb shell bmgr backup packagename  # 等於dataChanged<br />adb shell bmgr run                 # 立即去trigger backup job<br />adb uninstall packagename          # 先刪掉app<br /></pre>最後再安裝一次你的app，<br />打開以後應該會發現你的資料都還在！<br /><br /><br /><br /></div><br /><br /><br /><br /><br />
-      </div>
-      <footer>
-        <p><a class="myButton" href="/2014/10/13/android-backup-service-api-backup">read more &raquo;</a></p>
-        <div>
-          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<!-- ken on github -->
-<ins class="adsbygoogle"
-     style="display:block"
-     data-ad-client="ca-pub-3783438370424072"
-     data-ad-slot="1516206098"
-     data-ad-format="auto"></ins>
-<script>
-(adsbygoogle = window.adsbygoogle || []).push({});
-</script>
-
-        </div>
-      </footer>
-      <hr>
-    
 
     <!-- Pagination links -->
     <div class="pagination">
       
         <a href="/blog/page5" class="previous">Previous</a>
       
-      <span class="page_number ">Page: 6 of 56</span>
+      <span class="page_number ">Page: 6 of 57</span>
       
         <a href="/blog/page7" class="next">Next</a>
       
