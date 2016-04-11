@@ -543,7 +543,7 @@ hello-node   10.123.244.242   130.211.247.198   8080/TCP   3d
 假設你的application突然需要更多的capacity，你可以簡單地叫<code>deployment</code>去建立新的replica:</p>
 <div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>kubectl scale deployment hello-node --replicas<span class="o">=</span>4
 </code></pre></div>
-<p>現在你的application就有4個replicas，每一個獨立地在cluster中運作，且load balancer去serve traffice。</p>
+<p>現在你的application就有4個replicas，每一個獨立地在cluster中運作，且load balancer去serve traffic。</p>
 <div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>kubectl get deployments
 NAME         DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
 hello-node   <span class="m">4</span>         <span class="m">4</span>         <span class="m">4</span>            <span class="m">4</span>           3d

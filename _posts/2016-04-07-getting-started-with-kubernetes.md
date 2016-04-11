@@ -246,7 +246,7 @@ Kubernetes其中最強大的一點就是可以很輕鬆的scale你的application
 $ kubectl scale deployment hello-node --replicas=4
 ```
 
-現在你的application就有4個replicas，每一個獨立地在cluster中運作，且load balancer去serve traffice。
+現在你的application就有4個replicas，每一個獨立地在cluster中運作，且load balancer去serve traffic。
 
 ```bash
 $ kubectl get deployments

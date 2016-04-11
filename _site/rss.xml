@@ -5,8 +5,8 @@
         <description>Ken Yang筆記 - Ken Yang</description>
         <link>http://blog.kenyang.net</link>
         <atom:link href="http://blog.kenyang.net/rss.xml" rel="self" type="application/rss+xml" />
-        <lastBuildDate>Mon, 11 Apr 2016 22:19:38 +0800</lastBuildDate>
-        <pubDate>Mon, 11 Apr 2016 22:19:38 +0800</pubDate>
+        <lastBuildDate>Mon, 11 Apr 2016 22:41:37 +0800</lastBuildDate>
+        <pubDate>Mon, 11 Apr 2016 22:41:37 +0800</pubDate>
         <ttl>60</ttl>
 
 
@@ -214,7 +214,7 @@ hello-node   10.123.244.242   130.211.247.198   8080/TCP   3d
 假設你的application突然需要更多的capacity，你可以簡單地叫&lt;code&gt;deployment&lt;/code&gt;去建立新的replica:&lt;/p&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;kubectl scale deployment hello-node --replicas&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;4
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;現在你的application就有4個replicas，每一個獨立地在cluster中運作，且load balancer去serve traffice。&lt;/p&gt;
+&lt;p&gt;現在你的application就有4個replicas，每一個獨立地在cluster中運作，且load balancer去serve traffic。&lt;/p&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;kubectl get deployments
 NAME         DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
 hello-node   &lt;span class=&quot;m&quot;&gt;4&lt;/span&gt;         &lt;span class=&quot;m&quot;&gt;4&lt;/span&gt;         &lt;span class=&quot;m&quot;&gt;4&lt;/span&gt;            &lt;span class=&quot;m&quot;&gt;4&lt;/span&gt;           3d
