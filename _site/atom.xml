@@ -4,13 +4,100 @@
  <title>Ken Yang筆記</title>
  <link href="http://blog.kenyang.net/atom.xml" rel="self"/>
  <link href="http://blog.kenyang.net"/>
- <updated>2016-04-11T22:41:37+08:00</updated>
+ <updated>2016-04-16T18:34:11+08:00</updated>
  <id>http://blog.kenyang.net</id>
  <author>
    <name>Ken Yang</name>
    <email>ken@kenyang.net</email>
  </author>
 
+ 
+ <entry>
+   <title>Setting up an HTTPS server with Node.js</title>
+   <link href="http://blog.kenyang.net/2016/04/16/setting-up-an-https-server-with-nodejs"/>
+   <updated>2016-04-16T00:00:00+08:00</updated>
+   <id>http://blog.kenyang.net/2016/04/16/setting-up-an-https-server-with-nodejs</id>
+   <content type="html">&lt;p&gt;&lt;font size=3&gt;&lt;/p&gt;
+
+&lt;p&gt;這篇要講怎麼用Node.js建立一個HTTPS的server，如果你的certificate不是self-signed的，&lt;/br&gt;
+那設定HTTPS並不難，產生CSR給CA provider，然後就會有certificate，把它放進去就好，&lt;/br&gt;
+但如果是self-signed，那過程就有點麻煩，每次要弄的時候，都還是會有點忘記，所以乾脆把過程記錄下來好了。&lt;/br&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;/br&gt;&lt;/p&gt;
+
+&lt;hr&gt;
+
+&lt;h3 id=&quot;1-creating-a-private-key-and-csr&quot;&gt;1. Creating a private key and CSR&lt;/h3&gt;
+
+&lt;hr&gt;
+
+&lt;p&gt;在create certificate之前，必須要先有&lt;code&gt;private key&lt;/code&gt;以及&lt;code&gt;CSR&lt;/code&gt; (certificate signing request)，&lt;/br&gt;
+所以我們要先generate出private key以及CSR。&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;c&quot;&gt;# generate private key&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;openssl genrsa -des3 -passout pass:kenyang -out server.pass.key 2048
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;openssl rsa -passin pass:kenyang -in server.pass.key -out server.key
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;rm server.pass.key
+
+&lt;span class=&quot;c&quot;&gt;# generate csr&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;openssl req -new -key server.key -out server.csr
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;/br&gt;&lt;/p&gt;
+
+&lt;!--more--&gt;
+
+&lt;hr&gt;
+
+&lt;h3 id=&quot;2-creating-a-certificate&quot;&gt;2. Creating a certificate&lt;/h3&gt;
+
+&lt;hr&gt;
+
+&lt;p&gt;有了key和CSR以後，我們就可以issue一張certificate出來，&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;openssl x509 -req -days &lt;span class=&quot;m&quot;&gt;365&lt;/span&gt; -in server.csr -signkey server.key -out server.crt
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;/br&gt;&lt;/p&gt;
+
+&lt;hr&gt;
+
+&lt;h3 id=&quot;3-configuring-ssl-in-node-js&quot;&gt;3. Configuring SSL in Node.js&lt;/h3&gt;
+
+&lt;hr&gt;
+
+&lt;p&gt;有了certificate以後，就可以把它放在Node.js中使用，&lt;/br&gt;
+這裡我搭配的&lt;code&gt;express&lt;/code&gt;+&lt;code&gt;https&lt;/code&gt;這二個module，https這個module，default就有了，&lt;/br&gt;
+所以我們只需要安裝&lt;code&gt;express&lt;/code&gt;就好。&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;npm install --save express
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;/br&gt;
+接著就把下面的內容貼入到&lt;code&gt;index.js&lt;/code&gt;當中，&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;kr&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;https&lt;/span&gt;     &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;require&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;quot;https&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;kr&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;express&lt;/span&gt;   &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;require&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;quot;express&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;kr&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;fs&lt;/span&gt;        &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;require&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;quot;fs&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+&lt;span class=&quot;kr&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;SERVER_CONFIG&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;nx&quot;&gt;key&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt;  &lt;span class=&quot;nx&quot;&gt;fs&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;readFileSync&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;server.key&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;
+    &lt;span class=&quot;nx&quot;&gt;cert&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;fs&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;readFileSync&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;server.crt&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;
+
+&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;app&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;express&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
+&lt;span class=&quot;nx&quot;&gt;app&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;get&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;/&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;req&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;resp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;nx&quot;&gt;resp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;status&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;200&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;json&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;({&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;quot;STATUS&amp;quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;quot;OK&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;
+
+&lt;span class=&quot;nx&quot;&gt;https&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;createServer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;SERVER_CONFIG&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;app&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+     &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;listen&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;443&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;quot;HTTPS sever started&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;/br&gt;
+靠&lt;code&gt;fs&lt;/code&gt;去讀取certificate，然後再餵給&lt;code&gt;createServer&lt;/code&gt;，這樣就完成了https server。&lt;/br&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;/br&gt;
+&lt;/br&gt;
+&lt;/br&gt;
+&lt;/br&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;/font&gt;&lt;/p&gt;
+</content>
+ </entry>
  
  <entry>
    <title>Getting started with Kubernetes</title>
@@ -2335,14 +2422,6 @@ mv完成以後，接著打開&lt;code&gt;index.html&lt;/code&gt;，&lt;br&gt;
    <updated>2014-10-13T11:22:00+08:00</updated>
    <id>http://blog.kenyang.net/2014/10/13/android-backup-service-api-backup</id>
    <content type="html">&lt;div style=&quot;font-size: 15px; line-height: 22px;&quot;&gt;這篇要講Android自己的&lt;a href=&quot;http://developer.android.com/training/cloudsync/backupapi.html&quot;&gt;backup service&lt;/a&gt;，&lt;br /&gt;其實使用起來蠻簡單的，&lt;br /&gt;主要分成下面4個步驟，&lt;br /&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;1. Register for Android Backup Service&lt;/span&gt;  &lt;br /&gt;&lt;br /&gt;首先要先去註冊一個API Key，先到這個&lt;a href=&quot;https://developer.android.com/google/backup/signup.html?csw=1&quot;&gt;網站&lt;/a&gt;，&lt;br /&gt;進去以後輸入你的package name，接著就會給你一組API key．&lt;br /&gt;這樣就註冊完成．&lt;br /&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;2. Configuration&lt;/span&gt;  &lt;br /&gt;&lt;br /&gt;完成上面的註冊以後，接著要對你的project做configuration，&lt;br /&gt;先開啟你的AndroidManifest.xml，&lt;br /&gt;先在application element加上一個android:backupAgent這個attribute，&lt;br /&gt;這個attribute的名字，就是待會你新增的class名稱，&lt;br /&gt;&lt;pre class=&quot;brush: java&quot;&gt;&amp;lt;application android:label=&amp;quot;MyApp&amp;quot;&lt;br /&gt;             android:backupAgent=&amp;quot;ExpenseBackupAgent&amp;quot;&amp;gt;&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;接著在application之中，加入下段的meta data，&lt;br /&gt;記得把xxxxxxxxxx換成你剛剛註冊的API Key，&lt;br /&gt;&lt;pre class=&quot;brush: java&quot;&gt;&amp;lt;meta-data android:name=&amp;quot;com.google.android.backup.api_key&amp;quot;&lt;br /&gt;android:value=&amp;quot;xxxxxxxxxxxxxxxxxxx&amp;quot; /&amp;gt;&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;3. Backup internal database&lt;/span&gt;  &lt;br /&gt;&lt;br /&gt;接著新增一個Class，這個Class要繼承BackupAgentHelper，&lt;br /&gt;記得這Class名稱要跟你manifest.xml中的一樣！&lt;br /&gt;這裡要題外話一下，其實你也可以繼承BackupAgent，&lt;br /&gt;當你如果需要做到更複雜的backup時，&lt;br /&gt;例如你不想backup整份file，你只想backup某個&quot;部分&quot;的data，&lt;br /&gt;這時候你只能透過BackupAgent去做到，&lt;br /&gt;而BackupAgentHelper其實也只是BackupAgent的一個wrapper，&lt;br /&gt;讓你更輕易的backup和restore罷了．&lt;br /&gt;回到主題，先新增一個class繼承BackupAgentHelper，內容如下，&lt;br /&gt;在onCreate裡面用到了FileBackupHelper，&lt;br /&gt;最原始的FileBackupHelper是真的用來backup某個file，&lt;br /&gt;但因為我們這裡要backup db，&lt;br /&gt;所以我們要override掉getFilesDir，&lt;br /&gt;在getFilesDir中去拿db的路徑，&lt;br /&gt;然後透過FileBackupHelper去做backup！&lt;br /&gt;只要透過下面的code就可以幫你自動backup和restore了！&lt;br /&gt;&lt;br /&gt;&lt;pre class=&quot;brush: java&quot;&gt;public class ExpenseBackupAgent extends BackupAgentHelper {&lt;br /&gt;    private static final String DB_NAME = &quot;expense&quot;; // db名稱&lt;br /&gt;    private static final String TAG = ExpenseBackupAgent.class&lt;br /&gt;            .getCanonicalName();&lt;br /&gt;&lt;br /&gt;    @Override&lt;br /&gt;    public void onCreate() {&lt;br /&gt;        Log.e(TAG, &quot;backu db&quot;);&lt;br /&gt;        FileBackupHelper dbs = new FileBackupHelper(this, DB_NAME);&lt;br /&gt;        addHelper(&quot;dbs&quot;, dbs);&lt;br /&gt;    }&lt;br /&gt;&lt;br /&gt;    @Override&lt;br /&gt;    public File getFilesDir() {&lt;br /&gt;        final File f = getDatabasePath(DB_NAME);&lt;br /&gt;        return f.getParentFile();&lt;br /&gt;    }&lt;br /&gt;}&lt;br /&gt;&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;雖然說backup和restore都是自動的，&lt;br /&gt;那麼要怎麼主動的去request backup？&lt;br /&gt;那就要用BackupManager了，&lt;br /&gt;透過dataChanged，會去幫你queue這個backup的job，&lt;br /&gt;為什麼是說queue呢？因為backup不會馬上執行的！&lt;br /&gt;都是批次的執行！&lt;br /&gt;&lt;pre class=&quot;brush: java&quot;&gt;BackupManager bm = new BackupManager(this);&lt;br /&gt;bm.dataChanged();&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;4. Test&lt;/span&gt;  &lt;br /&gt;&lt;br /&gt;上面說到了Backup都是批次執行，不是即時的，那我該怎測試呢？&lt;br /&gt;要透過adb了，&lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;adb shell bmgr backup packagename  # 等於dataChanged&lt;br /&gt;adb shell bmgr run                 # 立即去trigger backup job&lt;br /&gt;adb uninstall packagename          # 先刪掉app&lt;br /&gt;&lt;/pre&gt;最後再安裝一次你的app，&lt;br /&gt;打開以後應該會發現你的資料都還在！&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;/div&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;</content>
- </entry>
- 
- <entry>
-   <title>Set up javadocs and source for 3rd-party libs</title>
-   <link href="http://blog.kenyang.net/2014/10/01/android-set-up-javadocs-and-source-for"/>
-   <updated>2014-10-01T18:17:00+08:00</updated>
-   <id>http://blog.kenyang.net/2014/10/01/android-set-up-javadocs-and-source-for</id>
-   <content type="html">&lt;div style=&quot;font-size: 15px; line-height: 22px;&quot;&gt;&lt;br /&gt;正常的一個3rd-party lib應該會有3個jar，以greenDao為例，&lt;br /&gt;&amp;nbsp; &amp;nbsp; 1. greendao-1.3.7.jar&lt;br /&gt;&amp;nbsp; &amp;nbsp; 2. greendao-1.3.7-javadoc.jar&lt;br /&gt;&amp;nbsp; &amp;nbsp; 3. greendao-1.3.7-sources.jar&lt;br /&gt;&lt;br /&gt;一般而言，其實只要在libs資料夾放第一個，我們就可以正常使用greenDao了，&lt;br /&gt;但是你就會看不到任何的document，大概會看到下面的圖示！&lt;br /&gt;&lt;div class=&quot;separator&quot; style=&quot;clear: both; text-align: center;&quot;&gt;&lt;a href=&quot;http://2.bp.blogspot.com/-fvtNRCyhOpc/VCvUN2hg6UI/AAAAAAAAFS0/H5XFWTUx3D0/s1600/Screen%2BShot%2B2014-10-01%2Bat%2B6.15.09%2BPM.png&quot; imageanchor=&quot;1&quot; style=&quot;margin-left: 1em; margin-right: 1em;&quot;&gt;&lt;img border=&quot;0&quot; src=&quot;http://2.bp.blogspot.com/-fvtNRCyhOpc/VCvUN2hg6UI/AAAAAAAAFS0/H5XFWTUx3D0/s1600/Screen%2BShot%2B2014-10-01%2Bat%2B6.15.09%2BPM.png&quot; height=&quot;112&quot; width=&quot;640&quot; /&gt;&lt;/a&gt;&lt;/div&gt;但就算你把這3個jar通通放進去libs資料夾，你也看不到任何的document.&lt;br /&gt;原因是因為你要有一個greendao-1.3.7.jar.properties檔案去config路徑.&lt;br /&gt;&lt;br /&gt;我的習慣會在libs資料夾底下，在建立兩個資料夾，分別為&lt;br /&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp;1. libs/docs&lt;br /&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp;2. libs/src&lt;br /&gt;然後把對應的jar放在裡面，&lt;br /&gt;所以我的greendao-1.3.7.jar.properties就會跟下面一樣，&lt;br /&gt;&lt;pre class=&quot;brush: java&quot;&gt;src=src/greendao-1.3.7-sources.jar                                                                             &lt;br /&gt;doc=docs/greendao-1.3.7-javadoc.jar&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;最後再把project close，然後再open起來，&lt;br /&gt;應該就會看到document了！&lt;br /&gt;&lt;br /&gt;&lt;/div&gt;</content>
  </entry>
  
  

@@ -5,8 +5,8 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-    <title>Handle long-running operations in Node.js</title>
-    
+    <title>Setting up an HTTPS server with Node.js</title>
+    <meta name="description" content="">
     <meta name="author" content="Ken Yang">
 
     <!-- Enable responsive viewport -->
@@ -308,7 +308,7 @@
 
 
 <div class="page-header">
-  <h1>Handle long-running operations in Node.js </h1>
+  <h1>Setting up an HTTPS server with Node.js </h1>
 </div>
 
 <div class="row post-full">
@@ -338,10 +338,89 @@
 
   <div class="col-xs-12">
     <div class="date">
-      <span>27 January 2014</span>
+      <span>16 April 2016</span>
     </div>
     <div class="content" style="line-height: 28px;">
-      <div style="font-size: 15px; line-height: 22px;">由於Node.js是Single thread的關係，<br />所以並不適合用來處理<span style="color: red;">耗費CPU</span>或者需要<span style="color: red;">長時間</span>處理的操作，<br />想要處理cpu-intensive或者long-running computation，<br />還是要靠一些job server來解決會比較好（像是<a href="http://gearman.org/" target="_blank">gearman</a>），<br />那如果你不想靠其他的job server來做，<br />硬要用node.js本身來處理cpu-intensive或者long-running computation，<br />就要靠worker來處理！<br />這篇就要講怎麼使用worker．<br />這裡我們要用的workder module是<a href="https://github.com/audreyt/node-webworker-threads">webworker-threads</a>．<br /><br /><span style="color: #e06666; font-size: 18px;">1. install</span><br /><pre class="brush: java">npm install webworker-threads --save<br /></pre><br /><br /><span style="color: #e06666; font-size: 18px;">2. implement a task.js</span><br /><br />首先，我們要先建立一個javascript，<br />而這隻javascript就是用來處理需要長時間的操作，<br />這裡我們就以fibonacci來作為長時間處理的example，<br /><pre class="brush: js">// fibonacci function<br />function fibo (n){                                                                                                               <br />    return n &gt; 1 ? fibo(n - 1) + fibo(n - 2) : 1;                <br />}                                                                <br />                                                                 <br />onmessage = function(event) {                                    <br />    postMessage('Result is : ' + fibo(event.data));                  <br />    self.close();                                                <br />};<br /></pre><br />這隻javascript有兩個function，<br />一個是fibo function，<br />另外一個就是onmessage，onmessage等等我們主程式會call到它，<br />然後onmessage裡面就會去call fibo function．<br /><br /><br /><span style="color: #e06666; font-size: 18px;">3. integrate with your main.js</span><br /><br />在這步就在你的main.js中使用<a href="https://github.com/audreyt/node-webworker-threads">webworker-threads</a>，以及呼叫我們剛剛寫的那隻task.js，<br /><pre class="brush: js">var express = require("express");<br />var app = express();<br />app.use(express.logger());<br /><br />// import the module <br />var worker_thread = require('webworker-threads');<br />var Worker = worker_thread.Worker;<br /><br />app.use(express.static(path.join(__dirname, 'view')));<br /><br />app.get('/fibo', function(req, resp) {<br /><br />    var worker = new Worker('task.js');<br /><br />    worker.onmessage = function(event) {<br />        console.log("The task said : " + event.data);<br />    };                                                                                                                            <br />    worker.postMessage(40);<br /><br />    resp.end('hello world ');<br />});<br /><br />var port = process.env.PORT || 5000;<br />app.listen(port, function() {<br />    console.log("Listening on " + port);<br />});<br /></pre><br />這個example，一樣有使用到express.js，<br />不知道怎麼使用的人可以去看<a href="http://blog.kenyang.net/2014/01/deploying-nodejs-application-to-heroku.html" target="_blank">這一篇：Deploying a Node.js application to Heroku</a><br />webworker-threads的使用方式很簡單，<br />只要先import這個module，<br />然後再呼叫Worker這個instance，<br />接著就可以去new一個worker出來，<br />然後就可以指定要worker做什麼事情，<br />這裡我們指定他去做task.js裡面的事情（new worker('task.js')）．<br /><br /><span style="color: #e06666; font-size: 18px;">4. test</span><br /><br />那要怎麼測試呢？<br />首先先把我們的main.js叫起來，<br /><pre class="brush: js">node main.js<br /></pre>成功叫起來以後，應該會在你的terminal中看到下面的字樣，<br /><br /><div class="separator" style="clear: both; text-align: center;"><a href="http://4.bp.blogspot.com/-giyBWmviB8I/UuU-smEDo0I/AAAAAAAAFIA/iSg3TL2-s_Q/s1600/Screen+Shot+2014-01-27+at+12.58.24+AM.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="http://4.bp.blogspot.com/-giyBWmviB8I/UuU-smEDo0I/AAAAAAAAFIA/iSg3TL2-s_Q/s320/Screen+Shot+2014-01-27+at+12.58.24+AM.png" /></a></div><br />接著就打開我們的browser，<br />然後輸入“http://0.0.0.0:5000/fibo”，<br />這時候browser應該很快的就show出hello world的字樣，<br />然後我們馬上回到terminal看，<br />你應該只會先看到request的log（如下圖），<br /><div class="separator" style="clear: both; text-align: center;"><a href="http://2.bp.blogspot.com/-s6pGcxYS6lI/UuVAEOs3t4I/AAAAAAAAFIQ/AZ083AEaBL8/s1600/Screen+Shot+2014-01-27+at+1.03.09+AM.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="http://2.bp.blogspot.com/-s6pGcxYS6lI/UuVAEOs3t4I/AAAAAAAAFIQ/AZ083AEaBL8/s1600/Screen+Shot+2014-01-27+at+1.03.09+AM.png" /></a></div><br /><br />接著過了幾秒鐘以後才會看到fibo的計算結果（如下圖），<br /><br /><div class="separator" style="clear: both; text-align: center;"><a href="http://2.bp.blogspot.com/-lhxjfM4sVvg/UuVAEK-Eg9I/AAAAAAAAFIM/pSvMrKChzJM/s1600/Screen+Shot+2014-01-27+at+1.04.35+AM.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="http://2.bp.blogspot.com/-lhxjfM4sVvg/UuVAEK-Eg9I/AAAAAAAAFIM/pSvMrKChzJM/s1600/Screen+Shot+2014-01-27+at+1.04.35+AM.png" height="41" width="400" /></a></div><br />如果這裡我們沒有使用worker的話，而是直接call hibo，<br />你會發現很久才可以在browser中看到hello world的字樣！<br />且甚至你可以試試看開兩個browser，然後都去打“http://0.0.0.0:5000/fibo”，<br />你會發現第二個打的request會被hang住很久，因為是single thread的關係，<br />所以thread都在處理第一個request的fibo，處理完才會去處理第二個request！<br />因此想要在node.js中處理cpu-intensive或者long-running computation，<br />就使用worker的概念吧！<br /><br /><br /><br /></div>
+      <p><font size=3></p>
+
+<p>這篇要講怎麼用Node.js建立一個HTTPS的server，如果你的certificate不是self-signed的，</br>
+那設定HTTPS並不難，產生CSR給CA provider，然後就會有certificate，把它放進去就好，</br>
+但如果是self-signed，那過程就有點麻煩，每次要弄的時候，都還是會有點忘記，所以乾脆把過程記錄下來好了。</br></p>
+
+<p></br></p>
+
+<hr>
+
+<h3 id="1-creating-a-private-key-and-csr">1. Creating a private key and CSR</h3>
+
+<hr>
+
+<p>在create certificate之前，必須要先有<code>private key</code>以及<code>CSR</code> (certificate signing request)，</br>
+所以我們要先generate出private key以及CSR。</p>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="c"># generate private key</span>
+<span class="nv">$ </span>openssl genrsa -des3 -passout pass:kenyang -out server.pass.key 2048
+<span class="nv">$ </span>openssl rsa -passin pass:kenyang -in server.pass.key -out server.key
+<span class="nv">$ </span>rm server.pass.key
+
+<span class="c"># generate csr</span>
+<span class="nv">$ </span>openssl req -new -key server.key -out server.csr
+</code></pre></div>
+<p></br></p>
+
+<!--more-->
+
+<hr>
+
+<h3 id="2-creating-a-certificate">2. Creating a certificate</h3>
+
+<hr>
+
+<p>有了key和CSR以後，我們就可以issue一張certificate出來，</p>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>openssl x509 -req -days <span class="m">365</span> -in server.csr -signkey server.key -out server.crt
+</code></pre></div>
+<p></br></p>
+
+<hr>
+
+<h3 id="3-configuring-ssl-in-node-js">3. Configuring SSL in Node.js</h3>
+
+<hr>
+
+<p>有了certificate以後，就可以把它放在Node.js中使用，</br>
+這裡我搭配的<code>express</code>+<code>https</code>這二個module，https這個module，default就有了，</br>
+所以我們只需要安裝<code>express</code>就好。</p>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>npm install --save express
+</code></pre></div>
+<p></br>
+接著就把下面的內容貼入到<code>index.js</code>當中，</p>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kr">const</span> <span class="nx">https</span>     <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s2">&quot;https&quot;</span><span class="p">);</span>
+<span class="kr">const</span> <span class="nx">express</span>   <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s2">&quot;express&quot;</span><span class="p">);</span>
+<span class="kr">const</span> <span class="nx">fs</span>        <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s2">&quot;fs&quot;</span><span class="p">);</span>
+
+<span class="kr">const</span> <span class="nx">SERVER_CONFIG</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="nx">key</span><span class="o">:</span>  <span class="nx">fs</span><span class="p">.</span><span class="nx">readFileSync</span><span class="p">(</span><span class="s1">&#39;server.key&#39;</span><span class="p">),</span>
+    <span class="nx">cert</span><span class="o">:</span> <span class="nx">fs</span><span class="p">.</span><span class="nx">readFileSync</span><span class="p">(</span><span class="s1">&#39;server.crt&#39;</span><span class="p">)</span>
+<span class="p">};</span>
+
+<span class="kd">var</span> <span class="nx">app</span> <span class="o">=</span> <span class="nx">express</span><span class="p">();</span>
+<span class="nx">app</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">req</span><span class="p">,</span><span class="nx">resp</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">resp</span><span class="p">.</span><span class="nx">status</span><span class="p">(</span><span class="mi">200</span><span class="p">).</span><span class="nx">json</span><span class="p">({</span><span class="s2">&quot;STATUS&quot;</span><span class="o">:</span><span class="s2">&quot;OK&quot;</span><span class="p">});</span>
+<span class="p">});</span>
+
+<span class="nx">https</span><span class="p">.</span><span class="nx">createServer</span><span class="p">(</span><span class="nx">SERVER_CONFIG</span><span class="p">,</span> <span class="nx">app</span><span class="p">)</span>
+     <span class="p">.</span><span class="nx">listen</span><span class="p">(</span><span class="mi">443</span><span class="p">,</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span> <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;HTTPS sever started&quot;</span><span class="p">);</span> <span class="p">}</span>
+<span class="p">);</span>
+</code></pre></div>
+<p></br>
+靠<code>fs</code>去讀取certificate，然後再餵給<code>createServer</code>，這樣就完成了https server。</br></p>
+
+<p></br>
+</br>
+</br>
+</br></p>
+
+<p></font></p>
+
     </div>
 
     
@@ -355,19 +434,13 @@
 
   
      
-    	<li><a href="/tags.html#nodejs-ref">nodejs <span>5</span></a></li>
-     
-    	<li><a href="/tags.html#webworker-threads-ref">webworker-threads <span>1</span></a></li>
-     
     	<li><a href="/tags.html#node.js-ref">node.js <span>4</span></a></li>
      
-    	<li><a href="/tags.html#worker-ref">worker <span>1</span></a></li>
+    	<li><a href="/tags.html#ssl-ref">ssl <span>1</span></a></li>
      
-    	<li><a href="/tags.html#cpu-intensive-ref">cpu-intensive <span>1</span></a></li>
+    	<li><a href="/tags.html#csr-ref">csr <span>1</span></a></li>
      
-    	<li><a href="/tags.html#express-ref">express <span>3</span></a></li>
-     
-    	<li><a href="/tags.html#long-running-ref">long-running <span>1</span></a></li>
+    	<li><a href="/tags.html#nodejs-ref">nodejs <span>5</span></a></li>
     
   
 
@@ -391,11 +464,11 @@
     <hr>
     <ul class="pagination">
     
-      <li class="prev"><a href="/2014/01/22/heroku-getting-started-with-mongodb-and" title="[Heroku] Getting Started with MongoDB and Node.js">&laquo; Previous</a></li>
+      <li class="prev"><a href="/2016/04/07/getting-started-with-kubernetes" title="Getting started with Kubernetes">&laquo; Previous</a></li>
     
       <li><a href="/archive.html">Archive</a></li>
     
-      <li class="next"><a href="/2014/02/06/how-to-backup-and-restore-your-mongodb" title="How to Backup and Restore your MongoDB database?">Next &raquo;</a></li>
+      <li class="next disabled"><a>Next &rarr;</a>
     
     </ul>
     <hr>

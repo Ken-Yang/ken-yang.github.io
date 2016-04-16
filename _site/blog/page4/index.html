@@ -294,6 +294,80 @@
     </div>
     <!-- This loops through the paginated posts -->
     
+      <h1><a style="color: #F22430" href="/2015/11/27/how-to-extendreduce-lvm">How to resize a LVM partition?</a></h1>
+      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
+      <p class="author">
+      <div class="date">
+        <span>27 November 2015</span>
+      </div>
+      </p>
+      <div class="content" style="line-height: 28px;">
+        <p><font size=3></p>
+
+<p>這篇算是延續<a href="http://blog.kenyang.net/2015/11/27/do-not-allocate-all-the-lvm-space-with-preseed/">上一篇</a>的主題，假設VG裡面還有free space尚未用到，<br>
+那麼過一段時間以後，該怎麼把它拿出來用?<br>
+所以這篇主要會講到下面2個主題：</p>
+
+<ol>
+<li>Extend</li>
+<li>Shrink</li>
+</ol>
+
+<h3 id="1-extend">1. Extend</h3>
+
+<hr>
+
+<p>Extend會講二種方法，分別為，  </p>
+
+<ul>
+<li>1-1. Extend from <code>VG</code></li>
+<li>1-2. Extend from <code>new disk</code></li>
+</ul>
+
+<p></br></p>
+
+<h4 id="1-1-extend-from-pv">1-1. Extend from PV</h4>
+
+<hr>
+
+<p>第一種是延續<a href="http://blog.kenyang.net/2015/11/27/do-not-allocate-all-the-lvm-space-with-preseed/">上一篇</a>，<br>
+從既有的VG中，把Free PE加入到LV中，<br>
+以<a href="http://blog.kenyang.net/2015/11/27/do-not-allocate-all-the-lvm-space-with-preseed/">上一篇</a>來看，你的VG應該還會剩下60GB。<br>
+可以用下面的指令<code>vgs</code>去看VG中剩下多少free PE，<br>
+最後一欄的<code>VFree</code>就是指剩下的free PE，<br>
+以我的機器為範例，裡面還有829.99G，<br>
+以及我有5個LV。</p>
+<div class="highlight"><pre><code class="language-text" data-lang="text">$ vgs
+  VG        #PV #LV #SN Attr   VSize    VFree
+  ubuntu-vg   1   5   0 wz--n- 1019.76g 829.99g
+
+$ lvs
+  LV     VG        Attr   LSize   Origin Snap%  Move Log Copy%  Convert
+  db     ubuntu-vg -wi-ao  83.92g
+  log    ubuntu-vg -wi-ao  19.07g
+  root   ubuntu-vg -wi-ao  66.75g
+  swap_1 ubuntu-vg -wi-ao 976.00m
+  tmp    ubuntu-vg -wi-ao  19.07g
+</code></pre></div>
+      </div>
+      <footer>
+        <p><a class="myButton" href="/2015/11/27/how-to-extendreduce-lvm">read more &raquo;</a></p>
+        <div>
+          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- ken on github -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3783438370424072"
+     data-ad-slot="1516206098"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+        </div>
+      </footer>
+      <hr>
+    
       <h1><a style="color: #F22430" href="/2015/11/27/do-not-allocate-all-the-lvm-space-with-preseed">Do not allocate all the LVM space with preseed</a></h1>
       <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
       <p class="author">
@@ -414,34 +488,6 @@ sed -i <span class="s1">&#39;/to_be_free/d&#39;</span> /target/etc/fstab <span c
       </div>
       <footer>
         <p><a class="myButton" href="/2015/11/26/move-blogger-to-github">read more &raquo;</a></p>
-        <div>
-          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<!-- ken on github -->
-<ins class="adsbygoogle"
-     style="display:block"
-     data-ad-client="ca-pub-3783438370424072"
-     data-ad-slot="1516206098"
-     data-ad-format="auto"></ins>
-<script>
-(adsbygoogle = window.adsbygoogle || []).push({});
-</script>
-
-        </div>
-      </footer>
-      <hr>
-    
-      <h1><a style="color: #F22430" href="/2015/08/13/setup-linux-multipath-in-ubuntu">Setup Linux Multipath in Ubuntu</a></h1>
-      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
-      <p class="author">
-      <div class="date">
-        <span>13 August 2015</span>
-      </div>
-      </p>
-      <div class="content" style="line-height: 28px;">
-        <div style="font-size: 15px; line-height: 22px;"><br />這篇要講Linux Multipath，<br />為了使用Linux Multipath，所以用了multipath-tool這個package，<br />multipath-tool提供了二個功能，<br />&nbsp;&nbsp;&nbsp;1. input/output fail-over<br />&nbsp;&nbsp;&nbsp;2. load balancing for block device<br /><br /><br /><span style="color: #e06666; font-size: 18px;">1. Prerequisite</span><br /><br />開始之前先，準備下面所需要的環境，<br />1. 1台server上有2張網卡(eth0, eth1)<br />2. iSCSI target x1<br />理論上，server上的2張網卡應接在不同的swtich上，抑或在不同的網段上。<br />目的在於某一條線路斷時，才不會影響另外一條。<br />但為了測試可以先都放在同個網段上。<br /><br />假設，<br />eth0 IP為172.16.131.134<br />eth1 IP為172.16.131.135<br />iSCSI IP為172.16.131.138<br /><br />整體的網路架構可以參考此張圖，<br /><div class="separator" style="clear: both; text-align: center;"><a href="http://1.bp.blogspot.com/-ZfPX7UenJK4/Vcw-nyopwMI/AAAAAAAAFmo/_MV4SmjPRo8/s1600/Network%2BDiagram%2B-%2BPage%2B1%2B%25283%2529.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="400" src="http://1.bp.blogspot.com/-ZfPX7UenJK4/Vcw-nyopwMI/AAAAAAAAFmo/_MV4SmjPRo8/s400/Network%2BDiagram%2B-%2BPage%2B1%2B%25283%2529.png" width="263" /></a></div><span style="color: #e06666; font-size: 18px;">2. Installation</span><br /><br />接著安裝我們需要的package，<br /><pre class="brush: bash">apt-get install open-iscsi<br />apt-get install multipath-tools<br /></pre><br /><span style="color: #e06666; font-size: 18px;">3. multipath configuration</span><br /><br />接著來設定multipah，先create一個config file，（你也可以從/usr/share/doc/multipath-tools/examples/multipath.conf.synthetic這裏複製至/etc/multipah.conf底下）<br /><pre class="brush: bash">$ vim /etc/multipath.conf<br /></pre><br />內容如下，參數的說明可以看這（<a href="https://help.ubuntu.com/lts/serverguide/multipath-dm-multipath-config-file.html">點我</a>）<br /><pre class="brush: bash">defaults {<br />     user_friendly_names yes<br />}<br /><br />devices {<br />     device {<br />          polling_interval 5<br />          path_selector "round-robin 0"<br />          path_grouping_policy group_by_prio<br />          prio rdac<br />          path_checker rdac<br />          hardware_handler "1 rdac"<br />          failback immediate<br />          features "2 pg_init_retires 50"<br />          no_path_retry 30<br />          rr_min_io 100<br />     }<br />}<br /></pre><br /><span style="color: #e06666; font-size: 18px;">4. iSCSI configuration</span><br /><br />接著我們要設定iSCSI，讓我們在login某target時，<br />可以透過不同的NIC同時進行login，<br /><pre class="brush: bash">$ iscsiadm -m iface -I eth0 -o new<br />$ iscsiadm -m iface -I eth1 -o new<br />$ iscsiadm -m iface -I eth0 --op=update -n iface.net_ifacename -v eth0<br />$ iscsiadm -m iface -I eth1 --op=update -n iface.net_ifacename -v eth1<br /></pre><br />接著要把reverse path filtering關掉，<br />否則其中一張網卡登入target時的packet會被ignore，<br />所以要去編輯/etc/sysctl.conf，<br />加入下面兩行。<br /><pre class="brush: bash">net.ipv4.conf.eth0.rp_filter=2<br />net.ipv4.conf.eth1.rp_filter=2<br /></pre><br />然後執行下面指令讓conf生效。<br /><pre class="brush: bash">$ sysctl -p<br /></pre><br /><span style="color: #e06666; font-size: 18px;">5. Login iSCSI</span><br /><br />首先先discovery該iSCSI，看該iSCSI上有哪些target，<br />可以發現一模一樣的target卻顯示了2筆，這是因為剛剛前面我們設定了2張nic了！<br /><pre class="brush: bash">$ iscsiadm -m discovery -t st -p 172.16.131.138:3260<br />172.16.131.138:3260,1 iqn.2015-07.net.kenyang:ken.iscsi<br />172.16.131.138:3260,1 iqn.2015-07.net.kenyang:ken.iscsi<br /></pre><br />接著login該target，會發現login了二次，且這二次分別是透過eth0以及eth1去完成。<br /><pre class="brush: bash">$ iscsiadm -m node -T iqn.2015-07.net.kenyang:ken.iscsi --login<br /><br />Logging in to [iface: eth0, target: iqn.2015-07.net.kenyang:ken.iscsi, portal: 172.16.131.138,3260]<br />Logging in to [iface: eth1, target: iqn.2015-07.net.kenyang:ken.iscsi, portal: 172.16.131.138,3260]<br />Login to [iface: eth0, target: iqn.2015-07.net.kenyang:ken.iscsi, portal: 172.16.131.138,3260]: successful<br />Login to [iface: eth1, target: iqn.2015-07.net.kenyang:ken.iscsi, portal: 172.16.131.138,3260]: successful<br /></pre><br />顯示multipath的topology，<br />會發現有2個blcok device，<br />因為我們登入了2次，所以該target在我們server上被視為2個block device，分別為sdb, sdc。<br />然後再透過device mapper的概念去把它aggregate成一個/dev/mapper/mpath1。<br /><pre class="brush: bash">$ multipath -ll<br /><br />mpath1 (xxxxxxxxxxxxxxxxxxx) dm-6 EQLOGIC,100E-00<br />size=60G features='0' hwhandler='0' wp=rw<br />`-+- policy='round-robin 0' prio=1 status=active<br /> |- 7:0:0:0 sdb 8:16 active ready running<br /> `- 8:0:0:0 sdc 8:32 active ready running<br /></pre><br /><span style="color: #e06666; font-size: 18px;">6. Format block device</span><br /><br />最後一步就要把該block device mount起來使用，<br />但mount之前要先fdisk以及mkfs，要注意我們的對象不是sdb,sdc，<br />而是mpatch1。<br /><pre class="brush: bash">fdisk /dev/mapper/mpath1<br />mkfs.ext4 /dev/mapper/mpath1<br /></pre><br />完成以後就可以mount起來使用看看。<br /><pre class="brush: bash">mount /dev/mapper/mpath1 /storage/<br /></pre><br /><br /></div>
-      </div>
-      <footer>
-        <p><a class="myButton" href="/2015/08/13/setup-linux-multipath-in-ubuntu">read more &raquo;</a></p>
         <div>
           <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 <!-- ken on github -->

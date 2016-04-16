@@ -294,6 +294,59 @@
     </div>
     <!-- This loops through the paginated posts -->
     
+      <h1><a style="color: #F22430" href="/2016/04/16/setting-up-an-https-server-with-nodejs">Setting up an HTTPS server with Node.js</a></h1>
+      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
+      <p class="author">
+      <div class="date">
+        <span>16 April 2016</span>
+      </div>
+      </p>
+      <div class="content" style="line-height: 28px;">
+        <p><font size=3></p>
+
+<p>這篇要講怎麼用Node.js建立一個HTTPS的server，如果你的certificate不是self-signed的，</br>
+那設定HTTPS並不難，產生CSR給CA provider，然後就會有certificate，把它放進去就好，</br>
+但如果是self-signed，那過程就有點麻煩，每次要弄的時候，都還是會有點忘記，所以乾脆把過程記錄下來好了。</br></p>
+
+<p></br></p>
+
+<hr>
+
+<h3 id="1-creating-a-private-key-and-csr">1. Creating a private key and CSR</h3>
+
+<hr>
+
+<p>在create certificate之前，必須要先有<code>private key</code>以及<code>CSR</code> (certificate signing request)，</br>
+所以我們要先generate出private key以及CSR。</p>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="c"># generate private key</span>
+<span class="nv">$ </span>openssl genrsa -des3 -passout pass:kenyang -out server.pass.key 2048
+<span class="nv">$ </span>openssl rsa -passin pass:kenyang -in server.pass.key -out server.key
+<span class="nv">$ </span>rm server.pass.key
+
+<span class="c"># generate csr</span>
+<span class="nv">$ </span>openssl req -new -key server.key -out server.csr
+</code></pre></div>
+<p></br></p>
+
+      </div>
+      <footer>
+        <p><a class="myButton" href="/2016/04/16/setting-up-an-https-server-with-nodejs">read more &raquo;</a></p>
+        <div>
+          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- ken on github -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3783438370424072"
+     data-ad-slot="1516206098"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+        </div>
+      </footer>
+      <hr>
+    
       <h1><a style="color: #F22430" href="/2016/04/07/getting-started-with-kubernetes">Getting started with Kubernetes</a></h1>
       <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
       <p class="author">
@@ -411,65 +464,6 @@
       </div>
       <footer>
         <p><a class="myButton" href="/2016/02/15/heroku-redis-connecting-in-python">read more &raquo;</a></p>
-        <div>
-          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<!-- ken on github -->
-<ins class="adsbygoogle"
-     style="display:block"
-     data-ad-client="ca-pub-3783438370424072"
-     data-ad-slot="1516206098"
-     data-ad-format="auto"></ins>
-<script>
-(adsbygoogle = window.adsbygoogle || []).push({});
-</script>
-
-        </div>
-      </footer>
-      <hr>
-    
-      <h1><a style="color: #F22430" href="/2015/12/12/android-fingerprint-api">Android Fingerprint API</a></h1>
-      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
-      <p class="author">
-      <div class="date">
-        <span>12 December 2015</span>
-      </div>
-      </p>
-      <div class="content" style="line-height: 28px;">
-        <p><font size=3></p>
-
-<p>Google在Android 6.0中，釋放了對<a href="http://developer.android.com/intl/zh-tw/reference/android/hardware/fingerprint/FingerprintManager.html">Fingerprint</a>操作的API，<br>
-而最近剛好也買了Nexus 6P，因此有了機會來玩看看。</p>
-
-<p></br></p>
-
-<hr>
-
-<h3 id="1-androidmanifest-xml">1. AndroidManifest.xml</h3>
-
-<hr>
-
-<p>首先要在<code>AndroidManifest.xml</code>中設定permission，</p>
-<div class="highlight"><pre><code class="language-xml" data-lang="xml"><span class="nt">&lt;uses-permission</span> <span class="na">android:name=</span><span class="s">&quot;android.permission.USE_FINGERPRINT&quot;</span> <span class="nt">/&gt;</span>
-</code></pre></div>
-<p></br></p>
-
-<hr>
-
-<h3 id="2-check-requirement">2. Check Requirement</h3>
-
-<hr>
-
-<p>接著要檢查device上，是否有fingerprint reader，以及是否有設置了至少一枚fingerprint。下面這段code，主要檢查了三件事情：  </p>
-
-<ol>
-<li><strong>isKeyguardSecure</strong> : 是否有設定screen lock</li>
-<li><strong>isHardwareDetected</strong> : device是否有fingerprint reader</li>
-<li><strong>hasEnrolledFingerprints</strong> : 是否有設定至少一枚指紋</li>
-</ol>
-
-      </div>
-      <footer>
-        <p><a class="myButton" href="/2015/12/12/android-fingerprint-api">read more &raquo;</a></p>
         <div>
           <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 <!-- ken on github -->

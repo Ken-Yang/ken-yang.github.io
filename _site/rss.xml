@@ -5,10 +5,97 @@
         <description>Ken Yang筆記 - Ken Yang</description>
         <link>http://blog.kenyang.net</link>
         <atom:link href="http://blog.kenyang.net/rss.xml" rel="self" type="application/rss+xml" />
-        <lastBuildDate>Mon, 11 Apr 2016 22:41:37 +0800</lastBuildDate>
-        <pubDate>Mon, 11 Apr 2016 22:41:37 +0800</pubDate>
+        <lastBuildDate>Sat, 16 Apr 2016 18:34:11 +0800</lastBuildDate>
+        <pubDate>Sat, 16 Apr 2016 18:34:11 +0800</pubDate>
         <ttl>60</ttl>
 
+
+        <item>
+                <title>Setting up an HTTPS server with Node.js</title>
+                <description>&lt;p&gt;&lt;font size=3&gt;&lt;/p&gt;
+
+&lt;p&gt;這篇要講怎麼用Node.js建立一個HTTPS的server，如果你的certificate不是self-signed的，&lt;/br&gt;
+那設定HTTPS並不難，產生CSR給CA provider，然後就會有certificate，把它放進去就好，&lt;/br&gt;
+但如果是self-signed，那過程就有點麻煩，每次要弄的時候，都還是會有點忘記，所以乾脆把過程記錄下來好了。&lt;/br&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;/br&gt;&lt;/p&gt;
+
+&lt;hr&gt;
+
+&lt;h3 id=&quot;1-creating-a-private-key-and-csr&quot;&gt;1. Creating a private key and CSR&lt;/h3&gt;
+
+&lt;hr&gt;
+
+&lt;p&gt;在create certificate之前，必須要先有&lt;code&gt;private key&lt;/code&gt;以及&lt;code&gt;CSR&lt;/code&gt; (certificate signing request)，&lt;/br&gt;
+所以我們要先generate出private key以及CSR。&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;c&quot;&gt;# generate private key&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;openssl genrsa -des3 -passout pass:kenyang -out server.pass.key 2048
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;openssl rsa -passin pass:kenyang -in server.pass.key -out server.key
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;rm server.pass.key
+
+&lt;span class=&quot;c&quot;&gt;# generate csr&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;openssl req -new -key server.key -out server.csr
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;/br&gt;&lt;/p&gt;
+
+&lt;!--more--&gt;
+
+&lt;hr&gt;
+
+&lt;h3 id=&quot;2-creating-a-certificate&quot;&gt;2. Creating a certificate&lt;/h3&gt;
+
+&lt;hr&gt;
+
+&lt;p&gt;有了key和CSR以後，我們就可以issue一張certificate出來，&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;openssl x509 -req -days &lt;span class=&quot;m&quot;&gt;365&lt;/span&gt; -in server.csr -signkey server.key -out server.crt
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;/br&gt;&lt;/p&gt;
+
+&lt;hr&gt;
+
+&lt;h3 id=&quot;3-configuring-ssl-in-node-js&quot;&gt;3. Configuring SSL in Node.js&lt;/h3&gt;
+
+&lt;hr&gt;
+
+&lt;p&gt;有了certificate以後，就可以把它放在Node.js中使用，&lt;/br&gt;
+這裡我搭配的&lt;code&gt;express&lt;/code&gt;+&lt;code&gt;https&lt;/code&gt;這二個module，https這個module，default就有了，&lt;/br&gt;
+所以我們只需要安裝&lt;code&gt;express&lt;/code&gt;就好。&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;npm install --save express
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;/br&gt;
+接著就把下面的內容貼入到&lt;code&gt;index.js&lt;/code&gt;當中，&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;kr&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;https&lt;/span&gt;     &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;require&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;quot;https&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;kr&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;express&lt;/span&gt;   &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;require&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;quot;express&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;kr&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;fs&lt;/span&gt;        &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;require&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;quot;fs&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+&lt;span class=&quot;kr&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;SERVER_CONFIG&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;nx&quot;&gt;key&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt;  &lt;span class=&quot;nx&quot;&gt;fs&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;readFileSync&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;server.key&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;
+    &lt;span class=&quot;nx&quot;&gt;cert&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;fs&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;readFileSync&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;server.crt&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;
+
+&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;app&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;express&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
+&lt;span class=&quot;nx&quot;&gt;app&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;get&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;/&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;req&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;resp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;nx&quot;&gt;resp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;status&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;200&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;json&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;({&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;quot;STATUS&amp;quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;quot;OK&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;
+
+&lt;span class=&quot;nx&quot;&gt;https&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;createServer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;SERVER_CONFIG&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;app&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+     &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;listen&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;443&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;quot;HTTPS sever started&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;/br&gt;
+靠&lt;code&gt;fs&lt;/code&gt;去讀取certificate，然後再餵給&lt;code&gt;createServer&lt;/code&gt;，這樣就完成了https server。&lt;/br&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;/br&gt;
+&lt;/br&gt;
+&lt;/br&gt;
+&lt;/br&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;/font&gt;&lt;/p&gt;
+</description>
+                <link>http://blog.kenyang.net/2016/04/16/setting-up-an-https-server-with-nodejs</link>
+                <guid>http://blog.kenyang.net/2016/04/16/setting-up-an-https-server-with-nodejs</guid>
+                <pubDate>Sat, 16 Apr 2016 00:00:00 +0800</pubDate>
+        </item>
 
         <item>
                 <title>Getting started with Kubernetes</title>
@@ -2333,14 +2420,6 @@ mv完成以後，接著打開&lt;code&gt;index.html&lt;/code&gt;，&lt;br&gt;
                 <link>http://blog.kenyang.net/2014/10/13/android-backup-service-api-backup</link>
                 <guid>http://blog.kenyang.net/2014/10/13/android-backup-service-api-backup</guid>
                 <pubDate>Mon, 13 Oct 2014 11:22:00 +0800</pubDate>
-        </item>
-
-        <item>
-                <title>Set up javadocs and source for 3rd-party libs</title>
-                <description>&lt;div style=&quot;font-size: 15px; line-height: 22px;&quot;&gt;&lt;br /&gt;正常的一個3rd-party lib應該會有3個jar，以greenDao為例，&lt;br /&gt;&amp;nbsp; &amp;nbsp; 1. greendao-1.3.7.jar&lt;br /&gt;&amp;nbsp; &amp;nbsp; 2. greendao-1.3.7-javadoc.jar&lt;br /&gt;&amp;nbsp; &amp;nbsp; 3. greendao-1.3.7-sources.jar&lt;br /&gt;&lt;br /&gt;一般而言，其實只要在libs資料夾放第一個，我們就可以正常使用greenDao了，&lt;br /&gt;但是你就會看不到任何的document，大概會看到下面的圖示！&lt;br /&gt;&lt;div class=&quot;separator&quot; style=&quot;clear: both; text-align: center;&quot;&gt;&lt;a href=&quot;http://2.bp.blogspot.com/-fvtNRCyhOpc/VCvUN2hg6UI/AAAAAAAAFS0/H5XFWTUx3D0/s1600/Screen%2BShot%2B2014-10-01%2Bat%2B6.15.09%2BPM.png&quot; imageanchor=&quot;1&quot; style=&quot;margin-left: 1em; margin-right: 1em;&quot;&gt;&lt;img border=&quot;0&quot; src=&quot;http://2.bp.blogspot.com/-fvtNRCyhOpc/VCvUN2hg6UI/AAAAAAAAFS0/H5XFWTUx3D0/s1600/Screen%2BShot%2B2014-10-01%2Bat%2B6.15.09%2BPM.png&quot; height=&quot;112&quot; width=&quot;640&quot; /&gt;&lt;/a&gt;&lt;/div&gt;但就算你把這3個jar通通放進去libs資料夾，你也看不到任何的document.&lt;br /&gt;原因是因為你要有一個greendao-1.3.7.jar.properties檔案去config路徑.&lt;br /&gt;&lt;br /&gt;我的習慣會在libs資料夾底下，在建立兩個資料夾，分別為&lt;br /&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp;1. libs/docs&lt;br /&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp;2. libs/src&lt;br /&gt;然後把對應的jar放在裡面，&lt;br /&gt;所以我的greendao-1.3.7.jar.properties就會跟下面一樣，&lt;br /&gt;&lt;pre class=&quot;brush: java&quot;&gt;src=src/greendao-1.3.7-sources.jar                                                                             &lt;br /&gt;doc=docs/greendao-1.3.7-javadoc.jar&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;最後再把project close，然後再open起來，&lt;br /&gt;應該就會看到document了！&lt;br /&gt;&lt;br /&gt;&lt;/div&gt;</description>
-                <link>http://blog.kenyang.net/2014/10/01/android-set-up-javadocs-and-source-for</link>
-                <guid>http://blog.kenyang.net/2014/10/01/android-set-up-javadocs-and-source-for</guid>
-                <pubDate>Wed, 01 Oct 2014 18:17:00 +0800</pubDate>
         </item>
 
 
