@@ -5,8 +5,8 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-    <title>ActionBarCompat 【Add Tab】</title>
-    
+    <title>Android: App bar/Tool bar</title>
+    <meta name="description" content="">
     <meta name="author" content="Ken Yang">
 
     <!-- Enable responsive viewport -->
@@ -308,7 +308,7 @@
 
 
 <div class="page-header">
-  <h1>ActionBarCompat 【Add Tab】 </h1>
+  <h1>Android: App bar/Tool bar </h1>
 </div>
 
 <div class="row post-full">
@@ -338,10 +338,169 @@
 
   <div class="col-xs-12">
     <div class="date">
-      <span>28 September 2013</span>
+      <span>22 June 2016</span>
     </div>
     <div class="content" style="line-height: 28px;">
-      <a href="http://blog.kenyang.net/2013/09/actionbarcompat-basic.html">上一篇ActionBarCompat 【Basic】</a>教導大家怎麼使用Google提供的ActionBarCompat lib以後，<br />這篇要延續上篇實作的actionbar，來加入tabs！<br /><br />最早在android要使用tab的layout，<br />必須使用tabhost這個object！<br />但現在被deprecated了！<br />後來推薦使用Fragment去控制tabwidget ui object.<br />但這篇是要教大家怎麼直接用actionbar加入tabs，<br />相較前面的兩種方法，用actionbar比較簡單！<br /><br /><br /><span style="color: #e06666; font-size: large;">1. 首先請將你的class implement TabListener 這個interface</span><br /><br /><pre class="brush: java">public class MainActivity extends ActionBarActivity implements TabListener {<br />    ....<br />}<br /></pre><br /><br /><span style="color: #e06666; font-size: large;">2. 加入應有的method</span><br /><br />因為你前一步驟implement了一個interface，<br />那麼在你的Class之中，也應該要有該interface底下的method，<br />所以你的class一開始應該會紅紅的一條，代表error，<br />那麼你只要將滑鼠移至該class名稱上，eclipse就會有選項幫你直接加入該有的method，<br />或者你也可以自己直接加入，如下<br /><br /><pre class="brush: java">@Override<br /> public void onTabReselected(Tab arg0, FragmentTransaction arg1) {<br />  // TODO Auto-generated method stub<br />  <br /> }<br /><br /> @Override<br /> public void onTabSelected(Tab arg0, FragmentTransaction arg1) {<br />  // TODO Auto-generated method stub<br />  <br /> }<br /><br /> @Override<br /> public void onTabUnselected(Tab arg0, FragmentTransaction arg1) {<br />  // TODO Auto-generated method stub<br />  <br /> }<br /></pre><br /><br /><span style="color: #e06666; font-size: large;">3. 加入tab</span><br /><br />這邊是利用ActionBar去加入tab，<br />所以我們再加入之前應該先取得actiobar這個object，<br /><br /><pre class="brush: java">@Override<br /> protected void onCreate(Bundle savedInstanceState) {<br />  super.onCreate(savedInstanceState);<br />  setContentView(R.layout.activity_main);<br />  <br />  final ActionBar actionbar = getSupportActionBar();<br />  <br /> }<br /></pre><br />接著設定navigation mode，<br />這裡分成三種<br /><br /><ol><li><span class="s1">ActionBar</span><span class="s2">.</span><span class="s1">NAVIGATION_MODE_LIST &nbsp; &nbsp; （actionbar左上角會有spinner）</span></li><li><span class="s1">ActionBar</span><span class="s2">.</span>NAVIGATION_MODE_TABS &nbsp; &nbsp;（就是tabs）</li><li><span class="s1">ActionBar</span><span class="s2">.</span><span class="s1">NAVIGATION_MODE_STANDARD &nbsp; &nbsp;（什麼都不會有，只剩actionbar）</span></li></ol><br />所以理論上我們要設成第二種！<br /><br /><pre class="brush: java">@Override<br /> protected void onCreate(Bundle savedInstanceState) {<br />  super.onCreate(savedInstanceState);<br />  setContentView(R.layout.activity_main);<br />  <br />  final ActionBar actionbar = getSupportActionBar();<br />  <br />  actionbar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);<br />  <br /> }<br /></pre><br />最後一步就是加入tab了！<br /><br /><pre class="brush: java">@Override<br /> protected void onCreate(Bundle savedInstanceState) {<br />  super.onCreate(savedInstanceState);<br />  setContentView(R.layout.activity_main);<br />  <br />  final ActionBar actionbar = getSupportActionBar();<br />  <br />  actionbar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);<br />  <br />  // add tab<br />  actionbar.addTab(actionbar.newTab().setText(R.string.tab1).setTabListener(this));<br />  actionbar.addTab(actionbar.newTab().setText(R.string.tab2).setTabListener(this));<br />  <br /> }<br /></pre><br /><br /><br />接著大家就可以deploy上去看看了！<br />應該就可以看到2個tab出現！<br />如下圖<br /><br /><div class="separator" style="clear: both; text-align: center;"><a href="http://3.bp.blogspot.com/-rqHC2KsSH-s/UkaCTVBdQhI/AAAAAAAAFBM/mJ-vQUPR8qk/s1600/249261.jpg" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="400" src="http://3.bp.blogspot.com/-rqHC2KsSH-s/UkaCTVBdQhI/AAAAAAAAFBM/mJ-vQUPR8qk/s400/249261.jpg" width="225" /></a></div><br /><br />這時候大家可能會覺得很奇怪，<br />不管點tab1還是tab2，<br />怎麼內容都一樣？<br /><br />原因是因為你要在先前implement的method（onTabSelected）中，<br />透過FragmentTransaction把Fragment加進來！<br />好！這時候大家可能也會好奇一件事，我的Class明明是 extends ActionBarActivity，<br />怎麼可能在這個class之中把Fragment加進來？不是應該要透過FragmentActivity嗎？<br />恩，其實如果你們在往下層看，會發現ActionBarActivity這個class也是extends FragmentActivity！<br />所以自然而然可以在ActionBarActivity中把一個Fragment加進來！<br /><br /><span style="color: #e06666; font-size: x-large;">但是！！！！</span>在這裡我不會教你用這種方式！！！<br />為什麼？<br />其實在Google Standard之中，希望我們有tabs時，理應上要支援swipe to change tab！<br />那麼要怎麼做到呢？<br />就是靠ViewPager！<br />在<a href="http://blog.kenyang.net/2013/10/actionbarcompat-swipe-to-change-tab.html">下一篇ActionBarCompat 【Swipe to change tab】</a>中，會教大家怎麼用ViewPager去把Fragment加進來以及可以swipe！<br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
+      <p><font size="3"></p>
+
+<p>大概一年多沒有寫Android了，最近發現好多不一樣了，</br>
+譬如說ActionBar變成AppBar..不過以前的ActionBar還能繼續用，</br>
+但還是得學一下怎麼用App bar跟上潮流。</p>
+
+<p><a href="https://github.com/Ken-Yang/AndroidAppBar">Example Code on Github</a></p>
+
+<p></br></p>
+
+<hr>
+
+<h3 id="1-create-new-project">1. Create new project</h3>
+
+<hr>
+
+<p>首先先建立一個新的project，然後選擇Empty activity。</p>
+
+<p></br></p>
+
+<hr>
+
+<h3 id="2-add-dependency">2. Add dependency</h3>
+
+<hr>
+
+<p>接著打開build.gradle，把appcompat加入dependency，</br>
+不過如果你的Android Studio是新版的，就會自動幫你加入了。</p>
+<div class="highlight"><pre><code class="language-xml" data-lang="xml">dependencies {
+    compile fileTree(dir: &#39;libs&#39;, include: [&#39;*.jar&#39;])
+    testCompile &#39;junit:junit:4.12&#39;
+    compile &#39;com.android.support:appcompat-v7:23.1.1&#39;
+}
+</code></pre></div>
+<!--more-->
+
+<p></br></p>
+
+<hr>
+
+<h3 id="3-remove-actionbar">3. Remove actionbar</h3>
+
+<hr>
+
+<p>因為Default style會去繼承ActionBar Theme，所以我們要把它移除掉，</br>
+打開<code>style.xml</code>，然後把parent改成<code>Theme.AppCompat.Light.NoActionBar</code>。</p>
+<div class="highlight"><pre><code class="language-xml" data-lang="xml"><span class="c">&lt;!-- Base application theme. --&gt;</span>
+<span class="nt">&lt;style</span> <span class="na">name=</span><span class="s">&quot;AppTheme&quot;</span> <span class="na">parent=</span><span class="s">&quot;Theme.AppCompat.Light.NoActionBar&quot;</span><span class="nt">&gt;</span>
+<span class="nt">&lt;/style&gt;</span>
+</code></pre></div>
+<p></br></p>
+
+<hr>
+
+<h3 id="4-color-your-app-bar">4. Color your App Bar</h3>
+
+<hr>
+
+<p>接著要去設定App Bar的顏色，AppBar主要有兩種顏色：</p>
+
+<ol>
+<li><strong>colorPrimary</strong> : 以前ActionBar那條的背景顏色</li>
+<li><strong>colorPrimaryDark</strong> : Status 那條的背景顏色</li>
+</ol>
+
+<p></br></p>
+
+<p>首先要先在<code>color.xml</code>中，新增上述的二個顏色。</p>
+<div class="highlight"><pre><code class="language-xml" data-lang="xml"><span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;</span>
+<span class="nt">&lt;resources&gt;</span>
+    <span class="nt">&lt;color</span> <span class="na">name=</span><span class="s">&quot;colorPrimary&quot;</span><span class="nt">&gt;</span>#FF5722<span class="nt">&lt;/color&gt;</span>
+    <span class="nt">&lt;color</span> <span class="na">name=</span><span class="s">&quot;colorPrimaryDark&quot;</span><span class="nt">&gt;</span>#E64A19<span class="nt">&lt;/color&gt;</span>
+<span class="nt">&lt;/resources&gt;</span>
+</code></pre></div>
+<p>接著在<code>style.xml</code>中指定上述的二個顏色。</p>
+<div class="highlight"><pre><code class="language-xml" data-lang="xml"><span class="c">&lt;!-- Base application theme. --&gt;</span>
+<span class="nt">&lt;style</span> <span class="na">name=</span><span class="s">&quot;AppTheme&quot;</span> <span class="na">parent=</span><span class="s">&quot;Theme.AppCompat.Light.NoActionBar&quot;</span><span class="nt">&gt;</span>
+    <span class="c">&lt;!-- Customize your theme here. --&gt;</span>
+    <span class="nt">&lt;item</span> <span class="na">name=</span><span class="s">&quot;colorPrimary&quot;</span><span class="nt">&gt;</span>@color/colorPrimary<span class="nt">&lt;/item&gt;</span>
+    <span class="nt">&lt;item</span> <span class="na">name=</span><span class="s">&quot;colorPrimaryDark&quot;</span><span class="nt">&gt;</span>@color/colorPrimaryDark<span class="nt">&lt;/item&gt;</span>
+<span class="nt">&lt;/style&gt;</span>
+</code></pre></div>
+<p></br></p>
+
+<hr>
+
+<h3 id="5-create-a-toobar">5. Create a toobar</h3>
+
+<hr>
+
+<p>接著去<code>res/layout</code>資料夾中，建立一個名稱為<code>too_bar.xml</code>的layout file，內容如下，有幾個需要說明的屬性為：</p>
+
+<ol>
+<li><strong>theme</strong>: 指定了Dark.ActionBar，是為了設定AppBar的一些style，譬如說字體顏色，Dark.ActionBar的字體顏色就是白色</li>
+<li><strong>popupTheme</strong>: 當你點擊ActionItem時，會popup一個list，這個list的theme</li>
+<li><strong>background</strong> : Toolbar的背景顏色</li>
+</ol>
+<div class="highlight"><pre><code class="language-xml" data-lang="xml"><span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;</span>
+<span class="nt">&lt;android.support.v7.widget.Toolbar</span>
+    <span class="na">xmlns:android=</span><span class="s">&quot;http://schemas.android.com/apk/res/android&quot;</span>
+    <span class="na">xmlns:app=</span><span class="s">&quot;http://schemas.android.com/apk/res-auto&quot;</span>
+    <span class="na">android:layout_width=</span><span class="s">&quot;match_parent&quot;</span>
+    <span class="na">android:layout_height=</span><span class="s">&quot;?attr/actionBarSize&quot;</span>
+    <span class="na">app:theme=</span><span class="s">&quot;@style/ThemeOverlay.AppCompat.Dark.ActionBar&quot;</span>
+    <span class="na">app:popupTheme=</span><span class="s">&quot;@style/ThemeOverlay.AppCompat.Light&quot;</span>
+    <span class="na">android:background=</span><span class="s">&quot;@color/colorPrimary&quot;</span><span class="nt">&gt;</span>
+
+<span class="nt">&lt;/android.support.v7.widget.Toolbar&gt;</span>
+</code></pre></div>
+<p></br></p>
+
+<hr>
+
+<h3 id="6-add-the-toolbar-into-activity">6. Add the toolbar into activity</h3>
+
+<hr>
+
+<p>然後要在主要的layout中，include上面的<code>tool_bar.xml</code>。</p>
+<div class="highlight"><pre><code class="language-xml" data-lang="xml"><span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;</span>
+<span class="nt">&lt;RelativeLayout</span> <span class="na">xmlns:android=</span><span class="s">&quot;http://schemas.android.com/apk/res/android&quot;</span>
+    <span class="na">xmlns:tools=</span><span class="s">&quot;http://schemas.android.com/tools&quot;</span>
+    <span class="na">android:layout_width=</span><span class="s">&quot;match_parent&quot;</span>
+    <span class="na">android:layout_height=</span><span class="s">&quot;match_parent&quot;</span>
+    <span class="na">tools:context=</span><span class="s">&quot;com.ag888.ams.LoginActivity&quot;</span><span class="nt">&gt;</span>
+
+    <span class="nt">&lt;include</span>
+        <span class="na">android:id=</span><span class="s">&quot;@+id/tool_bar&quot;</span>
+        <span class="na">layout=</span><span class="s">&quot;@layout/tool_bar&quot;</span><span class="nt">/&gt;</span>
+
+    <span class="nt">&lt;TextView</span>
+        <span class="na">android:layout_below=</span><span class="s">&quot;@+id/tool_bar&quot;</span>
+        <span class="na">android:layout_width=</span><span class="s">&quot;wrap_content&quot;</span>
+        <span class="na">android:layout_height=</span><span class="s">&quot;wrap_content&quot;</span>
+        <span class="na">android:text=</span><span class="s">&quot;Hello World!&quot;</span> <span class="nt">/&gt;</span>
+<span class="nt">&lt;/RelativeLayout&gt;</span>
+</code></pre></div>
+<p></br></p>
+
+<hr>
+
+<h3 id="7-setup-toolbar-as-actionbar">7. Setup toolbar as actionbar</h3>
+
+<hr>
+
+<p>完成上面步驟以後，你可以試著run看看，但你會發現就只是簡單的一條bar而已，</br>
+並沒有title或者action item之類的，所以接下要把toolbar設定成ActionBar，</br>
+把<code>ToolBar</code>丟進去<code>setSupportActionBar()</code>就可以了。</p>
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span class="nd">@Override</span>
+<span class="kd">protected</span> <span class="kt">void</span> <span class="nf">onCreate</span><span class="o">(</span><span class="n">Bundle</span> <span class="n">savedInstanceState</span><span class="o">)</span> <span class="o">{</span>
+    <span class="kd">super</span><span class="o">.</span><span class="na">onCreate</span><span class="o">(</span><span class="n">savedInstanceState</span><span class="o">);</span>
+    <span class="n">setContentView</span><span class="o">(</span><span class="n">R</span><span class="o">.</span><span class="na">layout</span><span class="o">.</span><span class="na">activity_login</span><span class="o">);</span>
+
+    <span class="n">toolbar</span> <span class="o">=</span> <span class="o">(</span><span class="n">Toolbar</span><span class="o">)</span> <span class="n">findViewById</span><span class="o">(</span><span class="n">R</span><span class="o">.</span><span class="na">id</span><span class="o">.</span><span class="na">tool_bar</span><span class="o">);</span>
+    <span class="n">setSupportActionBar</span><span class="o">(</span><span class="n">toolbar</span><span class="o">);</span>
+<span class="o">}</span>
+</code></pre></div>
+<p></br></br></br></br></p>
+
+<p></font></p>
+
     </div>
 
     
@@ -355,9 +514,15 @@
 
   
      
+    	<li><a href="/tags.html#Android-ref">Android <span>1</span></a></li>
+     
     	<li><a href="/tags.html#actionbar-ref">actionbar <span>3</span></a></li>
      
-    	<li><a href="/tags.html#Tab-ref">Tab <span>3</span></a></li>
+    	<li><a href="/tags.html#appbar-ref">appbar <span>1</span></a></li>
+     
+    	<li><a href="/tags.html#toolbar-ref">toolbar <span>1</span></a></li>
+     
+    	<li><a href="/tags.html#meterial design-ref">meterial design <span>1</span></a></li>
     
   
 
@@ -381,11 +546,11 @@
     <hr>
     <ul class="pagination">
     
-      <li class="prev"><a href="/2013/09/26/actionbarcompat-basic" title="ActionBarCompat  【Basic】">&laquo; Previous</a></li>
+      <li class="prev"><a href="/2016/04/16/setting-up-an-https-server-with-nodejs" title="Setting up an HTTPS server with Node.js">&laquo; Previous</a></li>
     
       <li><a href="/archive.html">Archive</a></li>
     
-      <li class="next"><a href="/2013/09/30/arduino-wifi-shield" title="Arduino WiFi Shield">Next &raquo;</a></li>
+      <li class="next disabled"><a>Next &rarr;</a>
     
     </ul>
     <hr>

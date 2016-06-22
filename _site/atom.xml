@@ -4,13 +4,180 @@
  <title>Ken Yang筆記</title>
  <link href="http://blog.kenyang.net/atom.xml" rel="self"/>
  <link href="http://blog.kenyang.net"/>
- <updated>2016-04-16T18:34:11+08:00</updated>
+ <updated>2016-06-22T12:15:01+08:00</updated>
  <id>http://blog.kenyang.net</id>
  <author>
    <name>Ken Yang</name>
    <email>ken@kenyang.net</email>
  </author>
 
+ 
+ <entry>
+   <title>Android: App bar/Tool bar</title>
+   <link href="http://blog.kenyang.net/2016/06/22/android-app-bartool-bar"/>
+   <updated>2016-06-22T00:00:00+08:00</updated>
+   <id>http://blog.kenyang.net/2016/06/22/android-app-bartool-bar</id>
+   <content type="html">&lt;p&gt;&lt;font size=&quot;3&quot;&gt;&lt;/p&gt;
+
+&lt;p&gt;大概一年多沒有寫Android了，最近發現好多不一樣了，&lt;/br&gt;
+譬如說ActionBar變成AppBar..不過以前的ActionBar還能繼續用，&lt;/br&gt;
+但還是得學一下怎麼用App bar跟上潮流。&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://github.com/Ken-Yang/AndroidAppBar&quot;&gt;Example Code on Github&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;/br&gt;&lt;/p&gt;
+
+&lt;hr&gt;
+
+&lt;h3 id=&quot;1-create-new-project&quot;&gt;1. Create new project&lt;/h3&gt;
+
+&lt;hr&gt;
+
+&lt;p&gt;首先先建立一個新的project，然後選擇Empty activity。&lt;/p&gt;
+
+&lt;p&gt;&lt;/br&gt;&lt;/p&gt;
+
+&lt;hr&gt;
+
+&lt;h3 id=&quot;2-add-dependency&quot;&gt;2. Add dependency&lt;/h3&gt;
+
+&lt;hr&gt;
+
+&lt;p&gt;接著打開build.gradle，把appcompat加入dependency，&lt;/br&gt;
+不過如果你的Android Studio是新版的，就會自動幫你加入了。&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-xml&quot; data-lang=&quot;xml&quot;&gt;dependencies {
+    compile fileTree(dir: &amp;#39;libs&amp;#39;, include: [&amp;#39;*.jar&amp;#39;])
+    testCompile &amp;#39;junit:junit:4.12&amp;#39;
+    compile &amp;#39;com.android.support:appcompat-v7:23.1.1&amp;#39;
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;!--more--&gt;
+
+&lt;p&gt;&lt;/br&gt;&lt;/p&gt;
+
+&lt;hr&gt;
+
+&lt;h3 id=&quot;3-remove-actionbar&quot;&gt;3. Remove actionbar&lt;/h3&gt;
+
+&lt;hr&gt;
+
+&lt;p&gt;因為Default style會去繼承ActionBar Theme，所以我們要把它移除掉，&lt;/br&gt;
+打開&lt;code&gt;style.xml&lt;/code&gt;，然後把parent改成&lt;code&gt;Theme.AppCompat.Light.NoActionBar&lt;/code&gt;。&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-xml&quot; data-lang=&quot;xml&quot;&gt;&lt;span class=&quot;c&quot;&gt;&amp;lt;!-- Base application theme. --&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;style&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;AppTheme&amp;quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;parent=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;Theme.AppCompat.Light.NoActionBar&amp;quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;/style&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;/br&gt;&lt;/p&gt;
+
+&lt;hr&gt;
+
+&lt;h3 id=&quot;4-color-your-app-bar&quot;&gt;4. Color your App Bar&lt;/h3&gt;
+
+&lt;hr&gt;
+
+&lt;p&gt;接著要去設定App Bar的顏色，AppBar主要有兩種顏色：&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;colorPrimary&lt;/strong&gt; : 以前ActionBar那條的背景顏色&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;colorPrimaryDark&lt;/strong&gt; : Status 那條的背景顏色&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;&lt;/br&gt;&lt;/p&gt;
+
+&lt;p&gt;首先要先在&lt;code&gt;color.xml&lt;/code&gt;中，新增上述的二個顏色。&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-xml&quot; data-lang=&quot;xml&quot;&gt;&lt;span class=&quot;cp&quot;&gt;&amp;lt;?xml version=&amp;quot;1.0&amp;quot; encoding=&amp;quot;utf-8&amp;quot;?&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;resources&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;&amp;lt;color&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;colorPrimary&amp;quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;#FF5722&lt;span class=&quot;nt&quot;&gt;&amp;lt;/color&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;&amp;lt;color&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;colorPrimaryDark&amp;quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;#E64A19&lt;span class=&quot;nt&quot;&gt;&amp;lt;/color&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;/resources&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;接著在&lt;code&gt;style.xml&lt;/code&gt;中指定上述的二個顏色。&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-xml&quot; data-lang=&quot;xml&quot;&gt;&lt;span class=&quot;c&quot;&gt;&amp;lt;!-- Base application theme. --&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;style&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;AppTheme&amp;quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;parent=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;Theme.AppCompat.Light.NoActionBar&amp;quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;c&quot;&gt;&amp;lt;!-- Customize your theme here. --&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;&amp;lt;item&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;colorPrimary&amp;quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;@color/colorPrimary&lt;span class=&quot;nt&quot;&gt;&amp;lt;/item&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;&amp;lt;item&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;colorPrimaryDark&amp;quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;@color/colorPrimaryDark&lt;span class=&quot;nt&quot;&gt;&amp;lt;/item&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;/style&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;/br&gt;&lt;/p&gt;
+
+&lt;hr&gt;
+
+&lt;h3 id=&quot;5-create-a-toobar&quot;&gt;5. Create a toobar&lt;/h3&gt;
+
+&lt;hr&gt;
+
+&lt;p&gt;接著去&lt;code&gt;res/layout&lt;/code&gt;資料夾中，建立一個名稱為&lt;code&gt;too_bar.xml&lt;/code&gt;的layout file，內容如下，有幾個需要說明的屬性為：&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;theme&lt;/strong&gt;: 指定了Dark.ActionBar，是為了設定AppBar的一些style，譬如說字體顏色，Dark.ActionBar的字體顏色就是白色&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;popupTheme&lt;/strong&gt;: 當你點擊ActionItem時，會popup一個list，這個list的theme&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;background&lt;/strong&gt; : Toolbar的背景顏色&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-xml&quot; data-lang=&quot;xml&quot;&gt;&lt;span class=&quot;cp&quot;&gt;&amp;lt;?xml version=&amp;quot;1.0&amp;quot; encoding=&amp;quot;utf-8&amp;quot;?&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;android.support.v7.widget.Toolbar&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;xmlns:android=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;http://schemas.android.com/apk/res/android&amp;quot;&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;xmlns:app=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;http://schemas.android.com/apk/res-auto&amp;quot;&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;android:layout_width=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;match_parent&amp;quot;&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;android:layout_height=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;?attr/actionBarSize&amp;quot;&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;app:theme=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;@style/ThemeOverlay.AppCompat.Dark.ActionBar&amp;quot;&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;app:popupTheme=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;@style/ThemeOverlay.AppCompat.Light&amp;quot;&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;android:background=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;@color/colorPrimary&amp;quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
+
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;/android.support.v7.widget.Toolbar&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;/br&gt;&lt;/p&gt;
+
+&lt;hr&gt;
+
+&lt;h3 id=&quot;6-add-the-toolbar-into-activity&quot;&gt;6. Add the toolbar into activity&lt;/h3&gt;
+
+&lt;hr&gt;
+
+&lt;p&gt;然後要在主要的layout中，include上面的&lt;code&gt;tool_bar.xml&lt;/code&gt;。&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-xml&quot; data-lang=&quot;xml&quot;&gt;&lt;span class=&quot;cp&quot;&gt;&amp;lt;?xml version=&amp;quot;1.0&amp;quot; encoding=&amp;quot;utf-8&amp;quot;?&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;RelativeLayout&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;xmlns:android=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;http://schemas.android.com/apk/res/android&amp;quot;&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;xmlns:tools=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;http://schemas.android.com/tools&amp;quot;&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;android:layout_width=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;match_parent&amp;quot;&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;android:layout_height=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;match_parent&amp;quot;&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;tools:context=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;com.ag888.ams.LoginActivity&amp;quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
+
+    &lt;span class=&quot;nt&quot;&gt;&amp;lt;include&lt;/span&gt;
+        &lt;span class=&quot;na&quot;&gt;android:id=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;@+id/tool_bar&amp;quot;&lt;/span&gt;
+        &lt;span class=&quot;na&quot;&gt;layout=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;@layout/tool_bar&amp;quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;/&amp;gt;&lt;/span&gt;
+
+    &lt;span class=&quot;nt&quot;&gt;&amp;lt;TextView&lt;/span&gt;
+        &lt;span class=&quot;na&quot;&gt;android:layout_below=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;@+id/tool_bar&amp;quot;&lt;/span&gt;
+        &lt;span class=&quot;na&quot;&gt;android:layout_width=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;wrap_content&amp;quot;&lt;/span&gt;
+        &lt;span class=&quot;na&quot;&gt;android:layout_height=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;wrap_content&amp;quot;&lt;/span&gt;
+        &lt;span class=&quot;na&quot;&gt;android:text=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;Hello World!&amp;quot;&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;/&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;/RelativeLayout&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;/br&gt;&lt;/p&gt;
+
+&lt;hr&gt;
+
+&lt;h3 id=&quot;7-setup-toolbar-as-actionbar&quot;&gt;7. Setup toolbar as actionbar&lt;/h3&gt;
+
+&lt;hr&gt;
+
+&lt;p&gt;完成上面步驟以後，你可以試著run看看，但你會發現就只是簡單的一條bar而已，&lt;/br&gt;
+並沒有title或者action item之類的，所以接下要把toolbar設定成ActionBar，&lt;/br&gt;
+把&lt;code&gt;ToolBar&lt;/code&gt;丟進去&lt;code&gt;setSupportActionBar()&lt;/code&gt;就可以了。&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;&lt;span class=&quot;nd&quot;&gt;@Override&lt;/span&gt;
+&lt;span class=&quot;kd&quot;&gt;protected&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;onCreate&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Bundle&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;savedInstanceState&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;kd&quot;&gt;super&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;onCreate&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;savedInstanceState&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;setContentView&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;R&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;layout&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;activity_login&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+
+    &lt;span class=&quot;n&quot;&gt;toolbar&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Toolbar&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;findViewById&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;R&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;id&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;tool_bar&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;setSupportActionBar&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;toolbar&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;/br&gt;&lt;/br&gt;&lt;/br&gt;&lt;/br&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;/font&gt;&lt;/p&gt;
+</content>
+ </entry>
  
  <entry>
    <title>Setting up an HTTPS server with Node.js</title>
@@ -2414,14 +2581,6 @@ mv完成以後，接著打開&lt;code&gt;index.html&lt;/code&gt;，&lt;br&gt;
    <updated>2014-10-16T16:19:00+08:00</updated>
    <id>http://blog.kenyang.net/2014/10/16/android-in-app-billing-iab-version-3</id>
    <content type="html">&lt;div style=&quot;font-size: 15px; line-height: 22px;&quot;&gt;&lt;br /&gt;這篇要講怎麼整合IAB，&lt;br /&gt;IAB就是讓user可以在你的app中購買商品．&lt;br /&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;1. Download billing service library&lt;/span&gt;  &lt;br /&gt;&lt;br /&gt;開啓Android SDK Manager，&lt;br /&gt;找到最下面的 Extras，安裝Google Play Billing Library，&lt;br /&gt;安裝完以後，在您Android SDK 目錄中會有該 Library，位置如下：&lt;br /&gt;&lt;pre class=&quot;brush: java&quot;&gt;$SDK_PATH/extras/google/play_billing/in-app-billing-v03&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;2. Create new package&lt;/span&gt;  &lt;br /&gt;&lt;br /&gt;接著在這一步要在你的project下建立一個新的package，&lt;br /&gt;點選 File &amp;gt; New &amp;gt; Package, 名稱為com.android.vending.billing&lt;br /&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;3. Copy necessary files&lt;/span&gt;  &lt;br /&gt;&lt;br /&gt;在這一步驟要複製一些必要的檔案至project中，&lt;br /&gt;1. IInAppBillingService.aidl，&lt;br /&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;這個檔案放在$SDK_PATH/extras/google/play_billing/in-app-billing-v03底下，&lt;br /&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;把IInAppBillingService.aidl，複製到我們剛剛create的package中，&lt;br /&gt;2. *.java&lt;br /&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Google幫我們寫好了很多的wrapper，可以很方便地使用IAB，&lt;br /&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;這wrapper會幫我們處理一些bind service的動作，&lt;br /&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;透過這些wrapper可以輕易地整合IAB，&lt;br /&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;檔案路徑如下：&lt;br /&gt;&lt;pre class=&quot;brush: java&quot;&gt;$SDK_PATH/extras/google/play_billing/samples/TrivialDrive/src/com/example/android&lt;br /&gt;/trivialdrivesample/util&lt;br /&gt;&lt;/pre&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;把這底下所有的.java複製到你的project當中，並且要把package名稱改成自己的&lt;br /&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;4. Add permission&lt;/span&gt;  &lt;br /&gt;&lt;br /&gt;接著要在AndroidManifest.xml中加入下面這個權限，&lt;br /&gt;&lt;pre class=&quot;brush: java&quot;&gt;&amp;lt;uses-permission android:name=&amp;quot;com.android.vending.BILLING&amp;quot;&amp;gt;&lt;br /&gt;&amp;lt;/uses-permission&amp;gt;&lt;/pre&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;5. Upload apk&lt;/span&gt;  &lt;br /&gt;&lt;br /&gt;因為要購買一個商品，這商品在新増之前，&lt;br /&gt;你一定要有一個apk是有BILLING權限的，&lt;br /&gt;否則是不能新增一個商品．&lt;br /&gt;所以在這步驟要先上傳上去，你可以上傳以後再把它變成draft就好，&lt;br /&gt;當然！你也可以通通寫完code再丟上去測試．&lt;br /&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;6. Add product&lt;/span&gt;  &lt;br /&gt;&lt;br /&gt;上傳apk以後，接著就可以去developer console新增product了，&lt;br /&gt;1. 先到自己的developer console &lt;br /&gt;2. 點選自己的app &lt;br /&gt;3. 點選左邊的In-app Products &lt;br /&gt;4. 點選Add new product&lt;br /&gt;5. 輸入Product ID（這id等等code裡面會用到）&lt;br /&gt;6. 最後填寫product的資訊&lt;br /&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;7. Get public key&lt;/span&gt;  &lt;br /&gt;&lt;br /&gt;由於在跟Google Play溝通時，&lt;br /&gt;需要一把public key，&lt;br /&gt;這把key一樣在developer console上，&lt;br /&gt;1. 先到自己的developer console &lt;br /&gt;2. 點選自己的app &lt;br /&gt;3. 點選左邊的Services &amp;amp; APIs&lt;br /&gt;key就會在畫面之中，如下圖！&lt;br /&gt;&lt;br /&gt;&lt;div class=&quot;separator&quot; style=&quot;clear: both; text-align: center;&quot;&gt;&lt;a href=&quot;http://4.bp.blogspot.com/-juHaFVdxJtE/VD9hQRnFPSI/AAAAAAAAFhI/8k_Ou03qUOU/s1600/Screen%2BShot%2B2014-10-16%2Bat%2B2.08.36%2BPM.png&quot; imageanchor=&quot;1&quot; style=&quot;margin-left: 1em; margin-right: 1em;&quot;&gt;&lt;img border=&quot;0&quot; src=&quot;http://4.bp.blogspot.com/-juHaFVdxJtE/VD9hQRnFPSI/AAAAAAAAFhI/8k_Ou03qUOU/s1600/Screen%2BShot%2B2014-10-16%2Bat%2B2.08.36%2BPM.png&quot; height=&quot;164&quot; width=&quot;640&quot; /&gt;&lt;/a&gt;&lt;/div&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;8. Implement&lt;/span&gt;  &lt;br /&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;8-1. Setup&lt;/span&gt;  &lt;br /&gt;&lt;br /&gt;首先要先setup IabHelper，&lt;br /&gt;在setup時就要把剛剛哪組public_key帶進去，&lt;br /&gt;但由於Google有強烈的建議，不要直接hard code public key，&lt;br /&gt;至少要用個xor encrypt的方式，或者用拆解字串的方式存放public key，&lt;br /&gt;xor encrypt就是你先用xor去encrypt你的public key，&lt;br /&gt;之後把encrypt過後的public key放在你的project中，&lt;br /&gt;要用的時候再拿出來decrypt，decrypt完以後，應該就會是原先的public key了，&lt;br /&gt;接著再判斷一下那組public key是否有包含“某部份”真正public key，&lt;br /&gt;有的話才真的是你的public key，&lt;br /&gt;&lt;br /&gt;&lt;pre class=&quot;brush: java&quot;&gt;    private IabHelper mHelper;&lt;br /&gt;    @Override&lt;br /&gt;    public void onCreate(Bundle savedInstanceState) {&lt;br /&gt;&lt;br /&gt;        String base64EncodedPublicKey = xorDecrypt(PUBLIC_KEY, &quot;key_password&quot;);&lt;br /&gt;&lt;br /&gt;        if (!base64EncodedPublicKey&lt;br /&gt;                .contains(&quot;eFESRE6ijsRAp3TgWhY1zDwWwo1EqxQgt+f&quot;)) {&lt;br /&gt;            throw new RuntimeException(&quot;This is not my key&quot;);&lt;br /&gt;        }&lt;br /&gt;&lt;br /&gt;        mHelper = new IabHelper(this, base64EncodedPublicKey);&lt;br /&gt;&lt;br /&gt;        mHelper.startSetup(new IabHelper.OnIabSetupFinishedListener() {&lt;br /&gt;            public void onIabSetupFinished(IabResult result) {&lt;br /&gt;                Log.d(TAG, &quot;Setup finished.&quot;);&lt;br /&gt;                if (!result.isSuccess()) {&lt;br /&gt;                    Log.d(TAG, &quot;Problem setting up In-app Billing: &quot; + result);&lt;br /&gt;                }&lt;br /&gt;&lt;br /&gt;                if (mHelper == null)&lt;br /&gt;                    return;&lt;br /&gt;                &lt;br /&gt;            }&lt;br /&gt;        });&lt;br /&gt;    }&lt;br /&gt;&lt;br /&gt;    public static String xorDecrypt(String input, String key) {&lt;br /&gt;        byte[] inputBytes = Base64.decode(input, Base64.DEFAULT);&lt;br /&gt;        int inputSize = inputBytes.length;&lt;br /&gt;&lt;br /&gt;        byte[] keyBytes = key.getBytes();&lt;br /&gt;        int keySize = keyBytes.length - 1;&lt;br /&gt;&lt;br /&gt;        byte[] outBytes = new byte[inputSize];&lt;br /&gt;        for (int i = 0; i &amp;lt; inputSize; i++) {&lt;br /&gt;            outBytes[i] = (byte) (inputBytes[i] ^ keyBytes[i % keySize]);&lt;br /&gt;        }&lt;br /&gt;        return new String(outBytes);&lt;br /&gt;    }&lt;br /&gt;&lt;br /&gt;&lt;/pre&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;8-2 購買商品&lt;/span&gt;  &lt;br /&gt;&lt;br /&gt;購買商品要透過launchPurchaseFlow， &lt;br /&gt;launchPurchaseFlow有五個參數， &lt;br /&gt;1. activity &lt;br /&gt;2. product id，就是剛剛上面在developer console新增的那組 &lt;br /&gt;3. request code，onActivityResult時會回傳回來 &lt;br /&gt;4. listener，購買狀態的listener，用來接收購買成功與否 &lt;br /&gt;5. string，可以是空的，可以想像成是補充說明的意思，一樣在購買之後會回傳回來 &lt;br /&gt;&lt;pre class=&quot;brush: java&quot;&gt;    if (mHelper != null) {&lt;br /&gt;        mHelper.launchPurchaseFlow(this,&lt;br /&gt;                SKU_PREMIUM,&lt;br /&gt;                10001,&lt;br /&gt;                mPurchaseFinishedListener,&lt;br /&gt;                &quot;bGoa+V7g/yqDXvKRqq+JTFn4uQZbPiQJo4pf9RzJ&quot;);&lt;br /&gt;    }&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;    IabHelper.OnIabPurchaseFinishedListener mPurchaseFinishedListener = new IabHelper.OnIabPurchaseFinishedListener() {&lt;br /&gt;        public void onIabPurchaseFinished(IabResult result, Purchase purchase) {&lt;br /&gt;            if (result.isFailure()) {&lt;br /&gt;                Log.e(TAG, &quot;Error purchasing: &quot; + result);&lt;br /&gt;                return;&lt;br /&gt;            } else if (purchase.getSku().equals(SKU_PREMIUM)) {&lt;br /&gt;                Toast.makeText(getApplicationContext(), &quot;buy success&quot;,Toast.LENGTH_LONG).show();&lt;br /&gt;                Log.d(TAG, &quot;Success purchasing:&quot;);&lt;br /&gt;            }&lt;br /&gt;        }&lt;br /&gt;    };&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;8-3 查詢是否有購買&lt;/span&gt;   &lt;br /&gt;&lt;br /&gt;在購買成功以後，android會把購買的結果cache在機器上， &lt;br /&gt;以便快速地查詢， 查詢要透過queryInventoryAsync， &lt;br /&gt;queryInventoryAsync有二個參數， &lt;br /&gt;1. 是否要query product detail（ex: price） &lt;br /&gt;2. listener  &lt;br /&gt;其實第一個參數不一定要， &lt;br /&gt;但是當你在沒有網路的情況下， 你的request一定都會是fail， &lt;br /&gt;以至於你無法判斷這個user是否有購買了商品，&lt;br /&gt;且如果你加了第一個參數，你就無法得到商品的detail資訊． &lt;br /&gt;所以使用者要自己衡量一下何時該用．  &lt;br /&gt;&lt;pre class=&quot;brush: java&quot;&gt;    mHelper.queryInventoryAsync(false,mGotInventoryListener);&lt;br /&gt;    QueryInventoryFinishedListener mGotInventoryListener = new QueryInventoryFinishedListener() {&lt;br /&gt;        public void onQueryInventoryFinished(IabResult result, Inventory inventory) {&lt;br /&gt;&lt;br /&gt;            if (result.isFailure()) {&lt;br /&gt;                // handle error here&lt;br /&gt;            } else {&lt;br /&gt;                // does the user have the premium upgrade?&lt;br /&gt;                boolean mIsPremium = inventory.hasPurchase(SKU_PREMIUM);&lt;br /&gt;                if (mIsPremium) {&lt;br /&gt;                    Toast.makeText(getApplicationContext(), &quot;buy&quot;,Toast.LENGTH_LONG).show();&lt;br /&gt;                }else {&lt;br /&gt;                    Toast.makeText(getApplicationContext(), &quot;no buy&quot;,Toast.LENGTH_LONG).show();&lt;br /&gt;                }&lt;br /&gt;            }&lt;br /&gt;        }&lt;br /&gt;    };&lt;br /&gt;&lt;/pre&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;8-4 Error handling&lt;/span&gt;   &lt;br /&gt;&lt;br /&gt;最後一步驟，如果你launchPurchaseFlow了第一次，然後取消！ &lt;br /&gt;隨即馬上launchPurchaseFlow第二次，絕對會crash， &lt;br /&gt;原因是因為在onActivityResult中要做點處理， &lt;br /&gt;我覺得這很tricky，因為在官網上並沒有提到！ &lt;br /&gt;是去看他的example code才發現的！ &lt;br /&gt;最後也要記得destroy這個helper．  &lt;br /&gt;&lt;pre class=&quot;brush: java&quot;&gt;    @Override&lt;br /&gt;    protected void onActivityResult(int requestCode, int resultCode, Intent data) {&lt;br /&gt;        Log.d(TAG, &quot;onActivityResult handled by IABUtil.1&quot;);&lt;br /&gt;        // Pass on the activity result to the helper for handling&lt;br /&gt;        if (mHelper!=null &amp;amp;&amp;amp; !mHelper.handleActivityResult(requestCode, resultCode, data)) {&lt;br /&gt;            Log.d(TAG, &quot;onActivityResult handled by IABUtil.2&quot;);&lt;br /&gt;            // not handled, so handle it ourselves (here&#39;s where you&#39;d&lt;br /&gt;            // perform any handling of activity results not related to in-app&lt;br /&gt;            // billing...&lt;br /&gt;            super.onActivityResult(requestCode, resultCode, data);&lt;br /&gt;        } else {&lt;br /&gt;            Log.d(TAG, &quot;onActivityResult handled by IABUtil.&quot;);&lt;br /&gt;        }&lt;br /&gt;    }&lt;br /&gt;&lt;br /&gt;    @Override&lt;br /&gt;    protected void onDestroy() {&lt;br /&gt;        super.onDestroy();&lt;br /&gt;        if (adView != null) {&lt;br /&gt;            adView.destroy();&lt;br /&gt;        }&lt;br /&gt;&lt;br /&gt;        if (mHelper != null)&lt;br /&gt;            mHelper.dispose();&lt;br /&gt;        mHelper = null;&lt;br /&gt;    }&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;9. Test&lt;/span&gt;   &lt;br /&gt;&lt;br /&gt;要測試IBA真的是件麻煩的事情， &lt;br /&gt;要做兩件事， &lt;br /&gt;1. create test account &lt;br /&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;因為你用自己的developer account測，會永遠無法購買， &#39;&lt;br /&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;會跟你說publisher cannot purchase this item. &lt;br /&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;所以要去到developer console中的setting裡面加一組test account， &lt;br /&gt;2. Export Signed Application &lt;br /&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;因為你無法用debug key去build app， &lt;br /&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;用debug key build出來的app是無法測試的... &lt;br /&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;所以得用production key sign出來的app才可以測試． &lt;br /&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;接著再把sign好的apk裝在手機上就可以測試了！         &lt;br /&gt;&lt;/div&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;</content>
- </entry>
- 
- <entry>
-   <title>Android Backup service API  (backup internal database)</title>
-   <link href="http://blog.kenyang.net/2014/10/13/android-backup-service-api-backup"/>
-   <updated>2014-10-13T11:22:00+08:00</updated>
-   <id>http://blog.kenyang.net/2014/10/13/android-backup-service-api-backup</id>
-   <content type="html">&lt;div style=&quot;font-size: 15px; line-height: 22px;&quot;&gt;這篇要講Android自己的&lt;a href=&quot;http://developer.android.com/training/cloudsync/backupapi.html&quot;&gt;backup service&lt;/a&gt;，&lt;br /&gt;其實使用起來蠻簡單的，&lt;br /&gt;主要分成下面4個步驟，&lt;br /&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;1. Register for Android Backup Service&lt;/span&gt;  &lt;br /&gt;&lt;br /&gt;首先要先去註冊一個API Key，先到這個&lt;a href=&quot;https://developer.android.com/google/backup/signup.html?csw=1&quot;&gt;網站&lt;/a&gt;，&lt;br /&gt;進去以後輸入你的package name，接著就會給你一組API key．&lt;br /&gt;這樣就註冊完成．&lt;br /&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;2. Configuration&lt;/span&gt;  &lt;br /&gt;&lt;br /&gt;完成上面的註冊以後，接著要對你的project做configuration，&lt;br /&gt;先開啟你的AndroidManifest.xml，&lt;br /&gt;先在application element加上一個android:backupAgent這個attribute，&lt;br /&gt;這個attribute的名字，就是待會你新增的class名稱，&lt;br /&gt;&lt;pre class=&quot;brush: java&quot;&gt;&amp;lt;application android:label=&amp;quot;MyApp&amp;quot;&lt;br /&gt;             android:backupAgent=&amp;quot;ExpenseBackupAgent&amp;quot;&amp;gt;&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;接著在application之中，加入下段的meta data，&lt;br /&gt;記得把xxxxxxxxxx換成你剛剛註冊的API Key，&lt;br /&gt;&lt;pre class=&quot;brush: java&quot;&gt;&amp;lt;meta-data android:name=&amp;quot;com.google.android.backup.api_key&amp;quot;&lt;br /&gt;android:value=&amp;quot;xxxxxxxxxxxxxxxxxxx&amp;quot; /&amp;gt;&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;3. Backup internal database&lt;/span&gt;  &lt;br /&gt;&lt;br /&gt;接著新增一個Class，這個Class要繼承BackupAgentHelper，&lt;br /&gt;記得這Class名稱要跟你manifest.xml中的一樣！&lt;br /&gt;這裡要題外話一下，其實你也可以繼承BackupAgent，&lt;br /&gt;當你如果需要做到更複雜的backup時，&lt;br /&gt;例如你不想backup整份file，你只想backup某個&quot;部分&quot;的data，&lt;br /&gt;這時候你只能透過BackupAgent去做到，&lt;br /&gt;而BackupAgentHelper其實也只是BackupAgent的一個wrapper，&lt;br /&gt;讓你更輕易的backup和restore罷了．&lt;br /&gt;回到主題，先新增一個class繼承BackupAgentHelper，內容如下，&lt;br /&gt;在onCreate裡面用到了FileBackupHelper，&lt;br /&gt;最原始的FileBackupHelper是真的用來backup某個file，&lt;br /&gt;但因為我們這裡要backup db，&lt;br /&gt;所以我們要override掉getFilesDir，&lt;br /&gt;在getFilesDir中去拿db的路徑，&lt;br /&gt;然後透過FileBackupHelper去做backup！&lt;br /&gt;只要透過下面的code就可以幫你自動backup和restore了！&lt;br /&gt;&lt;br /&gt;&lt;pre class=&quot;brush: java&quot;&gt;public class ExpenseBackupAgent extends BackupAgentHelper {&lt;br /&gt;    private static final String DB_NAME = &quot;expense&quot;; // db名稱&lt;br /&gt;    private static final String TAG = ExpenseBackupAgent.class&lt;br /&gt;            .getCanonicalName();&lt;br /&gt;&lt;br /&gt;    @Override&lt;br /&gt;    public void onCreate() {&lt;br /&gt;        Log.e(TAG, &quot;backu db&quot;);&lt;br /&gt;        FileBackupHelper dbs = new FileBackupHelper(this, DB_NAME);&lt;br /&gt;        addHelper(&quot;dbs&quot;, dbs);&lt;br /&gt;    }&lt;br /&gt;&lt;br /&gt;    @Override&lt;br /&gt;    public File getFilesDir() {&lt;br /&gt;        final File f = getDatabasePath(DB_NAME);&lt;br /&gt;        return f.getParentFile();&lt;br /&gt;    }&lt;br /&gt;}&lt;br /&gt;&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;雖然說backup和restore都是自動的，&lt;br /&gt;那麼要怎麼主動的去request backup？&lt;br /&gt;那就要用BackupManager了，&lt;br /&gt;透過dataChanged，會去幫你queue這個backup的job，&lt;br /&gt;為什麼是說queue呢？因為backup不會馬上執行的！&lt;br /&gt;都是批次的執行！&lt;br /&gt;&lt;pre class=&quot;brush: java&quot;&gt;BackupManager bm = new BackupManager(this);&lt;br /&gt;bm.dataChanged();&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;4. Test&lt;/span&gt;  &lt;br /&gt;&lt;br /&gt;上面說到了Backup都是批次執行，不是即時的，那我該怎測試呢？&lt;br /&gt;要透過adb了，&lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;adb shell bmgr backup packagename  # 等於dataChanged&lt;br /&gt;adb shell bmgr run                 # 立即去trigger backup job&lt;br /&gt;adb uninstall packagename          # 先刪掉app&lt;br /&gt;&lt;/pre&gt;最後再安裝一次你的app，&lt;br /&gt;打開以後應該會發現你的資料都還在！&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;/div&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;</content>
  </entry>
  
  

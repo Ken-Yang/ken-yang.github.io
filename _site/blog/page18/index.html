@@ -294,6 +294,34 @@
     </div>
     <!-- This loops through the paginated posts -->
     
+      <h1><a style="color: #F22430" href="/2013/01/05/java-integer-pool">Java Integer Pool</a></h1>
+      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
+      <p class="author">
+      <div class="date">
+        <span>05 January 2013</span>
+      </div>
+      </p>
+      <div class="content" style="line-height: 28px;">
+        Integer是Java中的wrapper type（reference type）！<br /><br />簡單地說它是一個類別，每當你使用它一次就會有一個新的object產生！<br />因為所有的wrapper type 都屬於immutable的！<br />拿String的例子來說，<br /><pre class="brush: java">String strA = "hi";<br />strA = "hello";<br /></pre>上面這個例子實質上在記憶體裡面是有2個object產生！<br />因為他是immutable！<br /><br />Integer也是一樣！<br />但這篇要講的是Integer的一個pool機制！<br />pool機制是為了效能所存在！<br />直接從下面的例子來看<br /><br /><pre class="brush: java">Integer iA = 100;<br />Integer iB = 100;<br />System.out.println(iA==iB); // true<br /><br /><br />Integer iA = 128;<br />Integer iB = 128;<br />System.out.println(iA==iB); // false<br /><br /><br />Integer iA = new Integer(100);<br />Integer iB = new Integer(100);<br />System.out.println(iA==iB); // false<br /><br />int iA = 128;<br />int iB = 128;<br />System.out.println(iA==iB); // true<br /></pre><br />大家可能會覺得奇怪，為什麼第二個範例和第三個會是false<br />因為對於wrapper type來說，使用==符號比較的話，是在比較其記憶體位址！！！<br />並不是在比較value！<br /><br />那大家可能也會覺得奇怪，那為什麼第一個就是true?<br />因為Integer有一個pool機制（String也有pool機制）！<br />而這個pool裡面存放的value為-128~127！<br />也就是說當value在-128~127之間的話，都會從pool中存取，<br />並不會重新產生一個object！<br /><br />那大家可能也會覺得那麼第三個例子為什麼是false?<br />value是100阿！有在pool範圍內！<br />那是因為已經使用new了！竟然使用new，就會配置一塊新的記憶體給它！<br /><br /><br />第四個範例的value超過pool了，<br />但結果還是true的原因是因為第四個範例並不是wrapper type!<br />而是primitive type！<br />primitive type的比較符號==就是在比value！<br /><br /><br />那麼可能有人會好奇什麼時候使用int或Integer，<br />恩，Integer他是屬於類別，因此他會有比較fancy的method使用，<br />當你可能得對你的value做一些較複雜的操作時或許就可以使用Integer！<br /><br />還有就是當你有使用Collection時，<br />記得請使用wrapper type！<br />雖然說java目前都有支援<a href="http://blog.kenyang.net/2012/01/java-unboxingboxing.html">auto-boxing</a>的機制，儘管你傳入primitive，<br />java都會幫你轉成wrapper type！<br />但這個轉換的機制是很會消耗效能的！<br />因此在這種情況也請使用wrapper type！<br /><br /><br /><br /><br />上面有提到String也有pool機制，<br />但String pool並沒有範圍限制！<br />只要你使用過的String都會被放置在pool之中！<br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
+      </div>
+      <footer>
+        <p><a class="myButton" href="/2013/01/05/java-integer-pool">read more &raquo;</a></p>
+        <div>
+          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- ken on github -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3783438370424072"
+     data-ad-slot="1516206098"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+        </div>
+      </footer>
+      <hr>
+    
       <h1><a style="color: #F22430" href="/2013/01/03/arduino-bluetooth">Arduino bluetooth</a></h1>
       <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
       <p class="author">
@@ -334,34 +362,6 @@
       </div>
       <footer>
         <p><a class="myButton" href="/2012/11/25/android-startservice-vs-bindservice">read more &raquo;</a></p>
-        <div>
-          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<!-- ken on github -->
-<ins class="adsbygoogle"
-     style="display:block"
-     data-ad-client="ca-pub-3783438370424072"
-     data-ad-slot="1516206098"
-     data-ad-format="auto"></ins>
-<script>
-(adsbygoogle = window.adsbygoogle || []).push({});
-</script>
-
-        </div>
-      </footer>
-      <hr>
-    
-      <h1><a style="color: #F22430" href="/2012/11/19/android-r-cannot-be-resolved-to-variable">Android: r cannot be resolved to a variable</a></h1>
-      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
-      <p class="author">
-      <div class="date">
-        <span>19 November 2012</span>
-      </div>
-      </p>
-      <div class="content" style="line-height: 28px;">
-        <span style="background-color: white; color: #333333; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; font-size: 13px; line-height: 17px;">早上發生了一個很有趣的事情...</span><br /><span style="background-color: white; color: #333333; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; font-size: 13px; line-height: 17px;">因為最近新版的Android</span><wbr style="background-color: white; color: #333333; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; font-size: 13px; line-height: 17px;"></wbr><span class="word_break" style="background-color: white; color: #333333; display: inline-block; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; font-size: 13px; line-height: 17px;"></span><span style="background-color: white; color: #333333; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; font-size: 13px; line-height: 17px;">&nbsp;SDK非常的雞婆！</span><br /><span style="background-color: white; color: #333333; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; font-size: 13px; line-height: 17px;">如果一開始預設選的sdk是4.x以上，</span><br /><span style="background-color: white; color: #333333; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; font-size: 13px; line-height: 17px;">re</span><wbr style="background-color: white; color: #333333; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; font-size: 13px; line-height: 17px;"></wbr><span class="word_break" style="background-color: white; color: #333333; display: inline-block; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; font-size: 13px; line-height: 17px;"></span><span style="background-color: white; color: #333333; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; font-size: 13px; line-height: 17px;">s/</span><wbr style="background-color: white; color: #333333; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; font-size: 13px; line-height: 17px;"></wbr><span class="word_break" style="background-color: white; color: #333333; display: inline-block; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; font-size: 13px; line-height: 17px;"></span><span style="background-color: white; color: #333333; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; font-size: 13px; line-height: 17px;">底下會多了一個value-v11, value-v14住兩個資料夾，</span><br /><span style="background-color: white; color: #333333; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; font-size: 13px; line-height: 17px;">這裡面都是放一些layout/</span><wbr style="background-color: white; color: #333333; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; font-size: 13px; line-height: 17px;"></wbr><span class="word_break" style="background-color: white; color: #333333; display: inline-block; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; font-size: 13px; line-height: 17px;"></span><span style="background-color: white; color: #333333; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; font-size: 13px; line-height: 17px;">theme！</span><br /><span style="background-color: white; color: #333333; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; font-size: 13px; line-height: 17px;"><br /></span> <span style="background-color: white; color: #333333; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; font-size: 13px; line-height: 17px;">這些layout就是根據不同的SDK version去gen出來的！</span><br /><span style="background-color: white; color: #333333; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; font-size: 13px; line-height: 17px;">其實它的目的就是要你吃它新推出</span><wbr style="background-color: white; color: #333333; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; font-size: 13px; line-height: 17px;"></wbr><span class="word_break" style="background-color: white; color: #333333; display: inline-block; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; font-size: 13px; line-height: 17px;"></span><span style="background-color: white; color: #333333; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; font-size: 13px; line-height: 17px;">的action bar的概念！</span><br /><span style="background-color: white; color: #333333; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; font-size: 13px; line-height: 17px;">但是如果你把project default sdk version改成2.x！</span><br /><span style="background-color: white; color: #333333; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; font-size: 13px; line-height: 17px;">那就慘了！因為2.X SDK不認得那是什麼！！！</span><br /><span style="background-color: white; color: #333333; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; font-size: 13px; line-height: 17px;">所以你的R.java會一直buil</span><wbr style="background-color: white; color: #333333; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; font-size: 13px; line-height: 17px;"></wbr><span class="word_break" style="background-color: white; color: #333333; display: inline-block; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; font-size: 13px; line-height: 17px;"></span><span style="background-color: white; color: #333333; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; font-size: 13px; line-height: 17px;">d不出來！</span><br /><span style="background-color: white; color: #333333; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; font-size: 13px; line-height: 17px;">soloution就是把那兩個資料夾砍了！</span><br /><span style="background-color: white; color: #333333; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; font-size: 13px; line-height: 17px;">還有一點</span><wbr style="background-color: white; color: #333333; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; font-size: 13px; line-height: 17px;"></wbr><span class="word_break" style="background-color: white; color: #333333; display: inline-block; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; font-size: 13px; line-height: 17px;"></span><span style="background-color: white; color: #333333; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; font-size: 13px; line-height: 17px;">！在layout裡面以前有一個attribute是fill_</span><wbr style="background-color: white; color: #333333; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; font-size: 13px; line-height: 17px;"></wbr><span class="word_break" style="background-color: white; color: #333333; display: inline-block; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; font-size: 13px; line-height: 17px;"></span><span style="background-color: white; color: #333333; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; font-size: 13px; line-height: 17px;">parent！</span><br /><span style="background-color: white; color: #333333; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; font-size: 13px; line-height: 17px;">但在某個版本SDK被deprecated！改成</span><wbr style="background-color: white; color: #333333; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; font-size: 13px; line-height: 17px;"></wbr><span class="word_break" style="background-color: white; color: #333333; display: inline-block; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; font-size: 13px; line-height: 17px;"></span><span style="background-color: white; color: #333333; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; font-size: 13px; line-height: 17px;">match_parent！！！</span><br /><span style="background-color: white; color: #333333; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; font-size: 13px; line-height: 17px;"><br /></span> <span style="background-color: white; color: #333333; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; font-size: 13px; line-height: 17px;">而4.X就是用match_pa</span><wbr style="background-color: white; color: #333333; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; font-size: 13px; line-height: 17px;"></wbr><span class="word_break" style="background-color: white; color: #333333; display: inline-block; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; font-size: 13px; line-height: 17px;"></span><span style="background-color: white; color: #333333; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; font-size: 13px; line-height: 17px;">rent！</span><br /><span style="background-color: white; color: #333333; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; font-size: 13px; line-height: 17px;">如果改回2.X sdk就要把match_parent改成fill_paren</span><wbr style="background-color: white; color: #333333; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; font-size: 13px; line-height: 17px;"></wbr><span class="word_break" style="background-color: white; color: #333333; display: inline-block; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; font-size: 13px; line-height: 17px;"></span><span style="background-color: white; color: #333333; font-family: 'lucida grande', tahoma, verdana, arial, sans-serif; font-size: 13px; line-height: 17px;">t！</span><br /><br /><br /><br />
-      </div>
-      <footer>
-        <p><a class="myButton" href="/2012/11/19/android-r-cannot-be-resolved-to-variable">read more &raquo;</a></p>
         <div>
           <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 <!-- ken on github -->

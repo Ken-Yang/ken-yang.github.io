@@ -5,10 +5,177 @@
         <description>Ken Yang筆記 - Ken Yang</description>
         <link>http://blog.kenyang.net</link>
         <atom:link href="http://blog.kenyang.net/rss.xml" rel="self" type="application/rss+xml" />
-        <lastBuildDate>Sat, 16 Apr 2016 18:34:11 +0800</lastBuildDate>
-        <pubDate>Sat, 16 Apr 2016 18:34:11 +0800</pubDate>
+        <lastBuildDate>Wed, 22 Jun 2016 12:15:01 +0800</lastBuildDate>
+        <pubDate>Wed, 22 Jun 2016 12:15:01 +0800</pubDate>
         <ttl>60</ttl>
 
+
+        <item>
+                <title>Android: App bar/Tool bar</title>
+                <description>&lt;p&gt;&lt;font size=&quot;3&quot;&gt;&lt;/p&gt;
+
+&lt;p&gt;大概一年多沒有寫Android了，最近發現好多不一樣了，&lt;/br&gt;
+譬如說ActionBar變成AppBar..不過以前的ActionBar還能繼續用，&lt;/br&gt;
+但還是得學一下怎麼用App bar跟上潮流。&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://github.com/Ken-Yang/AndroidAppBar&quot;&gt;Example Code on Github&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;/br&gt;&lt;/p&gt;
+
+&lt;hr&gt;
+
+&lt;h3 id=&quot;1-create-new-project&quot;&gt;1. Create new project&lt;/h3&gt;
+
+&lt;hr&gt;
+
+&lt;p&gt;首先先建立一個新的project，然後選擇Empty activity。&lt;/p&gt;
+
+&lt;p&gt;&lt;/br&gt;&lt;/p&gt;
+
+&lt;hr&gt;
+
+&lt;h3 id=&quot;2-add-dependency&quot;&gt;2. Add dependency&lt;/h3&gt;
+
+&lt;hr&gt;
+
+&lt;p&gt;接著打開build.gradle，把appcompat加入dependency，&lt;/br&gt;
+不過如果你的Android Studio是新版的，就會自動幫你加入了。&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-xml&quot; data-lang=&quot;xml&quot;&gt;dependencies {
+    compile fileTree(dir: &amp;#39;libs&amp;#39;, include: [&amp;#39;*.jar&amp;#39;])
+    testCompile &amp;#39;junit:junit:4.12&amp;#39;
+    compile &amp;#39;com.android.support:appcompat-v7:23.1.1&amp;#39;
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;!--more--&gt;
+
+&lt;p&gt;&lt;/br&gt;&lt;/p&gt;
+
+&lt;hr&gt;
+
+&lt;h3 id=&quot;3-remove-actionbar&quot;&gt;3. Remove actionbar&lt;/h3&gt;
+
+&lt;hr&gt;
+
+&lt;p&gt;因為Default style會去繼承ActionBar Theme，所以我們要把它移除掉，&lt;/br&gt;
+打開&lt;code&gt;style.xml&lt;/code&gt;，然後把parent改成&lt;code&gt;Theme.AppCompat.Light.NoActionBar&lt;/code&gt;。&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-xml&quot; data-lang=&quot;xml&quot;&gt;&lt;span class=&quot;c&quot;&gt;&amp;lt;!-- Base application theme. --&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;style&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;AppTheme&amp;quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;parent=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;Theme.AppCompat.Light.NoActionBar&amp;quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;/style&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;/br&gt;&lt;/p&gt;
+
+&lt;hr&gt;
+
+&lt;h3 id=&quot;4-color-your-app-bar&quot;&gt;4. Color your App Bar&lt;/h3&gt;
+
+&lt;hr&gt;
+
+&lt;p&gt;接著要去設定App Bar的顏色，AppBar主要有兩種顏色：&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;colorPrimary&lt;/strong&gt; : 以前ActionBar那條的背景顏色&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;colorPrimaryDark&lt;/strong&gt; : Status 那條的背景顏色&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;&lt;/br&gt;&lt;/p&gt;
+
+&lt;p&gt;首先要先在&lt;code&gt;color.xml&lt;/code&gt;中，新增上述的二個顏色。&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-xml&quot; data-lang=&quot;xml&quot;&gt;&lt;span class=&quot;cp&quot;&gt;&amp;lt;?xml version=&amp;quot;1.0&amp;quot; encoding=&amp;quot;utf-8&amp;quot;?&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;resources&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;&amp;lt;color&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;colorPrimary&amp;quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;#FF5722&lt;span class=&quot;nt&quot;&gt;&amp;lt;/color&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;&amp;lt;color&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;colorPrimaryDark&amp;quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;#E64A19&lt;span class=&quot;nt&quot;&gt;&amp;lt;/color&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;/resources&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;接著在&lt;code&gt;style.xml&lt;/code&gt;中指定上述的二個顏色。&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-xml&quot; data-lang=&quot;xml&quot;&gt;&lt;span class=&quot;c&quot;&gt;&amp;lt;!-- Base application theme. --&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;style&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;AppTheme&amp;quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;parent=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;Theme.AppCompat.Light.NoActionBar&amp;quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;c&quot;&gt;&amp;lt;!-- Customize your theme here. --&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;&amp;lt;item&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;colorPrimary&amp;quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;@color/colorPrimary&lt;span class=&quot;nt&quot;&gt;&amp;lt;/item&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;&amp;lt;item&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;colorPrimaryDark&amp;quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;@color/colorPrimaryDark&lt;span class=&quot;nt&quot;&gt;&amp;lt;/item&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;/style&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;/br&gt;&lt;/p&gt;
+
+&lt;hr&gt;
+
+&lt;h3 id=&quot;5-create-a-toobar&quot;&gt;5. Create a toobar&lt;/h3&gt;
+
+&lt;hr&gt;
+
+&lt;p&gt;接著去&lt;code&gt;res/layout&lt;/code&gt;資料夾中，建立一個名稱為&lt;code&gt;too_bar.xml&lt;/code&gt;的layout file，內容如下，有幾個需要說明的屬性為：&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;theme&lt;/strong&gt;: 指定了Dark.ActionBar，是為了設定AppBar的一些style，譬如說字體顏色，Dark.ActionBar的字體顏色就是白色&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;popupTheme&lt;/strong&gt;: 當你點擊ActionItem時，會popup一個list，這個list的theme&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;background&lt;/strong&gt; : Toolbar的背景顏色&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-xml&quot; data-lang=&quot;xml&quot;&gt;&lt;span class=&quot;cp&quot;&gt;&amp;lt;?xml version=&amp;quot;1.0&amp;quot; encoding=&amp;quot;utf-8&amp;quot;?&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;android.support.v7.widget.Toolbar&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;xmlns:android=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;http://schemas.android.com/apk/res/android&amp;quot;&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;xmlns:app=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;http://schemas.android.com/apk/res-auto&amp;quot;&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;android:layout_width=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;match_parent&amp;quot;&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;android:layout_height=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;?attr/actionBarSize&amp;quot;&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;app:theme=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;@style/ThemeOverlay.AppCompat.Dark.ActionBar&amp;quot;&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;app:popupTheme=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;@style/ThemeOverlay.AppCompat.Light&amp;quot;&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;android:background=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;@color/colorPrimary&amp;quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
+
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;/android.support.v7.widget.Toolbar&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;/br&gt;&lt;/p&gt;
+
+&lt;hr&gt;
+
+&lt;h3 id=&quot;6-add-the-toolbar-into-activity&quot;&gt;6. Add the toolbar into activity&lt;/h3&gt;
+
+&lt;hr&gt;
+
+&lt;p&gt;然後要在主要的layout中，include上面的&lt;code&gt;tool_bar.xml&lt;/code&gt;。&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-xml&quot; data-lang=&quot;xml&quot;&gt;&lt;span class=&quot;cp&quot;&gt;&amp;lt;?xml version=&amp;quot;1.0&amp;quot; encoding=&amp;quot;utf-8&amp;quot;?&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;RelativeLayout&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;xmlns:android=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;http://schemas.android.com/apk/res/android&amp;quot;&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;xmlns:tools=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;http://schemas.android.com/tools&amp;quot;&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;android:layout_width=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;match_parent&amp;quot;&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;android:layout_height=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;match_parent&amp;quot;&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;tools:context=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;com.ag888.ams.LoginActivity&amp;quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
+
+    &lt;span class=&quot;nt&quot;&gt;&amp;lt;include&lt;/span&gt;
+        &lt;span class=&quot;na&quot;&gt;android:id=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;@+id/tool_bar&amp;quot;&lt;/span&gt;
+        &lt;span class=&quot;na&quot;&gt;layout=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;@layout/tool_bar&amp;quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;/&amp;gt;&lt;/span&gt;
+
+    &lt;span class=&quot;nt&quot;&gt;&amp;lt;TextView&lt;/span&gt;
+        &lt;span class=&quot;na&quot;&gt;android:layout_below=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;@+id/tool_bar&amp;quot;&lt;/span&gt;
+        &lt;span class=&quot;na&quot;&gt;android:layout_width=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;wrap_content&amp;quot;&lt;/span&gt;
+        &lt;span class=&quot;na&quot;&gt;android:layout_height=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;wrap_content&amp;quot;&lt;/span&gt;
+        &lt;span class=&quot;na&quot;&gt;android:text=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;Hello World!&amp;quot;&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;/&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;/RelativeLayout&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;/br&gt;&lt;/p&gt;
+
+&lt;hr&gt;
+
+&lt;h3 id=&quot;7-setup-toolbar-as-actionbar&quot;&gt;7. Setup toolbar as actionbar&lt;/h3&gt;
+
+&lt;hr&gt;
+
+&lt;p&gt;完成上面步驟以後，你可以試著run看看，但你會發現就只是簡單的一條bar而已，&lt;/br&gt;
+並沒有title或者action item之類的，所以接下要把toolbar設定成ActionBar，&lt;/br&gt;
+把&lt;code&gt;ToolBar&lt;/code&gt;丟進去&lt;code&gt;setSupportActionBar()&lt;/code&gt;就可以了。&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;&lt;span class=&quot;nd&quot;&gt;@Override&lt;/span&gt;
+&lt;span class=&quot;kd&quot;&gt;protected&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;onCreate&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Bundle&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;savedInstanceState&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;kd&quot;&gt;super&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;onCreate&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;savedInstanceState&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;setContentView&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;R&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;layout&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;activity_login&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+
+    &lt;span class=&quot;n&quot;&gt;toolbar&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Toolbar&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;findViewById&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;R&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;id&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;tool_bar&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;setSupportActionBar&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;toolbar&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;/br&gt;&lt;/br&gt;&lt;/br&gt;&lt;/br&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;/font&gt;&lt;/p&gt;
+</description>
+                <link>http://blog.kenyang.net/2016/06/22/android-app-bartool-bar</link>
+                <guid>http://blog.kenyang.net/2016/06/22/android-app-bartool-bar</guid>
+                <pubDate>Wed, 22 Jun 2016 00:00:00 +0800</pubDate>
+        </item>
 
         <item>
                 <title>Setting up an HTTPS server with Node.js</title>
@@ -2412,14 +2579,6 @@ mv完成以後，接著打開&lt;code&gt;index.html&lt;/code&gt;，&lt;br&gt;
                 <link>http://blog.kenyang.net/2014/10/16/android-in-app-billing-iab-version-3</link>
                 <guid>http://blog.kenyang.net/2014/10/16/android-in-app-billing-iab-version-3</guid>
                 <pubDate>Thu, 16 Oct 2014 16:19:00 +0800</pubDate>
-        </item>
-
-        <item>
-                <title>Android Backup service API  (backup internal database)</title>
-                <description>&lt;div style=&quot;font-size: 15px; line-height: 22px;&quot;&gt;這篇要講Android自己的&lt;a href=&quot;http://developer.android.com/training/cloudsync/backupapi.html&quot;&gt;backup service&lt;/a&gt;，&lt;br /&gt;其實使用起來蠻簡單的，&lt;br /&gt;主要分成下面4個步驟，&lt;br /&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;1. Register for Android Backup Service&lt;/span&gt;  &lt;br /&gt;&lt;br /&gt;首先要先去註冊一個API Key，先到這個&lt;a href=&quot;https://developer.android.com/google/backup/signup.html?csw=1&quot;&gt;網站&lt;/a&gt;，&lt;br /&gt;進去以後輸入你的package name，接著就會給你一組API key．&lt;br /&gt;這樣就註冊完成．&lt;br /&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;2. Configuration&lt;/span&gt;  &lt;br /&gt;&lt;br /&gt;完成上面的註冊以後，接著要對你的project做configuration，&lt;br /&gt;先開啟你的AndroidManifest.xml，&lt;br /&gt;先在application element加上一個android:backupAgent這個attribute，&lt;br /&gt;這個attribute的名字，就是待會你新增的class名稱，&lt;br /&gt;&lt;pre class=&quot;brush: java&quot;&gt;&amp;lt;application android:label=&amp;quot;MyApp&amp;quot;&lt;br /&gt;             android:backupAgent=&amp;quot;ExpenseBackupAgent&amp;quot;&amp;gt;&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;接著在application之中，加入下段的meta data，&lt;br /&gt;記得把xxxxxxxxxx換成你剛剛註冊的API Key，&lt;br /&gt;&lt;pre class=&quot;brush: java&quot;&gt;&amp;lt;meta-data android:name=&amp;quot;com.google.android.backup.api_key&amp;quot;&lt;br /&gt;android:value=&amp;quot;xxxxxxxxxxxxxxxxxxx&amp;quot; /&amp;gt;&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;3. Backup internal database&lt;/span&gt;  &lt;br /&gt;&lt;br /&gt;接著新增一個Class，這個Class要繼承BackupAgentHelper，&lt;br /&gt;記得這Class名稱要跟你manifest.xml中的一樣！&lt;br /&gt;這裡要題外話一下，其實你也可以繼承BackupAgent，&lt;br /&gt;當你如果需要做到更複雜的backup時，&lt;br /&gt;例如你不想backup整份file，你只想backup某個&quot;部分&quot;的data，&lt;br /&gt;這時候你只能透過BackupAgent去做到，&lt;br /&gt;而BackupAgentHelper其實也只是BackupAgent的一個wrapper，&lt;br /&gt;讓你更輕易的backup和restore罷了．&lt;br /&gt;回到主題，先新增一個class繼承BackupAgentHelper，內容如下，&lt;br /&gt;在onCreate裡面用到了FileBackupHelper，&lt;br /&gt;最原始的FileBackupHelper是真的用來backup某個file，&lt;br /&gt;但因為我們這裡要backup db，&lt;br /&gt;所以我們要override掉getFilesDir，&lt;br /&gt;在getFilesDir中去拿db的路徑，&lt;br /&gt;然後透過FileBackupHelper去做backup！&lt;br /&gt;只要透過下面的code就可以幫你自動backup和restore了！&lt;br /&gt;&lt;br /&gt;&lt;pre class=&quot;brush: java&quot;&gt;public class ExpenseBackupAgent extends BackupAgentHelper {&lt;br /&gt;    private static final String DB_NAME = &quot;expense&quot;; // db名稱&lt;br /&gt;    private static final String TAG = ExpenseBackupAgent.class&lt;br /&gt;            .getCanonicalName();&lt;br /&gt;&lt;br /&gt;    @Override&lt;br /&gt;    public void onCreate() {&lt;br /&gt;        Log.e(TAG, &quot;backu db&quot;);&lt;br /&gt;        FileBackupHelper dbs = new FileBackupHelper(this, DB_NAME);&lt;br /&gt;        addHelper(&quot;dbs&quot;, dbs);&lt;br /&gt;    }&lt;br /&gt;&lt;br /&gt;    @Override&lt;br /&gt;    public File getFilesDir() {&lt;br /&gt;        final File f = getDatabasePath(DB_NAME);&lt;br /&gt;        return f.getParentFile();&lt;br /&gt;    }&lt;br /&gt;}&lt;br /&gt;&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;雖然說backup和restore都是自動的，&lt;br /&gt;那麼要怎麼主動的去request backup？&lt;br /&gt;那就要用BackupManager了，&lt;br /&gt;透過dataChanged，會去幫你queue這個backup的job，&lt;br /&gt;為什麼是說queue呢？因為backup不會馬上執行的！&lt;br /&gt;都是批次的執行！&lt;br /&gt;&lt;pre class=&quot;brush: java&quot;&gt;BackupManager bm = new BackupManager(this);&lt;br /&gt;bm.dataChanged();&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;4. Test&lt;/span&gt;  &lt;br /&gt;&lt;br /&gt;上面說到了Backup都是批次執行，不是即時的，那我該怎測試呢？&lt;br /&gt;要透過adb了，&lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;adb shell bmgr backup packagename  # 等於dataChanged&lt;br /&gt;adb shell bmgr run                 # 立即去trigger backup job&lt;br /&gt;adb uninstall packagename          # 先刪掉app&lt;br /&gt;&lt;/pre&gt;最後再安裝一次你的app，&lt;br /&gt;打開以後應該會發現你的資料都還在！&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;/div&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;</description>
-                <link>http://blog.kenyang.net/2014/10/13/android-backup-service-api-backup</link>
-                <guid>http://blog.kenyang.net/2014/10/13/android-backup-service-api-backup</guid>
-                <pubDate>Mon, 13 Oct 2014 11:22:00 +0800</pubDate>
         </item>
 
 

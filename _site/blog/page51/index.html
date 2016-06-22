@@ -294,6 +294,34 @@
     </div>
     <!-- This loops through the paginated posts -->
     
+      <h1><a style="color: #F22430" href="/2010/08/07/android-filemkdir">android file.mkdir()</a></h1>
+      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
+      <p class="author">
+      <div class="date">
+        <span>07 August 2010</span>
+      </div>
+      </p>
+      <div class="content" style="line-height: 28px;">
+        <br />今天在實作在 sdcard裡面建立一個檔案!<br /><br />其實這沒什麼難度!<br /><br /><pre class="brush: java">File file = new File("/sdcard/tmp/tmp.db");<br />file.createNewFile();<br /></pre><br /><br />這樣乍看之下是沒甚麼問題<br /><br />但如果沒有tmp此目錄的話!<br /><br />則會出現exception<br /><br />當然! 要建立一個目錄也很簡單!!只要用mkdir即可!<br /><br /><pre class="brush: java">file.mkdir();<br /></pre><br /><br />但是!<br /><br />必須加入一個權限才可以建立目錄!<br /><br /><pre class="brush: java">&lt;uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"&gt;&lt;/uses-permission&gt;<br /><br /></pre><br /><br />但是建立檔案就不用了!
+      </div>
+      <footer>
+        <p><a class="myButton" href="/2010/08/07/android-filemkdir">read more &raquo;</a></p>
+        <div>
+          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- ken on github -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3783438370424072"
+     data-ad-slot="1516206098"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+        </div>
+      </footer>
+      <hr>
+    
       <h1><a style="color: #F22430" href="/2010/08/01/drawable-bitmap">Drawable 轉換 Bitmap</a></h1>
       <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
       <p class="author">
@@ -334,34 +362,6 @@
       </div>
       <footer>
         <p><a class="myButton" href="/2010/07/26/android-tab-activity">read more &raquo;</a></p>
-        <div>
-          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<!-- ken on github -->
-<ins class="adsbygoogle"
-     style="display:block"
-     data-ad-client="ca-pub-3783438370424072"
-     data-ad-slot="1516206098"
-     data-ad-format="auto"></ins>
-<script>
-(adsbygoogle = window.adsbygoogle || []).push({});
-</script>
-
-        </div>
-      </footer>
-      <hr>
-    
-      <h1><a style="color: #F22430" href="/2010/07/21/android-appsd-card">讓android app安裝在SD card</a></h1>
-      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
-      <p class="author">
-      <div class="date">
-        <span>21 July 2010</span>
-      </div>
-      </p>
-      <div class="content" style="line-height: 28px;">
-        怎麼讓android app安裝在SDcard裡面去?<br /><br />這個問題我研究了一陣子==<br /><br />一直以為是上傳至MARKET有個選項讓我們勾(Application can be copied from the device)<br /><br />以為勾了就可以使那隻APP能夠安裝到記憶卡裡去==<br /><br />原來不是!<br /><br />是要在AndroidManifest.xml裡面插入一個attributes<br /><br />如下<br /><br /><pre class="brush: xml">&lt;manifest <br />      xmlns:android="http://schemas.android.com/apk/res/android"<br />      android:installLocation="preferExternal"&gt;<br /><br /></pre><br />使用<span class="Apple-style-span" style="font-family: monospace; white-space: pre;">android:installLocation此屬性即可，有三個選項</span><br /><span class="Apple-style-span" style="font-family: monospace; white-space: pre;"><br /></span><br /><span class="Apple-style-span" style="font-family: monospace; white-space: pre;">1.internalOnly(只能安裝在手機裡)</span><br /><span class="Apple-style-span" style="font-family: monospace; white-space: pre;"><br /></span><br /><span class="Apple-style-span" style="font-family: monospace; white-space: pre;">2.</span><span class="Apple-style-span" style="font-family: monospace; white-space: pre;">preferExternal(自動安裝至記憶卡裡)</span><br /><span class="Apple-style-span" style="font-family: monospace; white-space: pre;"><br /></span><br /><span class="Apple-style-span" style="font-family: monospace; white-space: pre;">3.auto(就是讓使用者自己選啦)</span><br /><br /><br /><br /><br />
-      </div>
-      <footer>
-        <p><a class="myButton" href="/2010/07/21/android-appsd-card">read more &raquo;</a></p>
         <div>
           <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 <!-- ken on github -->
