@@ -5,10 +5,206 @@
         <description>Ken Yang筆記 - Ken Yang</description>
         <link>http://blog.kenyang.net</link>
         <atom:link href="http://blog.kenyang.net/rss.xml" rel="self" type="application/rss+xml" />
-        <lastBuildDate>Wed, 22 Jun 2016 12:15:01 +0800</lastBuildDate>
-        <pubDate>Wed, 22 Jun 2016 12:15:01 +0800</pubDate>
+        <lastBuildDate>Tue, 06 Sep 2016 09:02:16 +0800</lastBuildDate>
+        <pubDate>Tue, 06 Sep 2016 09:02:16 +0800</pubDate>
         <ttl>60</ttl>
 
+
+        <item>
+                <title>How to create a Telegram Bot</title>
+                <description>&lt;p&gt;&lt;font size=&quot;3&quot;&gt;&lt;/p&gt;
+
+&lt;p&gt;今天看到一個朋友寫了FacebookBot，還整了AWS Lambda、斷詞API，突然感到很興奮，&lt;/br&gt;
+但我沒打算花太多時間在Bot上，只打算做一個簡單的資訊查詢的bot，&lt;/br&gt;
+所以選擇了&lt;a href=&quot;https://core.telegram.org/bots/api&quot;&gt;Telegram Bot&lt;/a&gt;，原因是我們公司內部使用Telegram來溝通，&lt;/br&gt;
+所以就想做一個Bot讓公司的同事查詢一些公司資訊（ex: wifi, 統編）。&lt;/p&gt;
+
+&lt;p&gt;&lt;/br&gt;&lt;/p&gt;
+
+&lt;hr&gt;
+
+&lt;h3 id=&quot;1-add-botfather-as-friend&quot;&gt;1. Add BotFather as friend&lt;/h3&gt;
+
+&lt;hr&gt;
+
+&lt;p&gt;首先我們要使用telegram加&lt;code&gt;BotFather&lt;/code&gt;這個user，透過&lt;code&gt;BotFather&lt;/code&gt;去create bot。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/2016-09-06-add-bot-father.png&quot; alt=&quot;Ticket&quot;&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;/br&gt;&lt;/p&gt;
+
+&lt;hr&gt;
+
+&lt;h3 id=&quot;2-create-a-bot&quot;&gt;2. Create a bot&lt;/h3&gt;
+
+&lt;hr&gt;
+
+&lt;p&gt;成功加入&lt;code&gt;BotFather&lt;/code&gt;以後，就可以透過指令&lt;code&gt;/newbot&lt;/code&gt;去create bot，&lt;/br&gt;
+整個過程會以對話的方式進行（如下圖），會先問你的bot名稱要叫什麼以及它的username（類似ID，用來被search），&lt;/br&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/2016-09-06-create-bot.png&quot; alt=&quot;Ticket&quot;&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;/br&gt;&lt;/p&gt;
+
+&lt;p&gt;建立成功以後，BotFather就會跟你說的你的bot token，這token很重要，是之後要用來request API用的。&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;Use this token to access the HTTP API:
+2X2X2XXX0:XXXXXXXXXXXXXXXXXXXXXXX
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;/br&gt;&lt;/p&gt;
+
+&lt;!--more--&gt;
+
+&lt;hr&gt;
+
+&lt;h3 id=&quot;3-send-receive-message-from-bot&quot;&gt;3. Send/Receive message from bot&lt;/h3&gt;
+
+&lt;hr&gt;
+
+&lt;p&gt;Telegram在receive訊息有二種方式，一種是透過RESTful API去要，但是被動的方式，得透過long-pulling的方式去拿，&lt;/br&gt;
+另外一種就是透過web hook，是主動的方式，有任何訊息給bot，Telegram會主動的去打我們的Server，&lt;/br&gt;
+這裡的案例是使用webhook，而在send and receive訊息之前，&lt;/br&gt;
+我們必須先建立一個&lt;strong&gt;HTTPS&lt;/strong&gt; server，Telegram規定一定必須為HTTPS，&lt;/br&gt;
+不過是允許用self-signed的，但前提是你得把public key上傳至telegram，&lt;/br&gt;
+稍後都會說明如何上傳。
+這裡我選擇在ubuntu上，使用Node.js來建立HTTPS server，下面的步驟分為三個部分：&lt;/br&gt;&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;Install Node.js&lt;/li&gt;
+&lt;li&gt;Create web project&lt;/li&gt;
+&lt;li&gt;Generate SSL certificate&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;c&quot;&gt;# Install Node.js&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;wget https://nodejs.org/dist/v4.4.7/node-v4.4.7-linux-x64.tar.gz
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;tar -xvzf node-v4.4.7-linux-x64.tar.gz
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;export &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;PATH&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;/home/ubuntu/node-v4.4.7-linux-x64/bin:&lt;span class=&quot;nv&quot;&gt;$PATH&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;# Create bot web project&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cd&lt;/span&gt; ~/
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;mkdir bot/
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cd &lt;/span&gt;bot
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;npm init
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;npm install --save express
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;npm install --save body-parser
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;npm install --save request
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;npm install --save morgan
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;npm install -g pm2
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;mkdir ssl
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cd &lt;/span&gt;ssl
+
+&lt;span class=&quot;c&quot;&gt;# Generate SSL certificate&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;openssl req -newkey rsa:2048 -sha256 -nodes -keyout server.key -x509 -days &lt;span class=&quot;m&quot;&gt;3650&lt;/span&gt; -out server.pem -subj &lt;span class=&quot;s2&quot;&gt;&amp;quot;/C=TW/ST=Taipei/L=Taipei/O=None/CN=bot.kenyang.net&amp;quot;&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cd&lt;/span&gt; ../
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;mkdir -p /var/log/bot/
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;/br&gt;
+接著來寫我們的主程式&lt;code&gt;index.js&lt;/code&gt;，記得把下面的&lt;code&gt;YOUR_TOKEN&lt;/code&gt;換成你自己的token，&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;kr&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;https&lt;/span&gt;     &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;require&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;quot;https&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;kr&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;express&lt;/span&gt;   &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;require&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;quot;express&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;kr&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;bodyParser&lt;/span&gt;    &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;require&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;body-parser&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;kr&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;logger&lt;/span&gt;        &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;require&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;morgan&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;kr&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;fs&lt;/span&gt;            &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;require&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;fs&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;kr&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;request&lt;/span&gt;     &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;require&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;request&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;kr&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;logStream&lt;/span&gt;     &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;fs&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;createWriteStream&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;/var/log/bot/access.log&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;flags&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;a&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;
+
+&lt;span class=&quot;kr&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;SERVER_CONFIG&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;nx&quot;&gt;key&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt;  &lt;span class=&quot;nx&quot;&gt;fs&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;readFileSync&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;./ssl/server.key&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;
+    &lt;span class=&quot;nx&quot;&gt;cert&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;fs&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;readFileSync&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;./ssl/server.pem&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;
+
+&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;app&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;express&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
+
+&lt;span class=&quot;nx&quot;&gt;app&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;use&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;logger&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;combined&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;stream&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;logStream&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}));&lt;/span&gt;
+&lt;span class=&quot;nx&quot;&gt;app&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;use&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;logger&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;dev&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;));&lt;/span&gt;
+&lt;span class=&quot;nx&quot;&gt;app&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;use&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;bodyParser&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;json&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;());&lt;/span&gt;
+
+&lt;span class=&quot;nx&quot;&gt;app&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;post&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;/receive&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;req&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;resp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;nx&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;req&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;body&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;body&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;req&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;body&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;!&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;body&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;nx&quot;&gt;resp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;status&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;200&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;json&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;({&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;quot;STATUS&amp;quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;quot;No body&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;!&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;body&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;message&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;nx&quot;&gt;resp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;status&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;200&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;json&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;({&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;quot;STATUS&amp;quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;quot;No message&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+    &lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;chatId&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;body&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;message&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;chat&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;cmd&lt;/span&gt;    &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;body&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;message&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;text&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;nx&quot;&gt;cmd&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;cmd&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;toLowerCase&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
+
+    &lt;span class=&quot;c1&quot;&gt;// 記得把YOUR_TOKEN換成你自己的&lt;/span&gt;
+    &lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;options&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;nx&quot;&gt;url&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;https://api.telegram.org/botYOUR_TOKEN/sendMessage&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;nx&quot;&gt;form&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+            &lt;span class=&quot;nx&quot;&gt;chat_id&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;chatId&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;
+
+    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;cmd&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;/wifi&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;nx&quot;&gt;options&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;form&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;text&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;  &lt;span class=&quot;s1&quot;&gt;&amp;#39;Your Wi-Fi password is : !@#!$%^&amp;amp;*&amp;amp;$#&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;cmd&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;/address&amp;#39;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;cmd&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;/addr&amp;#39;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;cmd&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;/office&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;nx&quot;&gt;options&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;form&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;text&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;  &lt;span class=&quot;s1&quot;&gt;&amp;#39;台北市信義區松X路XXX號XX樓&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;cmd&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;/統編&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;nx&quot;&gt;options&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;form&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;text&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;  &lt;span class=&quot;s1&quot;&gt;&amp;#39;xxxxxxxxx&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;cmd&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;/ken&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;nx&quot;&gt;options&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;form&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;text&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;  &lt;span class=&quot;s1&quot;&gt;&amp;#39;Ken is an engineer.&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;nx&quot;&gt;options&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;form&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;text&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;  &lt;span class=&quot;s1&quot;&gt;&amp;#39;I don\&amp;#39;t know what you are talking...&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+    &lt;span class=&quot;nx&quot;&gt;request&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;post&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;options&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;err&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;httpResponse&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;body&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;){&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;err&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+            &lt;span class=&quot;nx&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;err&amp;#39;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;err&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+            &lt;span class=&quot;nx&quot;&gt;resp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;status&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;200&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;json&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;({&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;quot;STATUS&amp;quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;quot;FAIL&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;
+            &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+        &lt;span class=&quot;nx&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;body&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+        &lt;span class=&quot;nx&quot;&gt;resp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;status&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;200&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;json&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;({&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;quot;STATUS&amp;quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;quot;OK&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;
+
+&lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;
+
+&lt;span class=&quot;nx&quot;&gt;https&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;createServer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;SERVER_CONFIG&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;app&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+     &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;listen&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;443&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;quot;HTTPS sever started&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;/br&gt;
+完成以後就用pm2把它run起來，&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;$ pm2 start index.js
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;/br&gt;&lt;/p&gt;
+
+&lt;hr&gt;
+
+&lt;h3 id=&quot;4-set-webhook&quot;&gt;4. Set webhook&lt;/h3&gt;
+
+&lt;hr&gt;
+
+&lt;p&gt;接著我們得向Telegram註冊剛剛建立的API，讓bot收到訊息時，Telegram會主動通知我們，&lt;/br&gt;
+我們透過curl去註冊，同時會把剛剛create的certificate上傳上去Telegram，&lt;/br&gt;
+記得把下面參數換成你自己的。&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;$ curl -i -X POST -H &amp;quot;Content-Type: multipart/form-data&amp;quot; -F &amp;quot;certificate=@server.pem&amp;quot; -F &amp;quot;url=https://YOUR_DOMAIN/receive&amp;quot; https://api.telegram.org/botYOUR_TOKEN/setWebhook
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;/br&gt;&lt;/p&gt;
+
+&lt;hr&gt;
+
+&lt;h3 id=&quot;5-test&quot;&gt;5. Test&lt;/h3&gt;
+
+&lt;hr&gt;
+
+&lt;p&gt;Set webhook成功以後，就可以跟你的bot進行互動測試了。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/2016-09-06-test.png&quot; alt=&quot;Ticket&quot;&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;/font&gt;&lt;/p&gt;
+</description>
+                <link>http://blog.kenyang.net/2016/09/06/how-to-create-a-telegram-bot</link>
+                <guid>http://blog.kenyang.net/2016/09/06/how-to-create-a-telegram-bot</guid>
+                <pubDate>Tue, 06 Sep 2016 00:00:00 +0800</pubDate>
+        </item>
 
         <item>
                 <title>Android: App bar/Tool bar</title>
@@ -2571,14 +2767,6 @@ mv完成以後，接著打開&lt;code&gt;index.html&lt;/code&gt;，&lt;br&gt;
                 <link>http://blog.kenyang.net/2014/10/23/create-local-package-repository-on</link>
                 <guid>http://blog.kenyang.net/2014/10/23/create-local-package-repository-on</guid>
                 <pubDate>Thu, 23 Oct 2014 17:14:00 +0800</pubDate>
-        </item>
-
-        <item>
-                <title>Android In-app billing (IAB) version 3</title>
-                <description>&lt;div style=&quot;font-size: 15px; line-height: 22px;&quot;&gt;&lt;br /&gt;這篇要講怎麼整合IAB，&lt;br /&gt;IAB就是讓user可以在你的app中購買商品．&lt;br /&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;1. Download billing service library&lt;/span&gt;  &lt;br /&gt;&lt;br /&gt;開啓Android SDK Manager，&lt;br /&gt;找到最下面的 Extras，安裝Google Play Billing Library，&lt;br /&gt;安裝完以後，在您Android SDK 目錄中會有該 Library，位置如下：&lt;br /&gt;&lt;pre class=&quot;brush: java&quot;&gt;$SDK_PATH/extras/google/play_billing/in-app-billing-v03&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;2. Create new package&lt;/span&gt;  &lt;br /&gt;&lt;br /&gt;接著在這一步要在你的project下建立一個新的package，&lt;br /&gt;點選 File &amp;gt; New &amp;gt; Package, 名稱為com.android.vending.billing&lt;br /&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;3. Copy necessary files&lt;/span&gt;  &lt;br /&gt;&lt;br /&gt;在這一步驟要複製一些必要的檔案至project中，&lt;br /&gt;1. IInAppBillingService.aidl，&lt;br /&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;這個檔案放在$SDK_PATH/extras/google/play_billing/in-app-billing-v03底下，&lt;br /&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;把IInAppBillingService.aidl，複製到我們剛剛create的package中，&lt;br /&gt;2. *.java&lt;br /&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Google幫我們寫好了很多的wrapper，可以很方便地使用IAB，&lt;br /&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;這wrapper會幫我們處理一些bind service的動作，&lt;br /&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;透過這些wrapper可以輕易地整合IAB，&lt;br /&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;檔案路徑如下：&lt;br /&gt;&lt;pre class=&quot;brush: java&quot;&gt;$SDK_PATH/extras/google/play_billing/samples/TrivialDrive/src/com/example/android&lt;br /&gt;/trivialdrivesample/util&lt;br /&gt;&lt;/pre&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;把這底下所有的.java複製到你的project當中，並且要把package名稱改成自己的&lt;br /&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;4. Add permission&lt;/span&gt;  &lt;br /&gt;&lt;br /&gt;接著要在AndroidManifest.xml中加入下面這個權限，&lt;br /&gt;&lt;pre class=&quot;brush: java&quot;&gt;&amp;lt;uses-permission android:name=&amp;quot;com.android.vending.BILLING&amp;quot;&amp;gt;&lt;br /&gt;&amp;lt;/uses-permission&amp;gt;&lt;/pre&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;5. Upload apk&lt;/span&gt;  &lt;br /&gt;&lt;br /&gt;因為要購買一個商品，這商品在新増之前，&lt;br /&gt;你一定要有一個apk是有BILLING權限的，&lt;br /&gt;否則是不能新增一個商品．&lt;br /&gt;所以在這步驟要先上傳上去，你可以上傳以後再把它變成draft就好，&lt;br /&gt;當然！你也可以通通寫完code再丟上去測試．&lt;br /&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;6. Add product&lt;/span&gt;  &lt;br /&gt;&lt;br /&gt;上傳apk以後，接著就可以去developer console新增product了，&lt;br /&gt;1. 先到自己的developer console &lt;br /&gt;2. 點選自己的app &lt;br /&gt;3. 點選左邊的In-app Products &lt;br /&gt;4. 點選Add new product&lt;br /&gt;5. 輸入Product ID（這id等等code裡面會用到）&lt;br /&gt;6. 最後填寫product的資訊&lt;br /&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;7. Get public key&lt;/span&gt;  &lt;br /&gt;&lt;br /&gt;由於在跟Google Play溝通時，&lt;br /&gt;需要一把public key，&lt;br /&gt;這把key一樣在developer console上，&lt;br /&gt;1. 先到自己的developer console &lt;br /&gt;2. 點選自己的app &lt;br /&gt;3. 點選左邊的Services &amp;amp; APIs&lt;br /&gt;key就會在畫面之中，如下圖！&lt;br /&gt;&lt;br /&gt;&lt;div class=&quot;separator&quot; style=&quot;clear: both; text-align: center;&quot;&gt;&lt;a href=&quot;http://4.bp.blogspot.com/-juHaFVdxJtE/VD9hQRnFPSI/AAAAAAAAFhI/8k_Ou03qUOU/s1600/Screen%2BShot%2B2014-10-16%2Bat%2B2.08.36%2BPM.png&quot; imageanchor=&quot;1&quot; style=&quot;margin-left: 1em; margin-right: 1em;&quot;&gt;&lt;img border=&quot;0&quot; src=&quot;http://4.bp.blogspot.com/-juHaFVdxJtE/VD9hQRnFPSI/AAAAAAAAFhI/8k_Ou03qUOU/s1600/Screen%2BShot%2B2014-10-16%2Bat%2B2.08.36%2BPM.png&quot; height=&quot;164&quot; width=&quot;640&quot; /&gt;&lt;/a&gt;&lt;/div&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;8. Implement&lt;/span&gt;  &lt;br /&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;8-1. Setup&lt;/span&gt;  &lt;br /&gt;&lt;br /&gt;首先要先setup IabHelper，&lt;br /&gt;在setup時就要把剛剛哪組public_key帶進去，&lt;br /&gt;但由於Google有強烈的建議，不要直接hard code public key，&lt;br /&gt;至少要用個xor encrypt的方式，或者用拆解字串的方式存放public key，&lt;br /&gt;xor encrypt就是你先用xor去encrypt你的public key，&lt;br /&gt;之後把encrypt過後的public key放在你的project中，&lt;br /&gt;要用的時候再拿出來decrypt，decrypt完以後，應該就會是原先的public key了，&lt;br /&gt;接著再判斷一下那組public key是否有包含“某部份”真正public key，&lt;br /&gt;有的話才真的是你的public key，&lt;br /&gt;&lt;br /&gt;&lt;pre class=&quot;brush: java&quot;&gt;    private IabHelper mHelper;&lt;br /&gt;    @Override&lt;br /&gt;    public void onCreate(Bundle savedInstanceState) {&lt;br /&gt;&lt;br /&gt;        String base64EncodedPublicKey = xorDecrypt(PUBLIC_KEY, &quot;key_password&quot;);&lt;br /&gt;&lt;br /&gt;        if (!base64EncodedPublicKey&lt;br /&gt;                .contains(&quot;eFESRE6ijsRAp3TgWhY1zDwWwo1EqxQgt+f&quot;)) {&lt;br /&gt;            throw new RuntimeException(&quot;This is not my key&quot;);&lt;br /&gt;        }&lt;br /&gt;&lt;br /&gt;        mHelper = new IabHelper(this, base64EncodedPublicKey);&lt;br /&gt;&lt;br /&gt;        mHelper.startSetup(new IabHelper.OnIabSetupFinishedListener() {&lt;br /&gt;            public void onIabSetupFinished(IabResult result) {&lt;br /&gt;                Log.d(TAG, &quot;Setup finished.&quot;);&lt;br /&gt;                if (!result.isSuccess()) {&lt;br /&gt;                    Log.d(TAG, &quot;Problem setting up In-app Billing: &quot; + result);&lt;br /&gt;                }&lt;br /&gt;&lt;br /&gt;                if (mHelper == null)&lt;br /&gt;                    return;&lt;br /&gt;                &lt;br /&gt;            }&lt;br /&gt;        });&lt;br /&gt;    }&lt;br /&gt;&lt;br /&gt;    public static String xorDecrypt(String input, String key) {&lt;br /&gt;        byte[] inputBytes = Base64.decode(input, Base64.DEFAULT);&lt;br /&gt;        int inputSize = inputBytes.length;&lt;br /&gt;&lt;br /&gt;        byte[] keyBytes = key.getBytes();&lt;br /&gt;        int keySize = keyBytes.length - 1;&lt;br /&gt;&lt;br /&gt;        byte[] outBytes = new byte[inputSize];&lt;br /&gt;        for (int i = 0; i &amp;lt; inputSize; i++) {&lt;br /&gt;            outBytes[i] = (byte) (inputBytes[i] ^ keyBytes[i % keySize]);&lt;br /&gt;        }&lt;br /&gt;        return new String(outBytes);&lt;br /&gt;    }&lt;br /&gt;&lt;br /&gt;&lt;/pre&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;8-2 購買商品&lt;/span&gt;  &lt;br /&gt;&lt;br /&gt;購買商品要透過launchPurchaseFlow， &lt;br /&gt;launchPurchaseFlow有五個參數， &lt;br /&gt;1. activity &lt;br /&gt;2. product id，就是剛剛上面在developer console新增的那組 &lt;br /&gt;3. request code，onActivityResult時會回傳回來 &lt;br /&gt;4. listener，購買狀態的listener，用來接收購買成功與否 &lt;br /&gt;5. string，可以是空的，可以想像成是補充說明的意思，一樣在購買之後會回傳回來 &lt;br /&gt;&lt;pre class=&quot;brush: java&quot;&gt;    if (mHelper != null) {&lt;br /&gt;        mHelper.launchPurchaseFlow(this,&lt;br /&gt;                SKU_PREMIUM,&lt;br /&gt;                10001,&lt;br /&gt;                mPurchaseFinishedListener,&lt;br /&gt;                &quot;bGoa+V7g/yqDXvKRqq+JTFn4uQZbPiQJo4pf9RzJ&quot;);&lt;br /&gt;    }&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;    IabHelper.OnIabPurchaseFinishedListener mPurchaseFinishedListener = new IabHelper.OnIabPurchaseFinishedListener() {&lt;br /&gt;        public void onIabPurchaseFinished(IabResult result, Purchase purchase) {&lt;br /&gt;            if (result.isFailure()) {&lt;br /&gt;                Log.e(TAG, &quot;Error purchasing: &quot; + result);&lt;br /&gt;                return;&lt;br /&gt;            } else if (purchase.getSku().equals(SKU_PREMIUM)) {&lt;br /&gt;                Toast.makeText(getApplicationContext(), &quot;buy success&quot;,Toast.LENGTH_LONG).show();&lt;br /&gt;                Log.d(TAG, &quot;Success purchasing:&quot;);&lt;br /&gt;            }&lt;br /&gt;        }&lt;br /&gt;    };&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;8-3 查詢是否有購買&lt;/span&gt;   &lt;br /&gt;&lt;br /&gt;在購買成功以後，android會把購買的結果cache在機器上， &lt;br /&gt;以便快速地查詢， 查詢要透過queryInventoryAsync， &lt;br /&gt;queryInventoryAsync有二個參數， &lt;br /&gt;1. 是否要query product detail（ex: price） &lt;br /&gt;2. listener  &lt;br /&gt;其實第一個參數不一定要， &lt;br /&gt;但是當你在沒有網路的情況下， 你的request一定都會是fail， &lt;br /&gt;以至於你無法判斷這個user是否有購買了商品，&lt;br /&gt;且如果你加了第一個參數，你就無法得到商品的detail資訊． &lt;br /&gt;所以使用者要自己衡量一下何時該用．  &lt;br /&gt;&lt;pre class=&quot;brush: java&quot;&gt;    mHelper.queryInventoryAsync(false,mGotInventoryListener);&lt;br /&gt;    QueryInventoryFinishedListener mGotInventoryListener = new QueryInventoryFinishedListener() {&lt;br /&gt;        public void onQueryInventoryFinished(IabResult result, Inventory inventory) {&lt;br /&gt;&lt;br /&gt;            if (result.isFailure()) {&lt;br /&gt;                // handle error here&lt;br /&gt;            } else {&lt;br /&gt;                // does the user have the premium upgrade?&lt;br /&gt;                boolean mIsPremium = inventory.hasPurchase(SKU_PREMIUM);&lt;br /&gt;                if (mIsPremium) {&lt;br /&gt;                    Toast.makeText(getApplicationContext(), &quot;buy&quot;,Toast.LENGTH_LONG).show();&lt;br /&gt;                }else {&lt;br /&gt;                    Toast.makeText(getApplicationContext(), &quot;no buy&quot;,Toast.LENGTH_LONG).show();&lt;br /&gt;                }&lt;br /&gt;            }&lt;br /&gt;        }&lt;br /&gt;    };&lt;br /&gt;&lt;/pre&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;8-4 Error handling&lt;/span&gt;   &lt;br /&gt;&lt;br /&gt;最後一步驟，如果你launchPurchaseFlow了第一次，然後取消！ &lt;br /&gt;隨即馬上launchPurchaseFlow第二次，絕對會crash， &lt;br /&gt;原因是因為在onActivityResult中要做點處理， &lt;br /&gt;我覺得這很tricky，因為在官網上並沒有提到！ &lt;br /&gt;是去看他的example code才發現的！ &lt;br /&gt;最後也要記得destroy這個helper．  &lt;br /&gt;&lt;pre class=&quot;brush: java&quot;&gt;    @Override&lt;br /&gt;    protected void onActivityResult(int requestCode, int resultCode, Intent data) {&lt;br /&gt;        Log.d(TAG, &quot;onActivityResult handled by IABUtil.1&quot;);&lt;br /&gt;        // Pass on the activity result to the helper for handling&lt;br /&gt;        if (mHelper!=null &amp;amp;&amp;amp; !mHelper.handleActivityResult(requestCode, resultCode, data)) {&lt;br /&gt;            Log.d(TAG, &quot;onActivityResult handled by IABUtil.2&quot;);&lt;br /&gt;            // not handled, so handle it ourselves (here&#39;s where you&#39;d&lt;br /&gt;            // perform any handling of activity results not related to in-app&lt;br /&gt;            // billing...&lt;br /&gt;            super.onActivityResult(requestCode, resultCode, data);&lt;br /&gt;        } else {&lt;br /&gt;            Log.d(TAG, &quot;onActivityResult handled by IABUtil.&quot;);&lt;br /&gt;        }&lt;br /&gt;    }&lt;br /&gt;&lt;br /&gt;    @Override&lt;br /&gt;    protected void onDestroy() {&lt;br /&gt;        super.onDestroy();&lt;br /&gt;        if (adView != null) {&lt;br /&gt;            adView.destroy();&lt;br /&gt;        }&lt;br /&gt;&lt;br /&gt;        if (mHelper != null)&lt;br /&gt;            mHelper.dispose();&lt;br /&gt;        mHelper = null;&lt;br /&gt;    }&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;9. Test&lt;/span&gt;   &lt;br /&gt;&lt;br /&gt;要測試IBA真的是件麻煩的事情， &lt;br /&gt;要做兩件事， &lt;br /&gt;1. create test account &lt;br /&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;因為你用自己的developer account測，會永遠無法購買， &#39;&lt;br /&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;會跟你說publisher cannot purchase this item. &lt;br /&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;所以要去到developer console中的setting裡面加一組test account， &lt;br /&gt;2. Export Signed Application &lt;br /&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;因為你無法用debug key去build app， &lt;br /&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;用debug key build出來的app是無法測試的... &lt;br /&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;所以得用production key sign出來的app才可以測試． &lt;br /&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;接著再把sign好的apk裝在手機上就可以測試了！         &lt;br /&gt;&lt;/div&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;</description>
-                <link>http://blog.kenyang.net/2014/10/16/android-in-app-billing-iab-version-3</link>
-                <guid>http://blog.kenyang.net/2014/10/16/android-in-app-billing-iab-version-3</guid>
-                <pubDate>Thu, 16 Oct 2014 16:19:00 +0800</pubDate>
         </item>
 
 

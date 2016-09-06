@@ -220,6 +220,8 @@
   
     
   
+    
+  
 
 
 
@@ -294,6 +296,34 @@
     </div>
     <!-- This loops through the paginated posts -->
     
+      <h1><a style="color: #F22430" href="/2013/11/26/herokudeploy-python-applicaion">Heroku：deploy a python application </a></h1>
+      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
+      <p class="author">
+      <div class="date">
+        <span>26 November 2013</span>
+      </div>
+      </p>
+      <div class="content" style="line-height: 28px;">
+        恩，昨天心血來潮想deploy一個application到GAE (Google App Engine)上，<br />赫然發現GAE現在只支援JDK 7，說實在我很不想升上去！<br />且又想到要在新電腦上裝eclipse plugin for GAE很麻煩，<br />所以把念頭轉到了Amazon Web Service Elastic Compute Cloud (EC2)，<br />又赫然發現我的AWS帳號已經超過一年了...也就是說不能使用free-tier方案！<br /><br />好吧，只好換到heroku上了！<br />heroku比較像是GAE一樣，屬於PaaS平台，<br />但deploy方式比GAE方便多了！也快多了！<br />在Heroku上deploy方式是用git！<br />可以在上面deploy Ruby, node.js, Java, Python...等語言的application！<br /><br />這篇會用python來講解，<br />雖然我最熟java，但heroku預設好像是用maven來當build system，<br />對maven就沒那麼熟！且我實在很懶得設定那很複雜的xml....<br />所以退而求其次選python，<br />而剛好python是使用flask做framework，剛好也玩過這framework，<br />所以就使用python！<br /><br /><br /><br /><span style="color: #e06666; font-size: large;">Step 1：註冊</span><br /><br />先到<a href="https://id.heroku.com/signup/devcenter">https://id.heroku.com/signup/devcenter</a>註冊帳號，<br />蠻方便的，不需要填寫太多資料！<br /><br /><br /><span style="color: #e06666; font-size: large;">Step 2：安裝Heroku toolbelt</span><br /><br />先去<a href="https://toolbelt.heroku.com/">https://toolbelt.heroku.com/ </a>下載toolbelt，<br />因為我是使用mac，所以就下載mac版本的來安裝！<br /><br /><br /><span style="color: #e06666; font-size: large;">Step 3：Login Heroku</span><br /><br />打開你的terminal，<br />輸入下面指令，<br /><pre class="brush: java">heroku login<br /></pre>會要求你輸入heroku上註冊的email及密碼！<br />接著會把你local的ssh key上傳至heroku上去！<br /><br /><br /><span style="color: #e06666; font-size: large;">Step 4：在後台create app</span><br /><br />接著回到heroku的管理後台建立一個app，<br />如下圖，點選下圖中的Create a new app，<br /><span id="goog_67746771"></span><span id="goog_67746772"></span><br /><div class="separator" style="clear: both; text-align: center;"><a href="http://4.bp.blogspot.com/-rQj9LQoTBtk/UpRMRMoEQuI/AAAAAAAAFFc/GxSkzDPe7vw/s1600/Screen+Shot+2013-11-26+at+3.20.49+PM.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="http://4.bp.blogspot.com/-rQj9LQoTBtk/UpRMRMoEQuI/AAAAAAAAFFc/GxSkzDPe7vw/s640/Screen+Shot+2013-11-26+at+3.20.49+PM.png" height="264" width="640" /></a></div><br /><br /><br /><br />接著會popup一個dialog要以輸入這個app名稱（如下圖）！這個app名稱就會變成你的sub-domain，<br />假設我輸入hello-ken，那麼到時候我的app url就會是hello-ken.herokuapp.com！<br />輸入完以後請點選下圖中的create app．<br /><div class="separator" style="clear: both; text-align: center;"><a href="http://2.bp.blogspot.com/-lRf0S7DzRlA/UpRMAoxg2xI/AAAAAAAAFFE/WB5PH7lpm3Y/s1600/Screen+Shot+2013-11-26+at+3.21.04+PM.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="http://2.bp.blogspot.com/-lRf0S7DzRlA/UpRMAoxg2xI/AAAAAAAAFFE/WB5PH7lpm3Y/s640/Screen+Shot+2013-11-26+at+3.21.04+PM.png" height="356" width="640" /></a></div><br /><br /><br /><br />這樣就完成create app，接著會跟你說你的app information！如下圖．<br />請把下圖中的git資訊記下來！因為這就是你app的repo了！<br /><div class="separator" style="clear: both; text-align: center;"><a href="http://3.bp.blogspot.com/-4hN8y4jZ6v8/UpRMAioGBBI/AAAAAAAAFFI/UoHgXI7a6Tg/s1600/Screen+Shot+2013-11-26+at+3.21.16+PM.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="http://3.bp.blogspot.com/-4hN8y4jZ6v8/UpRMAioGBBI/AAAAAAAAFFI/UoHgXI7a6Tg/s640/Screen+Shot+2013-11-26+at+3.21.16+PM.png" height="512" width="640" /></a></div><br /><br /><span style="color: #e06666; font-size: large;">Step 5：在local create app</span><br /><br />接著你就要把在heroku上的app clone下來，<br />指令如下，<br /><br /><pre class="brush: python">git clone git@heroku.com:hello-ken.git -o heroku<br /></pre><br />clone完成以後，你的目錄底下應該會有一個hello-ken資料夾！<br /><br /><br /><br /><span style="color: #e06666; font-size: large;">Step 6：安裝virtualenv</span><br /><br />virtualenv可以讓你在local模擬獨立的python環境！<br />然後你可以在你的環境中安裝任何python相關package，且不會影響到local system！<br />安裝指令：<br /><pre class="brush: java">curl -O https://pypi.python.org/packages/source/v/virtualenv/virtualenv-1.10.1tar.gz<br />tar xvfz virtualenv-1.10.1.tar.gz<br />cd virtualenv-1.10.1<br />sudo python setup.py install<br /></pre><br /><br /><span style="color: #e06666; font-size: large;">Step 7：建立一個獨立的env</span><br /><br />建立環境<br /><pre class="brush: java">virtualenv venv --distribute<br /></pre><br />activate環境，這裡要注意一點，如果你terminal關掉重開，那麼就要重新去source一次！<br /><pre class="brush: java">source venv/bin/activate<br /></pre><br /><br /><span style="color: #e06666; font-size: large;">Step 8：安裝Flask, gunicorn</span><br /><br />Flask是一個web framework，<br />gunicorn是一個web server．<br /><pre class="brush: java">pip install Flask gunicorn<br /></pre><br /><br /><span style="color: #e06666; font-size: large;">Step 9：寫第一個app</span><br /><br />在這個step就開始寫程式主體，<br /><pre class="brush: python">cd hello-ken<br />vim index.py<br /></pre><br /><br />需搭配Flask的格式！index.py的內容如下！<br />app.route的意思就是，當user request path爲/時，就執行hello這個method，<br /><pre class="brush: python">import os<br />from flask import Flask<br /><br />app = Flask(__name__)<br /><br />@app.route('/')<br />def hello():<br />    return 'Hello World!'<br /></pre><br /><br /><br /><span style="color: #e06666; font-size: large;">Step 10：定義這個app的type</span><br /><br />我們必須要讓heroku知道這個app的type，<br />所以要建立一個檔案（Profile），<br /><pre class="brush: python">vim Profile<br /></pre><br />內容如下：<br /><pre class="brush: python">web: gunicorn index:app<br /></pre><br /><br /><br /><span style="color: #e06666; font-size: large;">Step 11：local test</span><br /><br />完成上面的步驟以後，<br />其實就可以在local端測試，<br />在hello-ken目錄底下指令，<br /><pre class="brush: java">foreman start<br /></pre><br />接著就會在terminal中顯示你的test url，<br />只要打開browser就可以瀏覽了！<br /><br /><br /><span style="color: #e06666; font-size: large;">Step 12：declare requirements</span><br /><br />在這步驟要讓heroku知道我們application的requirement，<br />我們可以透過pip的指令去產生那個requirement檔案，<br />指令如下：<br /><pre class="brush: java">pip freeze &gt; requirements.txt<br /></pre><br /><br /><br /><span style="color: #e06666; font-size: large;">Step 13：deploy app to Heroku</span><br /><br />在這步驟就要把我們剛剛的東西通通push上去heroku了！<br />但我們要先建立.gitignore檔案，<br />把一些不需要push上去的東西拿掉！<br /><pre class="brush: java">venv<br />*.pyc<br /></pre><br /><br />接著就add, commit, push吧！<br /><pre class="brush: java">git add .<br />git commit -m "first commit"<br />git push heroku master<br /></pre><br />順利push完以後，就可以到<span style="color: #e06666;">hello-ken</span>.herokuapp.com看看有沒有成功了！<br />（記得<span style="color: #e06666;">hello-ken</span>要換成你自己申請的app name）<br /><br /><br />接著之後的deploy都是靠git來完成！<br />真的是比GAE方便很多啊！<br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
+      </div>
+      <footer>
+        <p><a class="myButton" href="/2013/11/26/herokudeploy-python-applicaion">read more &raquo;</a></p>
+        <div>
+          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- ken on github -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3783438370424072"
+     data-ad-slot="1516206098"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+        </div>
+      </footer>
+      <hr>
+    
       <h1><a style="color: #F22430" href="/2013/10/23/actionbarcompat-swipe-to-change-tab">ActionBarCompat 【Swipe to change tab】</a></h1>
       <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
       <p class="author">
@@ -350,41 +380,13 @@
       </footer>
       <hr>
     
-      <h1><a style="color: #F22430" href="/2013/09/28/actionbarcompat-add-tab">ActionBarCompat 【Add Tab】</a></h1>
-      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
-      <p class="author">
-      <div class="date">
-        <span>28 September 2013</span>
-      </div>
-      </p>
-      <div class="content" style="line-height: 28px;">
-        <a href="http://blog.kenyang.net/2013/09/actionbarcompat-basic.html">上一篇ActionBarCompat 【Basic】</a>教導大家怎麼使用Google提供的ActionBarCompat lib以後，<br />這篇要延續上篇實作的actionbar，來加入tabs！<br /><br />最早在android要使用tab的layout，<br />必須使用tabhost這個object！<br />但現在被deprecated了！<br />後來推薦使用Fragment去控制tabwidget ui object.<br />但這篇是要教大家怎麼直接用actionbar加入tabs，<br />相較前面的兩種方法，用actionbar比較簡單！<br /><br /><br /><span style="color: #e06666; font-size: large;">1. 首先請將你的class implement TabListener 這個interface</span><br /><br /><pre class="brush: java">public class MainActivity extends ActionBarActivity implements TabListener {<br />    ....<br />}<br /></pre><br /><br /><span style="color: #e06666; font-size: large;">2. 加入應有的method</span><br /><br />因為你前一步驟implement了一個interface，<br />那麼在你的Class之中，也應該要有該interface底下的method，<br />所以你的class一開始應該會紅紅的一條，代表error，<br />那麼你只要將滑鼠移至該class名稱上，eclipse就會有選項幫你直接加入該有的method，<br />或者你也可以自己直接加入，如下<br /><br /><pre class="brush: java">@Override<br /> public void onTabReselected(Tab arg0, FragmentTransaction arg1) {<br />  // TODO Auto-generated method stub<br />  <br /> }<br /><br /> @Override<br /> public void onTabSelected(Tab arg0, FragmentTransaction arg1) {<br />  // TODO Auto-generated method stub<br />  <br /> }<br /><br /> @Override<br /> public void onTabUnselected(Tab arg0, FragmentTransaction arg1) {<br />  // TODO Auto-generated method stub<br />  <br /> }<br /></pre><br /><br /><span style="color: #e06666; font-size: large;">3. 加入tab</span><br /><br />這邊是利用ActionBar去加入tab，<br />所以我們再加入之前應該先取得actiobar這個object，<br /><br /><pre class="brush: java">@Override<br /> protected void onCreate(Bundle savedInstanceState) {<br />  super.onCreate(savedInstanceState);<br />  setContentView(R.layout.activity_main);<br />  <br />  final ActionBar actionbar = getSupportActionBar();<br />  <br /> }<br /></pre><br />接著設定navigation mode，<br />這裡分成三種<br /><br /><ol><li><span class="s1">ActionBar</span><span class="s2">.</span><span class="s1">NAVIGATION_MODE_LIST &nbsp; &nbsp; （actionbar左上角會有spinner）</span></li><li><span class="s1">ActionBar</span><span class="s2">.</span>NAVIGATION_MODE_TABS &nbsp; &nbsp;（就是tabs）</li><li><span class="s1">ActionBar</span><span class="s2">.</span><span class="s1">NAVIGATION_MODE_STANDARD &nbsp; &nbsp;（什麼都不會有，只剩actionbar）</span></li></ol><br />所以理論上我們要設成第二種！<br /><br /><pre class="brush: java">@Override<br /> protected void onCreate(Bundle savedInstanceState) {<br />  super.onCreate(savedInstanceState);<br />  setContentView(R.layout.activity_main);<br />  <br />  final ActionBar actionbar = getSupportActionBar();<br />  <br />  actionbar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);<br />  <br /> }<br /></pre><br />最後一步就是加入tab了！<br /><br /><pre class="brush: java">@Override<br /> protected void onCreate(Bundle savedInstanceState) {<br />  super.onCreate(savedInstanceState);<br />  setContentView(R.layout.activity_main);<br />  <br />  final ActionBar actionbar = getSupportActionBar();<br />  <br />  actionbar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);<br />  <br />  // add tab<br />  actionbar.addTab(actionbar.newTab().setText(R.string.tab1).setTabListener(this));<br />  actionbar.addTab(actionbar.newTab().setText(R.string.tab2).setTabListener(this));<br />  <br /> }<br /></pre><br /><br /><br />接著大家就可以deploy上去看看了！<br />應該就可以看到2個tab出現！<br />如下圖<br /><br /><div class="separator" style="clear: both; text-align: center;"><a href="http://3.bp.blogspot.com/-rqHC2KsSH-s/UkaCTVBdQhI/AAAAAAAAFBM/mJ-vQUPR8qk/s1600/249261.jpg" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="400" src="http://3.bp.blogspot.com/-rqHC2KsSH-s/UkaCTVBdQhI/AAAAAAAAFBM/mJ-vQUPR8qk/s400/249261.jpg" width="225" /></a></div><br /><br />這時候大家可能會覺得很奇怪，<br />不管點tab1還是tab2，<br />怎麼內容都一樣？<br /><br />原因是因為你要在先前implement的method（onTabSelected）中，<br />透過FragmentTransaction把Fragment加進來！<br />好！這時候大家可能也會好奇一件事，我的Class明明是 extends ActionBarActivity，<br />怎麼可能在這個class之中把Fragment加進來？不是應該要透過FragmentActivity嗎？<br />恩，其實如果你們在往下層看，會發現ActionBarActivity這個class也是extends FragmentActivity！<br />所以自然而然可以在ActionBarActivity中把一個Fragment加進來！<br /><br /><span style="color: #e06666; font-size: x-large;">但是！！！！</span>在這裡我不會教你用這種方式！！！<br />為什麼？<br />其實在Google Standard之中，希望我們有tabs時，理應上要支援swipe to change tab！<br />那麼要怎麼做到呢？<br />就是靠ViewPager！<br />在<a href="http://blog.kenyang.net/2013/10/actionbarcompat-swipe-to-change-tab.html">下一篇ActionBarCompat 【Swipe to change tab】</a>中，會教大家怎麼用ViewPager去把Fragment加進來以及可以swipe！<br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
-      </div>
-      <footer>
-        <p><a class="myButton" href="/2013/09/28/actionbarcompat-add-tab">read more &raquo;</a></p>
-        <div>
-          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<!-- ken on github -->
-<ins class="adsbygoogle"
-     style="display:block"
-     data-ad-client="ca-pub-3783438370424072"
-     data-ad-slot="1516206098"
-     data-ad-format="auto"></ins>
-<script>
-(adsbygoogle = window.adsbygoogle || []).push({});
-</script>
-
-        </div>
-      </footer>
-      <hr>
-    
 
     <!-- Pagination links -->
     <div class="pagination">
       
         <a href="/blog/page12" class="previous">Previous</a>
       
-      <span class="page_number ">Page: 13 of 57</span>
+      <span class="page_number ">Page: 13 of 58</span>
       
         <a href="/blog/page14" class="next">Next</a>
       

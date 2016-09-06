@@ -220,6 +220,8 @@
   
     
   
+    
+  
 
 
 
@@ -294,6 +296,34 @@
     </div>
     <!-- This loops through the paginated posts -->
     
+      <h1><a style="color: #F22430" href="/2012/10/04/xcode-45-key-binding-delete-current-line">Xcode 4.5 key binding (delete current line)</a></h1>
+      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
+      <p class="author">
+      <div class="date">
+        <span>04 October 2012</span>
+      </div>
+      </p>
+      <div class="content" style="line-height: 28px;">
+        最近剛拿到了mba, 開始在進行ios &amp; mac的study！<br />所以一定要用到xcode！<br />xcode真的是蠻強大的，像是analysis memory leak的工具！<br />但一直用習慣eclipse的我，還是有點點小小不習慣，<br />例如在eclispe可以刪除目前游標所在的一整行或者是複製一整行！<br />在eclispe可以透過hot key去操作！很方便！ 在Eclipse裡面就有這些選項可以讓開發者設定！<br /><br />但是在Xcode沒有預設的hot key可以“直接”做到！<br />得透過一連串的hot key去做到，例如先按下cmd+d -&gt; cmd+x (隨便舉例的）<br />簡單的說無法透過一個步驟就去做到（例如cmd+d)<br /><br />但好險我們可以自行設定一個combine的組合鍵來完成上述的動作！<br /><br />首先先開啓terminal！<br />然後切換到下面的目錄<br /><pre class="brush: java">cd /Applications/Xcode.app/Contents/Frameworks/IDEKit.framework/<br /></pre><br />然後可以下ls -al看一下該目錄底下的目錄結構，<br />你會看到如下圖的結構！<br />你會發現有兩個Link指向Versions這個資料夾！<br />你的資料夾的權限應該是r--r--r--x！<br />只有讀的權限！<br />但我們等等要修改該目錄底下的檔案，所以先把權限設777吧！<br /><div class="separator" style="clear: both; text-align: center;"><a href="http://3.bp.blogspot.com/-QGMemXTaciw/UG0hjhyKxMI/AAAAAAAAA40/Do8-tulYvUw/s1600/Screen+Shot+2012-10-04+at+1.43.40+PM.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="158" src="http://3.bp.blogspot.com/-QGMemXTaciw/UG0hjhyKxMI/AAAAAAAAA40/Do8-tulYvUw/s640/Screen+Shot+2012-10-04+at+1.43.40+PM.png" width="640" /></a></div><div class="separator" style="clear: both; text-align: center;"><br /></div><div class="separator" style="clear: both; text-align: left;"><br /></div><div class="separator" style="clear: both; text-align: left;">指令如下：</div><div class="separator" style="clear: both; text-align: left;"></div><pre class="brush: java">chmod 777 Versions<br /></pre><div class="separator" style="clear: both; text-align: left;"><br /></div><div class="separator" style="clear: both; text-align: left;"><br /></div><div class="separator" style="clear: both; text-align: left;">改變以後我們在進到裡面的目錄！</div><div class="separator" style="clear: both; text-align: left;">如下：</div><div class="separator" style="clear: both; text-align: left;"></div><pre class="brush: java">cd ./Current/Resources<br /></pre><div class="separator" style="clear: both; text-align: left;"><br /></div><div class="separator" style="clear: both; text-align: left;"><br /></div><div class="separator" style="clear: both; text-align: left;">然後Xcode的預設key binding設定檔就在該目錄底下</div><div class="separator" style="clear: both; text-align: left;">接著就用vim去修改設定檔案吧！</div><div class="separator" style="clear: both; text-align: left;"></div><pre class="brush: java">sudo vim ./IDETextKeyBindingSet.plist <br /></pre><div class="separator" style="clear: both; text-align: left;"><br /></div><div class="separator" style="clear: both; text-align: left;"><br /></div><div class="separator" style="clear: both; text-align: left;">打開以後會看到一大串的xml格式，基本上只要在下面dist中間加入入即可！</div><div class="separator" style="clear: both; text-align: left;"></div><pre class="brush: xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;<br />&lt;!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd"&gt;<br />&lt;plist version="1.0"&gt;<br />&lt;dict&gt;<br /><br />&lt;/dict&gt;<br />&lt;/plist&gt;<br /></pre><div class="separator" style="clear: both; text-align: left;"><br /></div><div class="separator" style="clear: both; text-align: left;">所以加入以後，就會變成下面的樣子！</div><div class="separator" style="clear: both; text-align: left;"></div><pre class="brush: xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;<br />&lt;!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd"&gt;<br />&lt;plist version="1.0"&gt;<br />&lt;dict&gt;<br />        &lt;dict&gt;<br />                &lt;key&gt;DeleteCurrentLine&lt;/key&gt;<br />                &lt;string&gt;moveToBeginningOfLine:, deleteToEndOfLine:&lt;/string&gt;<br />        &lt;/dict&gt;<br /><br />&lt;/dict&gt;<br />&lt;/plist&gt;<br /></pre><div class="separator" style="clear: both; text-align: left;"><br /></div><div class="separator" style="clear: both; text-align: left;"><br /></div><div class="separator" style="clear: both; text-align: left;">這個例子是刪除目前游標行，</div><div class="separator" style="clear: both; text-align: left;"><key>裡面就是這個指令的名稱 （別亂取，待會 要在Xcode裡面進行這個指令的快捷鍵）</key></div><div class="separator" style="clear: both; text-align: left;"><string>裡面就是這個指令的一連串指令，我們可以看到有下面兩個</string></div><div class="separator" style="clear: both; text-align: left;"></div><br /><ul><li>moveToBeginningOfLine（意思是移到這行的最前面）</li><li>deleteToEndOfLine（意思是從游標位置開始刪除，刪除到這行的最後面）</li></ul><br /><br /><div class="separator" style="clear: both; text-align: left;">透過上述的指令就可以進行刪除一整行，</div><div class="separator" style="clear: both; text-align: left;">接著就打開Xcode吧！</div><div class="separator" style="clear: both; text-align: left;">1) 先進到Preferences裡面！</div><div class="separator" style="clear: both; text-align: left;">2) 選擇Key Binding！</div><div class="separator" style="clear: both; text-align: left;">3) 然後在搜尋筐中輸入你剛剛上面xml檔案中填入的key名稱</div><div class="separator" style="clear: both; text-align: left;">4) 基本上你就可以找到你剛剛設定的檔案！就可以修改他的快捷鍵了！像下圖的案例就是以cmd+d來進行刪除一整行</div><div class="separator" style="clear: both; text-align: left;"><br /></div><div class="separator" style="clear: both; text-align: left;"><br /></div><div class="separator" style="clear: both; text-align: left;"><br /></div><div class="separator" style="clear: both; text-align: center;"><a href="http://3.bp.blogspot.com/-yMPP_tk9GHk/UG0neA6heoI/AAAAAAAAA5I/4ba3gfFjV4o/s1600/Screen+Shot+2012-10-04+at+2.06.51+PM.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="244" src="http://3.bp.blogspot.com/-yMPP_tk9GHk/UG0neA6heoI/AAAAAAAAA5I/4ba3gfFjV4o/s640/Screen+Shot+2012-10-04+at+2.06.51+PM.png" width="640" /></a></div><div class="separator" style="clear: both; text-align: left;"><br /></div><div class="separator" style="clear: both; text-align: left;"><br /></div><div class="separator" style="clear: both; text-align: left;"><br /></div><div class="separator" style="clear: both; text-align: left;"><br /></div><div class="separator" style="clear: both; text-align: left;"><br /></div><div class="separator" style="clear: both; text-align: left;"><br /></div><div class="separator" style="clear: both; text-align: left;"><br /></div><div class="separator" style="clear: both; text-align: left;"><br /></div>
+      </div>
+      <footer>
+        <p><a class="myButton" href="/2012/10/04/xcode-45-key-binding-delete-current-line">read more &raquo;</a></p>
+        <div>
+          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- ken on github -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3783438370424072"
+     data-ad-slot="1516206098"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+        </div>
+      </footer>
+      <hr>
+    
       <h1><a style="color: #F22430" href="/2012/09/18/nginxapachephp">Nginx+Apache+PHP</a></h1>
       <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
       <p class="author">
@@ -350,41 +380,13 @@
       </footer>
       <hr>
     
-      <h1><a style="color: #F22430" href="/2012/07/28/arduino">Arduino 基本教學</a></h1>
-      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
-      <p class="author">
-      <div class="date">
-        <span>28 July 2012</span>
-      </div>
-      </p>
-      <div class="content" style="line-height: 28px;">
-        Arduino 是一塊Open Source電路板，<br />開發者可以利用這塊板子去做到一些電子器材的控制，<br />例如：開燈、關燈，甚至可以在Arduino上裝上sensor，<br />然後根據sensor的資料來做處理！例如接上了光敏電阻這個sensor，<br />我們就可以判斷目前光的亮度，就可以根據不同亮度做不同的回應。<br />詳細資料可以去官網看：<a href="http://arduino.cc/en/">http://arduino.cc/en/</a><br /><br /><br />這篇主要教大家怎麼寫一個簡單的應用，<br />在後面會教大家怎麼接上藍芽模組，然後透過無線的方式和Arduino溝通！<br />基本上要做到下列的事項<br /><br /><ol><li>購買Arduino電路板</li><li>下載Arduino IDE開發工具</li><li>在電腦上安裝Arduino的Driver</li><li>寫個簡單應用並部屬上去Arduino</li></ol><br /><b><span style="font-size: large;">【第一步、購買Arduino】</span></b><br />在開發前，大家一定要有一塊Arduino電路板，<br />基本上在Y拍就買得到了，一塊基本的價格大概在600~1000左右！<br />因為其實Arduino板子有分很多種，且有的還算是加強版！<br />但都大同小異。<br />我買的板子是Duemilanove版本，如圖！<br /><div class="separator" style="clear: both; text-align: center;"><a href="http://3.bp.blogspot.com/-sN72o_XlMx8/UBMQ_RihaGI/AAAAAAAAAzM/oPSP0dbtwpk/s1600/IMG_20120728_054118.jpg" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="300" src="http://3.bp.blogspot.com/-sN72o_XlMx8/UBMQ_RihaGI/AAAAAAAAAzM/oPSP0dbtwpk/s400/IMG_20120728_054118.jpg" width="400" /></a></div><br /><br /><span style="font-size: large;"><b>【第二步、下載Arduino IDE】 </b></span><br />接著得去下載開發工具，<br />才能寫程式，並燒到Arduino上面去。<br />下載網址：<a href="http://arduino.cc/en/Main/Software">http://arduino.cc/en/Main/Software</a> <br />下載下來以後，就解壓縮出來即可。<br /><br /><br /><br /><b><span style="font-size: large;">【第三步、安裝Driver】 </span></b><br />接著把Arduino接上電腦，如下圖，<br /><div class="separator" style="clear: both; text-align: center;"><a href="http://4.bp.blogspot.com/-uI9qyEXk_dc/UBMRHlyanXI/AAAAAAAAAzU/X9oEw4_uJ24/s1600/IMG_20120728_054835.jpg" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="240" src="http://4.bp.blogspot.com/-uI9qyEXk_dc/UBMRHlyanXI/AAAAAAAAAzU/X9oEw4_uJ24/s320/IMG_20120728_054835.jpg" width="320" /></a></div>基本上你的電腦應該找不到Driver，<br />這時候就【我的電腦點選右鍵】→【點選管理】→【點選裝置管理員】<br />基本上應該就會看到無法辨識的設備，<br />在該設備上點選右鍵，選擇內容。<br />然後接著就自己去尋找Driver的路徑，<br />而Driver就在第二步下載下來的檔案當中，<br />在解壓縮出來的資料夾當中\arduino-1.0.1\drivers。<br />安裝完成以後，請記得自己的Serial Port！！（像我的就是21，如下圖）<br />因為等等會透過此Port把程式燒進去。<br /><br /><div class="separator" style="clear: both; text-align: center;"><a href="http://3.bp.blogspot.com/-GKGHJUHOiFY/UBMQj7W04pI/AAAAAAAAAy8/S6_wfgFsgOs/s1600/5.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="80" src="http://3.bp.blogspot.com/-GKGHJUHOiFY/UBMQj7W04pI/AAAAAAAAAy8/S6_wfgFsgOs/s320/5.png" width="320" /></a></div><br /><br /><b><span style="font-size: large;">【第四步、寫個應用】 </span></b><br />首先先打開Arduino IDE，<br />就在第二步中解壓縮的資料夾當中，<br />檔名為arduino.exe。<br />打開以後會見到下圖。<br />而白色的區塊就是你可以寫code的地方。<br /><div class="separator" style="clear: both; text-align: center;"><a href="http://2.bp.blogspot.com/-EC2IyUkb088/UBMQgIqu-RI/AAAAAAAAAyc/v4FIcmZiuD8/s1600/1.JPG" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="320" src="http://2.bp.blogspot.com/-EC2IyUkb088/UBMQgIqu-RI/AAAAAAAAAyc/v4FIcmZiuD8/s320/1.JPG" width="238" /></a></div><br /><br />接著得點選Tool→Board，如下圖<br />先選擇你購買的Arduino電路板版本，像我是Duemilanove，<br />所以就選這個！<br />如果你選錯，基本上是無法upload到Arduino板子上去的！<br /><div class="separator" style="clear: both; text-align: center;"><a href="http://4.bp.blogspot.com/-ietO9fuZtq0/UBMQg-gdhrI/AAAAAAAAAyk/HQrNWqlh35o/s1600/2.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="315" src="http://4.bp.blogspot.com/-ietO9fuZtq0/UBMQg-gdhrI/AAAAAAAAAyk/HQrNWqlh35o/s640/2.png" width="640" /></a></div><br />接著就選擇第三步中的Serial Port，像我是21，所以就選21，<br />如下圖。<br /><br /><div class="separator" style="clear: both; text-align: center;"><a href="http://2.bp.blogspot.com/-sO6zqPybv8k/UBMQhURq0aI/AAAAAAAAAys/hA9qnuPy9-8/s1600/3.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="366" src="http://2.bp.blogspot.com/-sO6zqPybv8k/UBMQhURq0aI/AAAAAAAAAys/hA9qnuPy9-8/s640/3.png" width="640" /></a></div><br /><br />接著就可以開始寫程式了，<br />首先我先說明一下，基本上你們購買的Arduino板子上，<br />一定會有一個小小的LED燈，<br />而這LED燈是連接到pin腳為13的pin上。如下圖<br /><div class="separator" style="clear: both; text-align: center;"><a href="http://2.bp.blogspot.com/-JUr-DuoAbdg/UBMQvAyNtDI/AAAAAAAAAzE/t-fzi8X4vFE/s1600/IMG_201207228_054118.jpg" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="480" src="http://2.bp.blogspot.com/-JUr-DuoAbdg/UBMQvAyNtDI/AAAAAAAAAzE/t-fzi8X4vFE/s640/IMG_201207228_054118.jpg" width="640" /></a></div><br /><br />而我們現在就要寫一個程式去開關該led燈。<br />CODE如下：<br /><pre class="brush: java">// 先宣告Pin腳位置<br />int iPinLed = 13;<br />void setup() {           <br />  // 宣告該Pin腳是output  <br />  pinMode(iPinLed, OUTPUT);     <br />}<br />void loop() {<br />  // 開始寫資料，寫HIGH進去就是讓它亮<br />  digitalWrite(iPinLed, HIGH); <br />  delay(1000);        <br />　// 寫LOW進去就是讓它暗<br />  digitalWrite(iPinLed, LOW);   <br />  delay(1000);             <br />}<br /></pre><br />基本上Arduino的程式分了兩個區塊<br /><br /><ol><li>setup</li><li>loop</li></ol>setup就是傳統的main，也可以想成是constructor，<br />loop就是會一直執行的部分，可以想成for迴圈。<br />而上述的程式中，我們先宣告了一個整數(iPinLed)，代表pin腳的位置，<br />接著在setup中把它宣告成是做輸出的動作，也就是說我們會透過這個pin腳餵資料給led<br />然後就進入loop，第一行就是讓led變亮，<br />接著就delay一秒鐘，<br />之後又把led關掉。<br />又停了一秒。<br />不斷的重複上述步驟。<br />而程式的結果如下列影片。<br />LED燈會一閃一閃的！<br /><br /><div class="separator" style="clear: both; text-align: center;"><object width="320" height="266" class="BLOG_video_class" id="BLOG_video-e338391bc4bf5307" classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,40,0"><param name="movie" value="//www.youtube.com/get_player"><param name="bgcolor" value="#FFFFFF"><param name="allowfullscreen" value="true"><param name="flashvars" value="flvurl=http://redirector.googlevideo.com/videoplayback?id%3De338391bc4bf5307%26itag%3D5%26source%3Dblogger%26app%3Dblogger%26cmo%3Dsensitive_content%253Dyes%26ip%3D0.0.0.0%26ipbits%3D0%26expire%3D1450516984%26sparams%3Did,itag,source,ip,ipbits,expire%26signature%3DA0FC7A3189FB9ED0BD788D826D17DE4490654.6B757629731B92C0E7FB6DCC6A08B8FA46E3D406%26key%3Dck2&amp;iurl=http://video.google.com/ThumbnailServer2?app%3Dblogger%26contentid%3De338391bc4bf5307%26offsetms%3D5000%26itag%3Dw160%26sigh%3DEKWSP7lBmNlXqcU-3ib3oa3O_Tk&amp;autoplay=0&amp;ps=blogger"><embed src="//www.youtube.com/get_player" type="application/x-shockwave-flash" width="320" height="266" bgcolor="#FFFFFF" flashvars="flvurl=http://redirector.googlevideo.com/videoplayback?id%3De338391bc4bf5307%26itag%3D5%26source%3Dblogger%26app%3Dblogger%26cmo%3Dsensitive_content%253Dyes%26ip%3D0.0.0.0%26ipbits%3D0%26expire%3D1450516984%26sparams%3Did,itag,source,ip,ipbits,expire%26signature%3DA0FC7A3189FB9ED0BD788D826D17DE4490654.6B757629731B92C0E7FB6DCC6A08B8FA46E3D406%26key%3Dck2&iurl=http://video.google.com/ThumbnailServer2?app%3Dblogger%26contentid%3De338391bc4bf5307%26offsetms%3D5000%26itag%3Dw160%26sigh%3DEKWSP7lBmNlXqcU-3ib3oa3O_Tk&autoplay=0&ps=blogger" allowFullScreen="true" /></object></div><br /><br /><br /><br />&nbsp;從上述的例子來看或許有點過於單調，<br />但就像本文一開始所說的，<br />Arduino可以接上許多裝置，然後透過Arduino控制該裝置。<br />像此文就是透過Arduino去控制單一LED。<br />你可以想像如果你有一百顆LED，你也可以通通接上 Arduino&nbsp;，<br />然後透過Arduino去控制那一百顆LED。<br /><br />然後在後面的文章將會介紹怎麼透過Arduino去控制機器手臂。<br /><br /><br /><div class="separator" style="clear: both; text-align: center;"></div><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
-      </div>
-      <footer>
-        <p><a class="myButton" href="/2012/07/28/arduino">read more &raquo;</a></p>
-        <div>
-          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<!-- ken on github -->
-<ins class="adsbygoogle"
-     style="display:block"
-     data-ad-client="ca-pub-3783438370424072"
-     data-ad-slot="1516206098"
-     data-ad-format="auto"></ins>
-<script>
-(adsbygoogle = window.adsbygoogle || []).push({});
-</script>
-
-        </div>
-      </footer>
-      <hr>
-    
 
     <!-- Pagination links -->
     <div class="pagination">
       
         <a href="/blog/page20" class="previous">Previous</a>
       
-      <span class="page_number ">Page: 21 of 57</span>
+      <span class="page_number ">Page: 21 of 58</span>
       
         <a href="/blog/page22" class="next">Next</a>
       

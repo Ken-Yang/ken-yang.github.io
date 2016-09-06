@@ -220,6 +220,8 @@
   
     
   
+    
+  
 
 
 
@@ -293,6 +295,76 @@
 
     </div>
     <!-- This loops through the paginated posts -->
+    
+      <h1><a style="color: #F22430" href="/2016/04/07/getting-started-with-kubernetes">Getting started with Kubernetes</a></h1>
+      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
+      <p class="author">
+      <div class="date">
+        <span>07 April 2016</span>
+      </div>
+      </p>
+      <div class="content" style="line-height: 28px;">
+        <p><font size=3></p>
+
+<p>Docker玩了一陣子，總覺得沒有玩一些container management的service好像少了點什麼，</br>
+剛好team裡用到<a href="http://kubernetes.io/docs/">Kubernetes</a>，所以這裡就記錄一下怎麼使用<a href="http://kubernetes.io/docs/">Kubernetes</a>。</br>
+然後這篇會把Kubernetes架在Google Cloud Platform上面，所以還得去安裝Google Cloud SDK。</p>
+
+<p></br></p>
+
+<hr>
+
+<h3 id="1-downloading-kubernetes">1. Downloading Kubernetes</h3>
+
+<hr>
+
+<p>第一步驟要先安裝Kubernetes，安裝方式有好幾種，</p>
+
+<ol>
+<li>tarball解開</li>
+<li>Build from source</li>
+<li>Homebrew</li>
+<li>Remote shell script </li>
+<li>用Google Cloud SDK安裝</li>
+</ol>
+
+<p>各個的詳細步驟可以去<a href="http://kubernetes.io/docs/getting-started-guides/binary_release/">Kubernetes安裝頁面</a>看，我自己是選擇透過Google Cloud SDK來安裝，所以首先要先安裝Google Cloud SDK。</p>
+
+<p></br>
+<strong>安裝Google Cloud SDK</strong></p>
+
+<p>Google Cloud SDK這個tool讓你可以對Google Cloud Platform進行操作。安裝指令如下，Default installation path會在你的home目錄底下，</p>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>curl https://sdk.cloud.google.com <span class="p">|</span> bash
+</code></pre></div>
+<p></br>
+接著要restart shell和設定gcloud environment，<code>gcloud init</code>這個指令會彈出browser要你login，以及要你輸入default zone，我是選asia-east1-a。</p>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span><span class="nb">exec</span> -l <span class="nv">$SHELL</span>
+<span class="nv">$ </span>gcloud init
+</code></pre></div>
+<p></br>
+<strong>安裝kubectl</strong></p>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>gcloud components install kubectl
+</code></pre></div>
+<p></br></p>
+
+      </div>
+      <footer>
+        <p><a class="myButton" href="/2016/04/07/getting-started-with-kubernetes">read more &raquo;</a></p>
+        <div>
+          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- ken on github -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3783438370424072"
+     data-ad-slot="1516206098"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+        </div>
+      </footer>
+      <hr>
     
       <h1><a style="color: #F22430" href="/2016/02/15/heroku-redis-connecting-in-python">Heroku Redis: Connecting in Python</a></h1>
       <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
@@ -416,60 +488,13 @@
       </footer>
       <hr>
     
-      <h1><a style="color: #F22430" href="/2015/12/11/install-zsh-oh-my-zsh-on-mac">Install zsh and oh-my-zsh on Mac</a></h1>
-      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
-      <p class="author">
-      <div class="date">
-        <span>11 December 2015</span>
-      </div>
-      </p>
-      <div class="content" style="line-height: 28px;">
-        <p><font size=3></p>
-
-<p>今天把mac上面的default shell換成<code>zsh</code>，其實主要是看上了<code>oh-my-zsh</code>，所以才想換成zsh。<br>
-過程有點複雜，所以還是紀錄一下怎麼做。</p>
-
-<p></br></p>
-
-<hr>
-
-<h3 id="1-install-oh-my-zsh">1. Install oh-my-zsh</h3>
-
-<hr>
-
-<p>由於mac預設就有zsh了，所以不需要安裝，只需要把default shell改成zsh即可。</p>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>chsh -s /bin/zsh
-</code></pre></div>
-<p></br>
-接著就安裝<code>oh-my-zsh</code>，</p>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>curl -L https://github.com/robbyrussell/oh-my-zsh/raw/master/tools/install.sh <span class="p">|</span> sh
-</code></pre></div>
-      </div>
-      <footer>
-        <p><a class="myButton" href="/2015/12/11/install-zsh-oh-my-zsh-on-mac">read more &raquo;</a></p>
-        <div>
-          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<!-- ken on github -->
-<ins class="adsbygoogle"
-     style="display:block"
-     data-ad-client="ca-pub-3783438370424072"
-     data-ad-slot="1516206098"
-     data-ad-format="auto"></ins>
-<script>
-(adsbygoogle = window.adsbygoogle || []).push({});
-</script>
-
-        </div>
-      </footer>
-      <hr>
-    
 
     <!-- Pagination links -->
     <div class="pagination">
       
         <a href="/" class="previous">Previous</a>
       
-      <span class="page_number ">Page: 2 of 57</span>
+      <span class="page_number ">Page: 2 of 58</span>
       
         <a href="/blog/page3" class="next">Next</a>
       

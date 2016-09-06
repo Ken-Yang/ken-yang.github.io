@@ -220,6 +220,8 @@
   
     
   
+    
+  
 
 
 
@@ -294,6 +296,34 @@
     </div>
     <!-- This loops through the paginated posts -->
     
+      <h1><a style="color: #F22430" href="/2010/08/07/android-progressbar-in-appwidget">android ProgressBar in AppWidget</a></h1>
+      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
+      <p class="author">
+      <div class="date">
+        <span>07 August 2010</span>
+      </div>
+      </p>
+      <div class="content" style="line-height: 28px;">
+        android ProgressBar in AppWidget<br /><br />會產生一些問題!<br /><br />基本上在顯示，或者設定目前progress都是沒問題的!!<br /><br />但是當你要把ProgressBar 設為Invisible的時候就會產生BUG!<br /><br />目前看來似乎是android本身的bug...<br /><br />至少找資料找到現在...蠻多人都說這樣的!<br /><br /><pre class="brush: java">Views.setViewVisibility(R.id.TextView01, View.VISIBLE);<br /></pre><br />以往只要打這行code就能把某個元件Invisible或者GONE掉<br /><br />但是如果元件是Progress Bar的話!<br /><br />會無法動作!!<br /><br />所以在這建議大家使用兩個layout<br /><br />一個是有progress bar，一個沒有!<br /><br />如下!<br /><br /><br /><pre class="brush: java">RemoteViews withProgressViews= new RemoteViews(this.getPackageName(),R.layout.progress_layout);//這個是有Progress的<br /><br />RemoteViews withoutProgressViews= new RemoteViews(this.getPackageName(),R.layout.init_layout);//這沒有Progress的<br /><br />app_manager.updateAppWidget(appWidgetId, withProgressViews/withoutProgressViews);//在透過app_manager去更新妳widget的layout樣式<br /><br /></pre><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
+      </div>
+      <footer>
+        <p><a class="myButton" href="/2010/08/07/android-progressbar-in-appwidget">read more &raquo;</a></p>
+        <div>
+          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- ken on github -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3783438370424072"
+     data-ad-slot="1516206098"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+        </div>
+      </footer>
+      <hr>
+    
       <h1><a style="color: #F22430" href="/2010/08/07/android-filemkdir">android file.mkdir()</a></h1>
       <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
       <p class="author">
@@ -350,41 +380,13 @@
       </footer>
       <hr>
     
-      <h1><a style="color: #F22430" href="/2010/07/26/android-tab-activity">Android tab activity</a></h1>
-      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
-      <p class="author">
-      <div class="date">
-        <span>26 July 2010</span>
-      </div>
-      </p>
-      <div class="content" style="line-height: 28px;">
-        今天來介紹一下Android tab activity好了!<br /><br />其實最近實作了不少東西，但一直沒有時間記錄下來<br /><br />Tab Actity倒是蠻久之前的，拿出來溫習一下吧!<br /><br />先新增一個class吧!<br /><br />但要繼承的是TabActivity!<br /><br />如果要做到Tab變換時，會有所動作時，<br /><br />要記得implements OnTabChangeListener<br /><br />如下:<br /><br /><pre class="brush: java">public class main extends TabActivity implements OnTabChangeListener {<br /><br />}<br /></pre><br /><br />接著就來部屬Tab的長相了!<br /><br />這邊先預設兩個Tab(tab1、tab2)，其實tab裡的東西可以重複使用，這裡只是為了清楚定義<br /><br />而宣告兩個!<br /><br /><br /><pre class="brush: xml">&lt;?xml version="1.0" encoding="utf-8"?&gt;<br />&lt;FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"<br /> android:orientation="vertical" android:layout_width="fill_parent"<br /> android:layout_height="fill_parent"&gt;<br /> &lt;LinearLayout <br />  android:id="@+id/tab1" <br />  android:layout_width="fill_parent"<br />  android:layout_height="fill_parent" <br />  androidrientation="vertical"<br />  android:background="#ffffff"<br /> &gt;<br /> &lt;/LinearLayout&gt;<br /><br /> &lt;LinearLayout <br />  android:id="@+id/tab2" <br />  android:layout_width="fill_parent"<br />  android:layout_height="fill_parent" <br />  androidrientation="vertical"<br />  android:background="#ff0000"<br /> &gt;<br /> &lt;/LinearLayout&gt;<br />&lt;/FrameLayout&gt;<br /></pre><br /><br />接著來撰寫主要的CODE了!<br /><br /><br /><pre class="brush: java"> <br />public class main extends TabActivity implements OnTabChangeListener {<br /> private TabHost tabHost;  //宣告一個TabHost，主機的意思。所有的TAB都要被加在裡面<br /> private TabSpec tab1, tab2;  //先宣告兩個tab<br /><br /> @Override<br /> public void onCreate(Bundle savedInstanceState) {<br />  super.onCreate(savedInstanceState);<br />  tabHost = this.getTabHost(); //先取得TabHost<br />  <br />  //利用Inflater來渲染版變<br />  LayoutInflater.from(this).inflate(R.layout.main,tabHost.getTabContentView(), true);<br />  <br />  //接著就利用newTabSpec新增一個TAB，setIndicator是設定TITLE和背景圖，setContent是設定這個TAB裡面的樣式<br />  tab1 = tabHost.newTabSpec("Id1")<br />      .setIndicator("Tab1",this.getResources().getDrawable(R.drawable.icon2))<br />      .setContent(R.id.tab1);<br />  //加入至tabHost<br />  tabHost.addTab(tab1);<br />  <br />  tab2 = tabHost.newTabSpec("Id2")<br />      .setIndicator("Tab2",this.getResources().getDrawable(R.drawable.icon))<br />      .setContent(R.id.tab2);<br />  tabHost.addTab(tab2);<br />  tabHost.setOnTabChangedListener(this);<br /> }<br /><br /> @Override<br /> public void onTabChanged(String tabId) {<br />  new AlertDialog.Builder(this).setTitle("Hint").setMessage(tabId)<br />    .setPositiveButton("OK", null).show();<br /> }<br />}<br /></pre><br /><br /><br /><br />基本上這樣就大功告成了!<br /><br /><br /><br /><br /><br /><br /><br />
-      </div>
-      <footer>
-        <p><a class="myButton" href="/2010/07/26/android-tab-activity">read more &raquo;</a></p>
-        <div>
-          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<!-- ken on github -->
-<ins class="adsbygoogle"
-     style="display:block"
-     data-ad-client="ca-pub-3783438370424072"
-     data-ad-slot="1516206098"
-     data-ad-format="auto"></ins>
-<script>
-(adsbygoogle = window.adsbygoogle || []).push({});
-</script>
-
-        </div>
-      </footer>
-      <hr>
-    
 
     <!-- Pagination links -->
     <div class="pagination">
       
         <a href="/blog/page50" class="previous">Previous</a>
       
-      <span class="page_number ">Page: 51 of 57</span>
+      <span class="page_number ">Page: 51 of 58</span>
       
         <a href="/blog/page52" class="next">Next</a>
       
