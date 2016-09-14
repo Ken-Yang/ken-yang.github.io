@@ -296,6 +296,34 @@
     </div>
     <!-- This loops through the paginated posts -->
     
+      <h1><a style="color: #F22430" href="/2013/09/30/arduino-wifi-shield">Arduino WiFi Shield</a></h1>
+      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
+      <p class="author">
+      <div class="date">
+        <span>30 September 2013</span>
+      </div>
+      </p>
+      <div class="content" style="line-height: 28px;">
+        多虧於公司intern的實驗室，<br />我才有榮幸玩到Arduino的wifi套件！<br />不然一塊三千多塊，實在是買不下去阿！<br /><br />這篇主要教大家，<br />怎麼用這塊wifi shield去做到下列的事情<br /><br /><ol><li>scan network AP</li><li>connect to a network AP</li><li>send a request</li><li>create a WebServer using exists connection</li></ol><br /><br />恩，在開始之前，請先準備好環境！<br />注意！在我寫文章的這個時候！<br />arduino已經出到了1.0.5版！<br />最一開始我是用1.0.1版開發，但1.0.1版是沒有wifi的lib，<br />所以我自己去github把wifi的lib抓下來，再放在我的lib裡面！<br />的確！大部份功能都可以work！<br />除了建立webserver以外！<br />但是不要天真的以為用1.0.5版就可以建立webserver，<br />根據撞牆了幾個小時，發現要downgrade至1.0.2版才能建立webserver...<br />其實1.0.5版也可以，只是要<a href="http://arduino.cc/en/Hacking/WiFiShieldFirmwareUpgrading">做一些操作</a>！實在太麻煩！<br /><b>總而言之，請使用1.0.2</b><br /><b><br /></b> <b><br /></b> <b><br /></b><span style="color: #e06666; font-size: large;"> 1. 把wifi shield直接插在你的arduino板上！</span><br /><br />官網其實有備註，如果你是用比較舊的板子(UNO R3)，還要稍微接一下線！<br />請看這篇吧！<br /><div class="separator" style="clear: both; text-align: center;"><a href="http://1.bp.blogspot.com/-G1GWplatYBs/UkksINfSL4I/AAAAAAAAFBc/BR8nhQWtOG8/s1600/wifi_jump2.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="572" src="http://1.bp.blogspot.com/-G1GWplatYBs/UkksINfSL4I/AAAAAAAAFBc/BR8nhQWtOG8/s640/wifi_jump2.png" width="640" /></a></div><br /><br /><br /><span style="color: #e06666; font-size: large;">2. include necessary lib</span><br /><br /><pre class="brush: c">#include &lt;WiFi.h&gt;<br /></pre><br /><br /><span style="color: #e06666; font-size: large;">3. 開始寫code</span><br /><br /><span style="color: #e06666;">3.1 掃描附近所有的ap</span><br /><br /><pre class="brush: java">void setup(){<br />  Serial.begin(9600);<br />}<br /><br />void loop(){<br />  fnScanNetwork();<br />}<br /><br />void fnScanNetwork(){<br />  <br />  int iNum = WiFi.scanNetworks();<br />  Serial.print("=========number of available networks:");<br />  Serial.print(iNum);<br />  Serial.println("=========");<br />  <br />  // print the each SSID and Signal<br />  for (int i = 0; i&lt;iNum; i++) {<br />    Serial.print(WiFi.SSID(i));  // pring SSID<br />    Serial.print("\tSignal: ");<br />    Serial.print(WiFi.RSSI(i));  // print Signal<br />    Serial.print(" dBm");<br />    Serial.print("\tEncryption: ");<br />    Serial.println(WiFi.encryptionType(i));  // print Encryption Type<br />  }  <br />  <br />}<br /><br /></pre><br /><br />上面比較需要注意的大概就是WiFi.RSSI(i)，<br />這隻method就是回傳該ＡＰ訊號的強弱！<br />記得值越大訊號越強！<br /><br />再來就是WiFi.encryptionType(i)，<br />這是回傳該ＡＰ的加密形態是什麼？<br />內容如下：<br />* TKIP (WPA) = 2<br />* WEP = 5<br />* CCMP (WPA) = 4<br />* NONE = 7<br />* AUTO = 8<br /><br /><br /><span style="color: #e06666;">3.2 連線至某個ap</span><br /><br /><pre class="brush: java">char szSsid[] = "kerkerker";          //  network SSID (name) <br />char szPass[] = "safesync";   // network password<br /><br />int iStatus = WL_IDLE_STATUS;<br /><br />void setup(){<br />  Serial.begin(9600);<br />  fnConnectToAP();<br />}<br /><br />void loop(){<br />}<br /><br />void fnConnectToAP(){<br />  while ( iStatus != WL_CONNECTED) { <br />    Serial.println("Connecting to network...");<br />    Serial.print("SSID: ");<br />    Serial.println(ssid);<br />    delay(1000);<br />    iStatus = WiFi.begin(ssid, pass);  // connect<br />  }  <br />  <br />  Serial.print("Connected successfully. IP address:");<br />  IPAddress myAddress = WiFi.localIP();<br />  Serial.println(myAddress);  <br />}<br /><br /></pre><br />WiFi.begin這個method就是在進行連線！<br />如果成功的話會看到下面兩張圖！<br />首先你的wifi shield上的link那顆燈會變成綠色！<br /><br /><div class="separator" style="clear: both; text-align: center;"><a href="http://4.bp.blogspot.com/-221f35wff8E/UkkwP6muu9I/AAAAAAAAFBo/kX4A4LZOkM8/s1600/252107.jpg" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="http://4.bp.blogspot.com/-221f35wff8E/UkkwP6muu9I/AAAAAAAAFBo/kX4A4LZOkM8/s320/252107.jpg" /></a></div><br />而你的Serial Monitor會長得像下面一樣！<br /><br /><div class="separator" style="clear: both; text-align: center;"><a href="http://1.bp.blogspot.com/-B-7VpWCGgrk/UkkwP-toM-I/AAAAAAAAFBs/4GKdzFbQJsY/s1600/Screen+Shot+2013-09-30+at+4.05.46+PM.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="118" src="http://1.bp.blogspot.com/-B-7VpWCGgrk/UkkwP-toM-I/AAAAAAAAFBs/4GKdzFbQJsY/s400/Screen+Shot+2013-09-30+at+4.05.46+PM.png" width="400" /></a></div><br /><br /><br /><br /><span style="color: #e06666;">3.3 傳送一個request至一個server</span><br /><br />首先在setup裡面先連線至ap，<br />接著就送出一個request，<br />然後就在loop裡面進行讀資料的動作！<br />如果成功的話，你應該會在你的Serial Monitor看到一大堆回傳的資料才對！<br /><br /><pre class="brush: java">// connect to ap<br />int iStatus = WL_IDLE_STATUS;<br />char szSsid[] = "kerkerker";          //  network SSID (name) <br />char szPass[] = "safesync";   // network password<br /><br /><br />// send a request<br />char szServername[]="www.google.com";  // remote server we will connect to<br />WiFiClient client;<br /><br />void setup(){<br />  Serial.begin(9600);<br />  fnConnectToAP();<br />  fnSendRequest();<br />}<br /><br />void loop(){<br />  fnReadData();<br />}<br /><br />void fnSendRequest(){<br />  if (client.connect(szServername, 80)) {<br />    Serial.println("connected");<br />    <br />    // Send a HTTP request:<br />    client.println("GET /search?q=arduino HTTP/1.1");<br />    client.println("Host: www.google.com");<br />    client.println();<br />  }<br />    <br />}<br />void fnReadData(){<br />  while (client.available()) {<br />    char c = client.read();<br />    Serial.print(c);<br />  }<br />  <br />  // if the server's disconnected, stop the client:<br />  if (!client.connected()) {<br />    Serial.println();<br />    Serial.println("disconnecting from server.");<br />    client.stop();<br />  <br />    // do nothing forevermore:<br />    while(true);<br />  }  <br />}<br /><br /></pre><br /><br /><br /><span style="color: #e06666;">3.4 建立一個webserver供人連線</span><br /><br />輸入下列的code以後，接著只要用browser輸入你的ip，<br />就會看到Hello World了！<br /><br /><pre class="brush: java">// webserver<br />WiFiServer server(80);<br /><br />void setup(){<br />  Serial.begin(9600);<br />  fnConnectToAP();<br />//  fnSendRequest();<br />  fnStartServer();<br />}<br /><br />void loop(){<br />  fnWaitingRequest();<br />//  fnReadData();<br />}<br /><br /><br />void fnStartServer(){<br />  delay(1000);<br />  server.begin();<br />}<br /><br />void fnWaitingRequest(){<br />  WiFiClient client = server.available();<br />  <br />  if (client) {<br />    Serial.println("new client comming");<br />    <br />    boolean bCurrentLineIsBlank = true;<br />    while (client.connected()) {<br />      if (client.available()) {<br />        char c = client.read();<br />        Serial.write(c);<br />        // if you've gotten to the end of the line and the line is blank, the http request has ended,<br />        // so you can send a reply<br />        if (c == '\n' &amp;&amp; bCurrentLineIsBlank) {<br />          // send a standard http response header<br />          client.println("HTTP/1.1 200 OK");<br />          client.println("Content-Type: text/html");<br />          client.println("Connection: close");  // the connection will be closed after completion of the response<br />          client.println();<br />          client.println("&lt;!DOCTYPE HTML&gt;");<br />          client.println("&lt;html&gt;");<br />          client.print("Hello World ");<br /><br />          client.println("&lt;/html&gt;");<br />          break;<br />        }<br />        if (c == '\n') {<br />          // you're starting a new line<br />          bCurrentLineIsBlank = true;<br />        } else if (c != '\r') {<br />          // you've gotten a character on the current line<br />          bCurrentLineIsBlank = false;<br />        }<br />      }<br />    }<br />    // give the web browser time to receive the data<br />    delay(1);<br />    <br />    // close the connection:<br />    client.stop();<br />    Serial.println("client disonnected");<br />  }  <br />  <br />}<br /><br /><br /></pre><br />source code:&nbsp;<a href="https://github.com/Ken-Yang/ArduinoWiFiShield">https://github.com/Ken-Yang/ArduinoWiFiShield</a><br /><br />基本上蠻簡單的，<br />code也很好理解！<br />只是有些tricky的地方，<br />像是1.0.5版需要update firmware！<br />官網上也有很多豐富的example！<br />有空可以去看看！<br /><br /><br />如果有空，下一篇會教大家怎麼結合wifi＋遙控車！<br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
+      </div>
+      <footer>
+        <p><a class="myButton" href="/2013/09/30/arduino-wifi-shield">read more &raquo;</a></p>
+        <div>
+          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- ken on github -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3783438370424072"
+     data-ad-slot="1516206098"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+        </div>
+      </footer>
+      <hr>
+    
       <h1><a style="color: #F22430" href="/2013/09/28/actionbarcompat-add-tab">ActionBarCompat 【Add Tab】</a></h1>
       <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
       <p class="author">
@@ -336,34 +364,6 @@
       </div>
       <footer>
         <p><a class="myButton" href="/2013/09/26/actionbarcompat-basic">read more &raquo;</a></p>
-        <div>
-          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<!-- ken on github -->
-<ins class="adsbygoogle"
-     style="display:block"
-     data-ad-client="ca-pub-3783438370424072"
-     data-ad-slot="1516206098"
-     data-ad-format="auto"></ins>
-<script>
-(adsbygoogle = window.adsbygoogle || []).push({});
-</script>
-
-        </div>
-      </footer>
-      <hr>
-    
-      <h1><a style="color: #F22430" href="/2013/09/02/using-raspberry-pi-as-wireless-ap">Using Raspberry PI as Wireless AP</a></h1>
-      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
-      <p class="author">
-      <div class="date">
-        <span>02 September 2013</span>
-      </div>
-      </p>
-      <div class="content" style="line-height: 28px;">
-        <br />Before we start, please make sure your system requirements.<br /><br /><b>What's do you need?</b><br /><ol><li>A Raspberry PI</li><li>A boot SD card with default Raspberry PI image iso (Raspbian "wheezy")</li><li>A USB WiFi device which support "Access Point" mode and the driver is rtl8192cu</li></ol><br /><br /><b>1. Install the necessary packages </b><br /><pre class="brush: java">sudo apt-get install hostapd bridge-utils<br /></pre><br /><b>2. Configure </b><br /><pre class="brush: java">sudo vim /etc/default/hostapd<br /></pre>Add the following line to the bottom of the file.<br /><pre class="brush: java">DAEMON_CONF="/etc/hostapd/hostapd.conf"<br /></pre><br /><br />Modified the config file<br /><pre class="brush: java">sudo vim /etc/hostapd/hostapd.conf<br /></pre>Add the following lines to the file. <br />You can change the "ssid", "wpa_passphrase".<br />Most the others examples use nl80211 as their driver, but Raspberry PI don't have the driver (default).<br />Therefore I can't start the service hostapd.<br />However I found some people use rtl871xdrv and they have the related hostapd binary file that supports rtl driver.<br />So... I use rtl871xdrv.<br /><pre class="brush: java">interface=wlan0                                                                                                                 <br />driver=rtl871xdrv<br />ssid=KenRaspberryPiAP<br />hw_mode=g<br />channel=6<br />macaddr_acl=0<br />auth_algs=1<br />ignore_broadcast_ssid=0<br />wpa=2<br />wpa_passphrase=safesync<br />wpa_key_mgmt=WPA-PSK<br />wpa_pairwise=TKIP<br />rsn_pairwise=CCMP<br /></pre><br /><br /><br /><b>3. Change network interface setting </b><br /><pre class="brush: java">sudo vim /etc/network/interfaces<br /></pre><br /><br /><pre class="brush: java">auto lo<br />auto br0 <br />iface lo inet loopback<br />iface br0 inet dhcp<br />        bridge_fd 1<br />        bridge_hello 3<br />        bridge_maxage 10<br />        bridge_stp off <br />        bridge_ports eth0 wlan0<br /><br />allow-hotplug eth0<br />iface eth0 inet manual<br />allow-hotplug wlan0<br />iface wlan0 inet manual  <br /></pre><br /><br /><br /><b>4. Replace the hostappd binary</b><br /><br />Download<br /><pre class="brush: java">cd /usr/sbin<br />rm -f hostapd<br />wget http://dl.dropboxusercontent.com/u/13846584/hostapd<br /></pre><br />Change Permission<br /><pre class="brush: java">sudo chown root:root hostapd<br />sudo chmod 755 hostapd<br /></pre><br /><br /><br /><b>5. Reboot</b><br /><pre class="brush: java">sudo reboot now<br /></pre><br /><br />After reboot, you should see your own Raspberry PI Access Point(AP).<br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
-      </div>
-      <footer>
-        <p><a class="myButton" href="/2013/09/02/using-raspberry-pi-as-wireless-ap">read more &raquo;</a></p>
         <div>
           <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 <!-- ken on github -->

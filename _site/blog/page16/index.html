@@ -296,6 +296,34 @@
     </div>
     <!-- This loops through the paginated posts -->
     
+      <h1><a style="color: #F22430" href="/2013/06/18/android-datepicker-scroll-problem">Android DatePicker scroll problem.</a></h1>
+      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
+      <p class="author">
+      <div class="date">
+        <span>18 June 2013</span>
+      </div>
+      </p>
+      <div class="content" style="line-height: 28px;">
+        在Android 4.0.4機器上的&nbsp;DatePicker<b><span style="font-size: large;">一定</span></b>會發生scroll的小問題，<br />（但是4.2.3不會發生！而我推測或許3.x以上～4.0.4以下的device都會發生）<br /><br /><br />如下圖，<br />你會發現經過scrolling以後，在年/月/日的三個欄位，位置都怪怪的<br />原因是因為在做position時，那個event是被parent截取到！<br />但理應上應該是DatePicker截取到才對！<br /><br /><div class="separator" style="clear: both; text-align: center;"><a href="http://4.bp.blogspot.com/-2NithchKCw8/Ub_SFw-EClI/AAAAAAAAEy4/BDCPKYAElb8/s1600/Screenshot_2013-06-18-11-18-47.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="640" src="http://4.bp.blogspot.com/-2NithchKCw8/Ub_SFw-EClI/AAAAAAAAEy4/BDCPKYAElb8/s640/Screenshot_2013-06-18-11-18-47.png" width="360" /></a></div><br /><br />所以workaround就是，自己定義一個class，以及extend DatePicker！<br />然後去取消parent截取event！<br /><br /><pre class="brush: java">public class CustomDatePicker extends DatePicker {<br />    <br />    public CustomDatePicker(Context context, AttributeSet attrs) {<br />        super(context, attrs);<br />    }<br /><br />    public CustomDatePicker(Context context) {<br />        super(context);<br />    }<br /><br />    @SuppressLint("NewApi")<br />    @Override<br />    public boolean onInterceptTouchEvent(MotionEvent ev) {<br />        /*<br />         * Prevent parent component intercept touch event.<br />         * because only happened on Android 3.x ~ 4.0.4, so we need to check the current os version.<br />         */<br />        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB){<br />            if (ev.getActionMasked() == MotionEvent.ACTION_DOWN) {<br />                ViewParent p = getParent();<br />                if (p != null){<br />                    // disallow its parent intercept touch event.<br />                    p.requestDisallowInterceptTouchEvent(true);<br />                }<br />            }<br />        }<br /><br />        return false;<br />    }<br /><br />}<br /></pre><br /><br />而使用方式就是在你的layout.xml中指定我們上方定義的class，<br /><pre class="brush: xml">&lt;view android:id="@+id/share_expires" <br />     android:layout_width="fill_parent" <br />     android:visibility="gone"<br />     android:layout_height="wrap_content" <br />     class="net.kenyang.util.CustomDatePicker" &gt;<br /> &lt;/view&gt;  <br /></pre><br /><br />這樣就能解決scrolling的問題！<br /><br />
+      </div>
+      <footer>
+        <p><a class="myButton" href="/2013/06/18/android-datepicker-scroll-problem">read more &raquo;</a></p>
+        <div>
+          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- ken on github -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3783438370424072"
+     data-ad-slot="1516206098"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+        </div>
+      </footer>
+      <hr>
+    
       <h1><a style="color: #F22430" href="/2013/06/04/android-remove-dedicated-menu-icon">Android remove dedicated menu icon.</a></h1>
       <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
       <p class="author">
@@ -336,34 +364,6 @@
       </div>
       <footer>
         <p><a class="myButton" href="/2013/05/02/nginx-flask-uwsgi-deployment">read more &raquo;</a></p>
-        <div>
-          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<!-- ken on github -->
-<ins class="adsbygoogle"
-     style="display:block"
-     data-ad-client="ca-pub-3783438370424072"
-     data-ad-slot="1516206098"
-     data-ad-format="auto"></ins>
-<script>
-(adsbygoogle = window.adsbygoogle || []).push({});
-</script>
-
-        </div>
-      </footer>
-      <hr>
-    
-      <h1><a style="color: #F22430" href="/2013/03/27/android-broadcastreceiver">Android BroadcastReceiver detecting outgoing phone call</a></h1>
-      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
-      <p class="author">
-      <div class="date">
-        <span>27 March 2013</span>
-      </div>
-      </p>
-      <div class="content" style="line-height: 28px;">
-        Android BroadcastReceiver是一種類似“pending”在背景的服務，<br />它可以用來監聽、接收某些事件（action），例如開機完成、收到簡訊、電池快沒電等等之類。<br />以及可以用來作為訊息的傳遞！<br />而為什麼會說類似pending呢？<br />因為BroadcastReceiver的lifecycle，並不是一直常駐的，<br />是只有onReceive被call時，才會存在，當return之後，system會判斷是否要unactive！<br /><br /><br />BroadcastReceiver可以監聽兩種類型的事件：<br />1. 系統事件<br />2. 自己定義的事件<br />這裡將會實作出這兩種兼聽方式！<br /><br /><br /><br />首先這裡將實作一個receiver會去監聽以下<b>系統</b>事件<br />1. 撥打電話<br />2. 螢幕打開<br />3. 螢幕關閉<br /><br /><br />首先先實作一個BroadcastReceiver，如下：<br /><pre class="brush: java">public class ReceiverDetect extends BroadcastReceiver {<br /> @Override<br /> public void onReceive(Context context, Intent intent) {<br />  String strAction = intent.getAction();<br />  Log.e("kencyang", "action:" + strAction);<br />  <br />  // if you make a phone call...<br />  if (strAction.equals(Intent.ACTION_NEW_OUTGOING_CALL)){<br />   String number = getResultData();<br />   Log.e("kencyang", "number:" +number);<br />  }<br /> }<br />}<br /><br /><br /></pre><br /><br />接著我們必須去access 額外的permission才能接收到使用者撥打電話的事件，<br /><br /><pre class="brush: xml">&lt;uses-permission android:name="android.permission.PROCESS_OUTGOING_CALLS"&gt;&lt;/uses-permission&gt;<br /></pre><br />當然你要在你的AndroidManifest.xml中的<application>加入剛剛實作的BroadcastReceiver，<br /></application><br /><pre class="brush: xml">&lt;receiver android:name="ReceiverDetect"&gt;<br />&lt;/receiver&gt;<br /></pre><br />接著我們將手動地去註冊這個Receiver要接收什麼事件，<br />以及註冊這個Receiver，<br />而這些動作我們可以在MainActivity中實作，<br /><pre class="brush: java">public class MainActivity extends Activity {<br /><br /> @Override<br /> protected void onCreate(Bundle savedInstanceState) {<br />  super.onCreate(savedInstanceState);<br />  setContentView(R.layout.activity_main);<br />  <br />  IntentFilter ifilter = new IntentFilter();<br />  ifilter.addAction(Intent.ACTION_NEW_OUTGOING_CALL);  // if make a phone call<br />  ifilter.addAction(Intent.ACTION_SCREEN_OFF);    // if screen turn off<br />  ifilter.addAction(Intent.ACTION_SCREEN_ON);     // if screen turn on<br />  <br />  ReceiverDetect r = new ReceiverDetect();<br />  registerReceiver(r, ifilter);<br /> }<br />}<br /></pre><br />接著就deploy到手機上吧！<br />可以試試看打一通電話，以及開關螢幕，<br />然後打開你的ddms，應該就可以看到下列的log，<br /><br /><a href="http://1.bp.blogspot.com/-9BYyZHibK-c/UVK9eUxeFrI/AAAAAAAAEmA/u53pJRT8KoQ/s1600/Screen+Shot+2013-03-27+at+5.26.17+PM.png" imageanchor="1"><img border="0" height="70" src="http://1.bp.blogspot.com/-9BYyZHibK-c/UVK9eUxeFrI/AAAAAAAAEmA/u53pJRT8KoQ/s640/Screen+Shot+2013-03-27+at+5.26.17+PM.png" width="640" /></a><br /><br /><br /><br /><br />這樣就完成了監聽系統事件，<br />接下來要講如何監聽一個自己定義的事件，<br />其實和監聽系統事件沒有太大的差別，<br />我們只是增加了一組action！<br />以及教你怎麼send出一個broadcast，讓你的receiver收到！<br />一樣在MainActivity中，增加下列的code：<br /><pre class="brush: java"> @Override<br /> protected void onCreate(Bundle savedInstanceState) {<br />  super.onCreate(savedInstanceState);<br />  setContentView(R.layout.activity_main);<br />  <br />  IntentFilter ifilter = new IntentFilter();<br />  ifilter.addAction("i am hungry");<br />  <br />  ReceiverDetect r = new ReceiverDetect();<br />  registerReceiver(r, ifilter);<br />  <br />  <br />  Button btnSend = (Button) findViewById(R.id.button1);<br />  <br />  // click button will send a broadcast, then our receiver will receive the action<br />  btnSend.setOnClickListener(new OnClickListener() {<br />   @Override<br />   public void onClick(View v) {<br />    Intent intent = new Intent();<br />    intent.setAction("i am hungry");<br />    sendBroadcast(intent);<br />   }<br />  });<br />  <br /> }<br /><br /></pre><br /><br />然後deploy上去，<br />按下button以後，應該會看到下圖中的log！<br /><br /><a href="http://2.bp.blogspot.com/-gd9epuS6-js/UVK85ieHAzI/AAAAAAAAEl4/UVRRQC7V4os/s1600/Screen+Shot+2013-03-27+at+5.33.54+PM.png" imageanchor="1"><img border="0" height="62" src="http://2.bp.blogspot.com/-gd9epuS6-js/UVK85ieHAzI/AAAAAAAAEl4/UVRRQC7V4os/s640/Screen+Shot+2013-03-27+at+5.33.54+PM.png" width="640" /></a><br /><br /><br /><br /><br />這樣就完成了BroadcastReceiver的基本實作！<br /><br /><br /><br /><br /><br />
-      </div>
-      <footer>
-        <p><a class="myButton" href="/2013/03/27/android-broadcastreceiver">read more &raquo;</a></p>
         <div>
           <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 <!-- ken on github -->

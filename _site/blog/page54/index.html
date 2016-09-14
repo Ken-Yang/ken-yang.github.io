@@ -296,6 +296,34 @@
     </div>
     <!-- This loops through the paginated posts -->
     
+      <h1><a style="color: #F22430" href="/2010/06/14/gaej-deploy-appcfg-rollback">GAE/J deploy 失敗，使用appcfg rollback</a></h1>
+      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
+      <p class="author">
+      <div class="date">
+        <span>14 June 2010</span>
+      </div>
+      </p>
+      <div class="content" style="line-height: 28px;">
+        GAE/J deploy 失敗<br /><br />今天一直在上傳，但也因為邊看世足!<br /><br />就沒有去注意錯誤訊息!<br /><br />只知道後來是不能上傳的!<br /><br />後來想說新增一個version，然後上傳上去!<br /><br />再把舊的version刪掉!<br /><br />但發現也不能!<br /><br />GAE一直叫我rollback!<br /><br />沒辦法啦!<br /><br />只好打開cmd了~<br /><br />找到你app engine的sdk目錄，/bin底下有個command，"appcfg.cmd"這個!<br /><br />不是.sh的，.sh是for mac osX的!<br /><br /><br /><br />指令：<span class="Apple-style-span" style="color: red;">appcfg.cmd rollback </span><span class="Apple-style-span" style="color: blue;">你project的war路徑</span><br /><br />就可以解除封鎖!<br /><br />就可以繼續update你的project了喔~<br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
+      </div>
+      <footer>
+        <p><a class="myButton" href="/2010/06/14/gaej-deploy-appcfg-rollback">read more &raquo;</a></p>
+        <div>
+          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- ken on github -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3783438370424072"
+     data-ad-slot="1516206098"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+        </div>
+      </footer>
+      <hr>
+    
       <h1><a style="color: #F22430" href="/2010/06/04/android">android 判斷是否有網路</a></h1>
       <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
       <p class="author">
@@ -336,34 +364,6 @@
       </div>
       <footer>
         <p><a class="myButton" href="/2010/05/31/gaejgoogle-authsub">read more &raquo;</a></p>
-        <div>
-          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<!-- ken on github -->
-<ins class="adsbygoogle"
-     style="display:block"
-     data-ad-client="ca-pub-3783438370424072"
-     data-ad-slot="1516206098"
-     data-ad-format="auto"></ins>
-<script>
-(adsbygoogle = window.adsbygoogle || []).push({});
-</script>
-
-        </div>
-      </footer>
-      <hr>
-    
-      <h1><a style="color: #F22430" href="/2010/05/28/android-process">android 刪除 process</a></h1>
-      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
-      <p class="author">
-      <div class="date">
-        <span>28 May 2010</span>
-      </div>
-      </p>
-      <div class="content" style="line-height: 28px;">
-        &nbsp;一般來說在ANDROID!<br /><br />如果你按下返回按鍵!<br /><br />或者按下HOME那顆按鈕!<br /><br />雖然程式看似被關閉了!<br /><br />但其實他的process還是存在的!<br /><br />要怎麼徹底砍掉該process呢?<br /><br />如下段CODE!<br /><br /><br /><br /><pre class="brush: java"><br />@Override<br />protected void onDestroy() {<br />     super.onDestroy();<br />     android.os.Process.killProcess(android.os.Process.myPid());<br />}<br /><br /></pre><br /><br /><br /><br />如果是在AVD裡面想要看是否真的有砍掉的話!<br /><br />可以用ddms來觀看!<br /><br />在你的sdk/tools/目錄底下!<br /><br />打開後，可以按Device-&gt;Show process來觀看喔!<br /><br /><br />如果是在真實手機!<br /><br />那就請去下載一些task的app吧!<br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
-      </div>
-      <footer>
-        <p><a class="myButton" href="/2010/05/28/android-process">read more &raquo;</a></p>
         <div>
           <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 <!-- ken on github -->

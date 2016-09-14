@@ -5,8 +5,8 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-    <title>Raspberry Pi 安裝OS</title>
-    
+    <title>Remotely open door using Raspberry Pi</title>
+    <meta name="description" content="">
     <meta name="author" content="Ken Yang">
 
     <!-- Enable responsive viewport -->
@@ -310,7 +310,7 @@
 
 
 <div class="page-header">
-  <h1>Raspberry Pi 安裝OS </h1>
+  <h1>Remotely open door using Raspberry Pi </h1>
 </div>
 
 <div class="row post-full">
@@ -340,10 +340,148 @@
 
   <div class="col-xs-12">
     <div class="date">
-      <span>03 March 2013</span>
+      <span>14 September 2016</span>
     </div>
     <div class="content" style="line-height: 28px;">
-      <br />這篇的操作是以mac os為主，且是以command line進行安裝！<br /><br /><br /><br /><span style="font-size: large;">1. 首先先去<a href="http://www.raspberrypi.org/downloads/">官網下載</a>image下來</span><br />只有幾種可以選擇！<br />不過網路上也有很多customized的image可以下！（例如：android）<br /><br /><br /><br /><span style="font-size: large;">2. 下載以後先確認image的完整性吧！</span><br /><pre class="brush: java">shasum ~/Downloads/2012-12-16-wheezy-raspbian.zip<br /></pre>看看結果是不是跟官網的結果一樣！如果是的話，就沒問題拉！！<br />（我下載了好多次，超多次都下失敗...建議選個北美的載點）<br /><br /><br /><span style="font-size: large;">3. 接著解開下載的壓縮檔吧！</span><br /><pre class="brush: java">unzip ~/Downloads/2012-12-16-wheezy-raspbian.zip<br /></pre>解開以後會是一個.img檔案，<br />如：2013-02-09-wheezy-raspbian.img<br /><br /><br /><span style="font-size: large;">4. 查看自己的SD Card 在哪（記得插上sd card）</span><br /><pre class="brush: java">df -h<br /></pre>先看看自己的SD Card的Filesystem名稱！<br />我的是：/dev/disk1s1<br /><br /><br /><span style="font-size: large;">5. 先umount</span><br /><pre class="brush: java">sudo diskutil unmount /dev/disk1s1<br /></pre><br /><br /><span style="font-size: large;">6. 複製image到sd card中！</span><br />這裡很重要！<br />這裡可不是手動複製喔！！！！<br />要用到dd指令進行複製！<br />還有一點很重要！！記得是要寫在raw device上！<br />記得第四步驟嗎？你看到的filesystem name是<span style="color: red;">disk1s1</span>！<br />但我們要寫在<span style="color: red;">rdisk1</span>！別寫錯了！<br /><pre class="brush: java">sudo dd bs=1m if=2013-02-09-wheezy-raspbian.img of=/dev/rdisk1<br /></pre><br /><br /><br /><br />完成上述六步驟就完成安裝了！！！<br />把你的sd card插上pi吧！<br />插上電源以後，完成開機！<br />你在df一次，<br />你會發現很奇怪！<br />假設你是用8G的sd card，你會發現df以後，只有2g差不多而已！<br />那是因為你還沒有expand！由於手動expand很麻煩！<br />所以pi有內建的script可以幫你自動expand！<br />只要下下面的指令：<br /><pre class="brush: java">raspi-config<br /></pre>下了以後會看到下圖！請選第二個選項，並按下enter！<br />就完成expand了！<br />在df一次應該就可以看到正確的size！<br /><br /><br /><div class="separator" style="clear: both; text-align: center;"><a href="http://3.bp.blogspot.com/-WSgKkKjKhaI/UTNvkbMy0FI/AAAAAAAAElE/QqJHuxWD0E0/s1600/Screen+Shot+2013-02-27+at+11.29.41+AM.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="400" src="http://3.bp.blogspot.com/-WSgKkKjKhaI/UTNvkbMy0FI/AAAAAAAAElE/QqJHuxWD0E0/s640/Screen+Shot+2013-02-27+at+11.29.41+AM.png" width="640" /></a></div><br /><br /><br /><br /><br /><br /><br /><br />
+      <p><font size="3"></p>
+
+<p>由於上一篇寫了一個Telegram Bot，最近就在幫它加feature，</p>
+
+<ol>
+<li>出build時會通知</li>
+<li>開會時會通知</li>
+<li>11:30提醒要吃飯了</li>
+</ol>
+
+<p>總覺得少了點什麼，於是就想說來做個機器人自動開門。</br>
+在開始之前，先準備以下材料：</p>
+
+<ol>
+<li>Raspberry Pi 3: 1台</li>
+<li>杜邦線: 至少4條</li>
+<li>麵包板: 1塊</li>
+<li>漆包線: 可有可無</li>
+<li>一顆勇敢的心（因為你可能用壞，導致整個公司的人被反鎖）</li>
+</ol>
+
+<p>下圖為完成品，</p>
+
+<p><img src="/assets/2016-09-14-finish.jpg" alt="Ticket"></p>
+
+<p></br></p>
+
+<!--more-->
+
+<hr>
+
+<h3 id="1-拆開電源座">1. 拆開電源座</h3>
+
+<hr>
+
+<p>大部分的公司，門旁邊應該都有一個開關，不管是感應式的或者是按鈕式的也好，只要一trigger，門就會打開。</br>
+也就是說開關一定接著門的trigger，所以我們要做man in the middle hack...LOL...</br>
+所以首先要把電源拆掉，然後拿出來（如下圖），</p>
+
+<p><img src="/assets/2016-09-14-1.jpg" alt="Ticket"></p>
+
+<p>拿出來以後會看到有二條線接在電源開關上，分別為一紅一黑，把這二條線從開關中拔出來，</br>
+然後你要先找出你的正極跟負極分別為哪一條，我的黑色是正，紅色是負。</p>
+
+<p></br></p>
+
+<hr>
+
+<h3 id="2-接線-（backward-compatible）">2. 接線 （backward compatible）</h3>
+
+<hr>
+
+<p>為了讓原本的開關也可以正常work，所以我們必須把上面拆出來的電源線接在麵包板上，然後在接另外2條杜邦線，</br>
+一頭接在開關上面，另一頭接在麵包板上面，如下圖。</p>
+
+<p><img src="/assets/2016-09-14-3.png" alt="Ticket"></p>
+
+<p></br></p>
+
+<hr>
+
+<h3 id="3-接上raspberry-pi-3">3. 接上Raspberry Pi 3</h3>
+
+<hr>
+
+<p>接著要再接上2條杜邦線，一頭接在Pi上的GPIO，另一頭一樣接在麵包板上，</br>
+如果不知道接在哪個Pin腳，可以<a href="https://www.google.com.tw/search?q=raspberry+3+gpio&amp;source=lnms&amp;tbm=isch&amp;sa=X&amp;ved=0ahUKEwiJl-jJ3o7PAhXEj5QKHdpyC3QQ_AUICCgB&amp;biw=1920&amp;bih=916">Google一下Raspberry Pi 3的GPIO圖</a>，</br>
+我自己是接在Pin 7 and 6上面，正極在7，負極在6，如下圖。然後分別把它接在對應的麵包板位置上。</p>
+
+<p><img src="/assets/2016-09-14-4.jpg" alt="Ticket"></p>
+
+<p></br></p>
+
+<hr>
+
+<h3 id="4-寫code">4. 寫Code</h3>
+
+<hr>
+
+<p>最後就要來寫code，我這裡是使用NodeJS加上Python，因為用NodeJS setup web server很快速簡單，</br>
+然後用python控制GPIO也很簡單，所以就用這二種組合。</br>
+首先先寫Python來透過GPIO來開門，由於現在的Raspbian預設就有Rpi.GPIO，所以你可以直接使用。</p>
+<div class="highlight"><pre><code class="language-python" data-lang="python"><span class="kn">import</span> <span class="nn">RPi.GPIO</span> <span class="kn">as</span> <span class="nn">GPIO</span>
+<span class="kn">import</span> <span class="nn">time</span>
+
+<span class="n">GPIO</span><span class="o">.</span><span class="n">setmode</span><span class="p">(</span><span class="n">GPIO</span><span class="o">.</span><span class="n">BOARD</span><span class="p">)</span>
+<span class="n">GPIO</span><span class="o">.</span><span class="n">setup</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="n">GPIO</span><span class="o">.</span><span class="n">OUT</span><span class="p">)</span>
+
+<span class="n">GPIO</span><span class="o">.</span><span class="n">output</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="n">GPIO</span><span class="o">.</span><span class="n">LOW</span><span class="p">)</span>
+<span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>
+<span class="n">GPIO</span><span class="o">.</span><span class="n">output</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="n">GPIO</span><span class="o">.</span><span class="n">HIGH</span><span class="p">)</span>
+
+<span class="n">GPIO</span><span class="o">.</span><span class="n">cleanup</span><span class="p">()</span>
+</code></pre></div>
+<p></br></p>
+
+<p>接著就來用NodeJS來建立Web Server，詳細的步驟就<a href="http://blog.kenyang.net/2016/09/06/how-to-create-a-telegram-bot">參考上一篇</a>，</br>
+如果建立完Web Server以後，我們得加裝另一個module，因為我們要call python script，</p>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash">npm install --save python-shell
+</code></pre></div>
+<p></br>
+接著就可以在index.js裡面加入下面的code，</p>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kr">const</span> <span class="nx">https</span>     <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s2">&quot;https&quot;</span><span class="p">);</span>
+<span class="kr">const</span> <span class="nx">express</span>   <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s2">&quot;express&quot;</span><span class="p">);</span>
+<span class="kr">const</span> <span class="nx">bodyParser</span>    <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;body-parser&#39;</span><span class="p">);</span>
+<span class="kr">const</span> <span class="nx">logger</span>        <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;morgan&#39;</span><span class="p">);</span>
+<span class="kr">const</span> <span class="nx">fs</span>            <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;fs&#39;</span><span class="p">);</span>
+<span class="kr">const</span> <span class="nx">request</span>     <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;request&#39;</span><span class="p">);</span>
+<span class="kr">const</span> <span class="nx">logStream</span>     <span class="o">=</span> <span class="nx">fs</span><span class="p">.</span><span class="nx">createWriteStream</span><span class="p">(</span><span class="s1">&#39;/var/log/bot/access.log&#39;</span><span class="p">,</span> <span class="p">{</span><span class="nx">flags</span><span class="o">:</span> <span class="s1">&#39;a&#39;</span><span class="p">});</span>
+<span class="kd">var</span> <span class="nx">PythonShell</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;python-shell&#39;</span><span class="p">);</span>
+
+<span class="p">....</span> <span class="nx">ignore</span> <span class="p">....</span>
+
+<span class="k">if</span> <span class="p">(</span><span class="nx">cmd</span> <span class="o">==</span> <span class="s1">&#39;/open&#39;</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">PythonShell</span><span class="p">.</span><span class="nx">run</span><span class="p">(</span><span class="s1">&#39;open.py&#39;</span><span class="p">,</span> <span class="p">{},</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">results</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">err</span><span class="p">);</span>
+         <span class="p">}</span>
+     <span class="p">});</span>
+<span class="p">}</span>
+</code></pre></div>
+<p></br>
+然後記得restart。</p>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash">pm2 restart index
+</code></pre></div>
+<p></br></p>
+
+<hr>
+
+<h3 id="5-test">5. Test</h3>
+
+<hr>
+
+<p>完成上面的步驟以後，你就可以跟你的機器人講<code>/open</code>，他就會幫你開門了！</p>
+
+<p><img src="/assets/2016-09-14-5.jpg" alt="Ticket"></p>
+
+<p></font></p>
+
     </div>
 
     
@@ -357,9 +495,13 @@
 
   
      
+    	<li><a href="/tags.html#raspberry-ref">raspberry <span>3</span></a></li>
+     
     	<li><a href="/tags.html#pi-ref">pi <span>2</span></a></li>
      
-    	<li><a href="/tags.html#raspberry-ref">raspberry <span>3</span></a></li>
+    	<li><a href="/tags.html#telegram-ref">telegram <span>1</span></a></li>
+     
+    	<li><a href="/tags.html#bot-ref">bot <span>1</span></a></li>
     
   
 
@@ -383,11 +525,11 @@
     <hr>
     <ul class="pagination">
     
-      <li class="prev"><a href="/2013/02/22/android-facebook-login-v30" title="Android Facebook Login (v3.0)">&laquo; Previous</a></li>
+      <li class="prev"><a href="/2016/09/06/how-to-create-a-telegram-bot" title="How to create a Telegram Bot">&laquo; Previous</a></li>
     
       <li><a href="/archive.html">Archive</a></li>
     
-      <li class="next"><a href="/2013/03/14/android-fragment-activity" title="Android Fragment Activity">Next &raquo;</a></li>
+      <li class="next disabled"><a>Next &rarr;</a>
     
     </ul>
     <hr>
