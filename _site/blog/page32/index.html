@@ -222,6 +222,8 @@
   
     
   
+    
+  
 
 
 
@@ -296,6 +298,34 @@
     </div>
     <!-- This loops through the paginated posts -->
     
+      <h1><a style="color: #F22430" href="/2011/12/12/chrome-xss">Chrome 防範XSS機制</a></h1>
+      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
+      <p class="author">
+      <div class="date">
+        <span>12 December 2011</span>
+      </div>
+      </p>
+      <div class="content" style="line-height: 28px;">
+        <span class="Apple-style-span" style="background-color: white; color: red; font-family: Consolas, 'Lucida Console', monospace; font-size: 12px; white-space: pre-wrap;">Refused to execute a JavaScript script. Source code of script found within request.</span><br /><br /><br />恩，今天再做一個準備Demo何謂XSS攻擊的網頁，<br />發現用Chrome開啟該網頁時，所有的攻擊都無效!!!!!!<br />去看了一下Console，發現出現了下列的訊息<br /><br /><span class="Apple-style-span" style="background-color: white; color: red; font-family: Consolas, 'Lucida Console', monospace; font-size: 12px; white-space: pre-wrap;">Refused to execute a JavaScript script. Source code of script found within request.</span><br /><div>才知道原來在Chrome裡面，只要request裡面含有JS code的，且只要有print出來的，都會被擋掉!!!</div><div><br /></div><div>不知道是在第幾版才有的，感覺Chrome太聰明也不是好事，</div><div>認為還是有些事情是developer該懂的，</div><div>當然!!! 這樣的機制對end user來說是好事! 至少不會被攻擊!<br /><br /><br /><br /><br /><br /><br /><br /><br /><br /></div>
+      </div>
+      <footer>
+        <p><a class="myButton" href="/2011/12/12/chrome-xss">read more &raquo;</a></p>
+        <div>
+          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- ken on github -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3783438370424072"
+     data-ad-slot="1516206098"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+        </div>
+      </footer>
+      <hr>
+    
       <h1><a style="color: #F22430" href="/2011/12/08/hadoop-datanode">Hadoop DataNode 無法啟動</a></h1>
       <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
       <p class="author">
@@ -352,41 +382,13 @@
       </footer>
       <hr>
     
-      <h1><a style="color: #F22430" href="/2011/11/22/android-lifecycle">Android Lifecycle （一）入門講解</a></h1>
-      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
-      <p class="author">
-      <div class="date">
-        <span>22 November 2011</span>
-      </div>
-      </p>
-      <div class="content" style="line-height: 28px;">
-        每次都會有點忘記這個lifecycle，<br />總是只記得大概，詳細都會忘記==<br />然後就要自己用LOG來看甚麼情況下會進到這些狀態。<br />這次就乾脆整理一下記錄起來。<br /><br />當activity進行換頁時，會先進入 &nbsp; &nbsp; &nbsp;onPause() -&gt; onStop()<br />按下手機上返回按鈕時，會先進入&nbsp;onPause()&nbsp;-&gt; onStop()&nbsp;-&gt; onDestroy()<br />按下手機HOME按鈕時，會先進入&nbsp;onPause()&nbsp;-&gt; onStop()<br /><br />當先前已經按過HOME鈕，再次點APP，會進入到 &nbsp;onRestart()<br />當先前換頁，再按下返回鈕，也會進入到&nbsp;onRestart()<br />當先前按下返回鈕，再點APP，則會進入到 onCreate()<br /><br />其實GOOGLE有一張自己的流程圖拉，<br />只是我覺得光看流程圖，還是無法知道實際情況發生時，會進到那些狀態。<br />但就搭配著圖看瞜!<br /><br />這篇是比較基本的，想看Activity在Memory中的流程可以看這篇，<a href="http://blog.kenyang.net/2011/12/android-life-cycle.html">點我點我點我</a><br /><br /><div class="separator" style="clear: both; text-align: center;"><a href="http://4.bp.blogspot.com/-HX46mAOTqII/Tsq4Bh4g6BI/AAAAAAAAAX8/QvddYPeG8fA/s1600/Untitled.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="http://4.bp.blogspot.com/-HX46mAOTqII/Tsq4Bh4g6BI/AAAAAAAAAX8/QvddYPeG8fA/s1600/Untitled.png" /></a></div><br />
-      </div>
-      <footer>
-        <p><a class="myButton" href="/2011/11/22/android-lifecycle">read more &raquo;</a></p>
-        <div>
-          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<!-- ken on github -->
-<ins class="adsbygoogle"
-     style="display:block"
-     data-ad-client="ca-pub-3783438370424072"
-     data-ad-slot="1516206098"
-     data-ad-format="auto"></ins>
-<script>
-(adsbygoogle = window.adsbygoogle || []).push({});
-</script>
-
-        </div>
-      </footer>
-      <hr>
-    
 
     <!-- Pagination links -->
     <div class="pagination">
       
         <a href="/blog/page31" class="previous">Previous</a>
       
-      <span class="page_number ">Page: 32 of 58</span>
+      <span class="page_number ">Page: 32 of 59</span>
       
         <a href="/blog/page33" class="next">Next</a>
       

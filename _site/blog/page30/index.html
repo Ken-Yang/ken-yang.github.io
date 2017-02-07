@@ -222,6 +222,8 @@
   
     
   
+    
+  
 
 
 
@@ -296,6 +298,34 @@
     </div>
     <!-- This loops through the paginated posts -->
     
+      <h1><a style="color: #F22430" href="/2011/12/27/android-httpurlconnection-multipartform">Android HttpURLConnection 上傳檔案 (multipart/form-data)</a></h1>
+      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
+      <p class="author">
+      <div class="date">
+        <span>27 December 2011</span>
+      </div>
+      </p>
+      <div class="content" style="line-height: 28px;">
+        在Android實作(模擬)一個form，<br />不管method是用POST或者GET傳遞普通參數(type="text/password/hidden")，都很簡單!<br /><br />那要傳遞type="fiile"的呢?<br />也就是說要上傳一個檔案呢?<br />在Android裡面就稍嫌複雜了一點點點點!<br /><br />這篇將會結合使用camera，將上傳照相完以後的相片!<br />至於怎麼<a href="http://blog.kenyang.net/2010/10/android-camera.html">取得camera的照完相的照片</a>，可以去看我先前PO的教學! <a href="http://blog.kenyang.net/2010/10/android-camera.html">來這看!</a><br />這邊就不多說怎麼取得，就假設已經取得照片了!<br /><br />我們知道在HTML裡，要上傳含有file的參數，<br />&lt;form&gt;必須加上enctype="multipart/form-data"<br /><br />在實作之前，必須說明一下發出這個form的request的格式會怎樣!<br /><pre class="brush: xml">--==============<br />Content-Disposition: form-data; name="image"; filename="image.jpg"<br />Content-Type: image/jpeg<br /><br />!@#!FAWE@#$!A=fj2j12r<br />--==============--<br /><br /></pre><b><span style="font-size: large;"><br /></span></b><br /><b><span style="font-size: large;"><br /></span></b><br /><b><span style="font-size: large;">第一行是<span style="color: #38761d;">--==============</span>，</span></b><br />是由--加上boundary組成的<br />boundary很重要! 是用來區隔參數的!!<br />也就是說，如果裡有很2個參數，<br />那這2個參數前面都會有這一行!!!<br />對了，boundary可以自己設定，但是前提是要告訴server你的boundary是甚麼!<br />等等會說明到! 這裡的boundary假設是===========<br /><br /><br /><b><span style="font-size: large;">第二行Content-Disposition: form-data; name="image"; filename="image.jpg"</span></b><br />這是宣告你的參數名稱，以及他的當案名稱<br /><br /><br /><b><span style="font-size: large;">第三行Content-Type: image/jpeg</span></b><br />是宣告你的file是甚麼型態，因為我們這邊是拿圖片說明，<br />所以就是jpeg。<br /><br /><br /><span style="font-size: large;"><b>第四行是空白行，</b></span><br />在你寫入參數之前，前面一定是一行空白行<br /><br /><br /><b><span style="font-size: large;">第五行!@#!FAWE@#$!A=fj2j12r</span></b><br />這行就是資料行了，開始寫入資料，因為是上傳圖片，<br />所以這樣看一定是亂碼!<br />如果今天type不是file，是text，<br />那麼就會是明文!<br /><br /><br /><span style="font-size: large;"><b>第六行<span style="color: #38761d;">--==============--</span></b></span><br />最後一個參數傳遞完，一定要加上這一行，<br />告訴server，傳完了!<br /><br /><br /><br />了解格式後，現在就來實作，<br />而在Android的實作如下，<br /><pre class="brush: java">	// 先取得圖片<br />	// uriFilePath是當初設定照相完，要存在哪<br />	// 如果忘記可以去看文章上面說的教學文<br />	FileInputStream fileInputStream = new FileInputStream(new File(uriFilePath.getPath()));<br /><br />	final String BOUNDARY 	= "==================================";<br />	final String HYPHENS 	= "--";<br />	final String CRLF 		= "\r\n";<br />	URL url 				= new URL("http://xxx.xxx.xxx/uploadImage");	<br />	HttpURLConnection conn 	= (HttpURLConnection) url.openConnection();<br />	conn.setRequestMethod("POST");						// method一定要是POST<br />	conn.setDoOutput(true);<br />	conn.setDoInput(true);<br />	conn.setUseCaches(false);	<br />	<br />	// 把Content Type設為multipart/form-data<br />	// 以及設定Boundary，Boundary很重要!<br />	// 當你不只一個參數時，Boundary是用來區隔參數的	<br />	conn.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + BOUNDARY);<br />	<br />	<br />	// 下面是開始寫參數<br />	String strContentDisposition = "Content-Disposition: form-data; name=\"image\"; filename=\"image\"";<br />    String strContentType = "Content-Type: image/jpeg";<br />	DataOutputStream dataOS = new DataOutputStream(conn.getOutputStream());<br />	dataOS.writeBytes(HYPHENS+BOUNDARY+CRLF);		// 寫--==================================<br />	dataOS.writeBytes(strContentDisposition+CRLF);	// 寫(Disposition)<br />	dataOS.writeBytes(contentType+CRLF);			// 寫(Content Type)<br />	dataOS.writeBytes(CRLF);		<br />	<br />	int iBytesAvailable = fileInputStream.available();<br />	byte[] byteData = new byte[iBytesAvailable];<br />    int iBytesRead = fileInputStream.read(byteData, 0, iBytesAvailable);<br />	while (iBytesRead &gt; 0) {<br />		dataOS.write(byteData, 0, iBytesAvailable);	// 開始寫內容<br />		iBytesAvailable = fileInputStream.available();<br />		iBytesRead = fileInputStream.read(byteData, 0, iBytesAvailable);<br />	}<br />	dataOS.writeBytes(CRLF);	<br />	dataOS.writeBytes(HYPHENS+BOUNDARY+HYPHENS);	// (結束)寫--==================================--		<br />	file.close();<br />	dataOS.flush();<br />	dataOS.close();<br /><br /></pre><br />這樣完成了!!<br /><br />
+      </div>
+      <footer>
+        <p><a class="myButton" href="/2011/12/27/android-httpurlconnection-multipartform">read more &raquo;</a></p>
+        <div>
+          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- ken on github -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3783438370424072"
+     data-ad-slot="1516206098"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+        </div>
+      </footer>
+      <hr>
+    
       <h1><a style="color: #F22430" href="/2011/12/24/android-c2dm_22">Android C2DM (二)：流程</a></h1>
       <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
       <p class="author">
@@ -352,41 +382,13 @@
       </footer>
       <hr>
     
-      <h1><a style="color: #F22430" href="/2011/12/17/android-life-cycle">Android Life Cycle （二）詳細講解</a></h1>
-      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
-      <p class="author">
-      <div class="date">
-        <span>17 December 2011</span>
-      </div>
-      </p>
-      <div class="content" style="line-height: 28px;">
-        <a href="http://blog.kenyang.net/2011/11/android-lifecycle.html">前一篇</a>已經簡略的說明Android Activity Life Cycle，<br />這篇將詳細說明Activity在Android 裡記憶體life cycle的呈現，<br /><br /><br /><br />假設我有2個 Activity&nbsp;，分別是A(主畫面)、B(子畫面)，<br />A中有一個按鈕，可以換頁面到B<br /><pre class="brush: java">startActivity(new Intent(A.this, B.class));</pre><br /><br />B中有一個按鈕，可以換頁面到A<br /><pre class="brush: java">startActivity(new Intent(B.this, A.class));</pre><br /><br /><br />且A為app進入點<br /><pre class="brush: java">&lt;intent-filter &gt;<br />  &lt;action android:name="android.intent.action.MAIN" /&gt;<br />  &lt;category android:name="android.intent.category.LAUNCHER" /&gt;<br />&lt;/intent-filter&gt;<br /><br /></pre><br /><br />執行此app時，記憶體的表現會如下圖： <br /><div class="separator" style="clear: both; text-align: center;"><a href="http://4.bp.blogspot.com/-dlbPjhqBxWg/TuubZRYATLI/AAAAAAAAAaQ/fGxJXl8DYm8/s1600/a4.png" imageanchor="1" style="clear: left; float: left; margin-bottom: 1em; margin-right: 1em;"><img border="0" height="320" src="http://4.bp.blogspot.com/-dlbPjhqBxWg/TuubZRYATLI/AAAAAAAAAaQ/fGxJXl8DYm8/s320/a4.png" width="281" /></a></div><br /><br /><div class="separator" style="clear: both; text-align: center;"><a href="http://3.bp.blogspot.com/-pNjJbp9rEKM/TuuawgdQ18I/AAAAAAAAAZ4/KlNmWLLs2Wg/s1600/a1.png" imageanchor="1" style="clear: left; float: left; margin-bottom: 1em; margin-right: 1em;"><br /></a><a href="http://3.bp.blogspot.com/-pNjJbp9rEKM/TuuawgdQ18I/AAAAAAAAAZ4/KlNmWLLs2Wg/s1600/a1.png" imageanchor="1" style="clear: left; float: left; margin-bottom: 1em; margin-right: 1em;"><br /></a><a href="http://3.bp.blogspot.com/-pNjJbp9rEKM/TuuawgdQ18I/AAAAAAAAAZ4/KlNmWLLs2Wg/s1600/a1.png" imageanchor="1" style="clear: left; float: left; margin-bottom: 1em; margin-right: 1em;"><br /></a><a href="http://3.bp.blogspot.com/-pNjJbp9rEKM/TuuawgdQ18I/AAAAAAAAAZ4/KlNmWLLs2Wg/s1600/a1.png" imageanchor="1" style="clear: left; float: left; margin-bottom: 1em; margin-right: 1em;"><img border="0" height="326" src="http://3.bp.blogspot.com/-pNjJbp9rEKM/TuuawgdQ18I/AAAAAAAAAZ4/KlNmWLLs2Wg/s400/a1.png" width="400" /></a></div><br />如果這時候在A畫面按下換頁面至B的按鈕，<br />則記憶體的狀態如下圖<br />A會先去call onPause-&gt;onStop<br />注意!!! 並沒有onDestroy，A這個物件是還存在的<br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />如果這時候在B畫面按下手機上的"【返回】按鈕，<br />則記憶體的狀態如下圖<br />B會先去call onPause -&gt; onStop -&gt; <span style="color: blue;">onDestroy</span><br />注意!!! 這裡有onDestroy，此時B物件是被銷毀的，<br />這個情況應該是正常的life cycle，<br />可是有些人會用換頁的方式(startActivity)回到上一個畫面，<br />在我的觀念裡，會不建議這樣的行為，繼續往下看!<br /><br /><br /><div class="separator" style="clear: both; text-align: center;"><a href="http://1.bp.blogspot.com/-qoMJj_xRCBc/TuuaxIEhKqI/AAAAAAAAAZ8/DCLpAMb1RSQ/s1600/a2.png" imageanchor="1" style="clear: left; float: left; margin-bottom: 1em; margin-right: 1em;"><img border="0" height="276" src="http://1.bp.blogspot.com/-qoMJj_xRCBc/TuuaxIEhKqI/AAAAAAAAAZ8/DCLpAMb1RSQ/s400/a2.png" width="400" /></a></div><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />如果這時候在B畫面，而且想要回到A畫面，<br />B畫面(下圖)中左上角，有一個自己做的返回按鈕，<br />則此時這返回按鈕的code為<br /><pre class="brush: java">startActivity(new Intent(B.this, A.class));</pre><br />當使用者按下這個按鈕時！<br /><br /><br /><div class="separator" style="clear: both; text-align: center;"></div><div class="separator" style="clear: both; text-align: center;"><a href="http://4.bp.blogspot.com/-GIwwGSk0eqI/TuueLiXlvBI/AAAAAAAAAaY/eVsiQXL-Lqk/s1600/device-2011-12-17-033450.png" imageanchor="1" style="clear: left; float: left; margin-bottom: 1em; margin-right: 1em;"><img border="0" height="400" src="http://4.bp.blogspot.com/-GIwwGSk0eqI/TuueLiXlvBI/AAAAAAAAAaY/eVsiQXL-Lqk/s400/device-2011-12-17-033450.png" width="240" /></a></div><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />則此時記憶體的狀態如下圖！<br />B會進入到onStop的狀態！<br />且會有一個新的A畫面（橘色）!!!<br />則此時舊的A畫面（藍色）就會存在記憶體裡，暫時無法回收....<br /><br /><br /><div class="separator" style="clear: both; text-align: center;"><a href="http://1.bp.blogspot.com/-SjVEDlL6_8o/Tuuax056yzI/AAAAAAAAAaE/lgui8Dzhe0Y/s1600/a3.png" imageanchor="1" style="clear: left; float: left; margin-bottom: 1em; margin-right: 1em;"><img border="0" height="281" src="http://1.bp.blogspot.com/-SjVEDlL6_8o/Tuuax056yzI/AAAAAAAAAaE/lgui8Dzhe0Y/s400/a3.png" width="400" /></a></div><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />因此不建議用這種方式回到上一個畫面，<br />會講這篇的原因，是為了稍後的另一篇，<br />要講解Bitmap recycle和 Out of Memory (OOM)的問題！<br />在做recycle時，得去考慮到整體life cycle的問題才行！<br /><br /><br /><br /><br /><br /><br />
-      </div>
-      <footer>
-        <p><a class="myButton" href="/2011/12/17/android-life-cycle">read more &raquo;</a></p>
-        <div>
-          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<!-- ken on github -->
-<ins class="adsbygoogle"
-     style="display:block"
-     data-ad-client="ca-pub-3783438370424072"
-     data-ad-slot="1516206098"
-     data-ad-format="auto"></ins>
-<script>
-(adsbygoogle = window.adsbygoogle || []).push({});
-</script>
-
-        </div>
-      </footer>
-      <hr>
-    
 
     <!-- Pagination links -->
     <div class="pagination">
       
         <a href="/blog/page29" class="previous">Previous</a>
       
-      <span class="page_number ">Page: 30 of 58</span>
+      <span class="page_number ">Page: 30 of 59</span>
       
         <a href="/blog/page31" class="next">Next</a>
       

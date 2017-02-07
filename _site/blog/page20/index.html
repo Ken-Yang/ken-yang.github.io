@@ -222,6 +222,8 @@
   
     
   
+    
+  
 
 
 
@@ -296,6 +298,34 @@
     </div>
     <!-- This loops through the paginated posts -->
     
+      <h1><a style="color: #F22430" href="/2012/11/25/android-startservice-vs-bindservice">Android: startService vs bindService</a></h1>
+      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
+      <p class="author">
+      <div class="date">
+        <span>25 November 2012</span>
+      </div>
+      </p>
+      <div class="content" style="line-height: 28px;">
+        這篇要說明<br /><ul><li>startService</li><li>bindService</li></ul>這兩者的差別！<br /><br />其實在我之前的筆記有關<a href="https://developer.android.com/guide/components/services.html">Service</a>的文章，都是使用startService！<br />並沒有使用bindService！<br />一方面是因為startService簡單很多！<br />再來也是最近才發現有bindService！<br />應該是說我原本以為startService的行為與bindService差不多！<br />但實際找答案以後才知道不是這樣的！<br /><br /><br />這裡就不多作說明如何使用startService或者bindService！<br />主要會說明這兩者差異性！<br />如果要看如何使用可以看之前的筆記：<br /><br /><ol><li><a href="http://blog.kenyang.net/2012/03/android-c2dm-android.html">Android C2DM (四)：實作之Android篇</a></li><li><a href="http://blog.kenyang.net/2010/11/android-detect-screen-on-and-screen-off.html">android detect screen on and screen off</a></li><li><a href="http://blog.kenyang.net/2010/08/android-sdcard.html">android 偵測 sdcard</a></li></ol><div><br /></div><br />先去看Google的定義，對於startService，Google定義如下<br /><blockquote><b>Once started, a service can run in the background indefinitely, even if the component that started it is destroyed. Usually, a started service performs a single operation and does not return a result to the caller. For example, it might download or upload a file over the network. When the operation is done, the service should stop itself.</b></blockquote>簡言之用startService啟動，這個service是不會跟隨著啓動他的component消滅！且原則上是不能與UI互動的！（原則上）<br /><br /><br />而對於bindService，定義如下：<br /><blockquote><b>A bound service offers a client-server interface that allows components to interact with the service, send requests, get results, and even do so across processes with interprocess communication (IPC). A bound service runs only as long as another application component is bound to it. Multiple components can bind to the service at once, but when all of them unbind, the service is destroyed.</b></blockquote>用bindService起來的話，則此service可以跟該component進行溝通！甚至可以做到 IPC！<br /><br />小結：<br />bindService和startService最主要的差異在於其本身的lifecycle！<div>以及bindService可以用來做IPC！簡單的說就是可以讓你的service和UI溝通！<br /><br /></div><div>這裡就用一個project來說明吧！<br /><div><br />先建立一個new project！<br />在這project中建立一個Activity，並指定它為launcher！<br />然後在建立一個Service！內如如下：<br /><pre class="brush: java">public class Services extends Service {<br /><br /> @Override<br /> public IBinder onBind(Intent intent) {<br />  // TODO Auto-generated method stub<br />  Log.d("TestService","onBind");<br />  return null;<br /> }<br /> <br /> @Override<br /> public int onStartCommand(Intent intent, int flags, int startId) {<br />  Log.d("TestService","onStartCommand");<br />  return super.onStartCommand(intent, flags, startId);<br /> }<br /> @Override<br /> public ComponentName startService(Intent service) {<br />  Log.d("TestService","startService");<br />  return super.startService(service);<br /> }<br /> <br /> @Override<br /> public void onCreate() {<br />  super.onCreate();<br />  Log.d("TestService","onCreate");<br /> }<br /> <br /> @Override<br /> public void onDestroy() {<br />  super.onDestroy();<br />  Log.d("TestService","onDestroy");<br /> }<br /><br /> @Override<br /> public boolean onUnbind(Intent intent) {<br />  Log.d("TestService","onUnbind");<br />  return super.onUnbind(intent);<br /> }<br /> <br />}<br /></pre><br />可以看到上面的Service中並沒有做任何處理！<br />只有簡單的Log！<br />目的只是要讓我們瞭解startService和bindService的lifecycle差異性！<br /><br />首先先來講startService，<br />我們先在onCreate中start！如下：<br /><pre class="brush: java">@Override<br /> protected void onCreate(Bundle savedInstanceState) {<br />  super.onCreate(savedInstanceState);<br />  <br />  startService(new Intent(this,Services.class));<br /> }<br /></pre><br />然後按下run，在開啟DDMS來觀看log！<br />會發現印出了”onCreate"->"onStartCommand"！<br /><br />這時候按下back鍵來destroy這個activity，你會發現什麼都沒有印出來！<br />也就是說這個service仍在background執行！（你得手動stop）<br /><br />這時候我們換成bindService來看看，如下：<br /><pre class="brush: java">@Override<br /> protected void onCreate(Bundle savedInstanceState) {<br />  super.onCreate(savedInstanceState);<br />  <br />  bindService(new Intent(this,Services.class),null,Context.BIND_AUTO_CREATE);<br /> }<br /></pre><br />一樣按下run！再看一下ＬＯＧ！<br />會發現印出“onCreate"->"onBind"！<br /><br />再按下back鍵，會發現...印出了！<br />“onUnbind"->"onDestroy"<br /><br /><br /><br />總結上面兩項的差異，<br />會發現使用bindService時，<br />這個service的lifecycle是跟隨著bind它的object！<br />所以當該object被destroy，自然而然這個service也被destroy！<br /><br />而使用startService，<br />就不是這樣了！這個service就是獨立的！不屬於任何一個object！<br />得靠stopService來停止！（任何一個Activity中都可以stop）<br /><br /><br />註：bindService的使用方式比較特別！<br />多帶了幾個參數！<br />在這個例子我們第二個參數設為null！<br />其實這參數是要傳入一個ServiceConnection的物件！<br />而ServiceConnection是一個Interface，這個Interface中<br />會有兩個callback function！<br />主要是用來monitor 這個service的state！<br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /></div></div>
+      </div>
+      <footer>
+        <p><a class="myButton" href="/2012/11/25/android-startservice-vs-bindservice">read more &raquo;</a></p>
+        <div>
+          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- ken on github -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3783438370424072"
+     data-ad-slot="1516206098"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+        </div>
+      </footer>
+      <hr>
+    
       <h1><a style="color: #F22430" href="/2012/11/19/android-r-cannot-be-resolved-to-variable">Android: r cannot be resolved to a variable</a></h1>
       <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
       <p class="author">
@@ -352,41 +382,13 @@
       </footer>
       <hr>
     
-      <h1><a style="color: #F22430" href="/2012/10/24/install-android-ndk-on-mac">Install Android NDK on MAC</a></h1>
-      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
-      <p class="author">
-      <div class="date">
-        <span>24 October 2012</span>
-      </div>
-      </p>
-      <div class="content" style="line-height: 28px;">
-        <span style="font-family: Verdana, sans-serif;">這篇主要講怎麼<u>安裝</u>以及<u>使用</u><a href="http://developer.android.com/tools/sdk/ndk/index.html">Android NDK</a>,</span><br /><span style="font-family: Verdana, sans-serif;">Android NDK簡單地說，就是讓您能夠在你的app當中使用C/C++進行implementation,</span><br /><span style="font-family: Verdana, sans-serif;">它可以把您寫的C/C++ build出一個share object檔案 (*.so) 讓Java call！類似windows中的dll檔！</span><br /><span style="font-family: Verdana, sans-serif;">當然你也可以在JNI call Java method，也就是說是雙向的！</span><br /><span style="font-family: Verdana, sans-serif;">而使用NDK的</span><span style="font-family: Verdana, sans-serif;">好處是大概有下面兩個（我只能想到這兩個..）</span><br /><ol><li><span style="font-family: Verdana, sans-serif;">效能較好（depends on situation)</span></li><li><span style="font-family: Verdana, sans-serif;">可以控制到底層的裝置</span></li></ol><br /><u><span style="font-family: Verdana, sans-serif;"><br /></span></u> <span style="font-family: Verdana, sans-serif;">不過在Android官網也指出</span><br /><blockquote class="tr_bq"><span style="font-family: Verdana, sans-serif;"><span style="background-color: #f9f9f9; color: #222222; line-height: 19px;">”you should understand that&nbsp;</span><span style="background-color: #f9f9f9; color: #222222; line-height: 19px;">the NDK will not benefit most apps“</span></span></blockquote><span style="font-family: Verdana, sans-serif;">所以使用時機要自己斟酌，但我知道蠻多game都是用NDK去implement！</span><br /><span style="font-family: Verdana, sans-serif;">因為需要太多memory，靠自己free效能會較好！</span><br /><span style="font-family: Verdana, sans-serif;"><br /></span> <span style="font-family: Verdana, sans-serif;"><br /></span> <span style="font-family: Verdana, sans-serif;"><br /></span> <span style="font-family: Verdana, sans-serif;">首先先講<a href="http://developer.android.com/tools/sdk/ndk/index.html">Android NDK</a>的安裝以及使用方法！</span><br /><br /><span style="color: red; font-family: Verdana, sans-serif; font-size: large;"><b>（1） 下載</b></span><br /><span style="font-family: Verdana, sans-serif;">下載頁面在<a href="http://developer.android.com/tools/sdk/ndk/index.html#Downloads">http://developer.android.com/tools/sdk/ndk/index.html#Downloads</a></span><br /><span style="font-family: Verdana, sans-serif;">請選擇符合你自己ＯＳ的版本！</span><br /><span style="font-family: Verdana, sans-serif;">（如果你使用的是windows！請先下載<a href="http://www.cygwin.com/">cygwin</a>，至於cygwin是什麼，前面很多篇文章已經敘述過，這裡不多加敘述）</span><br /><br /><span style="color: red; font-size: large;"><b>（2）解壓縮</b></span><br /><span style="font-family: Verdana, sans-serif;">此篇是用mac，因此就下載osx的版本吧！</span><br /><span style="font-family: Verdana, sans-serif;">下載下來以後就進行解壓縮．</span><br /><span style="font-family: Verdana, sans-serif;">基本上其實就完成了！</span><br /><span style="font-family: Verdana, sans-serif;">在NDK r4之前還需要跑一隻setup script，但之後的就不用了！</span><br /><span style="font-family: Verdana, sans-serif;"><br /></span> <span style="font-family: Verdana, sans-serif;">其實解壓縮之後裡面就有很多doc可以看！不過都是英文！</span><br /><span style="font-family: Verdana, sans-serif;"><br /></span> <span style="color: red; font-family: Verdana, sans-serif; font-size: large;"><b>（3）建立jni資料夾</b></span><br /><span style="font-family: Verdana, sans-serif;">在你的$project/底下建立一個jni資料夾！如下：</span><br /><span style="font-family: Verdana, sans-serif;"><project>$project/jni</project></span><br /><span style="font-family: Verdana, sans-serif;"><br /></span> <span style="color: red; font-family: Verdana, sans-serif; font-size: large;"><b>（4）撰寫C/C++</b></span><br /><span style="font-family: Verdana, sans-serif;">在$project<project>/jni底下開始寫C/C++的code了！</project></span><br /><span style="font-family: Verdana, sans-serif;">先建立一個檔案叫做test-jni.c，</span><br /><span style="font-family: Verdana, sans-serif;">內容如下：</span><br /><pre class="brush: c">#include &lt;string.h&gt;<br />#include &lt;jni.h&gt;<br /><br />jstring<br />Java_net_kenyang_jni_RunJNI_getText( JNIEnv* env,<br />                                                  jobject thiz )<br />{<br />    return (*env)-&gt;NewStringUTF(env, "Hello from JNI !");<br />}<br /></pre><span style="font-family: Verdana, sans-serif;">jstring是return type</span><br /><span style="font-family: Verdana, sans-serif;">而</span><span style="font-family: Verdana, sans-serif;"><span style="color: red;">Java</span>_<span style="color: blue;">net_kenyang_jni</span>_<span style="color: #38761d;">RunJNI</span>_<span style="color: #b45f06;">getText</span>是這個method的命名規則！</span><br /><span style="font-family: Verdana, sans-serif;">這是JNI的規則，所以請遵守！</span><br /><br /><span style="font-family: Verdana, sans-serif;">開頭一律Java_<span style="color: blue;">自己的package名稱_</span><span style="color: #38761d;">Class名稱_</span><span style="color: #b45f06;">method名稱</span></span><span style="font-family: Verdana, sans-serif;"><br /></span><span style="font-family: Verdana, sans-serif;">你可以改成自己的！但記得後面的步驟也要記得改！ </span><br /><span style="font-family: Verdana, sans-serif;"><br /></span> <span style="font-family: Verdana, sans-serif;"><br /></span> <span style="font-family: Verdana, sans-serif;"><br /></span> <span style="color: red; font-family: Verdana, sans-serif; font-size: large;"><b>（5）建立Android.mk</b></span><br /><span style="font-family: Verdana, sans-serif;">一樣在$project/jni底下建立Android.mk檔案</span><br /><span style="font-family: Verdana, sans-serif;">Android.mk這個檔案是用來告訴NDK等等要去build哪些resource！</span><br /><span style="font-family: Verdana, sans-serif;">而我們目前只有一隻test-jni.c，所以檔案內容如下：</span><br /><pre class="brush: c">LOCAL_PATH := $(call my-dir)<br /><br />include $(CLEAR_VARS)<br /><br />LOCAL_MODULE    := test-jni<br />LOCAL_SRC_FILES := test-jni.c<br /><br />include $(BUILD_SHARED_LIBRARY)<br /><br /></pre><br /><span style="font-family: Verdana, sans-serif;"><br /></span> <span style="font-family: Verdana, sans-serif;"><br /></span> <span style="color: red; font-family: Verdana, sans-serif; font-size: large;"><b>（6）開始build *.so檔案</b></span><br /><span style="font-family: Verdana, sans-serif;">先開啓你的terminate，然後cd到$project/jni底下</span><br /><span style="font-family: Verdana, sans-serif;">直接在該目錄底下</span><span style="font-family: Verdana, sans-serif;">用NDK的tool進行build！</span><br /><span style="font-family: Verdana, sans-serif;">這樣就會產生一個.so檔！</span><br /><span style="font-family: Verdana, sans-serif;">這個檔案會放在$project/lib/armeabi底下！</span><br /><span style="font-family: Verdana, sans-serif;">檔名一定會是lib開頭，.so結尾！</span><br /><span style="font-family: Verdana, sans-serif;">也就是說在這個範例build出來的.so檔案名稱為libtest-jni.so</span><br /><span style="font-family: Verdana, sans-serif;"><br /></span> <span style="font-family: Verdana, sans-serif;">而build指令如下：</span><br /><pre class="brush: c">cd xxx/project/jni<br />xxx/ndk/ndk-build<br /></pre><br /><br /><span style="font-family: Verdana, sans-serif;"><br /></span> <br /><span style="color: red; font-family: Verdana, sans-serif; font-size: large;"><b>（7）開始寫code</b></span><br /><span style="font-family: Verdana, sans-serif;">在你的android project中直接建立一個activity（名稱為RunJNI）</span><span style="font-family: Verdana, sans-serif;">，</span><br /><span style="font-family: Verdana, sans-serif;">我們將在這個activity中進行呼叫剛剛用c建立的method，</span><br /><span style="font-family: Verdana, sans-serif;">ＣＯＤＥ如下：</span><br /><pre class="brush: java">public class RunJNI extends Activity {<br /> // 宣告一個native method（就是剛剛用c寫的）<br /> private native String getText();<br /> <br /> // 載入剛剛的.so檔案！（這裡不需要加上lib，直接去掉就好<br />    static {<br />        System.loadLibrary("test-jni");<br />    }<br /><br /><br /> @Override<br /> protected void onCreate(Bundle savedInstanceState) {<br />  super.onCreate(savedInstanceState);<br />  setContentView(R.layout.run_jni);<br />  <br />  TextView tv = (TextView) findViewById(R.id.textView1);<br />  <br />  // 呼叫method,把method回傳的字給textView進行設定<br />  tv.setText(getText());<br />  <br /> }<br />}<br /><br /></pre><br /><u><span style="font-family: Verdana, sans-serif;"><br /></span></u><span style="font-family: Verdana, sans-serif;">完成上面7個步驟就完成了！</span><br /><span style="font-family: Verdana, sans-serif;">直接點選run應該就可以看到下面畫面！&nbsp;</span><br /><span style="font-family: Verdana, sans-serif;"><br /></span><div class="separator" style="clear: both; text-align: center;"><a href="http://1.bp.blogspot.com/-jnrxKIWQCPs/UIekOU43QAI/AAAAAAAAA6k/3LdoMLKSWq0/s1600/Screenshot_2012-10-24-16-18-19.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="640" src="http://1.bp.blogspot.com/-jnrxKIWQCPs/UIekOU43QAI/AAAAAAAAA6k/3LdoMLKSWq0/s640/Screenshot_2012-10-24-16-18-19.png" width="360" /></a></div><span style="font-family: Verdana, sans-serif;"><br /></span><u><span style="font-family: Verdana, sans-serif;"><br /></span></u><u><span style="font-family: Verdana, sans-serif;"><br /></span></u><u><span style="font-family: Verdana, sans-serif;"><br /></span></u><u><span style="font-family: Verdana, sans-serif;"><br /></span></u><u><span style="font-family: Verdana, sans-serif;"><br /></span></u><u><span style="font-family: Verdana, sans-serif;"><br /></span></u> <span style="font-family: Verdana, sans-serif;"><br /></span> <br /><pre></pre><pre></pre>
-      </div>
-      <footer>
-        <p><a class="myButton" href="/2012/10/24/install-android-ndk-on-mac">read more &raquo;</a></p>
-        <div>
-          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<!-- ken on github -->
-<ins class="adsbygoogle"
-     style="display:block"
-     data-ad-client="ca-pub-3783438370424072"
-     data-ad-slot="1516206098"
-     data-ad-format="auto"></ins>
-<script>
-(adsbygoogle = window.adsbygoogle || []).push({});
-</script>
-
-        </div>
-      </footer>
-      <hr>
-    
 
     <!-- Pagination links -->
     <div class="pagination">
       
         <a href="/blog/page19" class="previous">Previous</a>
       
-      <span class="page_number ">Page: 20 of 58</span>
+      <span class="page_number ">Page: 20 of 59</span>
       
         <a href="/blog/page21" class="next">Next</a>
       

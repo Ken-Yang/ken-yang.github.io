@@ -4,7 +4,7 @@
  <title>Ken Yang筆記</title>
  <link href="http://blog.kenyang.net/atom.xml" rel="self"/>
  <link href="http://blog.kenyang.net"/>
- <updated>2017-02-07T14:18:21+08:00</updated>
+ <updated>2017-02-07T16:54:37+08:00</updated>
  <id>http://blog.kenyang.net</id>
  <author>
    <name>Ken Yang</name>
@@ -58,6 +58,137 @@
 
 &lt;hr&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;n
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;/font&gt;&lt;/p&gt;
+</content>
+ </entry>
+ 
+ <entry>
+   <title>Getting started with Kafka in Node.js</title>
+   <link href="http://blog.kenyang.net/2017/02/07/getting-started-with-kafka-in-nodejs"/>
+   <updated>2017-02-07T00:00:00+08:00</updated>
+   <id>http://blog.kenyang.net/2017/02/07/getting-started-with-kafka-in-nodejs</id>
+   <content type="html">&lt;p&gt;&lt;font size=&quot;3&quot;&gt;&lt;/p&gt;
+
+&lt;p&gt;之前有講過&lt;a href=&quot;http://blog.kenyang.net/2015/06/25/apache-kafka-distributed-messaging&quot;&gt;Kafka的用途以及如何安裝&lt;/a&gt;，這篇會講如何用&lt;code&gt;Node.js&lt;/code&gt;去連結&lt;code&gt;Kafka&lt;/code&gt;，至於安裝Kafka的部分就請去&lt;a href=&quot;http://blog.kenyang.net/2015/06/25/apache-kafka-distributed-messaging&quot;&gt;上一篇&lt;/a&gt;來看。&lt;/p&gt;
+
+&lt;p&gt;&lt;/br&gt;&lt;/p&gt;
+
+&lt;!--more--&gt;
+
+&lt;hr&gt;
+
+&lt;h3 id=&quot;1-create-a-topic&quot;&gt;1. Create a topic&lt;/h3&gt;
+
+&lt;hr&gt;
+
+&lt;p&gt;首先，先用CLI去建立一個topic，這topic等等會被Node.js subcribe。&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cd&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$YOUR_PATH&lt;/span&gt;/kafka_2.11-0.10.1.0
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor &lt;span class=&quot;m&quot;&gt;1&lt;/span&gt; --partitions &lt;span class=&quot;m&quot;&gt;1&lt;/span&gt; --topic open
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;可以用下面的指令去看topic是否建立成功：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;bin/kafka-topics.sh --list --zookeeper localhost:2181
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;/br&gt;&lt;/p&gt;
+
+&lt;hr&gt;
+
+&lt;h3 id=&quot;2-install-kafka-node&quot;&gt;2. Install kafka-node&lt;/h3&gt;
+
+&lt;hr&gt;
+
+&lt;p&gt;這一步驟要安裝kafka的Node.js module，這裡選用的是&lt;code&gt;kafka-node&lt;/code&gt;（其實選擇也不多）。&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;mkdir /opt/kafka-test
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cd&lt;/span&gt; /opt/kafka-test
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;npm install kafka-node --no-optional --save
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;/br&gt;&lt;/p&gt;
+
+&lt;hr&gt;
+
+&lt;h3 id=&quot;3-connect-to-zookeeper-and-send-message-producer-js&quot;&gt;3. Connect to Zookeeper and Send message (Producer.js)&lt;/h3&gt;
+
+&lt;hr&gt;
+
+&lt;p&gt;接著就可以在Node.js中使用&lt;code&gt;kafka-node&lt;/code&gt;，首先要先connect到你自己的Zookeeper，再來就可以對我們剛剛建立的topic進行傳送訊息。&lt;/br&gt;
+傳訊息是透過&lt;code&gt;producer.send&lt;/code&gt;這方式，成功以後我會去做&lt;code&gt;client.close()&lt;/code&gt;的動作，因此這隻node.js每次執行完就會關閉了。&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;kafka&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;require&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;kafka-node&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;
+    &lt;span class=&quot;nx&quot;&gt;Producer&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;kafka&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Producer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;nx&quot;&gt;client&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;kafka&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Client&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;${YOUR_HOST}:2181&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;
+    &lt;span class=&quot;nx&quot;&gt;producer&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;Producer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;client&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;
+    &lt;span class=&quot;nx&quot;&gt;payloads&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;topic&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;open&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;messages&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;hello world from nodejs&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
+
+&lt;span class=&quot;nx&quot;&gt;producer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;on&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;ready&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;nx&quot;&gt;producer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;send&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;payloads&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;err&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;nx&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;err&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+        &lt;span class=&quot;nx&quot;&gt;client&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;close&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;
+
+&lt;span class=&quot;nx&quot;&gt;producer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;on&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;error&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;err&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{})&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;/br&gt;&lt;/p&gt;
+
+&lt;hr&gt;
+
+&lt;h3 id=&quot;4-connecto-to-kafka-server-and-receiver-message-consumer-js&quot;&gt;4. Connecto to Kafka Server and Receiver message (Consumer.js)&lt;/h3&gt;
+
+&lt;hr&gt;
+
+&lt;p&gt;接著就是implement &lt;code&gt;consumer.js&lt;/code&gt;，基本上跟上面的Producer沒有太大差別，比較需要說明的參數是&lt;code&gt;autoCommit&lt;/code&gt;，一旦設為true，在你的consumer收到這則message時，就會被標記已讀的概念，接下來其他的consumer就不會再收到。&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;kafka&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;require&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;kafka-node&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;
+    &lt;span class=&quot;nx&quot;&gt;Consumer&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;kafka&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Consumer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;nx&quot;&gt;client&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;kafka&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Client&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;${YOUR_HOST}:2181&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;
+    &lt;span class=&quot;nx&quot;&gt;consumer&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;Consumer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+        &lt;span class=&quot;nx&quot;&gt;client&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;
+            &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;topic&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;open&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;partition&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;],&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+            &lt;span class=&quot;nx&quot;&gt;autoCommit&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;true&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+&lt;span class=&quot;nx&quot;&gt;consumer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;on&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;message&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;message&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;nx&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;message&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;/br&gt;&lt;/p&gt;
+
+&lt;p&gt;這裡我有踩到一個雷，由於我是把Kafka放在EC2上，然後EC2綁了一個elastic IP，但我的consumer並不是放在EC2上，而是放在某個local VM裡面，在連接的時候，一直遇到下面的error message，解決方式很簡單，只要在你的&lt;code&gt;/etc/hosts&lt;/code&gt;裡面增加一筆mapping就好了。&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;Error: getaddrinfo ENOTFOUND ip-xxx-xxx-xxx-xxx ip-xxx-xxx-xxx-xxx:9092
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;/br&gt;&lt;/p&gt;
+
+&lt;hr&gt;
+
+&lt;h3 id=&quot;5-testing&quot;&gt;5. Testing&lt;/h3&gt;
+
+&lt;hr&gt;
+
+&lt;p&gt;先在放置consumer.js的機器上執行它，&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;node consumer.js
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;接下來就執行producer.js，由於上面第三步驟有提到，在send完以後會把close client，所以執行完producer以後，這隻js就會被關閉。可以一直不斷執行這隻檔案，你會在consumer那台機器上不斷看到訊息傳遞過來。&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;node producer.js
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;/br&gt;&lt;/p&gt;
+
+&lt;hr&gt;
+
+&lt;h3 id=&quot;6-advance&quot;&gt;6. Advance&lt;/h3&gt;
+
+&lt;hr&gt;
+
+&lt;p&gt;kafka server在連zookeeper時，default的IP and Port是存在&lt;code&gt;config/server.properties&lt;/code&gt;裡面的&lt;code&gt;zookeeper.connect&lt;/code&gt;。
+&lt;/br&gt;
+&lt;/br&gt;
+由於我的EC2 ram很小，所以在launch Kafka時，一直發生OOM，解決方式是去&lt;code&gt;bin/kafka-server-start.sh&lt;/code&gt;改&lt;code&gt;KAFKA_HEAP_OPTS&lt;/code&gt;，&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;if [ &amp;quot;x$KAFKA_HEAP_OPTS&amp;quot; = &amp;quot;x&amp;quot; ]; then
+    export KAFKA_HEAP_OPTS=&amp;quot;-Xmx500M -Xms500M&amp;quot;
+fi
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;&lt;/font&gt;&lt;/p&gt;
 </content>
@@ -2942,14 +3073,6 @@ mv完成以後，接著打開&lt;code&gt;index.html&lt;/code&gt;，&lt;br&gt;
    <updated>2015-06-17T10:18:00+08:00</updated>
    <id>http://blog.kenyang.net/2015/06/17/how-to-run-simple-apache-spark</id>
    <content type="html">&lt;div style=&quot;font-size: 15px; line-height: 22px;&quot;&gt;因緣際會下，得稍微摸一下Apache Spark，&lt;br /&gt;說實在，在粗淺地摸完Spark以後，我還是想不太出他的應用面。&lt;br /&gt;Anyway，這篇主要分為3個section，&lt;br /&gt;&lt;br /&gt;&lt;ul&gt;&lt;li&gt;如何安裝Spark&lt;/li&gt;&lt;li&gt;如何使用&lt;/li&gt;&lt;li&gt;如何寫個Spark application&lt;/li&gt;&lt;/ul&gt;&lt;br /&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;1. Install JDK&lt;/span&gt;&lt;br /&gt;&lt;br /&gt;首先要先講安裝，&lt;br /&gt;安裝spark之前，要先安裝java+scala，&lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;apt-add-repository ppa:webupd8team/java&lt;br /&gt;apt-get update&lt;br /&gt;apt-get install oracle-java7-installer&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;2. Install scala&lt;/span&gt;&lt;br /&gt;&lt;br /&gt;接著要安裝scala，這裡安裝的版本是2.11.6。&lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;wget http://www.scala-lang.org/files/archive/scala-2.11.6.tgz&lt;br /&gt;mkdir /usr/local/src/scala&lt;br /&gt;tar xvf scala-2.11.6.tgz -C /usr/local/src/scala/&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;安裝完以後，要把scala的路徑加入到PATH環境變數中&lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;echo &quot;export SCALA_HOME=/usr/local/src/scala/scala-2.11.6&quot; &gt;&gt; .bashrc&lt;br /&gt;echo &quot;export PATH=\$SCALA_HOME/bin:\$PATH&quot; &gt;&gt; .bashrc&lt;br /&gt;. .bashrc&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;3. Install Spark&lt;/span&gt;&lt;br /&gt;&lt;br /&gt;最後就安裝spark，安裝會需要一段時間。&lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;wget http://www.apache.org/dist/spark/spark-1.4.0/spark-1.4.0.tgz&lt;br /&gt;tar xvf spark-1.4.0.tgz&lt;br /&gt;cd spark-1.4.0&lt;br /&gt;sbt/sbt assembly&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;4. Spark Interactive Shell&lt;/span&gt;&lt;br /&gt;&lt;br /&gt;安裝完以後，可以進入spark的interactive shell模式做個簡單的測試，&lt;br /&gt;進入interactive mode，&lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;./bin/spark-shell&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;大概會花個10秒做init，進入以後，&lt;br /&gt;會看到scala的prompt字樣，這裏就可以對spark進行操作了。&lt;br /&gt;下面有二個例子，都是對README.md去做操作，&lt;br /&gt;分別為找出含&quot;apache&quot;的句子，&lt;br /&gt;以及找出有幾個&quot;apache&quot;的字。&lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;scala&gt; val textFile = sc.textFile(&quot;README.md&quot;)&lt;br /&gt;scala&gt; textFile.count()&lt;br /&gt;scala&gt; val results = textFile.filter(line =&gt; line.contains(&quot;apache&quot;)) // search apache&lt;br /&gt;scala&gt; results.count()&lt;br /&gt;scala&gt; results.collect()  // find out those lines contain apache&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;5. Start a Spark cluster&lt;/span&gt;&lt;br /&gt;&lt;br /&gt;好了，剛剛都是自爽模式，&lt;br /&gt;接著我們要啟動一個spark cluster，&lt;br /&gt;這個cluster可以讓很多個worker(slave)加入，&lt;br /&gt;讓他們去執行工作。&lt;br /&gt;&lt;br /&gt;啟動cluster的指令如下：&lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;./sbin/start-master.sh&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;啟動完以後，你可以用netstat -tnlp去看一下，&lt;br /&gt;你會發現有3個java bind住的connection，&lt;br /&gt;預設分別為7077、8080、6066&lt;br /&gt;7077就是這個cluster的port，將來worker要加入就得指定這個port，&lt;br /&gt;8080是這個spark的web management UI。&lt;br /&gt;所以你就可以打開browser，然後去看看web UI．&lt;br /&gt;這時候你的worker數量應該是0。&lt;br /&gt;如果想要加入一個worker，得透過下面的指令，&lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;./sbin/start-slave.sh spark://ubuntu:7077 # change ubuntu to your hostname&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;此時再去web UI看，應該就看到有一個worker存在。&lt;br /&gt;上面是透過二個指令去分別啟動master and slave，&lt;br /&gt;其實你也可以透過下面一個指令就去啟動master, slave，&lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;./sbin/start-all.sh&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;6. Connecting an Application to the Cluster&lt;/span&gt;&lt;br /&gt;&lt;br /&gt;有了一個spark cluster以後，&lt;br /&gt;我們就可以把application掛上去，&lt;br /&gt;我們可以透過前面使用的spark-shell，把這個shell run在cluster上。&lt;br /&gt;只要加入--master這參數即可。&lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;./bin/spark-shell --master spark://ubuntu:7077 # change ubuntu to your hostname&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;進去以後，你一樣可以執行上面的example玩玩看。&lt;br /&gt;同時你也可以去web UI上看看，會在&quot;Running Applications&quot;裡面看到這個shell。&lt;br /&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;7. Writing an Application&lt;/span&gt;&lt;br /&gt;&lt;br /&gt;上一步也算是自爽模式，&lt;br /&gt;我想應該不可能透過shell mode去做你想做的事情，&lt;br /&gt;應該還是要寫個application，&lt;br /&gt;所以這一步驟就是要寫一個很簡單的classs，&lt;br /&gt;然後build它，再把它掛到cluster上執行。&lt;br /&gt;&lt;br /&gt;開始之前，先來設定一下spark的環境變數，&lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;echo &quot;export SK_HOME=/root/spark-1.4.0&quot; &gt;&gt; .bashrc&lt;br /&gt;. .bashrc&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;然後改這隻script，（$SK_HOME/build/sbt-launch-lib.bash）&lt;br /&gt;因為我在build的時候，有發生路徑的問題。&lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;vim $SK_HOME/build/sbt-launch-lib.bash&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;打開這檔案以後，找到這幾行，&lt;br /&gt;&lt;pre class=&quot;brush: python&quot;&gt;SBT_VERSION=`awk -F &quot;=&quot; &#39;/sbt\.version/ {print $2}&#39; ./project/build.properties`&lt;br /&gt;...&lt;br /&gt;JAR=build/sbt-launch-${SBT_VERSION}.jar&lt;br /&gt;&lt;/pre&gt;換成下面這幾行，其實也只是變成絕對路徑。&lt;br /&gt;&lt;pre class=&quot;brush: python&quot;&gt;SBT_VERSION=`awk -F &quot;=&quot; &#39;/sbt\.version/ {print $2}&#39; $SK_HOME/project/build.properties`&lt;br /&gt;...&lt;br /&gt;JAR=$SK_HOME/build/sbt-launch-${SBT_VERSION}.jar&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;完成以後，先來create幾個資料夾，&lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;mkdir -p ./spark-app/src/main/scala/&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;接著就可以寫一個簡單的class，&lt;br /&gt;這class上面差不多，也是用來算count，&lt;br /&gt;記得該class一定要放置在src/main/scala底下。&lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;cd ./spark-app&lt;br /&gt;vim src/main/scala/SimpleApp.scala&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;class內容如下，&lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;/* SimpleApp.scala */&lt;br /&gt;import org.apache.spark.SparkContext&lt;br /&gt;import org.apache.spark.SparkContext._&lt;br /&gt;import org.apache.spark.SparkConf&lt;br /&gt;&lt;br /&gt;object SimpleApp {&lt;br /&gt;  def main(args: Array[String]) {&lt;br /&gt;    val logFile = &quot;/root/spark-1.4.0/README.md&quot;&lt;br /&gt;    val conf = new SparkConf().setAppName(&quot;Simple Application&quot;)&lt;br /&gt;    val sc = new SparkContext(conf)&lt;br /&gt;    val logData = sc.textFile(logFile, 2).cache()&lt;br /&gt;    val numApache = logData.filter(line =&gt; line.contains(&quot;apache&quot;)).count()&lt;br /&gt;    println(&quot;Line with apache: %s &quot;.format(numApache))&lt;br /&gt;  }&lt;br /&gt;}&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;而在開始build之前，要寫一下這個app的dependency，&lt;br /&gt;放置在sparka-app底下就好。&lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;vim simple.sbt&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;內容如下，&lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;name := &quot;Simple Project&quot;&lt;br /&gt;&lt;br /&gt;version := &quot;1.0&quot;&lt;br /&gt;&lt;br /&gt;scalaVersion := &quot;2.11.6&quot;&lt;br /&gt;&lt;br /&gt;libraryDependencies += &quot;org.apache.spark&quot; %% &quot;spark-core&quot; % &quot;1.4.0&quot;&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;接著就可以開始build，&lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;$SPARK_HOME/build/sbt package&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;&lt;br /&gt;build完以後，&lt;br /&gt;會發現spark-app底下多了二個folder（project, target)，&lt;br /&gt;而我們要的jar檔會放在target底下，&lt;br /&gt;我們就可以把這jar交付給spark執行。&lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;$SPARK_HOME/bin/spark-submit --class &quot;SimpleApp&quot; --master spark://ubuntu:7077 target/scala-2.11/simple-project_2.11-1.0.jar&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;應該會看到下面的字樣，&lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;Line with apache: 9 15/06/17 02:55:34 INFO TaskSetManager: Finished task 1.0 in stage 2.0 (TID 5) in 32 ms on 172.16.131.140 (2/2)&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;最後在web UI裡面的&quot;Completed Applications&quot;會看到我們剛剛執行的那個item。&lt;br /&gt;基本上這樣就完成了簡單的spark application。&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;/div&gt;</content>
- </entry>
- 
- <entry>
-   <title>How to create a customized Ubuntu ISO?</title>
-   <link href="http://blog.kenyang.net/2015/04/13/how-to-create-customized-ubuntu-iso"/>
-   <updated>2015-04-13T10:36:00+08:00</updated>
-   <id>http://blog.kenyang.net/2015/04/13/how-to-create-customized-ubuntu-iso</id>
-   <content type="html">&lt;div style=&quot;font-size: 15px; line-height: 22px;&quot;&gt;這篇要講怎麼客製化你自己想要的ubuntu ISO，&lt;br /&gt;會講解一些&lt;a href=&quot;http://en.wikipedia.org/wiki/Preseed&quot;&gt;preseed&lt;/a&gt;的參數，&lt;br /&gt;preseed file是debian系列的automation config，而redhat系列就是用kickstart，&lt;br /&gt;debian系列就是根據preseed file去進行安裝．&lt;br /&gt;因此ubuntu也是用preseed，當然ubuntu也可以用kickstart，只是“似乎”支援沒有那麼好!?&lt;br /&gt;題外話，雖然說preseed file是debian的標準格式，&lt;br /&gt;但有一點要記得，debian自己本身的preseed file，並不是每一個command，ubuntu都能接受！&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;1. Download ubuntu ISO&lt;/span&gt;&lt;br /&gt;&lt;br /&gt;首先，你要有一個ubuntu的ISO，&lt;br /&gt;這裏我選用ubuntu 12.04的ISO，&lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;wget http://releases.ubuntu.com/12.04.5/ubuntu-12.04.5-server-amd64.iso&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;2. Mount the ISO&lt;/span&gt;&lt;br /&gt;&lt;br /&gt;接著要把ISO內的東西，先mount起來，接著再copy出來，&lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;mkdir -p /mnt/tmp /mnt/iso&lt;br /&gt;mount -o loop ./ubuntu-12.04.5-server-amd64.iso /mnt/tmp&lt;br /&gt;rsyn -av /mnt/tmp /mnt/iso&lt;br /&gt;umount /mnt/tmp&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;3. Add boot menu option&lt;/span&gt;&lt;br /&gt;&lt;br /&gt;因為要客製化你自己的ISO，&lt;br /&gt;所以我們要在boot menu中，新增一個屬於我們自己的menu，&lt;br /&gt;首先先開啟這個isolinux/txt.cfg檔案&lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;vim /mnt/iso/isolinux/txt.cfg&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;打開以後應該會看到下面的內容，&lt;br /&gt;&lt;div class=&quot;separator&quot; style=&quot;clear: both; text-align: center;&quot;&gt;&lt;a href=&quot;http://3.bp.blogspot.com/-VdB_0wKMjWA/VSo0ZnuY9hI/AAAAAAAAFjY/2TZzIfVE7Is/s1600/Screen%2BShot%2B2015-04-12%2Bat%2B4.56.41%2BPM.png&quot; imageanchor=&quot;1&quot; style=&quot;margin-left: 1em; margin-right: 1em;&quot;&gt;&lt;img border=&quot;0&quot; src=&quot;http://3.bp.blogspot.com/-VdB_0wKMjWA/VSo0ZnuY9hI/AAAAAAAAFjY/2TZzIfVE7Is/s640/Screen%2BShot%2B2015-04-12%2Bat%2B4.56.41%2BPM.png&quot; /&gt;&lt;/a&gt;&lt;/div&gt;&lt;br /&gt;我們就在label install之前新增一筆boot menu，&lt;br /&gt;內容如下，&lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;label YourCustomizedISO&lt;br /&gt;    menu label ^Customized ISO&lt;br /&gt;    kernel /install/vmlinuz&lt;br /&gt;    append  file=/cdrom/preseed/customized.seed initrd=/install/initrd.gz quiet --&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;4. Add pressed file&lt;/span&gt;&lt;br /&gt;&lt;br /&gt;接著就要新增一個客製化的preseed file，&lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;vim /mnt/iso/preseed/customized.seed&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;內容如下，這份preseed讓你可以不用輸入任何按鍵就進行自動安裝！&lt;br /&gt;我覺得還蠻淺顯易懂的，每個section都有標註是在做什麼，&lt;br /&gt;比較值得注意的是『Advance command』這個section，&lt;br /&gt;這section裡面放的是，『安裝完ubuntu以後，要做些什麼事情。』&lt;br /&gt;但是如果你想要在『安裝之前』或者『partition之前或者之後』做些事情，都是可以的。&lt;br /&gt;只不過這個example，我們是在『安裝完ubuntu以後』。&lt;br /&gt;&lt;br /&gt;『preseed/late_command』就是『安裝完ubuntu以後』的意思。&lt;br /&gt;不過這邊可能大家會覺得很奇怪，為什麼在late_command中，&lt;br /&gt;一開始要cp至/target目錄？/target目錄又是什麼？&lt;br /&gt;大家在安裝ubuntu的時候，可以change console一下，這時候cd至/target底下，&lt;br /&gt;你會發現其實裡面就是你真正ubuntu安裝的位置！&lt;br /&gt;那/target外面的東西是誰的呢(bin, lib, etc,....)？&lt;br /&gt;其實是busybox的，所以你一定得把你想要的東西搬到/target裡面，&lt;br /&gt;這樣在你安裝完以後，該東西才會存在。&lt;br /&gt;接著還有另一段奇怪的command：in-target，&lt;br /&gt;『in-target』，簡單的說就是chroot /target而已，&lt;br /&gt;你也可以用chroot /target去取代『in-target』。&lt;br /&gt;&lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;####### Localization #######&lt;br /&gt;d-i debian-installer/locale string en_US&lt;br /&gt;d-i debian-installer/language string en&lt;br /&gt;d-i debian-installer/country string US&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;####### Keyboard selection #######&lt;br /&gt;d-i console-setup/ask_detect boolean false&lt;br /&gt;d-i console-setup/layoutcode string us&lt;br /&gt;d-i console-setup/modelcode string pc105&lt;br /&gt;d-i kbd-chooser/method string us&lt;br /&gt;d-i keyboard-configuration/layout string USA&lt;br /&gt;d-i keyboard-configuration/variant string USA&lt;br /&gt;&lt;br /&gt;####### Network configuration #######&lt;br /&gt;#d-i netcfg/choose_interface select auto&lt;br /&gt;d-i netcfg/choose_interface select eth0&lt;br /&gt;d-i netcfg/get_hostname string ubuntu&lt;br /&gt;d-i netcfg/get_domain string&lt;br /&gt;# configure the network manually&lt;br /&gt;#d-i netcfg/disable_autoconfig boolean true&lt;br /&gt;# configure the network automatically&lt;br /&gt;d-i netcfg/get_nameservers string 8.8.8.8&lt;br /&gt;d-i netcfg/get_ipaddress string 172.16.131.138&lt;br /&gt;d-i netcfg/get_netmask string 255.255.255.0&lt;br /&gt;d-i netcfg/get_gateway string 172.16.131.2&lt;br /&gt;d-i netcfg/confirm_static boolean true&lt;br /&gt;&lt;br /&gt;####### Apt setup #######&lt;br /&gt;d-i apt-setup/security-updates boolean false&lt;br /&gt;d-i apt-setup/restricted boolean false&lt;br /&gt;d-i apt-setup/universe boolean false&lt;br /&gt;d-i apt-setup/backports boolean false&lt;br /&gt;d-i apt-setup/security boolean false&lt;br /&gt;d-i mirror/http/proxy string&lt;br /&gt;&lt;br /&gt;####### Base system installation #######&lt;br /&gt;d-i debian-installer/splash boolean false&lt;br /&gt;d-i base-installer/install-recommends boolean true&lt;br /&gt;d-i base-installer/kernel/altmeta string lts-saucy&lt;br /&gt;&lt;br /&gt;####### Clock and time zone setup #######&lt;br /&gt;d-i clock-setup/utc boolean true&lt;br /&gt;d-i clock-setup/utc-auto boolean true&lt;br /&gt;d-i time/zone string UTC&lt;br /&gt;&lt;br /&gt;####### Boot loader installation #######&lt;br /&gt;d-i finish-install/reboot_in_progress note&lt;br /&gt;d-i grub-installer/only_debian boolean true&lt;br /&gt;d-i grub-installer/with_other_os boolean true&lt;br /&gt;&lt;br /&gt;####### Partitioning using LVM #######&lt;br /&gt;d-i partman-auto-lvm/guided_size string max&lt;br /&gt;d-i partman-auto/choose_recipe select atomic&lt;br /&gt;d-i partman-auto/method string lvm&lt;br /&gt;d-i partman-lvm/confirm boolean true&lt;br /&gt;d-i partman-lvm/confirm boolean true&lt;br /&gt;d-i partman-lvm/confirm_nooverwrite boolean true&lt;br /&gt;d-i partman-lvm/device_remove_lvm boolean true&lt;br /&gt;d-i partman/choose_partition select finish&lt;br /&gt;d-i partman/confirm boolean true&lt;br /&gt;d-i partman/confirm_nooverwrite boolean true&lt;br /&gt;d-i partman/confirm_write_new_label boolean true&lt;br /&gt;&lt;br /&gt;####### User #######&lt;br /&gt;d-i passwd/root-login boolean true&lt;br /&gt;d-i passwd/root-password password 1234&lt;br /&gt;d-i passwd/root-password-again password 1234&lt;br /&gt;d-i user-setup/allow-password-weak boolean true&lt;br /&gt;# create user or not&lt;br /&gt;d-i passwd/make-user boolean false&lt;br /&gt;#d-i user-setup/encrypt-home boolean false&lt;br /&gt;#d-i passwd/user-fullname string ken&lt;br /&gt;#d-i passwd/username string ken&lt;br /&gt;#d-i passwd/user-password password 123456&lt;br /&gt;#d-i passwd/user-password-again password 123456&lt;br /&gt;&lt;br /&gt;####### Package selection #######&lt;br /&gt;d-i pkgsel/include string openssh-server vim&lt;br /&gt;d-i pkgsel/install-language-support boolean false&lt;br /&gt;d-i pkgsel/update-policy select none&lt;br /&gt;d-i pkgsel/upgrade select none&lt;br /&gt;&lt;br /&gt;tasksel tasksel/first multiselect standard, ubuntu-server&lt;br /&gt;&lt;br /&gt;####### Advance command #######&lt;br /&gt;d-i preseed/late_command string \&lt;br /&gt;cp /cdrom/preseed/setup-something.bash /target/tmp/setup-something.bash &amp;&amp; in-target chmod +x /tmp/setup-something.bash &amp;&amp; in-target /bin/bash /tmp/setup-something.bash&lt;br /&gt;&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;5. Make an ISO&lt;/span&gt;&lt;br /&gt;&lt;br /&gt;完成上面的步驟後，&lt;br /&gt;剩下最後一步就完成了，&lt;br /&gt;把剛剛copy出來的內容，在包成一個ISO就好了。&lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;mkisofs -r -R -J -T -v -b isolinux/isolinux.bin -no-emul-boot -boot-load-size 4 -boot-info-table -z -iso-level 4 -c isolinux/isolinux.cat -o custom.iso /mnt/iso&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;大概等個20秒以後，就會看到一個custom.iso，就代表你成功了！&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;/div&gt;&lt;br /&gt;</content>
  </entry>
  
  

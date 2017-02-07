@@ -222,6 +222,8 @@
   
     
   
+    
+  
 
 
 
@@ -296,6 +298,34 @@
     </div>
     <!-- This loops through the paginated posts -->
     
+      <h1><a style="color: #F22430" href="/2014/10/13/android-backup-service-api-backup">Android Backup service API  (backup internal database)</a></h1>
+      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
+      <p class="author">
+      <div class="date">
+        <span>13 October 2014</span>
+      </div>
+      </p>
+      <div class="content" style="line-height: 28px;">
+        <div style="font-size: 15px; line-height: 22px;">這篇要講Android自己的<a href="http://developer.android.com/training/cloudsync/backupapi.html">backup service</a>，<br />其實使用起來蠻簡單的，<br />主要分成下面4個步驟，<br /><br /><span style="color: #e06666; font-size: 18px;">1. Register for Android Backup Service</span>  <br /><br />首先要先去註冊一個API Key，先到這個<a href="https://developer.android.com/google/backup/signup.html?csw=1">網站</a>，<br />進去以後輸入你的package name，接著就會給你一組API key．<br />這樣就註冊完成．<br /><br /><span style="color: #e06666; font-size: 18px;">2. Configuration</span>  <br /><br />完成上面的註冊以後，接著要對你的project做configuration，<br />先開啟你的AndroidManifest.xml，<br />先在application element加上一個android:backupAgent這個attribute，<br />這個attribute的名字，就是待會你新增的class名稱，<br /><pre class="brush: java">&lt;application android:label=&quot;MyApp&quot;<br />             android:backupAgent=&quot;ExpenseBackupAgent&quot;&gt;<br /></pre><br />接著在application之中，加入下段的meta data，<br />記得把xxxxxxxxxx換成你剛剛註冊的API Key，<br /><pre class="brush: java">&lt;meta-data android:name=&quot;com.google.android.backup.api_key&quot;<br />android:value=&quot;xxxxxxxxxxxxxxxxxxx&quot; /&gt;<br /></pre><br /><span style="color: #e06666; font-size: 18px;">3. Backup internal database</span>  <br /><br />接著新增一個Class，這個Class要繼承BackupAgentHelper，<br />記得這Class名稱要跟你manifest.xml中的一樣！<br />這裡要題外話一下，其實你也可以繼承BackupAgent，<br />當你如果需要做到更複雜的backup時，<br />例如你不想backup整份file，你只想backup某個"部分"的data，<br />這時候你只能透過BackupAgent去做到，<br />而BackupAgentHelper其實也只是BackupAgent的一個wrapper，<br />讓你更輕易的backup和restore罷了．<br />回到主題，先新增一個class繼承BackupAgentHelper，內容如下，<br />在onCreate裡面用到了FileBackupHelper，<br />最原始的FileBackupHelper是真的用來backup某個file，<br />但因為我們這裡要backup db，<br />所以我們要override掉getFilesDir，<br />在getFilesDir中去拿db的路徑，<br />然後透過FileBackupHelper去做backup！<br />只要透過下面的code就可以幫你自動backup和restore了！<br /><br /><pre class="brush: java">public class ExpenseBackupAgent extends BackupAgentHelper {<br />    private static final String DB_NAME = "expense"; // db名稱<br />    private static final String TAG = ExpenseBackupAgent.class<br />            .getCanonicalName();<br /><br />    @Override<br />    public void onCreate() {<br />        Log.e(TAG, "backu db");<br />        FileBackupHelper dbs = new FileBackupHelper(this, DB_NAME);<br />        addHelper("dbs", dbs);<br />    }<br /><br />    @Override<br />    public File getFilesDir() {<br />        final File f = getDatabasePath(DB_NAME);<br />        return f.getParentFile();<br />    }<br />}<br /><br /></pre><br />雖然說backup和restore都是自動的，<br />那麼要怎麼主動的去request backup？<br />那就要用BackupManager了，<br />透過dataChanged，會去幫你queue這個backup的job，<br />為什麼是說queue呢？因為backup不會馬上執行的！<br />都是批次的執行！<br /><pre class="brush: java">BackupManager bm = new BackupManager(this);<br />bm.dataChanged();<br /></pre><br /><span style="color: #e06666; font-size: 18px;">4. Test</span>  <br /><br />上面說到了Backup都是批次執行，不是即時的，那我該怎測試呢？<br />要透過adb了，<br /><pre class="brush: bash">adb shell bmgr backup packagename  # 等於dataChanged<br />adb shell bmgr run                 # 立即去trigger backup job<br />adb uninstall packagename          # 先刪掉app<br /></pre>最後再安裝一次你的app，<br />打開以後應該會發現你的資料都還在！<br /><br /><br /><br /></div><br /><br /><br /><br /><br />
+      </div>
+      <footer>
+        <p><a class="myButton" href="/2014/10/13/android-backup-service-api-backup">read more &raquo;</a></p>
+        <div>
+          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- ken on github -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3783438370424072"
+     data-ad-slot="1516206098"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+        </div>
+      </footer>
+      <hr>
+    
       <h1><a style="color: #F22430" href="/2014/10/01/android-set-up-javadocs-and-source-for">Set up javadocs and source for 3rd-party libs</a></h1>
       <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
       <p class="author">
@@ -352,41 +382,13 @@
       </footer>
       <hr>
     
-      <h1><a style="color: #F22430" href="/2014/09/04/how-to-build-your-own-debian-package">How to build your own debian package?</a></h1>
-      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
-      <p class="author">
-      <div class="date">
-        <span>04 September 2014</span>
-      </div>
-      </p>
-      <div class="content" style="line-height: 28px;">
-        <div style="font-size: 15px; line-height: 22px;">其實不久前有寫一篇講怎麼<a href="http://blog.kenyang.net/2014/03/build-deb-package-from-source.html">build deb package</a>，<br />不過那篇的code source並不是來自於自己的source，<br />那麼假設你今天自己有一個web，你想把這web打包成一個deb供人安裝，那該怎麼做呢？<br />這篇主要就是講怎麼create一個自己的deb package．<br /><br /><br /><br /><span style="color: #e06666; font-size: 18px;">1. Install necessary package</span><br /><br /><pre class="brush: bash">sudo apt-get install dh-make<br /></pre>dh-make是用來準備debian package所需要的files，<br />等等會用來gen template files．<br /><br /><br /><span style="color: #e06666; font-size: 18px;">2. Prepare environment</span><br /><br />這裡先create一個folder，名稱為www，<br />www底下也要create一些web所需的資料夾和檔案，像是images, css ,js...etc<br />www的目錄結構大概就長這樣，<br /><br />www<br />├── css<br />│   └── main.css<br />├── images<br />│   └── a.png<br />└── static<br />└── index.html<br /><br /><br /><br />我們要把folder底下的東西都打包進去debian package，<br />並且讓其他人在安裝這個debian package時，可以安裝到我們所指定的path底下！<br /><br /><br /><span style="color: #e06666; font-size: 18px;">3. Generate template files</span><br /><br />在這步要用前面安裝的dh_make來generate出debian package所需要的template files,<br />在generate之前，先設定一個環境變數，<br />這環境變數是用來記錄這個debian package的作者是誰<br /><pre class="brush: bash">export DEBFULLNAME="Ken Yang"<br /></pre><br /><pre class="brush: bash">dh_make --single --packagename ken-sdk_0.1 --native -e xxxx@gmail.com<br /></pre>--packagename要注意一下，<br />--packagename分為兩個部分，<br />前面的部分ken-sdk是package name，<br />package name只能用-來分隔，不能用底線！<br />而後面的_0.1是version number，<br />--natvie，意思是這個debian不是從一個既有的tarball gen出來的！<br /><br />generate完成以後，你會發現在www folder底下多了一個debian folder，<br />這debian folder裡面是放一些build debian package所需要的template files，<br />而既然是template files，那麼就有一些不需要的file或者需要被修改的file，<br />首先先刪除不需要的file吧！<br /><pre class="brush: bash">sudo rm debian/*.ex debian/*.EX<br /></pre><br />接著就來修改這個template，<br />首先要先改control這file，<br /><pre class="brush: bash">vim debian/control<br /></pre>打開以後，會看到很多information，<br />你比較需要改的大概就只有Depends (dependency)，和Description了！<br />改完儲存以後即可！<br /><br />接下來要改copyright，<br /><pre class="brush: bash">vim debian/copyright<br /></pre>打開以後，大概就只有年份和作者名稱要改而已！<br /><br />剩下其他的file，像是README, docs就看你要不要改了，<br />記得rules千萬別改！rules是build package的起頭！<br /><br /><br /><span style="color: #e06666; font-size: 18px;">4. Build debian package</span><br /><br />在完成template的修改，準備開始build之前，<br />我們還有最後一個步驟，就是要指定哪些files or folder是你要放進去這個debian package的！<br />而就是靠一個檔案去記錄！<br />這個檔案名稱很重要，要跟你前面的package name一模一樣，<br />我們前面的package name是ken-sdk，<br />所以這個file要叫做ken-sdk.install，<br />裡面的格式就像下面一樣，<br /><pre class="brush: bash">images/* /opt/www/image<br />css/* /opt/www/css<br />js/* /opt/www/js<br /></pre>第一格參數：現在www folder底下路徑的檔案<br />第二格參數：將來這deb package被安裝時，這些files要被安裝到哪裡<br />儲存以後，就可以開始build，指令如下：<br /><pre class="brush: bash">dpkg-buildpackage -rfakeroot -b<br /></pre>-rfakeroot：使用root的權限<br />-b：單純只是binary，不要去build source<br /><br /><br /><span style="color: #e06666; font-size: 18px;">5. Verify</span><br /><br />完成以後，<br />debian package會放在folder的上層目錄，<br />應該會有一個ken-sdk_0.1_amd64.deb，<br />有一個快速verify你要的files有沒有被包進去，<br /><pre class="brush: bash">lesspipe ken-sdk_0.1_amd64.deb<br /></pre><br />當然你也可以安裝起來看看，<br /><pre class="brush: bash">sudo dpkg --install ../ken-sdk_0.1_amd64.deb<br /></pre><br />接著就去看剛剛指定的folder（/opt/www），是否有我們原本的檔案！<br /><br /><br /><span style="color: #e06666; font-size: 18px;">6. Advance: Pre-Install or Post-Install</span><br /><br />如果你想要在這package完成安裝或者開始安裝之前，做一些前置作業，<br />那麼就可以靠preinst和postinst這兩個檔案，<br />preinst就是安裝之前，<br />postinst就是安裝完成之後，<br />相反地，如果你想要在這package被remove時，也做一些操作，<br />那麼就要有prerm和postrm這兩個檔案！<br /><br /><br /><span style="color: #e06666; font-size: 18px;">7. Advance: Update pacakge</span><br /><br />如果你這package想要更新，<br />變成0.2版本，你可以直接編輯change log，但有點麻煩！<br />可以透過指令快速達成！<br /><pre class="brush: bash">dch -v 0.2 "Update package."<br /></pre><br />之後一樣直接dpkg-buildpackage -rfakeroot -b就可以了！<br /><br /><br /></div><br /><br /><br />
-      </div>
-      <footer>
-        <p><a class="myButton" href="/2014/09/04/how-to-build-your-own-debian-package">read more &raquo;</a></p>
-        <div>
-          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<!-- ken on github -->
-<ins class="adsbygoogle"
-     style="display:block"
-     data-ad-client="ca-pub-3783438370424072"
-     data-ad-slot="1516206098"
-     data-ad-format="auto"></ins>
-<script>
-(adsbygoogle = window.adsbygoogle || []).push({});
-</script>
-
-        </div>
-      </footer>
-      <hr>
-    
 
     <!-- Pagination links -->
     <div class="pagination">
       
         <a href="/blog/page8" class="previous">Previous</a>
       
-      <span class="page_number ">Page: 9 of 58</span>
+      <span class="page_number ">Page: 9 of 59</span>
       
         <a href="/blog/page10" class="next">Next</a>
       
