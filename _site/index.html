@@ -352,6 +352,21 @@
 
 <p></br></p>
 
+<hr>
+
+<h3 id="1-create-a-topic">1. Create a topic</h3>
+
+<hr>
+
+<p>首先，先用CLI去建立一個topic，這topic等等會被Node.js subcribe。</p>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span><span class="nb">cd</span> <span class="nv">$YOUR_PATH</span>/kafka_2.11-0.10.1.0
+<span class="nv">$ </span>bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor <span class="m">1</span> --partitions <span class="m">1</span> --topic open
+</code></pre></div>
+<p>可以用下面的指令去看topic是否建立成功：</p>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>bin/kafka-topics.sh --list --zookeeper localhost:2181
+</code></pre></div>
+<p></br></p>
+
       </div>
       <footer>
         <p><a class="myButton" href="/2017/02/07/getting-started-with-kafka-in-nodejs">read more &raquo;</a></p>

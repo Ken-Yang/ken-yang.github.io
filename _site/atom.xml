@@ -4,7 +4,7 @@
  <title>Ken Yang筆記</title>
  <link href="http://blog.kenyang.net/atom.xml" rel="self"/>
  <link href="http://blog.kenyang.net"/>
- <updated>2017-02-07T16:54:37+08:00</updated>
+ <updated>2017-02-07T17:11:51+08:00</updated>
  <id>http://blog.kenyang.net</id>
  <author>
    <name>Ken Yang</name>
@@ -74,8 +74,6 @@
 
 &lt;p&gt;&lt;/br&gt;&lt;/p&gt;
 
-&lt;!--more--&gt;
-
 &lt;hr&gt;
 
 &lt;h3 id=&quot;1-create-a-topic&quot;&gt;1. Create a topic&lt;/h3&gt;
@@ -90,6 +88,8 @@
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;bin/kafka-topics.sh --list --zookeeper localhost:2181
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;&lt;/br&gt;&lt;/p&gt;
+
+&lt;!--more--&gt;
 
 &lt;hr&gt;
 

@@ -14,8 +14,6 @@ tags: []
 
 </br>
 
-<!--more-->
-
 ---
 ### 1. Create a topic
 ---
@@ -34,6 +32,10 @@ $ bin/kafka-topics.sh --list --zookeeper localhost:2181
 ```
 
 </br>
+
+
+<!--more-->
+
 
 ---
 ### 2. Install kafka-node

@@ -5,8 +5,8 @@
         <description>Ken Yang筆記 - Ken Yang</description>
         <link>http://blog.kenyang.net</link>
         <atom:link href="http://blog.kenyang.net/rss.xml" rel="self" type="application/rss+xml" />
-        <lastBuildDate>Tue, 07 Feb 2017 16:54:37 +0800</lastBuildDate>
-        <pubDate>Tue, 07 Feb 2017 16:54:37 +0800</pubDate>
+        <lastBuildDate>Tue, 07 Feb 2017 17:11:51 +0800</lastBuildDate>
+        <pubDate>Tue, 07 Feb 2017 17:11:51 +0800</pubDate>
         <ttl>60</ttl>
 
 
@@ -69,8 +69,6 @@
 
 &lt;p&gt;&lt;/br&gt;&lt;/p&gt;
 
-&lt;!--more--&gt;
-
 &lt;hr&gt;
 
 &lt;h3 id=&quot;1-create-a-topic&quot;&gt;1. Create a topic&lt;/h3&gt;
@@ -85,6 +83,8 @@
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;bin/kafka-topics.sh --list --zookeeper localhost:2181
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;&lt;/br&gt;&lt;/p&gt;
+
+&lt;!--more--&gt;
 
 &lt;hr&gt;
 
