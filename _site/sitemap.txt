@@ -65,6 +65,7 @@ http://blog.kenyang.net/blog/page56/
 http://blog.kenyang.net/blog/page57/
 http://blog.kenyang.net/blog/page58/
 
+http://blog.kenyang.net/2017/02/07/update-nodejs-version
 http://blog.kenyang.net/2016/09/14/remotely-open-door-using-raspberry-pi
 http://blog.kenyang.net/2016/09/06/how-to-create-a-telegram-bot
 http://blog.kenyang.net/2016/06/22/android-app-bartool-bar

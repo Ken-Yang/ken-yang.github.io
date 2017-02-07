@@ -5,10 +5,61 @@
         <description>Ken Yang筆記 - Ken Yang</description>
         <link>http://blog.kenyang.net</link>
         <atom:link href="http://blog.kenyang.net/rss.xml" rel="self" type="application/rss+xml" />
-        <lastBuildDate>Wed, 14 Sep 2016 20:13:28 +0800</lastBuildDate>
-        <pubDate>Wed, 14 Sep 2016 20:13:28 +0800</pubDate>
+        <lastBuildDate>Tue, 07 Feb 2017 14:18:21 +0800</lastBuildDate>
+        <pubDate>Tue, 07 Feb 2017 14:18:21 +0800</pubDate>
         <ttl>60</ttl>
 
+
+        <item>
+                <title>Update Node.js version</title>
+                <description>&lt;p&gt;&lt;font size=&quot;3&quot;&gt;&lt;/p&gt;
+
+&lt;p&gt;Node.js updates quickly. Fortunately, there are a ton of tools for updating Node.js easily.&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;nvm&lt;/li&gt;
+&lt;li&gt;n&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;Today, I&amp;#39;m gonna use &lt;code&gt;n&lt;/code&gt; to update &lt;code&gt;Node.js&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;/br&gt;&lt;/p&gt;
+
+&lt;!--more--&gt;
+
+&lt;hr&gt;
+
+&lt;h3 id=&quot;1-install-n&quot;&gt;1. Install n&lt;/h3&gt;
+
+&lt;hr&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;npm install -g n
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;/br&gt;&lt;/p&gt;
+
+&lt;hr&gt;
+
+&lt;h3 id=&quot;2-update-node-js-to-stable-version&quot;&gt;2. Update Node.js to stable version&lt;/h3&gt;
+
+&lt;hr&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;n stable
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;You can replace the &lt;code&gt;stable&lt;/code&gt; with whataver version you want.&lt;/p&gt;
+
+&lt;p&gt;&lt;/br&gt;&lt;/p&gt;
+
+&lt;hr&gt;
+
+&lt;h3 id=&quot;3-check-what-versions-are-installed&quot;&gt;3. Check what versions are installed&lt;/h3&gt;
+
+&lt;hr&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;n
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;/font&gt;&lt;/p&gt;
+</description>
+                <link>http://blog.kenyang.net/2017/02/07/update-nodejs-version</link>
+                <guid>http://blog.kenyang.net/2017/02/07/update-nodejs-version</guid>
+                <pubDate>Tue, 07 Feb 2017 00:00:00 +0800</pubDate>
+        </item>
 
         <item>
                 <title>Remotely open door using Raspberry Pi</title>
@@ -2897,14 +2948,6 @@ mv完成以後，接著打開&lt;code&gt;index.html&lt;/code&gt;，&lt;br&gt;
                 <link>http://blog.kenyang.net/2015/04/13/how-to-create-customized-ubuntu-iso</link>
                 <guid>http://blog.kenyang.net/2015/04/13/how-to-create-customized-ubuntu-iso</guid>
                 <pubDate>Mon, 13 Apr 2015 10:36:00 +0800</pubDate>
-        </item>
-
-        <item>
-                <title>MogileFS: Distributed filesystem</title>
-                <description>&lt;div style=&quot;font-size: 15px; line-height: 22px;&quot;&gt;&lt;br /&gt;&lt;a href=&quot;https://github.com/mogilefs/&quot;&gt;MogileFS&lt;/a&gt;是分散式檔案系統(DFS)的一種，&lt;br /&gt;在MogileFS中，主要分成2個角色，&lt;br /&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; 1. tracker: 記錄有哪些storage&lt;br /&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; 2. storage node: 單純放檔案的角色&lt;br /&gt;其實還有第三個角色，是tracker的DB，&lt;br /&gt;這db角色是用來存放storage在哪裡、有幾個storage等資訊，&lt;br /&gt;以及每個檔案類型要replicate幾份等等之類的資訊，&lt;br /&gt;不過我會把tracker&#39;s DB和tracker本身歸類在一起，&lt;br /&gt;因為它們兩個一定得在同檯機器上，而且缺一不可，&lt;br /&gt;但tracker和storage不一定要在同檯機器上面！&lt;br /&gt;&lt;br /&gt;如果說為什麼要用mogilefs的話，大概有以下2個原因吧，&lt;br /&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; 1. 自動作replicate&lt;br /&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; 2. application level，不需要特別的kernel module（setup簡單)&lt;br /&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;1. Install mogilefs&lt;/span&gt;&lt;br /&gt;&lt;br /&gt;安裝mogilefs方式大概有三種，用cpan, apt, 拿source自己build，&lt;br /&gt;個人偏好用apt-get安裝，&lt;br /&gt;這裡選擇在ubuntu 14.04上安裝，&lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;apt-get install python-software-properties&lt;br /&gt;add-apt-repository ppa:saz/mogilefs&lt;br /&gt;apt-get update&lt;br /&gt;apt-get install mogilefsd mogstored mogilefs-utils&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;這樣就完成安裝，接下來要setup mogilefs,&lt;br /&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;2. Setup mogilefs tracker&lt;/span&gt;&lt;br /&gt;&lt;br /&gt;前面有說到有tracker就一定要有db，&lt;br /&gt;所以請先安裝好mysql，安裝好以後就執行下面的command，&lt;br /&gt;記得把password換成你想要使用的密碼！&lt;br /&gt;&lt;pre class=&quot;brush: java&quot;&gt;mysql&gt; CREATE DATABASE mogilefs;&lt;br /&gt;mysql&gt; CREATE USER &#39;mogilefs&#39;@&#39;%&#39; IDENTIFIED BY &#39;password&#39;;&lt;br /&gt;mysql&gt; GRANT SELECT,INSERT,UPDATE,DELETE,CREATE,ALTER ON mogilefs.* TO &#39;mogilefs&#39;@&#39;%&#39;;&lt;br /&gt;mysql&gt; flush privileges;&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;接著要編輯/etc/mogilefs/mogilefsd.conf這個檔案，&lt;br /&gt;這個檔案，其實只有在tracker的角色上才需要去編輯，&lt;br /&gt;意思是說如果你有三檯機器，那麼只有其中一檯才需要去設定這個檔案！&lt;br /&gt;只要改下面兩個設定就好，&lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;db_pass = password&lt;br /&gt;listen = 10.0.0.172:7001&lt;br /&gt;&lt;/pre&gt;db_pass就是上一步驟你所輸入的密碼，&lt;br /&gt;listen就是這個tracker要listen在哪個ip以及哪一個port上面！&lt;br /&gt;&lt;br /&gt;接著使用下面的command進行db setup，&lt;br /&gt;一樣記得把password換成跟上面一樣的！&lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;mogdbsetup --dbhost=10.0.0.172:7001 --dbname=mogilefs --dbuser=mogilefs --dbpassword=password&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;接著編輯.mogilefs.conf，這檔案會記錄著你的tracker在哪裡，&lt;br /&gt;然後mogilefs會去問這tracker所有storage的資訊．&lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;echo &quot;trackers = 10.0.0.172:7001&quot; &gt; ~/.mogilefs.conf&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;3. Setup mogilefs storage node&lt;/span&gt;&lt;br /&gt;&lt;br /&gt;tracker的目的在於記錄著有哪些storage可以用，&lt;br /&gt;所以在完成setup tracker以後，接著就要來setup storage，&lt;br /&gt;首先，先增加一個store host，&lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;mogadm --trackers=10.0.0.172:7001 host add store1 --ip=10.0.0.172 --status=alive&lt;br /&gt;&lt;/pre&gt;--trackers：指定加在哪個tracker上&lt;br /&gt;store1：是你的host name，&lt;br /&gt;--ip：就是那一顆storage在哪裡&lt;br /&gt;&lt;br /&gt;那麼有了host以後，&lt;br /&gt;就要有device，一個host裡面可以有很多個device，&lt;br /&gt;可以把device想像成local disk、NFS...etc.&lt;br /&gt;所以接著要告訴host有哪些device，&lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;mogadm --trackers=10.0.0.172:7001 device add store1 1 --status=alive&lt;br /&gt;&lt;/pre&gt;比較特別參數是“1”，&lt;br /&gt;1的意思是device 1，&lt;br /&gt;&lt;br /&gt;再來還要增加一個domain，等等後面會說明這domain的用途&lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;mogadm domain add ken-storage&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;完成增加一個device了，&lt;br /&gt;接著mogilefs store會去找那個device，&lt;br /&gt;所以接著要去create folder，之後檔案都會放在那folder裡面，&lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;mkdir -p /var/mogdata/dev1&lt;br /&gt;chown mogstored /var/mogdata/dev1&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;這樣storage也設定完成了，&lt;br /&gt;那麼該怎麼知道有設定成功？&lt;br /&gt;可以透過mogadm check指令去看，&lt;br /&gt;如果是成功的話，應該會看到下面的畫面，&lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;root@ip-10-0-0-172:~# mogadm check&lt;br /&gt;Checking trackers...&lt;br /&gt;  10.0.0.172:7001 ... OK&lt;br /&gt;&lt;br /&gt;Checking hosts...&lt;br /&gt;  [ 1] store1 ... OK&lt;br /&gt;&lt;br /&gt;Checking devices...&lt;br /&gt;  host device         size(G)    used(G)    free(G)   use%   ob state   I/O%&lt;br /&gt;  ---- ------------ ---------- ---------- ---------- ------ ---------- -----&lt;br /&gt;  [ 1] dev1             7.324      1.480      5.844  20.21%  writeable   N/A&lt;br /&gt;  ---- ------------ ---------- ---------- ---------- ------&lt;br /&gt;             total:     7.324      1.480      5.844  20.21%&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;4. Test using command line&lt;/span&gt;&lt;br /&gt;&lt;br /&gt;測試之前，請先建立一個tmp file（hello.txt）&lt;br /&gt;上傳檔案，&lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;mogupload  --file=&quot;./hello.txt&quot; --domain=ken-storage --key=&quot;first-file&quot;&lt;br /&gt;&lt;/pre&gt;下載檔案&lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;mogfetch --key=&quot;first-file&quot; --file=&quot;./output-file&quot; --domain=ken-storage&lt;br /&gt;&lt;/pre&gt;刪除檔案&lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;mogdelete --key=&quot;first-file&quot;  --domain=ken-storage&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;5. Advance: Replication &lt;/span&gt;&lt;br /&gt;&lt;br /&gt;完成上面的基本操作以後，&lt;br /&gt;並沒有發揮mogilefs replicate的功能，&lt;br /&gt;那要做到replication也很簡單，&lt;br /&gt;記得上面我們有add domain嗎？&lt;br /&gt;domain其實有點難解釋，可以把它想像成像是AWS S3的bucket，&lt;br /&gt;而這bucket下有許多policy，&lt;br /&gt;所以我們現在就要替這這bucket(domain)加replicate的policy，&lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;mogadm class add ken-storage txt --mindevcount=2&lt;br /&gt;&lt;/pre&gt;這指令的意思是，當檔案的class是txt時，請replicate 2份！&lt;br /&gt;&lt;br /&gt;完成replication設定以後，&lt;br /&gt;因為前面的設定都只有一個device，&lt;br /&gt;只有一個deivce情況下，mogilefsd是不會進行replication的，&lt;br /&gt;所以我們得再增加一個device，&lt;br /&gt;建議你不要在同一檯機器上多增加一個device，畢竟沒有太大意義，&lt;br /&gt;你在同一檯機器上做replication....?&lt;br /&gt;如果這檯機器掛了，檔案就通通不見了，&lt;br /&gt;所以會建議你在第二檯機器上增加一個device，&lt;br /&gt;第二檯機器上就單純是storage node的角色了，&lt;br /&gt;所以只需要做下面設定，記得把ip換成第二檯的ip！（只要改10.0.0.199的部分）&lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;echo &quot;trackers = 10.0.0.172:7001&quot; &gt; ~/.mogilefs.conf&lt;br /&gt;mogadm --trackers=10.0.0.172:7001 host add store2 --ip=10.0.0.199 --status=alive&lt;br /&gt;mogadm --trackers=10.0.0.172:7001 device add store2 2 --status=alive&lt;br /&gt;mkdir -p /var/mogdata/dev2&lt;br /&gt;chown mogstored /var/mogdata/dev2&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;6. Test Replication&lt;/span&gt;&lt;br /&gt;&lt;br /&gt;其實跟第四步驟是一樣的，只是多一個參數--class，&lt;br /&gt;這class就和上一步驟所填寫的一樣即可．這樣hello.txt就會被複製到另外一檯機器上去！&lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;mogupload  --file=&quot;./hello.txt&quot; --domain=ken-storage --key=&quot;first-file&quot; --class=txt&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;如果replication失敗，那麼在db裡面的table file_to_replication將會有那筆資料，&lt;br /&gt;你也可以透過/var/log/syslog看是什麼error message，&lt;br /&gt;我自己使用的mogilefs版本，就有遇到一個&lt;a href=&quot;http://www.php-oa.com/2013/11/01/mogilefs-job-replicate-died.html&quot;&gt;syscal module的版本問題&lt;/a&gt;，&lt;br /&gt;透過&lt;a href=&quot;http://www.php-oa.com/2013/11/01/mogilefs-job-replicate-died.html&quot;&gt;連結&lt;/a&gt;的中的方法去解決的！&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;7. Advance: Integrate it with application &lt;/span&gt;&lt;br /&gt;&lt;br /&gt;當然有了mogilefs以後，不可能都透過command line去操作呀，&lt;br /&gt;如果我想要整合在我的application裡怎麼辦？&lt;br /&gt;其實也很簡單，看你用什麼language，至少我用的language(java, python)都有相關的lib可以使用，&lt;br /&gt;這裡使用pyhton來作為說明，&lt;br /&gt;用&lt;a href=&quot;https://github.com/AloneRoad/pymogile&quot;&gt;pymogile&lt;/a&gt;來作為操作mogile的lib，&lt;br /&gt;安裝pymogile，&lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;git clone https://github.com/AloneRoad/pymogile.git&lt;br /&gt;cd pymogile/&lt;br /&gt;python setup.py install&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;下面是一個簡單的example用pymogile操作mogilefs，&lt;br /&gt;&lt;pre class=&quot;brush: python&quot;&gt;from pymogile import Client, MogileFSError&lt;br /&gt;&lt;br /&gt;datastore = Client(domain=&#39;ken-storage&#39;, trackers=[&#39;10.0.0.172:7001&#39;])&lt;br /&gt;key_id=&#39;replicate&#39;&lt;br /&gt;&lt;br /&gt;def upload_file():&lt;br /&gt;    fp = datastore.new_file(key_id)&lt;br /&gt;    fp.write(&#39;test&#39;)&lt;br /&gt;    fp.close()&lt;br /&gt;&lt;br /&gt;def get_path():&lt;br /&gt;    print datastore.get_paths(key_id)&lt;br /&gt;&lt;br /&gt;def get_data():&lt;br /&gt;    print datastore.get_file_data(key_id)&lt;br /&gt;&lt;br /&gt;upload_file()&lt;br /&gt;get_path()&lt;br /&gt;get_data()&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;/div&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;</description>
-                <link>http://blog.kenyang.net/2014/11/24/mogilefs-distributed-filesystem</link>
-                <guid>http://blog.kenyang.net/2014/11/24/mogilefs-distributed-filesystem</guid>
-                <pubDate>Mon, 24 Nov 2014 10:37:00 +0800</pubDate>
         </item>
 
 

@@ -296,6 +296,34 @@
     </div>
     <!-- This loops through the paginated posts -->
     
+      <h1><a style="color: #F22430" href="/2011/12/15/googe-app-engine-gae-domain">Googe App Engine (GAE) 設定 Domain</a></h1>
+      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
+      <p class="author">
+      <div class="date">
+        <span>15 December 2011</span>
+      </div>
+      </p>
+      <div class="content" style="line-height: 28px;">
+        恩，最近蠻常在GAE上面綁一個DOMAIN，<br />雖然蠻常操作，可是每次都還是要想一下，才想起來該怎麼用。<br /><br /><br />在GAE上大概分兩種設定domain，<br /><br /><ol><li>透過Google Apps去買Domain (這種方式在綁domain很簡單)</li><li>自己已經有domain了，想要只到我的GAE上去</li></ol><br />第一種很簡單，就不贅述，<br />第二種也沒難到哪去，只是要在我們買domain(例如：xxx.com)的地方新增一筆cname<br />且還要用我們的domain(例如：xxx.com)去申請Google Apps。<br />然後再verify我們的擁有權！<br /><br /><br />流程大概如下：<br /><table align="center" cellpadding="0" cellspacing="0" class="tr-caption-container" style="margin-left: auto; margin-right: auto; text-align: center;"><tbody><tr><td style="text-align: center;"><a href="http://2.bp.blogspot.com/-qEmR5Tyxz_Y/TuoWXEpiqkI/AAAAAAAAAYs/WcCJj8COmWU/s1600/1.PNG" imageanchor="1" style="margin-left: auto; margin-right: auto;"><img border="0" height="400" src="http://2.bp.blogspot.com/-qEmR5Tyxz_Y/TuoWXEpiqkI/AAAAAAAAAYs/WcCJj8COmWU/s400/1.PNG" width="127" /></a></td></tr><tr><td class="tr-caption" style="text-align: center;">【步驟一】<br />先登入到你的ＧＡＥ後台，然後點選你要設定的那個application id，然後在去點選圖中紅色的框框（Application Settings）</td></tr></tbody></table><br /><table align="center" cellpadding="0" cellspacing="0" class="tr-caption-container" style="margin-left: auto; margin-right: auto; text-align: center;"><tbody><tr><td style="text-align: center;"><a href="http://2.bp.blogspot.com/-KTRHVJtpp20/TuoWX8OQx5I/AAAAAAAAAY0/nxKNCYtdeIQ/s1600/2.PNG" imageanchor="1" style="margin-left: auto; margin-right: auto;"><img border="0" height="83" src="http://2.bp.blogspot.com/-KTRHVJtpp20/TuoWX8OQx5I/AAAAAAAAAY0/nxKNCYtdeIQ/s640/2.PNG" width="640" /></a></td></tr><tr><td class="tr-caption" style="text-align: center;">【步驟二】<br />點選以後，會看到此張圖，請再點選此圖中的Add Domain</td></tr></tbody></table><br /><table align="center" cellpadding="0" cellspacing="0" class="tr-caption-container" style="margin-left: auto; margin-right: auto; text-align: center;"><tbody><tr><td style="text-align: center;"><a href="http://4.bp.blogspot.com/-MieCzRbjvew/TuoWYtq9HlI/AAAAAAAAAY4/Ge8dRcYBi54/s1600/3.PNG" imageanchor="1" style="margin-left: auto; margin-right: auto;"><img border="0" height="192" src="http://4.bp.blogspot.com/-MieCzRbjvew/TuoWYtq9HlI/AAAAAAAAAY4/Ge8dRcYBi54/s640/3.PNG" width="640" /></a></td></tr><tr><td class="tr-caption" style="text-align: center;">【步驟三】<br />點完按鈕以後會看到此張圖，請先點選圖中的紅色框框（要先用自己的domain去註冊Google Apps）<br />ps: 綠色框框等等會用到</td></tr></tbody></table><br /><table align="center" cellpadding="0" cellspacing="0" class="tr-caption-container" style="margin-left: auto; margin-right: auto; text-align: center;"><tbody><tr><td style="text-align: center;"><a href="http://2.bp.blogspot.com/-8iiXp1bzKxQ/TuoWZs9PFOI/AAAAAAAAAZA/xYSnfvTTIPg/s1600/4.PNG" imageanchor="1" style="margin-left: auto; margin-right: auto;"><img border="0" height="252" src="http://2.bp.blogspot.com/-8iiXp1bzKxQ/TuoWZs9PFOI/AAAAAAAAAZA/xYSnfvTTIPg/s640/4.PNG" width="640" /></a></td></tr><tr><td class="tr-caption" style="text-align: center;">【步驟四】<br />點選以後會看到此圖，請在圖中的輸入框輸入您的domain，（例如：xxx.com）<br />填寫完以後，請點選Submit按鈕<br />點完按鈕以後，會要求你輸入資料<br />輸入完就點選送出</td></tr></tbody></table><br /><table align="center" cellpadding="0" cellspacing="0" class="tr-caption-container" style="margin-left: auto; margin-right: auto; text-align: center;"><tbody><tr><td style="text-align: center;"><a href="http://1.bp.blogspot.com/-dHi6mQ5lY4M/TuoWaklmzHI/AAAAAAAAAZM/2i4VjcDnr9U/s1600/5.PNG" imageanchor="1" style="margin-left: auto; margin-right: auto;"><img border="0" height="266" src="http://1.bp.blogspot.com/-dHi6mQ5lY4M/TuoWaklmzHI/AAAAAAAAAZM/2i4VjcDnr9U/s640/5.PNG" width="640" /></a></td></tr><tr><td class="tr-caption" style="text-align: center;">【步驟五】<br />之後會看到此畫面，會要求您驗證domain<br />有很多種驗證方式，這邊就不教了，因為很簡單。</td></tr></tbody></table><br /><table align="center" cellpadding="0" cellspacing="0" class="tr-caption-container" style="margin-left: auto; margin-right: auto; text-align: center;"><tbody><tr><td style="text-align: center;"><a href="http://4.bp.blogspot.com/-xWMZNlkcZds/TuoXsWT16xI/AAAAAAAAAZs/RHOgXrSgADM/s1600/6.PNG" imageanchor="1" style="margin-left: auto; margin-right: auto;"><img border="0" height="310" src="http://4.bp.blogspot.com/-xWMZNlkcZds/TuoXsWT16xI/AAAAAAAAAZs/RHOgXrSgADM/s400/6.PNG" width="400" /></a></td></tr><tr><td class="tr-caption" style="text-align: center;">【步驟六】<br />記得步驟三的綠色框框嗎？請回到那，並在那個框框輸入您的domain名稱（例如：xxx.com）<br />接著就會看到這個畫面，就輸入步驟四時填入的管理者帳號資訊</td></tr></tbody></table><div class="separator" style="clear: both; text-align: center;"></div><br /><table align="center" cellpadding="0" cellspacing="0" class="tr-caption-container" style="margin-left: auto; margin-right: auto; text-align: center;"><tbody><tr><td style="text-align: center;"><a href="http://2.bp.blogspot.com/-aU7kdYBZpOQ/TuoWcGmszhI/AAAAAAAAAZY/fdXkABFfnxY/s1600/7.PNG" imageanchor="1" style="margin-left: auto; margin-right: auto;"><img border="0" height="232" src="http://2.bp.blogspot.com/-aU7kdYBZpOQ/TuoWcGmszhI/AAAAAAAAAZY/fdXkABFfnxY/s640/7.PNG" width="640" /></a></td></tr><tr><td class="tr-caption" style="text-align: center;">【步驟七】<br />登入成功以後就會看到此畫面，就點選此圖中的紅色框框<br />輸入您的sub-domain名稱，（例如：www）<br />接著你就會有一列資料是www.xxx.com</td></tr></tbody></table><br /><table align="center" cellpadding="0" cellspacing="0" class="tr-caption-container" style="margin-left: auto; margin-right: auto; text-align: center;"><tbody><tr><td style="text-align: center;"><a href="http://4.bp.blogspot.com/-FJQhQeOM4bo/TuoWc5xTM4I/AAAAAAAAAZg/vv1drEI-9lM/s1600/8.PNG" imageanchor="1" style="margin-left: auto; margin-right: auto;"><img border="0" height="171" src="http://4.bp.blogspot.com/-FJQhQeOM4bo/TuoWc5xTM4I/AAAAAAAAAZg/vv1drEI-9lM/s640/8.PNG" width="640" /></a></td></tr><tr><td class="tr-caption" style="text-align: center;">【步驟八】<br />最後一步了，去到您購買domain的管理後台，這邊是以hinet為主，在後台上新增一筆cname，<br />且value為ghs.google.com<br />主機名稱（sub-domain）就是剛剛步驟七填寫的值</td></tr></tbody></table><br /><br /><br /><br /><br /><br /><br />
+      </div>
+      <footer>
+        <p><a class="myButton" href="/2011/12/15/googe-app-engine-gae-domain">read more &raquo;</a></p>
+        <div>
+          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- ken on github -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3783438370424072"
+     data-ad-slot="1516206098"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+        </div>
+      </footer>
+      <hr>
+    
       <h1><a style="color: #F22430" href="/2011/12/13/telnet-post">如何用Telnet POST資料</a></h1>
       <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
       <p class="author">
@@ -336,34 +364,6 @@
       </div>
       <footer>
         <p><a class="myButton" href="/2011/12/12/chrome-xss">read more &raquo;</a></p>
-        <div>
-          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<!-- ken on github -->
-<ins class="adsbygoogle"
-     style="display:block"
-     data-ad-client="ca-pub-3783438370424072"
-     data-ad-slot="1516206098"
-     data-ad-format="auto"></ins>
-<script>
-(adsbygoogle = window.adsbygoogle || []).push({});
-</script>
-
-        </div>
-      </footer>
-      <hr>
-    
-      <h1><a style="color: #F22430" href="/2011/12/08/hadoop-datanode">Hadoop DataNode 無法啟動</a></h1>
-      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
-      <p class="author">
-      <div class="date">
-        <span>08 December 2011</span>
-      </div>
-      </p>
-      <div class="content" style="line-height: 28px;">
-        好久沒碰Hadoop，今天要重新跑一次project，<br />發現怪怪的，怎麼連都連不上，<br />就連到server上，<br />下了指令jps，看一下是否都正常啟動，<br />發現DataNode沒有啟動!<br /><br />找了一下解決方式，<br />把預設的hadoop.tmr.dir資料夾先砍掉，假設我放在/appKen/hadoop/tmp<br />那就下指令：rm -rf tmp (rf意思是底下所有資料都砍掉)<br /><br />再來就是重新format NameNode，<br />指令：hadoop namenode -format<br /><br />接著就在啟動一次，<br />指令：start-all.sh<br /><br /><br /><br />
-      </div>
-      <footer>
-        <p><a class="myButton" href="/2011/12/08/hadoop-datanode">read more &raquo;</a></p>
         <div>
           <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 <!-- ken on github -->
@@ -424,7 +424,7 @@
 
     <div id="footer">
       <div class="container">
-        <p>&copy; 2016 Ken Yang
+        <p>&copy; 2017 Ken Yang
           with help from <a href="http://jekyllbootstrap.com" target="_blank" title="The Definitive Jekyll Blogging Framework">Jekyll Bootstrap</a>
           and <a href="http://getbootstrap.com" target="_blank">Bootstrap</a>
         </p>
