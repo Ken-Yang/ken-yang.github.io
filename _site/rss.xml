@@ -5,10 +5,87 @@
         <description>Ken Yang筆記 - Ken Yang</description>
         <link>http://blog.kenyang.net</link>
         <atom:link href="http://blog.kenyang.net/rss.xml" rel="self" type="application/rss+xml" />
-        <lastBuildDate>Tue, 07 Feb 2017 17:11:51 +0800</lastBuildDate>
-        <pubDate>Tue, 07 Feb 2017 17:11:51 +0800</pubDate>
+        <lastBuildDate>Sat, 18 Feb 2017 15:01:30 +0800</lastBuildDate>
+        <pubDate>Sat, 18 Feb 2017 15:01:30 +0800</pubDate>
         <ttl>60</ttl>
 
+
+        <item>
+                <title>Getting started with webpack</title>
+                <description>&lt;p&gt;&lt;font size=&quot;3&quot;&gt;&lt;/p&gt;
+
+&lt;p&gt;最近在看Vue.js，很多文章都是搭配著Webpack來說明，所以也順便研究了一下webpack，
+這篇會說明&lt;a href=&quot;https://webpack.js.org/&quot;&gt;webpack&lt;/a&gt;的優點、以及用途。&lt;/p&gt;
+
+&lt;p&gt;&lt;/br&gt;&lt;/p&gt;
+
+&lt;hr&gt;
+
+&lt;h3 id=&quot;1-what-39-s-webpack&quot;&gt;1. What&amp;#39;s webpack?&lt;/h3&gt;
+
+&lt;hr&gt;
+
+&lt;p&gt;什麼是&lt;a href=&quot;https://webpack.js.org/&quot;&gt;webpack&lt;/a&gt;呢？其實官網用一張圖片說明的很清楚，圖片上有幾個title，分別為:&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;bundle your assests&lt;/li&gt;
+&lt;li&gt;bundle your scripts&lt;/li&gt;
+&lt;li&gt;bundle your images&lt;/li&gt;
+&lt;li&gt;bundle your styles&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;一句話簡單說，可以想像成&lt;code&gt;打包工具&lt;/code&gt; （但當然不僅於此，否則不會這麼紅）。&lt;/p&gt;
+
+&lt;p&gt;&lt;/br&gt;&lt;/p&gt;
+
+&lt;!--more--&gt;
+
+&lt;hr&gt;
+
+&lt;h3 id=&quot;2-install-webpack&quot;&gt;2. Install webpack&lt;/h3&gt;
+
+&lt;hr&gt;
+
+&lt;p&gt;官網提供了三種的安裝方式，分別為：&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;Local Installation&lt;/li&gt;
+&lt;li&gt;Global Installation&lt;/li&gt;
+&lt;li&gt;Bleeding Edge&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;hr&gt;
+
+&lt;h4 id=&quot;local-installation&quot;&gt;Local Installation&lt;/h4&gt;
+
+&lt;hr&gt;
+
+&lt;p&gt;官方是最建議用第一種的Local Installation，&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;npm install webpack --save-dev
+
+npm install webpack@&amp;lt;version&amp;gt; --save-dev
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;/br&gt;
+但因為是install在local node_modules底下，即便你在此project folder底下，打&lt;code&gt;webpack&lt;/code&gt;指令，也是會找不到，但如果你是使用npm script在你的project中的話，就不用太擔心，因為npm會去你的node_modules底下找webpack。&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;s2&quot;&gt;&amp;quot;scripts&amp;quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;s2&quot;&gt;&amp;quot;start&amp;quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;webpack --config mywebpack.config.js&amp;quot;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;/br&gt;
+第二種是官方不推薦使用的Global方式，原因是你會被鎖死在某一個webpack版本，然後假設你有多個project，那有可能就會造成一些error。 &lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;npm install webpack -g
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;/br&gt;&lt;/p&gt;
+
+&lt;p&gt;第三種就是geek在用的，如果想體驗新版本的話就使用此方式。&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;npm install webpack/webpack#&amp;lt;tagname/branchname&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;/font&gt;&lt;/p&gt;
+</description>
+                <link>http://blog.kenyang.net/2017/02/18/getting-started-with-webpack</link>
+                <guid>http://blog.kenyang.net/2017/02/18/getting-started-with-webpack</guid>
+                <pubDate>Sat, 18 Feb 2017 00:00:00 +0800</pubDate>
+        </item>
 
         <item>
                 <title>Update Node.js version</title>
@@ -3063,14 +3140,6 @@ mv完成以後，接著打開&lt;code&gt;index.html&lt;/code&gt;，&lt;br&gt;
                 <link>http://blog.kenyang.net/2015/06/25/apache-kafka-distributed-messaging</link>
                 <guid>http://blog.kenyang.net/2015/06/25/apache-kafka-distributed-messaging</guid>
                 <pubDate>Thu, 25 Jun 2015 17:32:00 +0800</pubDate>
-        </item>
-
-        <item>
-                <title>How to run a simple Apache Spark application? (Ubuntu 12.04)</title>
-                <description>&lt;div style=&quot;font-size: 15px; line-height: 22px;&quot;&gt;因緣際會下，得稍微摸一下Apache Spark，&lt;br /&gt;說實在，在粗淺地摸完Spark以後，我還是想不太出他的應用面。&lt;br /&gt;Anyway，這篇主要分為3個section，&lt;br /&gt;&lt;br /&gt;&lt;ul&gt;&lt;li&gt;如何安裝Spark&lt;/li&gt;&lt;li&gt;如何使用&lt;/li&gt;&lt;li&gt;如何寫個Spark application&lt;/li&gt;&lt;/ul&gt;&lt;br /&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;1. Install JDK&lt;/span&gt;&lt;br /&gt;&lt;br /&gt;首先要先講安裝，&lt;br /&gt;安裝spark之前，要先安裝java+scala，&lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;apt-add-repository ppa:webupd8team/java&lt;br /&gt;apt-get update&lt;br /&gt;apt-get install oracle-java7-installer&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;2. Install scala&lt;/span&gt;&lt;br /&gt;&lt;br /&gt;接著要安裝scala，這裡安裝的版本是2.11.6。&lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;wget http://www.scala-lang.org/files/archive/scala-2.11.6.tgz&lt;br /&gt;mkdir /usr/local/src/scala&lt;br /&gt;tar xvf scala-2.11.6.tgz -C /usr/local/src/scala/&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;安裝完以後，要把scala的路徑加入到PATH環境變數中&lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;echo &quot;export SCALA_HOME=/usr/local/src/scala/scala-2.11.6&quot; &gt;&gt; .bashrc&lt;br /&gt;echo &quot;export PATH=\$SCALA_HOME/bin:\$PATH&quot; &gt;&gt; .bashrc&lt;br /&gt;. .bashrc&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;3. Install Spark&lt;/span&gt;&lt;br /&gt;&lt;br /&gt;最後就安裝spark，安裝會需要一段時間。&lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;wget http://www.apache.org/dist/spark/spark-1.4.0/spark-1.4.0.tgz&lt;br /&gt;tar xvf spark-1.4.0.tgz&lt;br /&gt;cd spark-1.4.0&lt;br /&gt;sbt/sbt assembly&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;4. Spark Interactive Shell&lt;/span&gt;&lt;br /&gt;&lt;br /&gt;安裝完以後，可以進入spark的interactive shell模式做個簡單的測試，&lt;br /&gt;進入interactive mode，&lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;./bin/spark-shell&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;大概會花個10秒做init，進入以後，&lt;br /&gt;會看到scala的prompt字樣，這裏就可以對spark進行操作了。&lt;br /&gt;下面有二個例子，都是對README.md去做操作，&lt;br /&gt;分別為找出含&quot;apache&quot;的句子，&lt;br /&gt;以及找出有幾個&quot;apache&quot;的字。&lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;scala&gt; val textFile = sc.textFile(&quot;README.md&quot;)&lt;br /&gt;scala&gt; textFile.count()&lt;br /&gt;scala&gt; val results = textFile.filter(line =&gt; line.contains(&quot;apache&quot;)) // search apache&lt;br /&gt;scala&gt; results.count()&lt;br /&gt;scala&gt; results.collect()  // find out those lines contain apache&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;5. Start a Spark cluster&lt;/span&gt;&lt;br /&gt;&lt;br /&gt;好了，剛剛都是自爽模式，&lt;br /&gt;接著我們要啟動一個spark cluster，&lt;br /&gt;這個cluster可以讓很多個worker(slave)加入，&lt;br /&gt;讓他們去執行工作。&lt;br /&gt;&lt;br /&gt;啟動cluster的指令如下：&lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;./sbin/start-master.sh&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;啟動完以後，你可以用netstat -tnlp去看一下，&lt;br /&gt;你會發現有3個java bind住的connection，&lt;br /&gt;預設分別為7077、8080、6066&lt;br /&gt;7077就是這個cluster的port，將來worker要加入就得指定這個port，&lt;br /&gt;8080是這個spark的web management UI。&lt;br /&gt;所以你就可以打開browser，然後去看看web UI．&lt;br /&gt;這時候你的worker數量應該是0。&lt;br /&gt;如果想要加入一個worker，得透過下面的指令，&lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;./sbin/start-slave.sh spark://ubuntu:7077 # change ubuntu to your hostname&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;此時再去web UI看，應該就看到有一個worker存在。&lt;br /&gt;上面是透過二個指令去分別啟動master and slave，&lt;br /&gt;其實你也可以透過下面一個指令就去啟動master, slave，&lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;./sbin/start-all.sh&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;6. Connecting an Application to the Cluster&lt;/span&gt;&lt;br /&gt;&lt;br /&gt;有了一個spark cluster以後，&lt;br /&gt;我們就可以把application掛上去，&lt;br /&gt;我們可以透過前面使用的spark-shell，把這個shell run在cluster上。&lt;br /&gt;只要加入--master這參數即可。&lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;./bin/spark-shell --master spark://ubuntu:7077 # change ubuntu to your hostname&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;進去以後，你一樣可以執行上面的example玩玩看。&lt;br /&gt;同時你也可以去web UI上看看，會在&quot;Running Applications&quot;裡面看到這個shell。&lt;br /&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;7. Writing an Application&lt;/span&gt;&lt;br /&gt;&lt;br /&gt;上一步也算是自爽模式，&lt;br /&gt;我想應該不可能透過shell mode去做你想做的事情，&lt;br /&gt;應該還是要寫個application，&lt;br /&gt;所以這一步驟就是要寫一個很簡單的classs，&lt;br /&gt;然後build它，再把它掛到cluster上執行。&lt;br /&gt;&lt;br /&gt;開始之前，先來設定一下spark的環境變數，&lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;echo &quot;export SK_HOME=/root/spark-1.4.0&quot; &gt;&gt; .bashrc&lt;br /&gt;. .bashrc&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;然後改這隻script，（$SK_HOME/build/sbt-launch-lib.bash）&lt;br /&gt;因為我在build的時候，有發生路徑的問題。&lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;vim $SK_HOME/build/sbt-launch-lib.bash&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;打開這檔案以後，找到這幾行，&lt;br /&gt;&lt;pre class=&quot;brush: python&quot;&gt;SBT_VERSION=`awk -F &quot;=&quot; &#39;/sbt\.version/ {print $2}&#39; ./project/build.properties`&lt;br /&gt;...&lt;br /&gt;JAR=build/sbt-launch-${SBT_VERSION}.jar&lt;br /&gt;&lt;/pre&gt;換成下面這幾行，其實也只是變成絕對路徑。&lt;br /&gt;&lt;pre class=&quot;brush: python&quot;&gt;SBT_VERSION=`awk -F &quot;=&quot; &#39;/sbt\.version/ {print $2}&#39; $SK_HOME/project/build.properties`&lt;br /&gt;...&lt;br /&gt;JAR=$SK_HOME/build/sbt-launch-${SBT_VERSION}.jar&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;完成以後，先來create幾個資料夾，&lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;mkdir -p ./spark-app/src/main/scala/&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;接著就可以寫一個簡單的class，&lt;br /&gt;這class上面差不多，也是用來算count，&lt;br /&gt;記得該class一定要放置在src/main/scala底下。&lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;cd ./spark-app&lt;br /&gt;vim src/main/scala/SimpleApp.scala&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;class內容如下，&lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;/* SimpleApp.scala */&lt;br /&gt;import org.apache.spark.SparkContext&lt;br /&gt;import org.apache.spark.SparkContext._&lt;br /&gt;import org.apache.spark.SparkConf&lt;br /&gt;&lt;br /&gt;object SimpleApp {&lt;br /&gt;  def main(args: Array[String]) {&lt;br /&gt;    val logFile = &quot;/root/spark-1.4.0/README.md&quot;&lt;br /&gt;    val conf = new SparkConf().setAppName(&quot;Simple Application&quot;)&lt;br /&gt;    val sc = new SparkContext(conf)&lt;br /&gt;    val logData = sc.textFile(logFile, 2).cache()&lt;br /&gt;    val numApache = logData.filter(line =&gt; line.contains(&quot;apache&quot;)).count()&lt;br /&gt;    println(&quot;Line with apache: %s &quot;.format(numApache))&lt;br /&gt;  }&lt;br /&gt;}&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;而在開始build之前，要寫一下這個app的dependency，&lt;br /&gt;放置在sparka-app底下就好。&lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;vim simple.sbt&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;內容如下，&lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;name := &quot;Simple Project&quot;&lt;br /&gt;&lt;br /&gt;version := &quot;1.0&quot;&lt;br /&gt;&lt;br /&gt;scalaVersion := &quot;2.11.6&quot;&lt;br /&gt;&lt;br /&gt;libraryDependencies += &quot;org.apache.spark&quot; %% &quot;spark-core&quot; % &quot;1.4.0&quot;&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;接著就可以開始build，&lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;$SPARK_HOME/build/sbt package&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;&lt;br /&gt;build完以後，&lt;br /&gt;會發現spark-app底下多了二個folder（project, target)，&lt;br /&gt;而我們要的jar檔會放在target底下，&lt;br /&gt;我們就可以把這jar交付給spark執行。&lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;$SPARK_HOME/bin/spark-submit --class &quot;SimpleApp&quot; --master spark://ubuntu:7077 target/scala-2.11/simple-project_2.11-1.0.jar&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;應該會看到下面的字樣，&lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;Line with apache: 9 15/06/17 02:55:34 INFO TaskSetManager: Finished task 1.0 in stage 2.0 (TID 5) in 32 ms on 172.16.131.140 (2/2)&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;最後在web UI裡面的&quot;Completed Applications&quot;會看到我們剛剛執行的那個item。&lt;br /&gt;基本上這樣就完成了簡單的spark application。&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;/div&gt;</description>
-                <link>http://blog.kenyang.net/2015/06/17/how-to-run-simple-apache-spark</link>
-                <guid>http://blog.kenyang.net/2015/06/17/how-to-run-simple-apache-spark</guid>
-                <pubDate>Wed, 17 Jun 2015 10:18:00 +0800</pubDate>
         </item>
 
 
