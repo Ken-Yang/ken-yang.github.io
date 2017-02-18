@@ -290,6 +290,25 @@ npm install url-loader --save-dev
 </html>
 ```
 
+然後一樣要在`webpack.config.js`中加入url-loader的設定，
+
+```javascript
+var Webpack = require("webpack");
+module.exports = {
+    entry: ["./app.js"],
+    output: {
+        path: __dirname,
+        filename: "bundle.js"
+    },
+    module: {
+        loaders: [
+            { test: /\.css$/, loader: "style-loader!css-loader" },
+            { test: /\.(png|jpg)$/, loader: 'url-loader?limit=40000' }
+        ]
+    }
+}
+```
+
 最後再來build一次，
 
 ```bash

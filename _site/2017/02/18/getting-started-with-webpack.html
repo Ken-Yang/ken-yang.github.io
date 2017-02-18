@@ -584,6 +584,22 @@ bundle.js  2.78 kB       <span class="m">0</span>  <span class="o">[</span>emitt
 <span class="nt">&lt;/body&gt;</span>
 <span class="nt">&lt;/html&gt;</span>
 </code></pre></div>
+<p>然後一樣要在<code>webpack.config.js</code>中加入url-loader的設定，</p>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">Webpack</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s2">&quot;webpack&quot;</span><span class="p">);</span>
+<span class="nx">module</span><span class="p">.</span><span class="nx">exports</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="nx">entry</span><span class="o">:</span> <span class="p">[</span><span class="s2">&quot;./app.js&quot;</span><span class="p">],</span>
+    <span class="nx">output</span><span class="o">:</span> <span class="p">{</span>
+        <span class="nx">path</span><span class="o">:</span> <span class="nx">__dirname</span><span class="p">,</span>
+        <span class="nx">filename</span><span class="o">:</span> <span class="s2">&quot;bundle.js&quot;</span>
+    <span class="p">},</span>
+    <span class="nx">module</span><span class="o">:</span> <span class="p">{</span>
+        <span class="nx">loaders</span><span class="o">:</span> <span class="p">[</span>
+            <span class="p">{</span> <span class="nx">test</span><span class="o">:</span> <span class="sr">/\.css$/</span><span class="p">,</span> <span class="nx">loader</span><span class="o">:</span> <span class="s2">&quot;style-loader!css-loader&quot;</span> <span class="p">},</span>
+            <span class="p">{</span> <span class="nx">test</span><span class="o">:</span> <span class="sr">/\.(png|jpg)$/</span><span class="p">,</span> <span class="nx">loader</span><span class="o">:</span> <span class="s1">&#39;url-loader?limit=40000&#39;</span> <span class="p">}</span>
+        <span class="p">]</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
 <p>最後再來build一次，</p>
 <div class="highlight"><pre><code class="language-bash" data-lang="bash">webpack -p
 </code></pre></div>
