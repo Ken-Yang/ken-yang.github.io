@@ -307,29 +307,32 @@
       </div>
       </p>
       <div class="content" style="line-height: 28px;">
-        <p><font size="3"></p>
+        
+<font size="3">
 
-<p>最近在面試幾個candidate，都說自己有MySQL tuning的經驗，
-但進一步問下去，發現連MySQL怎麼用BTree放index，或者怎麼使用partition or sharding都不了解，所以打算來寫一系列的MySQL文章，這篇就先挑簡單的partition來寫。</p>
+最近在面試幾個candidate，都說自己有MySQL tuning的經驗，
+但進一步問下去，發現連MySQL怎麼用BTree放index，或者怎麼使用partition or sharding都不了解，所以打算來寫一系列的MySQL文章，這篇就先挑簡單的partition來寫。
 
-<p></br></p>
 
-<hr>
 
-<h3 id="1-whats-partition-and-why">1. What&#39;s Partition and Why?</h3>
 
-<hr>
+---
+### 1. What's Partition and Why?
+---
 
-<p>簡單說，Partition是將你的table，根據你的配置去divide成好幾個part；最重要的是，資料都是在同一個DB裡面，這對application來說，可以無感的使用它，卻又享有它的優點。</br></p>
+簡單說，Partition是將你的table，根據你的配置去divide成好幾個part；最重要的是，資料都是在同一個DB裡面，這對application來說，可以無感的使用它，卻又享有它的優點。
 
-<p>那麼為何要用partition呢？partition的優點在於：</p>
+那麼為何要用partition呢？partition的優點在於：
 
-<ul>
-<li><code>Partition Pruning</code>：基於已經知道資料在哪個partition的條件下，讓你的SQL operation變快，這包含了<code>select, insert, update ,delete</code></li>
-<li><code>刪除資料</code>：當你的table很大時，刪除是非常耗時的一件工作，有了partition以後，你可以直接drop該partition，且時間上可以快上非常多。</li>
-</ul>
+- `Partition Pruning`：基於已經知道資料在哪個partition的條件下，讓你的SQL operation變快，這包含了`select, insert, update ,delete`
+- `刪除資料`：當你的table很大時，刪除是非常耗時的一件工作，有了partition以後，你可以直接drop該partition，且時間上可以快上非常多。
 
-<p></br></p>
+
+
+
+
+
+</font>
 
       </div>
       <footer>
@@ -358,31 +361,33 @@
       </div>
       </p>
       <div class="content" style="line-height: 28px;">
-        <p><font size="3"></p>
+        
+<font size="3">
 
-<p>最近在看Vue.js，很多文章都是搭配著Webpack來說明，所以也順便研究了一下webpack，
-這篇會說明<a href="https://webpack.js.org/">webpack</a>的優點、以及用途。</p>
+最近在看Vue.js，很多文章都是搭配著Webpack來說明，所以也順便研究了一下webpack，
+這篇會說明[webpack](https://webpack.js.org/)的優點、以及用途。
 
-<p></br></p>
 
-<hr>
 
-<h3 id="1-whats-webpack">1. What&#39;s webpack?</h3>
+---
+### 1. What's webpack?
+---
 
-<hr>
+什麼是[webpack](https://webpack.js.org/)呢？其實官網用一張圖片說明的很清楚，圖片上有幾個title，分別為:
 
-<p>什麼是<a href="https://webpack.js.org/">webpack</a>呢？其實官網用一張圖片說明的很清楚，圖片上有幾個title，分別為:</p>
+1. bundle your assests
+1. bundle your scripts
+1. bundle your images
+1. bundle your styles
 
-<ol>
-<li>bundle your assests</li>
-<li>bundle your scripts</li>
-<li>bundle your images</li>
-<li>bundle your styles</li>
-</ol>
+一句話簡單說，可以想像成`打包工具` （但當然不僅於此，否則不會這麼紅）。
 
-<p>一句話簡單說，可以想像成<code>打包工具</code> （但當然不僅於此，否則不會這麼紅）。</p>
 
-<p></br></p>
+
+
+
+
+</font>
 
       </div>
       <footer>
@@ -411,18 +416,23 @@
       </div>
       </p>
       <div class="content" style="line-height: 28px;">
-        <p><font size="3"></p>
+        
+<font size="3">
 
-<p>Node.js updates quickly. Fortunately, there are a ton of tools for updating Node.js easily.</p>
+Node.js updates quickly. Fortunately, there are a ton of tools for updating Node.js easily.
 
-<ol>
-<li>nvm</li>
-<li>n</li>
-</ol>
+1. nvm
+2. n
 
-<p>Today, I&#39;m gonna use <code>n</code> to update <code>Node.js</code>.</p>
+Today, I'm gonna use `n` to update `Node.js`.
 
-<p></br></p>
+
+
+
+
+
+
+</font>
 
       </div>
       <footer>

@@ -347,232 +347,210 @@
       <span>04 December 2015</span>
     </div>
     <div class="content" style="line-height: 28px;">
-      <p><font size=3></p>
+      
+<p>&lt;font size=3&gt;</p>
 
-<p><img src="/assets/2015-12-04-ticket.jpg" alt="Ticket"></p>
+<p><img src="/assets/2015-12-04-ticket.jpg" alt="Ticket" /></p>
 
-<p>這篇只是紀錄Java Community Conference 2015的第一天筆記，<br>
+<p>這篇只是紀錄Java Community Conference 2015的第一天筆記，  <br />
 今天聽了以下幾個session，</p>
 
 <ol>
-<li>JRuby</li>
-<li>Asynchronous and Non-blocking in Scala</li>
-<li>使用zookeeper打造軟體式負載平衡</li>
-<li>workshop動手玩Java專案建置工具：以Gradle與Docker為例</li>
-<li>Akka Cluster in Java</li>
-<li>使用Java的Future/Promise API來撰寫非同步程式</li>
+  <li>JRuby</li>
+  <li>Asynchronous and Non-blocking in Scala</li>
+  <li>使用zookeeper打造軟體式負載平衡</li>
+  <li>workshop動手玩Java專案建置工具：以Gradle與Docker為例</li>
+  <li>Akka Cluster in Java</li>
+  <li>使用Java的Future/Promise API來撰寫非同步程式</li>
 </ol>
 
 <!--more-->
 
-<h3 id="1-jruby">1. JRuby</h3>
-
-<hr>
+<h3 id="jruby">1. JRuby</h3>
+<hr />
 
 <ul>
-<li>Charles Oliver Nutter</li>
-<li><a href="mailto:headius@headius.com">headius@headius.com</a></li>
-<li>blog.headius.com</li>
-<li>works at RedHat</li>
+  <li>Charles Oliver Nutter</li>
+  <li>headius@headius.com</li>
+  <li>blog.headius.com</li>
+  <li>works at RedHat</li>
 </ul>
 
 <h4 id="ruby">ruby</h4>
 
 <ul>
-<li>everything is Object. no primitive integer.</li>
-<li>invokeinterface
-
-<ul>
-<li>Runnable.run();</li>
-</ul></li>
-<li>invokespecial
-
-<ul>
-<li>super.equals();</li>
-</ul></li>
-<li>invokevirtual<br></li>
-<li>invokestatic
-
-<ul>
-<li>System.currentMill();</li>
-</ul></li>
-<li>invokedynamic
-
-<ul>
-<li>*Released in Java7</li>
-</ul></li>
-<li>Ruby == Unix, but java == java everywhere
-
-<ul>
-<li>Ruby has getpwd(), getpid()...etc.</li>
-<li>but java has no these capability.</li>
-</ul></li>
-<li>JNI 
-
-<ul>
-<li>Speaker doesn&#39;t like it.</li>
-<li>you need to implement a feature for each platform (win, mac, linux)
-
-<ul>
-<li>ex: if you want to get pid() in java.</li>
-</ul></li>
-</ul></li>
-<li>JNR
-
-<ul>
-<li>Speaker use JNR.</li>
-<li>there are many impelmentations in JNR.</li>
-<li>POSIX posix = POSIXFactory.getPostfix(xxxxx);<br></li>
-<li>posix.getpid()</li>
-</ul></li>
+  <li>everything is Object. no primitive integer.</li>
+  <li>invokeinterface
+    <ul>
+      <li>Runnable.run();</li>
+    </ul>
+  </li>
+  <li>invokespecial
+    <ul>
+      <li>super.equals();</li>
+    </ul>
+  </li>
+  <li>invokevirtual</li>
+  <li>invokestatic
+    <ul>
+      <li>System.currentMill();</li>
+    </ul>
+  </li>
+  <li>invokedynamic
+    <ul>
+      <li>*Released in Java7</li>
+    </ul>
+  </li>
+  <li>Ruby == Unix, but java == java everywhere
+    <ul>
+      <li>Ruby has getpwd(), getpid()…etc.</li>
+      <li>but java has no these capability.</li>
+    </ul>
+  </li>
+  <li>JNI
+    <ul>
+      <li>Speaker doesn’t like it.</li>
+      <li>you need to implement a feature for each platform (win, mac, linux)<br />
+    * ex: if you want to get pid() in java.</li>
+    </ul>
+  </li>
+  <li>JNR
+    <ul>
+      <li>Speaker use JNR.</li>
+      <li>there are many impelmentations in JNR.</li>
+      <li>POSIX posix = POSIXFactory.getPostfix(xxxxx);</li>
+      <li>posix.getpid()</li>
+    </ul>
+  </li>
 </ul>
 
 <h4 id="project-panama">Project panama</h4>
 
 <ul>
-<li>Panama in JVM for java 9, api in java 10</li>
+  <li>Panama in JVM for java 9, api in java 10</li>
 </ul>
 
 <h4 id="why-use-jvm">why use JVM?</h4>
-
-<p>someone ask why not use standard ruby?
+<p>someone ask why not use standard ruby?<br />
 author answer: hard to implement JIT.</p>
 
-<p></br></p>
+<p>&lt;/br&gt;</p>
 
-<hr>
-
-<h3 id="2-asynchronous-and-non-blocking-in-scala">2. Asynchronous and Non-blocking in Scala</h3>
-
-<hr>
+<hr />
+<p>### 2. Asynchronous and Non-blocking in Scala<br />
+—</p>
 
 <ul>
-<li>I/O is very slow, so we need aysnc and non-blocking.</li>
+  <li>I/O is very slow, so we need aysnc and non-blocking.</li>
 </ul>
 
 <h4 id="nio">NIO</h4>
-
 <ul>
-<li>not use thread to do operation. have a subsystem will handle it.</li>
+  <li>not use thread to do operation. have a subsystem will handle it.</li>
 </ul>
 
 <h4 id="pure-function">pure function</h4>
-
 <ul>
-<li>no side effects</li>
-<li>no write db or file</li>
-<li>the output will be the same at each time</li>
+  <li>no side effects</li>
+  <li>no write db or file</li>
+  <li>the output will be the same at each time</li>
 </ul>
 
 <h4 id="val-vs-var">val vs var</h4>
-
 <ul>
-<li>val is immutable</li>
-<li>var is mutable</li>
+  <li>val is immutable</li>
+  <li>var is mutable</li>
 </ul>
 
 <h4 id="case-object">case object</h4>
-
 <ul>
-<li>singleton in Java. there is no static in Scala.</li>
+  <li>singleton in Java. there is no static in Scala.</li>
 </ul>
 
-<p></br></p>
+<p>&lt;/br&gt;</p>
 
-<hr>
+<hr />
+<p>### 3. 使用zookeeper打造軟體式負載平衡<br />
+—</p>
 
-<h3 id="3-zookeeper">3. 使用zookeeper打造軟體式負載平衡</h3>
-
-<hr>
-
-<p>這個session主要在介紹zookeeper，由於時間很短，只有15分鐘。<br>
+<p>這個session主要在介紹zookeeper，由於時間很短，只有15分鐘。  <br />
 所以都是講很high level，並沒有講到detail的實作。</p>
 
-<p></br></p>
+<p>&lt;/br&gt;</p>
 
-<hr>
+<hr />
+<p>### 4. workshop動手玩Java專案建置工具：以Gradle與Docker為例<br />
+—</p>
 
-<h3 id="4-workshop-java-gradle-docker">4. workshop動手玩Java專案建置工具：以Gradle與Docker為例</h3>
-
-<hr>
-
-<p>這個session在介紹他們team是怎麼用<code>docker</code>建立test env，<br>
-然後再透過<code>Geb</code>去進行automation，<br>
+<p>這個session在介紹他們team是怎麼用<code class="highlighter-rouge">docker</code>建立test env，  <br />
+然後再透過<code class="highlighter-rouge">Geb</code>去進行automation，  <br />
 主要提供了以下二個docker images讓我們練習測試，</p>
 
 <ol>
-<li>client：vvoyer/docker-selenium-firefox-chrome</li>
-<li>main：groovy</li>
+  <li>client：vvoyer/docker-selenium-firefox-chrome</li>
+  <li>main：groovy</li>
 </ol>
 
-<p>由於我對於<code>docker</code>算是瞭解，因此這個session沒有全部聽完就先去趕場了。<br>
-簡單的說，整個流程就是先透過docker叫起<code>client</code>，<br>
-之後再叫起<code>main</code>來對<code>client</code>進行測試。</p>
+<p>由於我對於<code class="highlighter-rouge">docker</code>算是瞭解，因此這個session沒有全部聽完就先去趕場了。  <br />
+簡單的說，整個流程就是先透過docker叫起<code class="highlighter-rouge">client</code>，  <br />
+之後再叫起<code class="highlighter-rouge">main</code>來對<code class="highlighter-rouge">client</code>進行測試。</p>
 
 <h3 id="resource">Resource</h3>
 
 <ul>
-<li><a href="https://github.com/TrunkWorkshop/jcconf-2015-java-docker">Git repo</a></li>
-<li><a href="https://hackpad.com/JCConf-Taiwan-2015-Workshop-lKcJEMyjraR">Hackpad</a></li>
+  <li>[Git repo] (https://github.com/TrunkWorkshop/jcconf-2015-java-docker)</li>
+  <li>[Hackpad] (https://hackpad.com/JCConf-Taiwan-2015-Workshop-lKcJEMyjraR)</li>
 </ul>
 
 <h4 id="docker-swarm">docker-swarm</h4>
-
 <ul>
-<li>cluster</li>
+  <li>cluster</li>
 </ul>
 
 <h4 id="docker-compose">docker-compose</h4>
-
 <ul>
-<li>簡化docker指令</li>
+  <li>簡化docker指令</li>
 </ul>
 
 <h4 id="geb">geb</h4>
-
 <ul>
-<li><a href="http://learngeb.readbook.tw/">http://learngeb.readbook.tw/</a></li>
-<li>functional test</li>
+  <li>http://learngeb.readbook.tw/</li>
+  <li>functional test</li>
 </ul>
 
-<p></br></p>
+<p>&lt;/br&gt;</p>
 
-<hr>
+<hr />
+<p>### 5. Akka Cluster in Java<br />
+—</p>
 
-<h3 id="5-akka-cluster-in-java">5. Akka Cluster in Java</h3>
+<p>[Git repo for Akka cluster example] (https://github.com/jiayun/akka_samples)</p>
 
-<hr>
+<p>&lt;/br&gt;</p>
 
-<p><a href="https://github.com/jiayun/akka_samples">Git repo for Akka cluster example</a></p>
+<hr />
+<p>### 6. 使用Java的Future/Promise API來撰寫非同步程式<br />
+—</p>
 
-<p></br></p>
-
-<hr>
-
-<h3 id="6-java-future-promise-api">6. 使用Java的Future/Promise API來撰寫非同步程式</h3>
-
-<hr>
-
-<p>前陣子也剛好在研究<code>CompletableFuture</code>，<br>
+<p>前陣子也剛好在研究<code class="highlighter-rouge">CompletableFuture</code>，  <br />
 所以這是今天最有共鳴的一場session，</p>
 
 <h3 id="speaker">Speaker</h3>
-
 <ul>
-<li>koji</li>
-<li>work at Line (located at Japan)</li>
+  <li>koji</li>
+  <li>work at Line (located at Japan)</li>
 </ul>
 
 <h4 id="thread">傳統做法開thread</h4>
 
-<p>thread缺點  </p>
+<p>thread缺點</p>
 
 <ul>
-<li>需要配合synchronized, wait, notify, join<br></li>
-<li>不同thread如何存取同變數</li>
-<li>如何控管</li>
-<li>不易組合和再利用</li>
-<li>組合各種非同步方法，會變成callback hell</li>
+  <li>需要配合synchronized, wait, notify, join</li>
+  <li>不同thread如何存取同變數</li>
+  <li>如何控管</li>
+  <li>不易組合和再利用</li>
+  <li>組合各種非同步方法，會變成callback hell</li>
 </ul>
 
 <p>講者說：這個年代請不要再直接使用thread api</p>
@@ -580,120 +558,110 @@ author answer: hard to implement JIT.</p>
 <h4 id="future">Future</h4>
 
 <ul>
-<li>一個等待結果的容器</li>
-<li>get會卡住！！</li>
+  <li>一個等待結果的容器</li>
+  <li>get會卡住！！</li>
 </ul>
 
 <h4 id="completablefuture">CompletableFuture</h4>
 
 <ul>
-<li>類似有callback概念，做完動作以後，通知我，我再繼續做想做的事情</li>
-<li>get會丟exception，可以用join </li>
-<li>supplyAsync可以指定executorService，如果沒給，就會用forkjoin裡的tool。</li>
-<li>盡量要給！</li>
-<li><code>CF&lt;CF&lt;string&gt;&gt; c</code> 不好，要get 2次 ex: <code>c.get().get()</code></li>
-<li>請用.thenCompose, 回傳也是completeablefutre的時候，就不用get 2次，像是scala的flatmap，</li>
-<li>優點
-
-<ul>
-<li>event driven</li>
-<li>容易組合 (easy to compose)</li>
-<li>控制權還給呼叫者</li>
-<li>減少thread的浪費，沿用thread繼續做之類的</li>
-</ul></li>
-<li>缺點
-
-<ul>
-<li>future/promise的混合，不少語言都分開坐 </li>
-<li>爆多的方法數量 60+<br></li>
-</ul></li>
-<li>注意
-
-<ul>
-<li>雖然有future，但cancel跟future不一樣，completablefutre不能interrupt。</li>
-<li>不能取消正在執行的工作</li>
-<li>盡量使用Async語尾的API</li>
-</ul></li>
+  <li>類似有callback概念，做完動作以後，通知我，我再繼續做想做的事情</li>
+  <li>get會丟exception，可以用join</li>
+  <li>supplyAsync可以指定executorService，如果沒給，就會用forkjoin裡的tool。</li>
+  <li>盡量要給！</li>
+  <li><code class="highlighter-rouge">CF&lt;CF&lt;string&gt;&gt; c</code> 不好，要get 2次 ex: <code class="highlighter-rouge">c.get().get()</code></li>
+  <li>請用.thenCompose, 回傳也是completeablefutre的時候，就不用get 2次，像是scala的flatmap，</li>
+  <li>優點
+    <ul>
+      <li>event driven</li>
+      <li>容易組合 (easy to compose)</li>
+      <li>控制權還給呼叫者</li>
+      <li>減少thread的浪費，沿用thread繼續做之類的</li>
+    </ul>
+  </li>
+  <li>缺點
+    <ul>
+      <li>future/promise的混合，不少語言都分開坐</li>
+      <li>爆多的方法數量 60+</li>
+    </ul>
+  </li>
+  <li>注意
+    <ul>
+      <li>雖然有future，但cancel跟future不一樣，completablefutre不能interrupt。</li>
+      <li>不能取消正在執行的工作</li>
+      <li>盡量使用Async語尾的API</li>
+    </ul>
+  </li>
 </ul>
 
-<p></br></p>
+<p>&lt;/br&gt;</p>
 
-<hr>
-
-<h3 id="7-other">7. Other</h3>
-
-<hr>
+<hr />
+<p>### 7. Other<br />
+—</p>
 
 <h4 id="sudo">攤位sudo</h4>
-
 <ul>
-<li>yvette lin 曾經做過創投</li>
-<li>就專業的人力資源公司，但focus on RD</li>
+  <li>yvette lin 曾經做過創投</li>
+  <li>就專業的人力資源公司，但focus on RD</li>
 </ul>
 
 <h4 id="mysql">攤位mysql</h4>
-
 <ul>
-<li>speaker很專業</li>
-<li>詢問了master與master的架構時，當replication發生error時，通常得取捨一台，必定有資料會遺失，該怎麼辦？
-
-<ul>
-<li>回答：透過讓<code>master</code>等待的機制，然後取回binlog回來至<code>slave</code>，partially updated</li>
-</ul></li>
-<li>還介紹了MySQL Enterprise Monitor
-
-<ul>
-<li>有圖形化介面讓admin看究竟哪些sql command花最久</li>
-</ul></li>
-<li>還賺到了一隻MySQL的海豚玩偶</li>
+  <li>speaker很專業</li>
+  <li>詢問了master與master的架構時，當replication發生error時，通常得取捨一台，必定有資料會遺失，該怎麼辦？
+    <ul>
+      <li>回答：透過讓<code class="highlighter-rouge">master</code>等待的機制，然後取回binlog回來至<code class="highlighter-rouge">slave</code>，partially updated</li>
+    </ul>
+  </li>
+  <li>還介紹了MySQL Enterprise Monitor
+    <ul>
+      <li>有圖形化介面讓admin看究竟哪些sql command花最久</li>
+    </ul>
+  </li>
+  <li>還賺到了一隻MySQL的海豚玩偶</li>
 </ul>
 
-<p><img src="/assets/2015-12-04-mysql-dophin.jpg" alt="Ticket"></p>
+<p><img src="/assets/2015-12-04-mysql-dophin.jpg" alt="Ticket" /></p>
 
-<h4 id="part-2c86941eb8e79704">攤位微軟</h4>
-
+<h4 id="section">攤位微軟</h4>
 <ul>
-<li>介紹Azure</li>
+  <li>介紹Azure</li>
 </ul>
 
 <h4 id="kxxxx-banking">攤位Kxxxx banking</h4>
-
 <ul>
-<li>在做財務管理系統</li>
-<li>在徵人，要<code>java</code>，前端用<code>extJS</code></li>
+  <li>在做財務管理系統</li>
+  <li>在徵人，要<code class="highlighter-rouge">java</code>，前端用<code class="highlighter-rouge">extJS</code></li>
 </ul>
 
 <h4 id="ruckus">攤位ruckus</h4>
-
 <ul>
-<li>主要做無線網路設備</li>
-<li>也是Java</li>
+  <li>主要做無線網路設備</li>
+  <li>也是Java</li>
 </ul>
 
 <h4 id="safari-book-online">攤位safari book online</h4>
-
 <ul>
-<li>線上遊覽書籍之類的網站 </li>
-<li><a href="https://www.safaribooksonline.com/">Link</a></li>
+  <li>線上遊覽書籍之類的網站</li>
+  <li>[Link] (https://www.safaribooksonline.com/)</li>
 </ul>
 
 <h4 id="lightning-show">晚上的lightning show</h4>
-
 <ul>
-<li>ruckus的人出來送價值6000元的ap，很幸運地被我同事拿到</li>
-<li>中鋼的人來分享他們內部系統心路歷程</li>
-<li>linkedin員工來分享在那工作的第一個月 （其實是fliptop的員工，但被linkedin收購）</li>
+  <li>ruckus的人出來送價值6000元的ap，很幸運地被我同事拿到</li>
+  <li>中鋼的人來分享他們內部系統心路歷程</li>
+  <li>linkedin員工來分享在那工作的第一個月 （其實是fliptop的員工，但被linkedin收購）</li>
 </ul>
 
 <h4 id="foods-and-drinks">Foods and Drinks</h4>
-
 <ul>
-<li>大概是我參加過所有conf吃最好的吧，晚上還有烤山豬肉可以吃</li>
-<li>飲料是金色三麥贊助</li>
-<li>茶也是知名廠商</li>
+  <li>大概是我參加過所有conf吃最好的吧，晚上還有烤山豬肉可以吃</li>
+  <li>飲料是金色三麥贊助</li>
+  <li>茶也是知名廠商</li>
 </ul>
 
-<p></font></p>
+<p>&lt;/font&gt;</p>
 
     </div>
 

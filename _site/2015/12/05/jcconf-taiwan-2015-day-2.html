@@ -347,90 +347,86 @@
       <span>05 December 2015</span>
     </div>
     <div class="content" style="line-height: 28px;">
-      <p><font size=3></p>
+      
+<p>&lt;font size=3&gt;</p>
 
-<p>這篇只是紀錄Java Community Conference 2015的第二天筆記，<br>
+<p>這篇只是紀錄Java Community Conference 2015的第二天筆記，  <br />
 今天聽了以下幾個session，</p>
 
 <ol>
-<li>阿里 JVM 的工作方向</li>
-<li>Universal Scala<br></li>
-<li>Deploy your own Spark cluster in 4 minutes using sbt</li>
-<li>Immutable Infrastructure：觀念與實作 </li>
-<li>JDK8 JIT 行為和效能分析</li>
-<li>自己的JVM自己救 - 解救 OOM 實務經驗談 </li>
+  <li>阿里 JVM 的工作方向</li>
+  <li>Universal Scala</li>
+  <li>Deploy your own Spark cluster in 4 minutes using sbt</li>
+  <li>Immutable Infrastructure：觀念與實作</li>
+  <li>JDK8 JIT 行為和效能分析</li>
+  <li>自己的JVM自己救 - 解救 OOM 實務經驗談</li>
 </ol>
 
 <!--more-->
 
-<p></br></p>
+<p>&lt;/br&gt;</p>
 
-<hr>
+<hr />
+<p>### 1. 阿里 JVM 的工作方向<br />
+—</p>
 
-<h3 id="1-jvm">1. 阿里 JVM 的工作方向</h3>
-
-<hr>
-
-<p>主要在說他為什麼從facebook回中國阿里雲，<br>
-在fb調校php，在阿里雲調校jvm，<br>
+<p>主要在說他為什麼從facebook回中國阿里雲，  <br />
+在fb調校php，在阿里雲調校jvm，  <br />
 在講在阿里雲裡的JVM心路歷程。</p>
 
 <p><strong>Speaker</strong></p>
 
 <ul>
-<li>趙海平</li>
-<li>work @阿里雲</li>
-<li>previous work @FB</li>
+  <li>趙海平</li>
+  <li>work @阿里雲</li>
+  <li>previous work @FB</li>
 </ul>
 
 <p><strong>Coroutine</strong></p>
 
 <ul>
-<li>like wait,notify in Java</li>
+  <li>like wait,notify in Java</li>
 </ul>
 
 <p><strong>Java young generation, old generation</strong></p>
 
-<p></br></p>
+<p>&lt;/br&gt;</p>
 
-<hr>
-
-<h3 id="2-universal-scala">2. Universal Scala</h3>
-
-<hr>
-
-<p>在講怎麼用scala在frontend與backend上。</p>
+<hr />
+<p>### 2. Universal Scala<br />
+—<br />
+在講怎麼用scala在frontend與backend上。</p>
 
 <p><strong>Speaker</strong></p>
 
 <ul>
-<li>Walter Chang</li>
+  <li>Walter Chang</li>
 </ul>
 
 <p><strong>What is universal?</strong></p>
 
 <ul>
-<li>isomorphic</li>
-<li>run the same code on both client and server</li>
+  <li>isomorphic</li>
+  <li>run the same code on both client and server</li>
 </ul>
 
 <p><strong>Functional language</strong></p>
 
 <ul>
-<li>Pure functions <a href="https://en.wikipedia.org/wiki/Pure_function">Wiki</a></li>
+  <li>Pure functions [Wiki] (https://en.wikipedia.org/wiki/Pure_function)</li>
 </ul>
 
 <p><strong>immutable 優點</strong></p>
 
 <ul>
-<li>no need to handle synchronization</li>
+  <li>no need to handle synchronization</li>
 </ul>
 
 <p><strong>val is immutable (like final in Java)</strong></p>
 
 <ul>
-<li>var i: Int = 123</li>
-<li>var i = 123</li>
+  <li>var i: Int = 123</li>
+  <li>var i = 123</li>
 </ul>
 
 <p><strong>var is mutable</strong></p>
@@ -440,131 +436,121 @@
 <p><strong>What is Scala.js</strong></p>
 
 <ul>
-<li>compile <code>Scala</code> to <code>javascript</code></li>
+  <li>compile <code class="highlighter-rouge">Scala</code> to <code class="highlighter-rouge">javascript</code></li>
 </ul>
 
-<p><strong>Example code</strong>
-- <a href="https://github.com/weihsiu/universal.git">github</a></p>
+<p><strong>Example code</strong><br />
+- [github] (https://github.com/weihsiu/universal.git)</p>
 
-<p></br></p>
+<p>&lt;/br&gt;</p>
 
-<hr>
-
-<h3 id="3-deploy-your-own-spark-cluster-in-4-minutes-using-sbt">3. Deploy your own Spark cluster in 4 minutes using sbt.</h3>
-
-<hr>
+<hr />
+<p>### 3. Deploy your own Spark cluster in 4 minutes using sbt.<br />
+—</p>
 
 <p>介紹他們的tool（spark-deployer）</p>
 
 <p><strong>Speaker</strong></p>
 
 <ul>
-<li>Pishen Tsai</li>
-<li>Works @KKBox</li>
+  <li>Pishen Tsai</li>
+  <li>Works @KKBox</li>
 </ul>
 
 <p><strong>Tool: spark-deployer</strong></p>
 
 <ul>
-<li><a href="https://github.com/KKBOX/spark-deployer">Github</a></li>
-<li>SBT plugin</li>
-<li>productively used in KKBOX</li>
-<li>100% scala</li>
+  <li>[Github] (https://github.com/KKBOX/spark-deployer)</li>
+  <li>SBT plugin</li>
+  <li>productively used in KKBOX</li>
+  <li>100% scala</li>
 </ul>
 
 <p><strong>Current Solutions to deploy Spark cluster</strong></p>
 
 <ul>
-<li><p><strong>spark-ec2</strong></p>
-
-<ul>
-<li>缺點 
-
-<ul>
-<li>command 太多</li>
-<li>需要裝<code>sbt</code></li>
-<li>需要裝<code>ec2</code></li>
-<li>slow startup time (~20mins)</li>
-<li>一小時算一次錢，三分之一錢花在deploy上</li>
-</ul></li>
-<li>要用spark-ec2的flow
-
-<ul>
-<li><img src="/assets/2015-12-05-spark-ec2-flow.jpg" alt="flow"></li>
-</ul></li>
-<li>spark-ec2的command
-
-<ul>
-<li><img src="/assets/2015-12-05-spark-ec2-cmd.jpg" alt="command"></li>
-</ul></li>
-</ul></li>
-<li><p><strong>amazon emr (elastic map reduce)</strong></p>
-
-<ul>
-<li>缺點
-
-<ul>
-<li>command 太多</li>
-<li>需要裝<code>sbt</code></li>
-<li>需要裝<code>emr</code></li>
-<li>spark version is old</li>
-</ul></li>
-<li>要用Amazon emr的flow
-
-<ul>
-<li><img src="/assets/2015-12-05-aws-emr-flow.jpg" alt="flow"></li>
-</ul></li>
-<li>emr的cmd
-
-<ul>
-<li><img src="/assets/2015-12-05-aws-emr-cmd.jpg" alt="cmd"></li>
-</ul></li>
-</ul></li>
-<li><p><strong>spark-deployer</strong></p>
-
-<ul>
-<li>優點
-
-<ul>
-<li>只需要安裝<code>sbt</code></li>
-<li>fast and parallel startup (~4mins)</li>
-<li>Dynamic scale out</li>
-<li>Flexible design </li>
-</ul></li>
-<li>用Spark deployer的flow
-
-<ul>
-<li><img src="/assets/2015-12-05-spark-deployer-flow.jpg" alt="flow"></li>
-</ul></li>
-<li>用Spark deployer的cmd
-
-<ul>
-<li><img src="/assets/2015-12-05-spark-deployer-cmd.jpg" alt="cmd"></li>
-</ul></li>
-</ul></li>
+  <li><strong>spark-ec2</strong>
+    <ul>
+      <li>缺點 <br />
+    * command 太多<br />
+    * 需要裝<code class="highlighter-rouge">sbt</code><br />
+    * 需要裝<code class="highlighter-rouge">ec2</code><br />
+    * slow startup time (~20mins)<br />
+    * 一小時算一次錢，三分之一錢花在deploy上</li>
+      <li>要用spark-ec2的flow
+        <ul>
+          <li><img src="/assets/2015-12-05-spark-ec2-flow.jpg" alt="flow" /></li>
+        </ul>
+      </li>
+      <li>spark-ec2的command
+        <ul>
+          <li><img src="/assets/2015-12-05-spark-ec2-cmd.jpg" alt="command" /></li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li><strong>amazon emr (elastic map reduce)</strong>
+    <ul>
+      <li>缺點<br />
+    * command 太多<br />
+    * 需要裝<code class="highlighter-rouge">sbt</code><br />
+    * 需要裝<code class="highlighter-rouge">emr</code><br />
+    * spark version is old</li>
+      <li>要用Amazon emr的flow
+        <ul>
+          <li><img src="/assets/2015-12-05-aws-emr-flow.jpg" alt="flow" /></li>
+        </ul>
+      </li>
+      <li>emr的cmd
+        <ul>
+          <li><img src="/assets/2015-12-05-aws-emr-cmd.jpg" alt="cmd" /></li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li><strong>spark-deployer</strong>
+    <ul>
+      <li>優點
+        <ul>
+          <li>只需要安裝<code class="highlighter-rouge">sbt</code></li>
+          <li>fast and parallel startup (~4mins)</li>
+          <li>Dynamic scale out</li>
+          <li>Flexible design</li>
+        </ul>
+      </li>
+      <li>用Spark deployer的flow
+        <ul>
+          <li><img src="/assets/2015-12-05-spark-deployer-flow.jpg" alt="flow" /></li>
+        </ul>
+      </li>
+      <li>用Spark deployer的cmd
+        <ul>
+          <li><img src="/assets/2015-12-05-spark-deployer-cmd.jpg" alt="cmd" /></li>
+        </ul>
+      </li>
+    </ul>
+  </li>
 </ul>
 
 <p><strong>Prerequisite</strong></p>
 
 <ul>
-<li>java</li>
-<li>sbt</li>
-<li>AWS_ACCESS_KEY_ID</li>
+  <li>java</li>
+  <li>sbt</li>
+  <li>AWS_ACCESS_KEY_ID</li>
 </ul>
 
-<p></br></p>
+<p>&lt;/br&gt;</p>
 
-<hr>
-
-<h3 id="4-immutable-infrastructure">4. Immutable Infrastructure：觀念與實作</h3>
-
-<hr>
+<hr />
+<p>### 4. Immutable Infrastructure：觀念與實作 <br />
+—</p>
 
 <p><strong>Speaker</strong></p>
 
 <ul>
-<li>葉秉哲</li>
-<li>Works @gogolook</li>
+  <li>葉秉哲</li>
+  <li>Works @gogolook</li>
 </ul>
 
 <p><strong>改題目</strong> -&gt; immutable infrastructure觀念與實作（建議）</p>
@@ -573,187 +559,178 @@
 
 <p><strong>演算法的領域也說，immutable 的東西會比 mutable 的東西來得好設計</strong></p>
 
-<p><strong>why immutable objects</strong> </p>
+<p><strong>why immutable objects</strong></p>
 
 <ul>
-<li>simpler   to understand</li>
-<li>iherently thread-safe</li>
-<li>offer higher security than mutable objects</li>
+  <li>simpler	to understand</li>
+  <li>iherently thread-safe</li>
+  <li>offer higher security than mutable objects</li>
 </ul>
 
 <p><strong>immutable object</strong></p>
-<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="n">String</span> <span class="n">s</span> <span class="o">=</span> <span class="s">&quot;ABC&quot;</span><span class="o">;</span>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="n">String</span> <span class="n">s</span> <span class="o">=</span> <span class="s">"ABC"</span><span class="o">;</span>
 <span class="n">s</span><span class="o">.</span><span class="na">toLowerCase</span><span class="o">();</span>
-</code></pre></div>
+</code></pre>
+</div>
+
 <p><strong>java hotswap</strong></p>
 
 <ul>
-<li>jdk 1.4</li>
+  <li>jdk 1.4</li>
 </ul>
 
-<p><strong>Christian Posta said:</strong></p>
+<p><strong>Christian Posta said:</strong><br />
+&gt;don’t hotdeploy/redeploy/migrate your java service in production at runtime.  <br />
+&gt;do have a very trong focus on your delivery pipeline/automation/testing to quickly make change to your app</p>
 
-<blockquote>
-<p>don&#39;t hotdeploy/redeploy/migrate your java service in production at runtime.<br>
-do have a very trong focus on your delivery pipeline/automation/testing to quickly make change to your app</p>
-</blockquote>
-
-<p><strong>What&#39;s an immutable infrastructure</strong></p>
+<p><strong>What’s an immutable infrastructure</strong></p>
 
 <ul>
-<li>quote from Docker 大神</li>
+  <li>quote from Docker 大神</li>
 </ul>
 
 <blockquote>
-<p>re-create images each time you change a line of code.<br>
+  <p>re-create images each time you change a line of code.  <br />
 prevent modifications of running images.</p>
 </blockquote>
 
 <p><strong>Why immutable infrastructure?</strong></p>
 
 <ul>
-<li>Simplify change management
-
-<ul>
-<li>hard to keep or restore &quot;desired state&quot; in place</li>
-</ul></li>
-<li>Enforce <code>dev/prod</code> parity
-
-<ul>
-<li>configure &amp; test <code>infra</code> <strong>before</strong> deployed to production environment</li>
-</ul></li>
-<li>Reason about apps at a higher level
-
-<ul>
-<li>... than just <code>deployable pacakages</code> containing the code (jar/war/zip/msi)</li>
-</ul></li>
+  <li>Simplify change management
+    <ul>
+      <li>hard to keep or restore “desired state” in place</li>
+    </ul>
+  </li>
+  <li>Enforce <code class="highlighter-rouge">dev/prod</code> parity
+    <ul>
+      <li>configure &amp; test <code class="highlighter-rouge">infra</code> <strong>before</strong> deployed to production environment</li>
+    </ul>
+  </li>
+  <li>Reason about apps at a higher level
+    <ul>
+      <li>… than just <code class="highlighter-rouge">deployable pacakages</code> containing the code (jar/war/zip/msi)</li>
+    </ul>
+  </li>
 </ul>
 
-<p><strong>Why <code>NOT</code> immutable infrastructure?</strong></p>
+<p><strong>Why <code class="highlighter-rouge">NOT</code> immutable infrastructure?</strong></p>
 
 <ul>
-<li>Cost may be too high</li>
-<li>DevOps maturity level</li>
+  <li>Cost may be too high</li>
+  <li>DevOps maturity level</li>
 </ul>
 
-<p><strong>講者把image視為一種<code>母體</code></strong><br>
-主要分為以下三種，  </p>
+<p><strong>講者把image視為一種<code class="highlighter-rouge">母體</code></strong>  <br />
+主要分為以下三種，</p>
 
 <ul>
-<li>VM image</li>
-<li>Container image</li>
-<li>Unikernel image
-
-<ul>
-<li>對現有container技術有一個比較激進的改良</li>
-<li>傳統的vm，架構在hypervisor上，也打包一個os在裡面</li>
-<li>docker不打包，但會共用底下os的東西，有安全性考量</li>
-<li>所以有了<code>container per VM</code>，但還是太肥了。</li>
-<li>把作業系統也看成lib，不會把所有os通通包進來，只抽取它要的。</li>
-<li><a href="https://boxfuse.com/">boxfuse</a></li>
-</ul></li>
+  <li>VM image</li>
+  <li>Container image</li>
+  <li>Unikernel image
+    <ul>
+      <li>對現有container技術有一個比較激進的改良</li>
+      <li>傳統的vm，架構在hypervisor上，也打包一個os在裡面</li>
+      <li>docker不打包，但會共用底下os的東西，有安全性考量</li>
+      <li>所以有了<code class="highlighter-rouge">container per VM</code>，但還是太肥了。</li>
+      <li>把作業系統也看成lib，不會把所有os通通包進來，只抽取它要的。</li>
+      <li>[boxfuse] (https://boxfuse.com/)</li>
+    </ul>
+  </li>
 </ul>
 
 <p><strong>母體 =&gt; 增生 =&gt; 替換 =&gt; 自動化</strong></p>
 
-<p></br></p>
+<p>&lt;/br&gt;</p>
 
-<hr>
+<hr />
+<p>### 5. JDK8 JIT 行為和效能分析<br />
+—</p>
 
-<h3 id="5-jdk8-jit">5. JDK8 JIT 行為和效能分析</h3>
-
-<hr>
-
-<p>這個session是Jserv在講，<br>
-聽過Jserv演講過幾次，<br>
-也曾經在去旁聽過，他在台大講的Android Open Source，<br>
-給我的印象就是高手、講話很快、講話很有梗的。<br>
-其實我原本要去聽別場的<code>MySQL Connector/J</code>，但一方面覺得實在太累了，<br>
-懶得換room，又想輕鬆一點，聽一下Jserv講講笑話，<br>
+<p>這個session是Jserv在講，  <br />
+聽過Jserv演講過幾次，  <br />
+也曾經在去旁聽過，他在台大講的Android Open Source，  <br />
+給我的印象就是高手、講話很快、講話很有梗的。  <br />
+其實我原本要去聽別場的<code class="highlighter-rouge">MySQL Connector/J</code>，但一方面覺得實在太累了，  <br />
+懶得換room，又想輕鬆一點，聽一下Jserv講講笑話，  <br />
 Jserv一樣講得很專業，但真的是不同領域，幾乎都聽不懂。</p>
 
 <p><strong>Speaker</strong></p>
 
 <ul>
-<li>Jserv</li>
+  <li>Jserv</li>
 </ul>
 
 <p><strong>topic</strong></p>
 
 <ul>
-<li>How JIT works?</li>
-<li>How to monitor the JIT?</li>
-<li>How to figure out performance problem?</li>
+  <li>How JIT works?</li>
+  <li>How to monitor the JIT?</li>
+  <li>How to figure out performance problem?</li>
 </ul>
 
 <p><strong>jserv自己準備的共筆</strong></p>
 
 <ul>
-<li><a href="https://jcconf.hackpad.com/R0-13PeQD5hpDx#:h=JDK8-JIT-%E8%A1%8C%E7%82%BA%E5%92%8C%E6%95%88%E8%83%BD%E5%88%86%E6%9E%90">url</a></li>
+  <li>[url] (https://jcconf.hackpad.com/R0-13PeQD5hpDx#:h=JDK8-JIT-行為和效能分析)</li>
 </ul>
 
 <p><strong>hotspot</strong></p>
 
 <ul>
-<li> template based interpreter</li>
+  <li>template based interpreter</li>
 </ul>
 
-<p><strong>Jserv Said:</strong></p>
-
-<blockquote>
-<ol>
-<li>作業我自己改，門我自己開，助教負責笑<br></li>
-<li>台灣什麼東西都可以靠北</li>
-<li>靠北JVM</li>
-<li>怕沒人寫hackpad共筆，所以我自己寫</li>
-<li>在聯發科工作的時候，大家都是看安兔兔的benchmark買手機</li>
-</ol>
-</blockquote>
+<p><strong>Jserv Said:</strong><br />
+&gt;<br />
+&gt;1. 作業我自己改，門我自己開，助教負責笑  <br />
+&gt;2. 台灣什麼東西都可以靠北<br />
+&gt;3. 靠北JVM<br />
+&gt;4. 怕沒人寫hackpad共筆，所以我自己寫<br />
+&gt;5. 在聯發科工作的時候，大家都是看安兔兔的benchmark買手機<br />
+&gt;</p>
 
 <p><strong>JVM如何支援動態語言</strong></p>
 
 <ul>
-<li>invokedynamic
-
-<ul>
-<li>lambda</li>
-</ul></li>
-<li>java裡的method都是<code>ivnokevirtual</code></li>
+  <li>invokedynamic
+    <ul>
+      <li>lambda</li>
+    </ul>
+  </li>
+  <li>java裡的method都是<code class="highlighter-rouge">ivnokevirtual</code></li>
 </ul>
 
 <p><strong>匿名class本質上會生出另一個class，inner class，和lambda不一樣</strong></p>
 
-<p></br></p>
+<p>&lt;/br&gt;</p>
 
-<hr>
+<hr />
+<p>### 6. 自己的JVM自己救 - 解救 OOM 實務經驗談 <br />
+—</p>
 
-<h3 id="6-jvm-oom">6. 自己的JVM自己救 - 解救 OOM 實務經驗談</h3>
-
-<hr>
-
-<p>這場我聽到放空了，不過前半段內容，大致上我都是先前就知道的。<br>
-例如：stack, heap差別...etc.</p>
+<p>這場我聽到放空了，不過前半段內容，大致上我都是先前就知道的。  <br />
+例如：stack, heap差別…etc.</p>
 
 <p><strong>Shallow heap</strong></p>
 
 <p><strong>Retained heap</strong></p>
 
-<p></br></p>
+<p>&lt;/br&gt;</p>
 
-<hr>
+<hr />
+<p>### 感想<br />
+—</p>
 
-<h3 id="part-6542a113c2a">感想</h3>
-
-<hr>
-
-<p>參加完，不能說在知識上收穫很多，<br>
-但反而是一種開眼界的感覺，會覺得人外有人，天外有天，<br>
+<p>參加完，不能說在知識上收穫很多，  <br />
+但反而是一種開眼界的感覺，會覺得人外有人，天外有天，  <br />
 覺得自己還得更加努力才行。</p>
 
-<p>還想推薦一下MySQL的speaker (Ivan Tu)，雖然沒有去聽他的talk，<br>
+<p>還想推薦一下MySQL的speaker (Ivan Tu)，雖然沒有去聽他的talk，  <br />
 但在休息時間時，去到MySQL攤位，都會聽到他很熱情地講解。</p>
 
-<p></font></p>
+<p>&lt;/font&gt;</p>
 
     </div>
 

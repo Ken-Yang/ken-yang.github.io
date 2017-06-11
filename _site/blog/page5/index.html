@@ -307,19 +307,21 @@
       </div>
       </p>
       <div class="content" style="line-height: 28px;">
-        <p><font size=3></p>
+        
+<p>&lt;font size=3&gt;</p>
 
-<p>這篇只是紀錄Java Community Conference 2015的第二天筆記，<br>
+<p>這篇只是紀錄Java Community Conference 2015的第二天筆記，  <br />
 今天聽了以下幾個session，</p>
 
 <ol>
-<li>阿里 JVM 的工作方向</li>
-<li>Universal Scala<br></li>
-<li>Deploy your own Spark cluster in 4 minutes using sbt</li>
-<li>Immutable Infrastructure：觀念與實作 </li>
-<li>JDK8 JIT 行為和效能分析</li>
-<li>自己的JVM自己救 - 解救 OOM 實務經驗談 </li>
+  <li>阿里 JVM 的工作方向</li>
+  <li>Universal Scala</li>
+  <li>Deploy your own Spark cluster in 4 minutes using sbt</li>
+  <li>Immutable Infrastructure：觀念與實作</li>
+  <li>JDK8 JIT 行為和效能分析</li>
+  <li>自己的JVM自己救 - 解救 OOM 實務經驗談</li>
 </ol>
+
 
       </div>
       <footer>
@@ -348,21 +350,23 @@
       </div>
       </p>
       <div class="content" style="line-height: 28px;">
-        <p><font size=3></p>
+        
+<p>&lt;font size=3&gt;</p>
 
-<p><img src="/assets/2015-12-04-ticket.jpg" alt="Ticket"></p>
+<p><img src="/assets/2015-12-04-ticket.jpg" alt="Ticket" /></p>
 
-<p>這篇只是紀錄Java Community Conference 2015的第一天筆記，<br>
+<p>這篇只是紀錄Java Community Conference 2015的第一天筆記，  <br />
 今天聽了以下幾個session，</p>
 
 <ol>
-<li>JRuby</li>
-<li>Asynchronous and Non-blocking in Scala</li>
-<li>使用zookeeper打造軟體式負載平衡</li>
-<li>workshop動手玩Java專案建置工具：以Gradle與Docker為例</li>
-<li>Akka Cluster in Java</li>
-<li>使用Java的Future/Promise API來撰寫非同步程式</li>
+  <li>JRuby</li>
+  <li>Asynchronous and Non-blocking in Scala</li>
+  <li>使用zookeeper打造軟體式負載平衡</li>
+  <li>workshop動手玩Java專案建置工具：以Gradle與Docker為例</li>
+  <li>Akka Cluster in Java</li>
+  <li>使用Java的Future/Promise API來撰寫非同步程式</li>
 </ol>
+
 
       </div>
       <footer>
@@ -391,45 +395,49 @@
       </div>
       </p>
       <div class="content" style="line-height: 28px;">
-        <p><font size=3>
-這篇會介紹如何在Ubuntu上，建立一個iSCSI Target Server，<br>
+        
+<p>&lt;font size=3&gt;<br />
+這篇會介紹如何在Ubuntu上，建立一個iSCSI Target Server，  <br />
 提供給別人測試使用。</p>
 
-<p></br></p>
+<p>&lt;/br&gt;<br />
+#### Install tgt<br />
+—<br />
+首先要先安裝tgt這個package。</p>
 
-<h4 id="install-tgt">Install tgt</h4>
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>apt-get install tgt
+</code></pre>
+</div>
 
-<hr>
+<p>&lt;/br&gt;<br />
+#### Create virtual disks<br />
+—</p>
 
-<p>首先要先安裝tgt這個package。  </p>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ apt-get install tgt
-</code></pre></div>
-<p></br></p>
-
-<h4 id="create-virtual-disks">Create virtual disks</h4>
-
-<hr>
-
-<p>這裡會用<code>dd</code>來建立幾個假的block device，<br>
+<p>這裡會用<code class="highlighter-rouge">dd</code>來建立幾個假的block device，  <br />
 待會就把devices加入到iSCSI中。</p>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ dd <span class="k">if</span><span class="o">=</span>/dev/zero <span class="nv">of</span><span class="o">=</span>/var/tmp/iscsi-disk1 <span class="nv">bs</span><span class="o">=</span>1M <span class="nv">count</span><span class="o">=</span><span class="m">100</span>
-$ dd <span class="k">if</span><span class="o">=</span>/dev/zero <span class="nv">of</span><span class="o">=</span>/var/tmp/iscsi-disk2 <span class="nv">bs</span><span class="o">=</span>1M <span class="nv">count</span><span class="o">=</span><span class="m">100</span>
-</code></pre></div>
-<p></br></p>
 
-<h4 id="create-targets">Create targets</h4>
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>dd <span class="k">if</span><span class="o">=</span>/dev/zero <span class="nv">of</span><span class="o">=</span>/var/tmp/iscsi-disk1 <span class="nv">bs</span><span class="o">=</span>1M <span class="nv">count</span><span class="o">=</span>100
+<span class="gp">$ </span>dd <span class="k">if</span><span class="o">=</span>/dev/zero <span class="nv">of</span><span class="o">=</span>/var/tmp/iscsi-disk2 <span class="nv">bs</span><span class="o">=</span>1M <span class="nv">count</span><span class="o">=</span>100
+</code></pre>
+</div>
 
-<hr>
+<p>&lt;/br&gt;<br />
+#### Create targets<br />
+—</p>
 
 <p>這裡建立了2個target，分別為，</p>
 
 <ul>
-<li>iqn.2015-07.net.kenyang:ken.iscsi.1</li>
-<li>iqn.2015-07.net.kenyang:ken.iscsi.2</li>
+  <li>iqn.2015-07.net.kenyang:ken.iscsi.1</li>
+  <li>iqn.2015-07.net.kenyang:ken.iscsi.2</li>
 </ul>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ tgtadm --lld iscsi --op new --mode target --tid <span class="m">1</span> -T iqn.2015-07.net.kenyang:ken.iscsi.1
-$ tgtadm --lld iscsi --op new --mode target --tid <span class="m">2</span> -T iqn.2015-07.net.kenyang:ken.iscsi.2
-</code></pre></div>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>tgtadm --lld iscsi --op new --mode target --tid 1 -T iqn.2015-07.net.kenyang:ken.iscsi.1
+<span class="gp">$ </span>tgtadm --lld iscsi --op new --mode target --tid 2 -T iqn.2015-07.net.kenyang:ken.iscsi.2
+</code></pre>
+</div>
+
+
       </div>
       <footer>
         <p><a class="myButton" href="/2015/12/01/create-a-iscsi-target-on-ubuntu">read more &raquo;</a></p>

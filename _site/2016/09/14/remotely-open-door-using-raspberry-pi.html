@@ -347,144 +347,145 @@
       <span>14 September 2016</span>
     </div>
     <div class="content" style="line-height: 28px;">
-      <p><font size="3"></p>
+      
+<font size="3">
 
-<p>由於上一篇寫了一個Telegram Bot，最近就在幫它加feature，</p>
+由於上一篇寫了一個Telegram Bot，最近就在幫它加feature，
 
-<ol>
-<li>出build時會通知</li>
-<li>開會時會通知</li>
-<li>11:30提醒要吃飯了</li>
-</ol>
+1. 出build時會通知
+2. 開會時會通知
+3. 11:30提醒要吃飯了
 
-<p>總覺得少了點什麼，於是就想說來做個機器人自動開門。</br>
-在開始之前，先準備以下材料：</p>
+總覺得少了點什麼，於是就想說來做個機器人自動開門。
+在開始之前，先準備以下材料：
 
-<ol>
-<li>Raspberry Pi 3: 1台</li>
-<li>杜邦線: 至少4條</li>
-<li>麵包板: 1塊</li>
-<li>漆包線: 可有可無</li>
-<li>一顆勇敢的心（因為你可能用壞，導致整個公司的人被反鎖）</li>
-</ol>
+1. Raspberry Pi 3: 1台
+2. 杜邦線: 至少4條
+3. 麵包板: 1塊
+3. 漆包線: 可有可無
+4. 一顆勇敢的心（因為你可能用壞，導致整個公司的人被反鎖）
 
-<p>下圖為完成品，</p>
+下圖為完成品，
 
-<p><img src="/assets/2016-09-14-finish.jpg" alt="Ticket"></p>
+![Ticket](/assets/2016-09-14-finish.jpg)
 
-<p></br></p>
+
+
 
 <!--more-->
 
-<hr>
+---
+### 1. 拆開電源座
+---
 
-<h3 id="1">1. 拆開電源座</h3>
+大部分的公司，門旁邊應該都有一個開關，不管是感應式的或者是按鈕式的也好，只要一trigger，門就會打開。
+也就是說開關一定接著門的trigger，所以我們要做man in the middle hack...LOL...
+所以首先要把電源拆掉，然後拿出來（如下圖），
 
-<hr>
+![Ticket](/assets/2016-09-14-1.jpg)
 
-<p>大部分的公司，門旁邊應該都有一個開關，不管是感應式的或者是按鈕式的也好，只要一trigger，門就會打開。</br>
-也就是說開關一定接著門的trigger，所以我們要做man in the middle hack...LOL...</br>
-所以首先要把電源拆掉，然後拿出來（如下圖），</p>
+拿出來以後會看到有二條線接在電源開關上，分別為一紅一黑，把這二條線從開關中拔出來，
+然後你要先找出你的正極跟負極分別為哪一條，我的黑色是正，紅色是負。
 
-<p><img src="/assets/2016-09-14-1.jpg" alt="Ticket"></p>
 
-<p>拿出來以後會看到有二條線接在電源開關上，分別為一紅一黑，把這二條線從開關中拔出來，</br>
-然後你要先找出你的正極跟負極分別為哪一條，我的黑色是正，紅色是負。</p>
 
-<p></br></p>
+---
+### 2. 接線 （backward compatible）
+---
 
-<hr>
+為了讓原本的開關也可以正常work，所以我們必須把上面拆出來的電源線接在麵包板上，然後在接另外2條杜邦線，
+一頭接在開關上面，另一頭接在麵包板上面，如下圖。
 
-<h3 id="2-backward-compatible">2. 接線 （backward compatible）</h3>
+![Ticket](/assets/2016-09-14-3.png)
 
-<hr>
 
-<p>為了讓原本的開關也可以正常work，所以我們必須把上面拆出來的電源線接在麵包板上，然後在接另外2條杜邦線，</br>
-一頭接在開關上面，另一頭接在麵包板上面，如下圖。</p>
 
-<p><img src="/assets/2016-09-14-3.png" alt="Ticket"></p>
+---
+### 3. 接上Raspberry Pi 3
+---
 
-<p></br></p>
+接著要再接上2條杜邦線，一頭接在Pi上的GPIO，另一頭一樣接在麵包板上，
+如果不知道接在哪個Pin腳，可以[Google一下Raspberry Pi 3的GPIO圖](https://www.google.com.tw/search?q=raspberry+3+gpio&amp;source=lnms&amp;tbm=isch&amp;sa=X&amp;ved=0ahUKEwiJl-jJ3o7PAhXEj5QKHdpyC3QQ_AUICCgB&amp;biw=1920&amp;bih=916)，
+我自己是接在Pin 7 and 6上面，正極在7，負極在6，如下圖。然後分別把它接在對應的麵包板位置上。
 
-<hr>
+![Ticket](/assets/2016-09-14-4.jpg)
 
-<h3 id="3-raspberry-pi-3">3. 接上Raspberry Pi 3</h3>
 
-<hr>
 
-<p>接著要再接上2條杜邦線，一頭接在Pi上的GPIO，另一頭一樣接在麵包板上，</br>
-如果不知道接在哪個Pin腳，可以<a href="https://www.google.com.tw/search?q=raspberry+3+gpio&source=lnms&tbm=isch&sa=X&ved=0ahUKEwiJl-jJ3o7PAhXEj5QKHdpyC3QQ_AUICCgB&biw=1920&bih=916">Google一下Raspberry Pi 3的GPIO圖</a>，</br>
-我自己是接在Pin 7 and 6上面，正極在7，負極在6，如下圖。然後分別把它接在對應的麵包板位置上。</p>
+---
+### 4. 寫Code
+---
 
-<p><img src="/assets/2016-09-14-4.jpg" alt="Ticket"></p>
+最後就要來寫code，我這裡是使用NodeJS加上Python，因為用NodeJS setup web server很快速簡單，
+然後用python控制GPIO也很簡單，所以就用這二種組合。
+首先先寫Python來透過GPIO來開門，由於現在的Raspbian預設就有Rpi.GPIO，所以你可以直接使用。
 
-<p></br></p>
+```python
+import RPi.GPIO as GPIO
+import time
 
-<hr>
+GPIO.setmode(GPIO.BOARD)
+GPIO.setup(7, GPIO.OUT)
 
-<h3 id="4-code">4. 寫Code</h3>
+GPIO.output(7, GPIO.LOW)
+time.sleep(0.5)
+GPIO.output(7, GPIO.HIGH)
 
-<hr>
+GPIO.cleanup()
+```
 
-<p>最後就要來寫code，我這裡是使用NodeJS加上Python，因為用NodeJS setup web server很快速簡單，</br>
-然後用python控制GPIO也很簡單，所以就用這二種組合。</br>
-首先先寫Python來透過GPIO來開門，由於現在的Raspbian預設就有Rpi.GPIO，所以你可以直接使用。</p>
-<div class="highlight"><pre><code class="language-python" data-lang="python"><span></span><span class="kn">import</span> <span class="nn">RPi.GPIO</span> <span class="kn">as</span> <span class="nn">GPIO</span>
-<span class="kn">import</span> <span class="nn">time</span>
 
-<span class="n">GPIO</span><span class="o">.</span><span class="n">setmode</span><span class="p">(</span><span class="n">GPIO</span><span class="o">.</span><span class="n">BOARD</span><span class="p">)</span>
-<span class="n">GPIO</span><span class="o">.</span><span class="n">setup</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="n">GPIO</span><span class="o">.</span><span class="n">OUT</span><span class="p">)</span>
 
-<span class="n">GPIO</span><span class="o">.</span><span class="n">output</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="n">GPIO</span><span class="o">.</span><span class="n">LOW</span><span class="p">)</span>
-<span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>
-<span class="n">GPIO</span><span class="o">.</span><span class="n">output</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="n">GPIO</span><span class="o">.</span><span class="n">HIGH</span><span class="p">)</span>
+接著就來用NodeJS來建立Web Server，詳細的步驟就[參考上一篇](http://blog.kenyang.net/2016/09/06/how-to-create-a-telegram-bot)，
+如果建立完Web Server以後，我們得加裝另一個module，因為我們要call python script，
 
-<span class="n">GPIO</span><span class="o">.</span><span class="n">cleanup</span><span class="p">()</span>
-</code></pre></div>
-<p></br></p>
+```bash
+npm install --save python-shell
+```
 
-<p>接著就來用NodeJS來建立Web Server，詳細的步驟就<a href="http://blog.kenyang.net/2016/09/06/how-to-create-a-telegram-bot">參考上一篇</a>，</br>
-如果建立完Web Server以後，我們得加裝另一個module，因為我們要call python script，</p>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>npm install --save python-shell
-</code></pre></div>
-<p></br>
-接著就可以在index.js裡面加入下面的code，</p>
-<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="kr">const</span> <span class="nx">https</span>     <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s2">&quot;https&quot;</span><span class="p">);</span>
-<span class="kr">const</span> <span class="nx">express</span>   <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s2">&quot;express&quot;</span><span class="p">);</span>
-<span class="kr">const</span> <span class="nx">bodyParser</span>    <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;body-parser&#39;</span><span class="p">);</span>
-<span class="kr">const</span> <span class="nx">logger</span>        <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;morgan&#39;</span><span class="p">);</span>
-<span class="kr">const</span> <span class="nx">fs</span>            <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;fs&#39;</span><span class="p">);</span>
-<span class="kr">const</span> <span class="nx">request</span>     <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;request&#39;</span><span class="p">);</span>
-<span class="kr">const</span> <span class="nx">logStream</span>     <span class="o">=</span> <span class="nx">fs</span><span class="p">.</span><span class="nx">createWriteStream</span><span class="p">(</span><span class="s1">&#39;/var/log/bot/access.log&#39;</span><span class="p">,</span> <span class="p">{</span><span class="nx">flags</span><span class="o">:</span> <span class="s1">&#39;a&#39;</span><span class="p">});</span>
-<span class="kd">var</span> <span class="nx">PythonShell</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;python-shell&#39;</span><span class="p">);</span>
 
-<span class="p">....</span> <span class="nx">ignore</span> <span class="p">....</span>
+接著就可以在index.js裡面加入下面的code，
 
-<span class="k">if</span> <span class="p">(</span><span class="nx">cmd</span> <span class="o">==</span> <span class="s1">&#39;/open&#39;</span><span class="p">)</span> <span class="p">{</span>
-    <span class="nx">PythonShell</span><span class="p">.</span><span class="nx">run</span><span class="p">(</span><span class="s1">&#39;open.py&#39;</span><span class="p">,</span> <span class="p">{},</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">results</span><span class="p">)</span> <span class="p">{</span>
-        <span class="k">if</span> <span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="p">{</span>
-            <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">err</span><span class="p">);</span>
-         <span class="p">}</span>
-     <span class="p">});</span>
-<span class="p">}</span>
-</code></pre></div>
-<p></br>
-然後記得restart。</p>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>pm2 restart index
-</code></pre></div>
-<p></br></p>
+```javascript
+const https     = require("https");
+const express   = require("express");
+const bodyParser    = require('body-parser');
+const logger        = require('morgan');
+const fs            = require('fs');
+const request     = require('request');
+const logStream     = fs.createWriteStream('/var/log/bot/access.log', {flags: 'a'});
+var PythonShell = require('python-shell');
 
-<hr>
+.... ignore ....
 
-<h3 id="5-test">5. Test</h3>
+if (cmd == '/open') {
+    PythonShell.run('open.py', {}, function (err, results) {
+        if (err) {
+	        console.log(err);
+	     }
+	 });
+}
+```
 
-<hr>
 
-<p>完成上面的步驟以後，你就可以跟你的機器人講<code>/open</code>，他就會幫你開門了！</p>
+然後記得restart。
 
-<p><img src="/assets/2016-09-14-5.jpg" alt="Ticket"></p>
+```bash
+pm2 restart index
+```
 
-<p></font></p>
+
+
+---
+### 5. Test
+---
+
+完成上面的步驟以後，你就可以跟你的機器人講`/open`，他就會幫你開門了！
+
+![Ticket](/assets/2016-09-14-5.jpg)
+
+
+</font>
 
     </div>
 

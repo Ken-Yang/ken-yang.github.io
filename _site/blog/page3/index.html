@@ -307,40 +307,45 @@
       </div>
       </p>
       <div class="content" style="line-height: 28px;">
-        <p><font size="3"></p>
+        
+<font size="3">
 
-<p>大概一年多沒有寫Android了，最近發現好多不一樣了，</br>
-譬如說ActionBar變成AppBar..不過以前的ActionBar還能繼續用，</br>
-但還是得學一下怎麼用App bar跟上潮流。</p>
+大概一年多沒有寫Android了，最近發現好多不一樣了，
+譬如說ActionBar變成AppBar..不過以前的ActionBar還能繼續用，
+但還是得學一下怎麼用App bar跟上潮流。
 
-<p><a href="https://github.com/Ken-Yang/AndroidAppBar">Example Code on Github</a></p>
+[Example Code on Github] (https://github.com/Ken-Yang/AndroidAppBar)
 
-<p></br></p>
 
-<hr>
 
-<h3 id="1-create-new-project">1. Create new project</h3>
 
-<hr>
+---
+### 1. Create new project
+---
 
-<p>首先先建立一個新的project，然後選擇Empty activity。</p>
+首先先建立一個新的project，然後選擇Empty activity。
 
-<p></br></p>
 
-<hr>
 
-<h3 id="2-add-dependency">2. Add dependency</h3>
+---
+### 2. Add dependency
+---
 
-<hr>
+接著打開build.gradle，把appcompat加入dependency，
+不過如果你的Android Studio是新版的，就會自動幫你加入了。
 
-<p>接著打開build.gradle，把appcompat加入dependency，</br>
-不過如果你的Android Studio是新版的，就會自動幫你加入了。</p>
-<div class="highlight"><pre><code class="language-xml" data-lang="xml"><span></span>dependencies {
-    compile fileTree(dir: &#39;libs&#39;, include: [&#39;*.jar&#39;])
-    testCompile &#39;junit:junit:4.12&#39;
-    compile &#39;com.android.support:appcompat-v7:23.1.1&#39;
+```xml
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    testCompile 'junit:junit:4.12'
+    compile 'com.android.support:appcompat-v7:23.1.1'
 }
-</code></pre></div>
+```
+
+
+
+</font>
+
       </div>
       <footer>
         <p><a class="myButton" href="/2016/06/22/android-app-bartool-bar">read more &raquo;</a></p>
@@ -368,31 +373,34 @@
       </div>
       </p>
       <div class="content" style="line-height: 28px;">
-        <p><font size=3></p>
+        
+<p>&lt;font size=3&gt;</p>
 
-<p>這篇要講怎麼用Node.js建立一個HTTPS的server，如果你的certificate不是self-signed的，</br>
-那設定HTTPS並不難，產生CSR給CA provider，然後就會有certificate，把它放進去就好，</br>
-但如果是self-signed，那過程就有點麻煩，每次要弄的時候，都還是會有點忘記，所以乾脆把過程記錄下來好了。</br></p>
+<p>這篇要講怎麼用Node.js建立一個HTTPS的server，如果你的certificate不是self-signed的，&lt;/br&gt;<br />
+那設定HTTPS並不難，產生CSR給CA provider，然後就會有certificate，把它放進去就好，&lt;/br&gt;<br />
+但如果是self-signed，那過程就有點麻煩，每次要弄的時候，都還是會有點忘記，所以乾脆把過程記錄下來好了。&lt;/br&gt;</p>
 
-<p></br></p>
+<p>&lt;/br&gt;</p>
 
-<hr>
+<hr />
+<p>### 1. Creating a private key and CSR<br />
+—</p>
 
-<h3 id="1-creating-a-private-key-and-csr">1. Creating a private key and CSR</h3>
-
-<hr>
-
-<p>在create certificate之前，必須要先有<code>private key</code>以及<code>CSR</code> (certificate signing request)，</br>
+<p>在create certificate之前，必須要先有<code class="highlighter-rouge">private key</code>以及<code class="highlighter-rouge">CSR</code> (certificate signing request)，&lt;/br&gt;<br />
 所以我們要先generate出private key以及CSR。</p>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span><span class="c1"># generate private key</span>
-$ openssl genrsa -des3 -passout pass:kenyang -out server.pass.key <span class="m">2048</span>
-$ openssl rsa -passin pass:kenyang -in server.pass.key -out server.key
-$ rm server.pass.key
 
-<span class="c1"># generate csr</span>
-$ openssl req -new -key server.key -out server.csr
-</code></pre></div>
-<p></br></p>
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="c"># generate private key</span>
+<span class="gp">$ </span>openssl genrsa -des3 -passout pass:kenyang -out server.pass.key 2048
+<span class="gp">$ </span>openssl rsa -passin pass:kenyang -in server.pass.key -out server.key
+<span class="gp">$ </span>rm server.pass.key
+
+<span class="c"># generate csr</span>
+<span class="gp">$ </span>openssl req -new -key server.key -out server.csr
+</code></pre>
+</div>
+
+<p>&lt;/br&gt;</p>
+
 
       </div>
       <footer>
@@ -421,48 +429,55 @@ $ openssl req -new -key server.key -out server.csr
       </div>
       </p>
       <div class="content" style="line-height: 28px;">
-        <p><font size=3></p>
+        
+<p>&lt;font size=3&gt;</p>
 
-<p>Docker玩了一陣子，總覺得沒有玩一些container management的service好像少了點什麼，</br>
-剛好team裡用到<a href="http://kubernetes.io/docs/">Kubernetes</a>，所以這裡就記錄一下怎麼使用<a href="http://kubernetes.io/docs/">Kubernetes</a>。</br>
+<p>Docker玩了一陣子，總覺得沒有玩一些container management的service好像少了點什麼，&lt;/br&gt;<br />
+剛好team裡用到<a href="http://kubernetes.io/docs/">Kubernetes</a>，所以這裡就記錄一下怎麼使用<a href="http://kubernetes.io/docs/">Kubernetes</a>。&lt;/br&gt;<br />
 然後這篇會把Kubernetes架在Google Cloud Platform上面，所以還得去安裝Google Cloud SDK。</p>
 
-<p></br></p>
+<p>&lt;/br&gt;</p>
 
-<hr>
-
-<h3 id="1-downloading-kubernetes">1. Downloading Kubernetes</h3>
-
-<hr>
+<hr />
+<p>### 1. Downloading Kubernetes<br />
+—</p>
 
 <p>第一步驟要先安裝Kubernetes，安裝方式有好幾種，</p>
 
 <ol>
-<li>tarball解開</li>
-<li>Build from source</li>
-<li>Homebrew</li>
-<li>Remote shell script </li>
-<li>用Google Cloud SDK安裝</li>
+  <li>tarball解開</li>
+  <li>Build from source</li>
+  <li>Homebrew</li>
+  <li>Remote shell script</li>
+  <li>用Google Cloud SDK安裝</li>
 </ol>
 
 <p>各個的詳細步驟可以去<a href="http://kubernetes.io/docs/getting-started-guides/binary_release/">Kubernetes安裝頁面</a>看，我自己是選擇透過Google Cloud SDK來安裝，所以首先要先安裝Google Cloud SDK。</p>
 
-<p></br>
+<p>&lt;/br&gt;<br />
 <strong>安裝Google Cloud SDK</strong></p>
 
 <p>Google Cloud SDK這個tool讓你可以對Google Cloud Platform進行操作。安裝指令如下，Default installation path會在你的home目錄底下，</p>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ curl https://sdk.cloud.google.com <span class="p">|</span> bash
-</code></pre></div>
-<p></br>
-接著要restart shell和設定gcloud environment，<code>gcloud init</code>這個指令會彈出browser要你login，以及要你輸入default zone，我是選asia-east1-a。</p>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ <span class="nb">exec</span> -l <span class="nv">$SHELL</span>
-$ gcloud init
-</code></pre></div>
-<p></br>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>curl https://sdk.cloud.google.com | bash
+</code></pre>
+</div>
+<p>&lt;/br&gt;<br />
+接著要restart shell和設定gcloud environment，<code class="highlighter-rouge">gcloud init</code>這個指令會彈出browser要你login，以及要你輸入default zone，我是選asia-east1-a。</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span><span class="nb">exec</span> -l <span class="nv">$SHELL</span>
+<span class="gp">$ </span>gcloud init
+</code></pre>
+</div>
+<p>&lt;/br&gt;<br />
 <strong>安裝kubectl</strong></p>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ gcloud components install kubectl
-</code></pre></div>
-<p></br></p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>gcloud components install kubectl
+</code></pre>
+</div>
+
+<p>&lt;/br&gt;</p>
+
 
       </div>
       <footer>

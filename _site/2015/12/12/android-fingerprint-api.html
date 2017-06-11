@@ -347,45 +347,46 @@
       <span>12 December 2015</span>
     </div>
     <div class="content" style="line-height: 28px;">
-      <p><font size=3></p>
+      
+<p>&lt;font size=3&gt;</p>
 
-<p>Google在Android 6.0中，釋放了對<a href="http://developer.android.com/intl/zh-tw/reference/android/hardware/fingerprint/FingerprintManager.html">Fingerprint</a>操作的API，<br>
+<p>Google在Android 6.0中，釋放了對[Fingerprint] (http://developer.android.com/intl/zh-tw/reference/android/hardware/fingerprint/FingerprintManager.html)操作的API，  <br />
 而最近剛好也買了Nexus 6P，因此有了機會來玩看看。</p>
 
-<p></br></p>
+<p>&lt;/br&gt;</p>
 
-<hr>
+<hr />
+<p>### 1. AndroidManifest.xml<br />
+—</p>
 
-<h3 id="1-androidmanifest-xml">1. AndroidManifest.xml</h3>
+<p>首先要在<code class="highlighter-rouge">AndroidManifest.xml</code>中設定permission，</p>
 
-<hr>
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="nt">&lt;uses-permission</span> <span class="na">android:name=</span><span class="s">"android.permission.USE_FINGERPRINT"</span> <span class="nt">/&gt;</span>
+</code></pre>
+</div>
 
-<p>首先要在<code>AndroidManifest.xml</code>中設定permission，</p>
-<div class="highlight"><pre><code class="language-xml" data-lang="xml"><span></span><span class="nt">&lt;uses-permission</span> <span class="na">android:name=</span><span class="s">&quot;android.permission.USE_FINGERPRINT&quot;</span> <span class="nt">/&gt;</span>
-</code></pre></div>
-<p></br></p>
+<p>&lt;/br&gt;</p>
 
-<hr>
+<hr />
+<p>### 2. Check Requirement<br />
+—</p>
 
-<h3 id="2-check-requirement">2. Check Requirement</h3>
-
-<hr>
-
-<p>接著要檢查device上，是否有fingerprint reader，以及是否有設置了至少一枚fingerprint。下面這段code，主要檢查了三件事情：  </p>
+<p>接著要檢查device上，是否有fingerprint reader，以及是否有設置了至少一枚fingerprint。下面這段code，主要檢查了三件事情：</p>
 
 <ol>
-<li><strong>isKeyguardSecure</strong> : 是否有設定screen lock</li>
-<li><strong>isHardwareDetected</strong> : device是否有fingerprint reader</li>
-<li><strong>hasEnrolledFingerprints</strong> : 是否有設定至少一枚指紋</li>
+  <li><strong>isKeyguardSecure</strong> : 是否有設定screen lock</li>
+  <li><strong>isHardwareDetected</strong> : device是否有fingerprint reader</li>
+  <li><strong>hasEnrolledFingerprints</strong> : 是否有設定至少一枚指紋</li>
 </ol>
 
 <!--more-->
-<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="kd">private</span> <span class="n">KeyguardManager</span> <span class="n">km</span><span class="o">;</span>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="kd">private</span> <span class="n">KeyguardManager</span> <span class="n">km</span><span class="o">;</span>
 <span class="kd">private</span> <span class="n">FingerprintManager</span> <span class="n">fm</span><span class="o">;</span>
 <span class="kd">private</span> <span class="n">CancellationSignal</span> <span class="n">cancellationSignal</span><span class="o">;</span>
 
 <span class="nd">@Override</span>
-<span class="kd">protected</span> <span class="kt">void</span> <span class="nf">onCreate</span><span class="o">(</span><span class="n">Bundle</span> <span class="n">savedInstanceState</span><span class="o">)</span> <span class="o">{</span>
+<span class="kd">protected</span> <span class="kt">void</span> <span class="nf">onCreate</span><span class="p">(</span><span class="n">Bundle</span> <span class="n">savedInstanceState</span><span class="o">)</span> <span class="o">{</span>
     <span class="kd">super</span><span class="o">.</span><span class="na">onCreate</span><span class="o">(</span><span class="n">savedInstanceState</span><span class="o">);</span>
     <span class="n">setContentView</span><span class="o">(</span><span class="n">R</span><span class="o">.</span><span class="na">layout</span><span class="o">.</span><span class="na">activity_main</span><span class="o">);</span>
 
@@ -394,68 +395,72 @@
 
     <span class="k">if</span> <span class="o">(!</span><span class="n">km</span><span class="o">.</span><span class="na">isKeyguardSecure</span><span class="o">())</span> <span class="o">{</span>
        <span class="n">Toast</span><span class="o">.</span><span class="na">makeText</span><span class="o">(</span><span class="k">this</span><span class="o">,</span>
-                <span class="s">&quot;Secure lock screen hasn&#39;t set up.\n&quot;</span>
-                <span class="o">+</span> <span class="s">&quot;Go to &#39;Settings -&gt; Security -&gt; Fingerprint&#39; to set up a fingerprint&quot;</span><span class="o">,</span>
+                <span class="s">"Secure lock screen hasn't set up.\n"</span>
+                <span class="o">+</span> <span class="s">"Go to 'Settings -&gt; Security -&gt; Fingerprint' to set up a fingerprint"</span><span class="o">,</span>
                 <span class="n">Toast</span><span class="o">.</span><span class="na">LENGTH_LONG</span><span class="o">).</span><span class="na">show</span><span class="o">();</span>
         <span class="k">return</span><span class="o">;</span>
     <span class="o">}</span>
 
     <span class="k">if</span> <span class="o">(!</span><span class="n">isHardwareDetected</span><span class="o">())</span> <span class="o">{</span>
         <span class="n">Toast</span><span class="o">.</span><span class="na">makeText</span><span class="o">(</span><span class="k">this</span><span class="o">,</span>
-                <span class="s">&quot;No Fingerprint reader&quot;</span><span class="o">,</span>
+                <span class="s">"No Fingerprint reader"</span><span class="o">,</span>
                 <span class="n">Toast</span><span class="o">.</span><span class="na">LENGTH_LONG</span><span class="o">).</span><span class="na">show</span><span class="o">();</span>
         <span class="k">return</span><span class="o">;</span>
     <span class="o">}</span>
 
     <span class="k">if</span> <span class="o">(!</span><span class="n">fm</span><span class="o">.</span><span class="na">hasEnrolledFingerprints</span><span class="o">())</span> <span class="o">{</span>
         <span class="n">Toast</span><span class="o">.</span><span class="na">makeText</span><span class="o">(</span><span class="k">this</span><span class="o">,</span>
-                <span class="s">&quot;Go to &#39;Settings -&gt; Security -&gt; Fingerprint&#39; and register at least one fingerprint&quot;</span><span class="o">,</span>
+                <span class="s">"Go to 'Settings -&gt; Security -&gt; Fingerprint' and register at least one fingerprint"</span><span class="o">,</span>
                 <span class="n">Toast</span><span class="o">.</span><span class="na">LENGTH_LONG</span><span class="o">).</span><span class="na">show</span><span class="o">();</span>
         <span class="k">return</span><span class="o">;</span>
     <span class="o">}</span>
 <span class="o">}</span>
-</code></pre></div>
-<p></br></p>
+</code></pre>
+</div>
 
-<hr>
+<p>&lt;/br&gt;</p>
 
-<h3 id="3-authenticate">3. Authenticate</h3>
+<hr />
+<p>### 3. Authenticate<br />
+—</p>
 
-<hr>
+<p>如果通過上述的檢查之後，就可以透過<code class="highlighter-rouge">FingerprintManager</code>進行<code class="highlighter-rouge">Authenticate</code>的動作，method call為：</p>
 
-<p>如果通過上述的檢查之後，就可以透過<code>FingerprintManager</code>進行<code>Authenticate</code>的動作，method call為：</p>
-<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="kd">public</span> <span class="kt">void</span> <span class="nf">authenticate</span> <span class="o">(</span><span class="n">FingerprintManager</span><span class="o">.</span><span class="na">CryptoObject</span> <span class="n">crypto</span><span class="o">,</span> 
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="kd">public</span> <span class="kt">void</span> <span class="nf">authenticate</span> <span class="p">(</span><span class="n">FingerprintManager</span><span class="o">.</span><span class="na">CryptoObject</span> <span class="n">crypto</span><span class="o">,</span> 
                           <span class="n">CancellationSignal</span> <span class="n">cancel</span><span class="o">,</span> 
                           <span class="kt">int</span> <span class="n">flags</span><span class="o">,</span> 
                           <span class="n">FingerprintManager</span><span class="o">.</span><span class="na">AuthenticationCallback</span> <span class="n">callback</span><span class="o">,</span> 
                           <span class="n">Handler</span> <span class="n">handler</span><span class="o">)</span>
-</code></pre></div>
+</code></pre>
+</div>
 <p>一共要帶入5個參數，分別為：</p>
 
 <ol>
-<li><code>CryptoObject</code> : Android 6.0中crypto objects的wrapper class，可以透過它讓authenticate過程更為secure，但也可以不使用。</li>
-<li><code>CancellationSignal</code> : 用來Cancel <em>authenticate</em>的object</li>
-<li><code>flags</code> : 只是一個flag，且目前只能代入0</li>
-<li><code>AuthenticationCallback</code> : callback來接受authenticate成功與否，有三個callback method，
-
-<ul>
-<li>onAuthenticationError</li>
-<li>onAuthenticationFailed</li>
-<li>onAuthenticationSucceeded </li>
-</ul></li>
-<li><code>Handler</code> : optional的參數，如果有使用，FingerprintManager會透過它來傳遞訊息</li>
+  <li><code class="highlighter-rouge">CryptoObject</code> : Android 6.0中crypto objects的wrapper class，可以透過它讓authenticate過程更為secure，但也可以不使用。</li>
+  <li><code class="highlighter-rouge">CancellationSignal</code> : 用來Cancel <em>authenticate</em>的object</li>
+  <li><code class="highlighter-rouge">flags</code> : 只是一個flag，且目前只能代入0</li>
+  <li><code class="highlighter-rouge">AuthenticationCallback</code> : callback來接受authenticate成功與否，有三個callback method，
+    <ul>
+      <li>onAuthenticationError</li>
+      <li>onAuthenticationFailed</li>
+      <li>onAuthenticationSucceeded</li>
+    </ul>
+  </li>
+  <li><code class="highlighter-rouge">Handler</code> : optional的參數，如果有使用，FingerprintManager會透過它來傳遞訊息</li>
 </ol>
 
-<p></br></p>
+<p>&lt;/br&gt;</p>
 
 <p>了解參數以後就可以開始進行<strong>authenticate</strong>，</p>
-<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="nd">@Override</span>
-<span class="kd">protected</span> <span class="kt">void</span> <span class="nf">onCreate</span><span class="o">(</span><span class="n">Bundle</span> <span class="n">savedInstanceState</span><span class="o">)</span> <span class="o">{</span>
-    <span class="o">....</span> <span class="n">ignore</span> <span class="o">...</span>
-    <span class="n">startListening</span><span class="o">();</span>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>
+<span class="nd">@Override</span>
+<span class="kd">protected</span> <span class="kt">void</span> <span class="nf">onCreate</span><span class="p">(</span><span class="n">Bundle</span> <span class="n">savedInstanceState</span><span class="o">)</span> <span class="o">{</span>
+	<span class="o">....</span> <span class="n">ignore</span> <span class="o">...</span>
+	<span class="n">startListening</span><span class="o">();</span>
 <span class="o">}</span>
 
-<span class="kd">private</span> <span class="kt">void</span> <span class="nf">startListening</span><span class="o">()</span> <span class="o">{</span>
+<span class="kd">private</span> <span class="kt">void</span> <span class="nf">startListening</span><span class="p">(</span><span class="o">)</span> <span class="o">{</span>
 
     <span class="n">cancellationSignal</span> <span class="o">=</span> <span class="k">new</span> <span class="n">CancellationSignal</span><span class="o">();</span>
 
@@ -464,18 +469,18 @@
                     <span class="mi">0</span><span class="o">,</span>
                     <span class="k">new</span> <span class="n">FingerprintManager</span><span class="o">.</span><span class="na">AuthenticationCallback</span><span class="o">()</span> <span class="o">{</span>
                         <span class="nd">@Override</span>
-                        <span class="kd">public</span> <span class="kt">void</span> <span class="nf">onAuthenticationError</span><span class="o">(</span><span class="kt">int</span> <span class="n">errorCode</span><span class="o">,</span> <span class="n">CharSequence</span> <span class="n">errString</span><span class="o">)</span> <span class="o">{</span>
-                            <span class="n">Log</span><span class="o">.</span><span class="na">e</span><span class="o">(</span><span class="s">&quot;&quot;</span><span class="o">,</span> <span class="s">&quot;error &quot;</span> <span class="o">+</span> <span class="n">errorCode</span> <span class="o">+</span> <span class="s">&quot; &quot;</span> <span class="o">+</span> <span class="n">errString</span><span class="o">);</span>
+                        <span class="kd">public</span> <span class="kt">void</span> <span class="n">onAuthenticationError</span><span class="o">(</span><span class="kt">int</span> <span class="n">errorCode</span><span class="o">,</span> <span class="n">CharSequence</span> <span class="n">errString</span><span class="o">)</span> <span class="o">{</span>
+                            <span class="n">Log</span><span class="o">.</span><span class="na">e</span><span class="o">(</span><span class="s">""</span><span class="o">,</span> <span class="s">"error "</span> <span class="o">+</span> <span class="n">errorCode</span> <span class="o">+</span> <span class="s">" "</span> <span class="o">+</span> <span class="n">errString</span><span class="o">);</span>
                         <span class="o">}</span>
 
                         <span class="nd">@Override</span>
-                        <span class="kd">public</span> <span class="kt">void</span> <span class="nf">onAuthenticationFailed</span><span class="o">()</span> <span class="o">{</span>
-                            <span class="n">Log</span><span class="o">.</span><span class="na">e</span><span class="o">(</span><span class="s">&quot;&quot;</span><span class="o">,</span> <span class="s">&quot;onAuthenticationFailed&quot;</span><span class="o">);</span>
+                        <span class="kd">public</span> <span class="kt">void</span> <span class="n">onAuthenticationFailed</span><span class="o">()</span> <span class="o">{</span>
+                            <span class="n">Log</span><span class="o">.</span><span class="na">e</span><span class="o">(</span><span class="s">""</span><span class="o">,</span> <span class="s">"onAuthenticationFailed"</span><span class="o">);</span>
                         <span class="o">}</span>
 
                         <span class="nd">@Override</span>
-                        <span class="kd">public</span> <span class="kt">void</span> <span class="nf">onAuthenticationSucceeded</span><span class="o">(</span><span class="n">FingerprintManager</span><span class="o">.</span><span class="na">AuthenticationResult</span> <span class="n">result</span><span class="o">)</span> <span class="o">{</span>
-                            <span class="n">Log</span><span class="o">.</span><span class="na">i</span><span class="o">(</span><span class="s">&quot;&quot;</span><span class="o">,</span> <span class="s">&quot;onAuthenticationSucceeded&quot;</span><span class="o">);</span>
+                        <span class="kd">public</span> <span class="kt">void</span> <span class="n">onAuthenticationSucceeded</span><span class="o">(</span><span class="n">FingerprintManager</span><span class="o">.</span><span class="na">AuthenticationResult</span> <span class="n">result</span><span class="o">)</span> <span class="o">{</span>
+                            <span class="n">Log</span><span class="o">.</span><span class="na">i</span><span class="o">(</span><span class="s">""</span><span class="o">,</span> <span class="s">"onAuthenticationSucceeded"</span><span class="o">);</span>
                         <span class="o">}</span>
                     <span class="o">},</span>
                     <span class="kc">null</span><span class="o">);</span>
@@ -483,19 +488,21 @@
 <span class="o">}</span>
 
 <span class="nd">@Override</span>
-<span class="kd">public</span> <span class="kt">void</span> <span class="nf">onPause</span><span class="o">()</span> <span class="o">{</span>
+<span class="kd">public</span> <span class="kt">void</span> <span class="nf">onPause</span><span class="p">(</span><span class="o">)</span> <span class="o">{</span>
     <span class="kd">super</span><span class="o">.</span><span class="na">onPause</span><span class="o">();</span>
     <span class="n">cancellationSignal</span><span class="o">.</span><span class="na">cancel</span><span class="o">();</span>
     <span class="n">cancellationSignal</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
 <span class="o">}</span>
-</code></pre></div>
-<p></br></p>
+</code></pre>
+</div>
 
-<p>這樣就完成了一個簡單的example，但這example並沒有使用<code>CryptoObject</code>，所以如果你想要更安全一點，記得請加上<code>CryptoObject</code>。</p>
+<p>&lt;/br&gt;</p>
 
-<p></br></p>
+<p>這樣就完成了一個簡單的example，但這example並沒有使用<code class="highlighter-rouge">CryptoObject</code>，所以如果你想要更安全一點，記得請加上<code class="highlighter-rouge">CryptoObject</code>。</p>
 
-<p></font></p>
+<p>&lt;/br&gt;</p>
+
+<p>&lt;/font&gt;</p>
 
     </div>
 
