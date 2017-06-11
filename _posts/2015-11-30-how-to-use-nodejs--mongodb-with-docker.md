@@ -7,7 +7,7 @@ tags: [docker, nodejs, mongodb, express, mongoose]
 ---
 {% include JB/setup %}
 
-<font size=3>
+
 
 這篇會講如何在Docker上部署一個NodeJS+MongoDB的application，  
 所以會分二個部分來講，
@@ -243,4 +243,3 @@ $ db.students.find()
 
 
 
-</font>

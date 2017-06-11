@@ -6,7 +6,7 @@ category:
 tags: []
 ---
 {% include JB/setup %}
-<font size="3">
+
 
 Node.js updates quickly. Fortunately, there are a ton of tools for updating Node.js easily.
 
@@ -53,4 +53,3 @@ $ n
 
 
 
-</font>

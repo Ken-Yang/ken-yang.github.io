@@ -7,7 +7,7 @@ tags: [gce,gke, docker, container, kubernetes]
 ---
 {% include JB/setup %}
 
-<font size=3>
+
 
 Docker玩了一陣子，總覺得沒有玩一些container management的service好像少了點什麼，</br>
 剛好team裡用到[Kubernetes](http://kubernetes.io/docs/)，所以這裡就記錄一下怎麼使用[Kubernetes](http://kubernetes.io/docs/)。</br>
@@ -334,4 +334,3 @@ $ gcloud container clusters delete cluster-1
 
 
  
-</font>

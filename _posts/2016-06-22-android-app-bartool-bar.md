@@ -7,7 +7,7 @@ tags: [Android, actionbar, appbar, toolbar, meterial design]
 ---
 {% include JB/setup %}
 
-<font size="3">
+
 
 大概一年多沒有寫Android了，最近發現好多不一樣了，</br>
 譬如說ActionBar變成AppBar..不過以前的ActionBar還能繼續用，</br>
@@ -171,4 +171,3 @@ protected void onCreate(Bundle savedInstanceState) {
 </br></br></br></br>
 
 
-</font>

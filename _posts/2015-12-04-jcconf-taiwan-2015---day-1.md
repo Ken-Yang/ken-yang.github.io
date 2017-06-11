@@ -7,7 +7,7 @@ tags: [JCConf, java]
 ---
 {% include JB/setup %}
 
-<font size=3>
+
 
 
 ![Ticket]({{site.url}}/assets/2015-12-04-ticket.jpg)
@@ -251,4 +251,3 @@ thread缺點
 
 
 
-</font>

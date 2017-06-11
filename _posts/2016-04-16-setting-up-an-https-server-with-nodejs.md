@@ -7,7 +7,7 @@ tags: [node.js, ssl, csr, nodejs]
 ---
 {% include JB/setup %}
 
-<font size=3>
+
 
 這篇要講怎麼用Node.js建立一個HTTPS的server，如果你的certificate不是self-signed的，</br>
 那設定HTTPS並不難，產生CSR給CA provider，然後就會有certificate，把它放進去就好，</br>
@@ -93,4 +93,3 @@ https.createServer(SERVER_CONFIG, app)
 </br>
 </br>
 
-</font>

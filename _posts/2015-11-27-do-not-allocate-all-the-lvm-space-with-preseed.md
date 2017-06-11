@@ -7,7 +7,7 @@ tags: [linux,ubuntu,preseed,lvm,lvresize]
 ---
 {% include JB/setup %}
 
-<font size=3>
+
 使用Preseed file分割LVM時，  
 並無法做到只使用某部分的VG就好，  
 舉例來說，假設你有一個100G的硬碟，    
@@ -74,4 +74,3 @@ sed -i '/to_be_free/d' /target/etc/fstab ; \
   
 
 
-</font>

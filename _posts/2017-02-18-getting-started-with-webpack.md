@@ -7,7 +7,7 @@ tags: [webpack,loader]
 ---
 {% include JB/setup %}
 
-<font size="3">
+
 
 最近在看Vue.js，很多文章都是搭配著Webpack來說明，所以也順便研究了一下webpack，
 這篇會說明[webpack](https://webpack.js.org/)的優點、以及用途。
@@ -352,4 +352,3 @@ webpack就先講到這了，有進階應用的話再來補充。
 
 
 
-</font>

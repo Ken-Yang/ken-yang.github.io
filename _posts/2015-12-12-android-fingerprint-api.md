@@ -7,7 +7,7 @@ tags: [android, fingerprint]
 ---
 {% include JB/setup %}
 
-<font size=3>
+
 
 Google在Android 6.0中，釋放了對[Fingerprint] (http://developer.android.com/intl/zh-tw/reference/android/hardware/fingerprint/FingerprintManager.html)操作的API，  
 而最近剛好也買了Nexus 6P，因此有了機會來玩看看。
@@ -163,4 +163,3 @@ public void onPause() {
 
 
 
-</font>

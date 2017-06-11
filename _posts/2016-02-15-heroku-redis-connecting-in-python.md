@@ -7,7 +7,7 @@ tags: [heroku, redis]
 ---
 {% include JB/setup %}
 
-<font size=3>
+
 
 這篇要講怎麼在Heroku上，使用它的[Heroku Redis](https://devcenter.heroku.com/articles/heroku-redis)，  
 大致上分為三個步驟，分別為安裝，配置，寫code。
@@ -98,4 +98,3 @@ def set():
 $ heroku config:get REDIS_URL -s  >> .env
 $ heroku local web
 ```
-</font>

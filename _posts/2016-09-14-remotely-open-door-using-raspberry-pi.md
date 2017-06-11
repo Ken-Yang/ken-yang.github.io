@@ -7,7 +7,7 @@ tags: [raspberry, pi, telegram, bot]
 ---
 {% include JB/setup %}
 
-<font size="3">
+
 
 由於上一篇寫了一個Telegram Bot，最近就在幫它加feature，
 
@@ -144,4 +144,3 @@ pm2 restart index
 ![Ticket]({{site.url}}/assets/2016-09-14-5.jpg)
 
 
-</font>

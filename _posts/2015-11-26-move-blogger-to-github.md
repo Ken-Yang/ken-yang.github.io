@@ -9,7 +9,7 @@ tags:
 - jekyll
 ---
 
-<font size=3>
+
 最近一直很想從Google Blogger中離家出走，因為在blogger寫筆記實在太麻煩了，  
 每一個筆記的format每次都調得好累，  
 且我很常在local寫一份markdown，  
@@ -290,7 +290,7 @@ jekyll也有內建analytics的功能，其實跟上面的comment system差不多
 以及在目錄底下建立一個名稱為`CNAME`的file，填入你的domain就好了。
 
 
-</font>
+
 
 
 

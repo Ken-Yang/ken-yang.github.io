@@ -7,7 +7,7 @@ tags: []
 ---
 {% include JB/setup %}
 
-<font size="3">
+
 
 之前有講過[Kafka的用途以及如何安裝](http://blog.kenyang.net/2015/06/25/apache-kafka-distributed-messaging)，這篇會講如何用`Node.js`去連結`Kafka`，至於安裝Kafka的部分就請去[上一篇](http://blog.kenyang.net/2015/06/25/apache-kafka-distributed-messaging)來看。
 
@@ -153,4 +153,3 @@ fi
 
 
 
-</font>

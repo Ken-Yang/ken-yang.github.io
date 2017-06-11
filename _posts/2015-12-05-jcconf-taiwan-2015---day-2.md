@@ -7,7 +7,7 @@ tags: [JCConf, java]
 ---
 {% include JB/setup %}
 
-<font size=3>
+
 
 這篇只是紀錄Java Community Conference 2015的第二天筆記，  
 今天聽了以下幾個session，
@@ -309,4 +309,3 @@ Jserv一樣講得很專業，但真的是不同領域，幾乎都聽不懂。
 
 
 
-</font>

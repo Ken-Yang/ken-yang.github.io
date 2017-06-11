@@ -7,7 +7,7 @@ tags: [iSCSI, ubuntu]
 ---
 {% include JB/setup %}
 
-<font size=3>
+
 這篇會介紹如何在Ubuntu上，建立一個iSCSI Target Server，  
 提供給別人測試使用。
 
@@ -95,5 +95,5 @@ $ tgtadm --mode account --op bind --tid 1 --user safesync
 $ tgtadm --lld iscsi --mode target --op show
 ```
 
-</font>
+
 

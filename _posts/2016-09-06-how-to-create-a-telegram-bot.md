@@ -6,7 +6,7 @@ category:
 tags: []
 ---
 {% include JB/setup %}
-<font size="3">
+
 
 今天看到一個朋友寫了FacebookBot，還整了AWS Lambda、斷詞API，突然感到很興奮，</br>
 但我沒打算花太多時間在Bot上，只打算做一個簡單的資訊查詢的bot，</br>
@@ -202,4 +202,3 @@ Set webhook成功以後，就可以跟你的bot進行互動測試了。
 ![Ticket]({{site.url}}/assets/2016-09-06-test.png)
 
 
-</font>

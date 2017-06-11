@@ -370,4 +370,3 @@ SELECT id FROM t PARTITION (p0sp1);
 
 
 
-</font>

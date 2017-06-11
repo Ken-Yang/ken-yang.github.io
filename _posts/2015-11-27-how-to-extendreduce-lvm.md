@@ -6,7 +6,7 @@ category:
 tags: [linux, LVM, PV, VG, PE, lvm, physical volume, volume group, physical extent]
 ---
 {% include JB/setup %}
-<font size=3>
+
 
 這篇算是延續[上一篇](http://blog.kenyang.net/2015/11/27/do-not-allocate-all-the-lvm-space-with-preseed/)的主題，假設VG裡面還有free space尚未用到，  
 那麼過一段時間以後，該怎麼把它拿出來用?  
@@ -218,4 +218,3 @@ Filesystem                  Size  Used Avail Use% Mounted on
 
 
 
-</font>

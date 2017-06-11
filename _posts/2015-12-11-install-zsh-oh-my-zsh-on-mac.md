@@ -7,7 +7,7 @@ tags: []
 ---
 {% include JB/setup %}
 
-<font size=3>
+
 
 今天把mac上面的default shell換成`zsh`，其實主要是看上了`oh-my-zsh`，所以才想換成zsh。  
 過程有點複雜，所以還是紀錄一下怎麼做。
@@ -143,4 +143,3 @@ PROMPT='%{%f%b%k%}$(build_prompt) '
 可以看到我把`prompt_status`就註解掉，因為我不想要prompt上有icon出現。
 
 
-</font>

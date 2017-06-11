@@ -8,7 +8,7 @@ published: false
 ---
 {% include JB/setup %}
 
-<font size=3>
+
 
 ---
 ### 1. Opening: iThome副總編輯
@@ -304,4 +304,3 @@ ZSH_THEME="agnoster"
 
 
 
-</font>
