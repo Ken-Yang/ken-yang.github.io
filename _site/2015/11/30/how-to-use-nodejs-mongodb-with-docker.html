@@ -355,12 +355,12 @@
 <li>在Docker上部署NodeJS+Express</li>
 </ol>
 
-<h3 id="1-在docker上部署mongodb">1. 在Docker上部署MongoDB</h3>
+<h3 id="1-docker-mongodb">1. 在Docker上部署MongoDB</h3>
 
 <p>要在Docker上部署MongoDB，首先要先在local machine上建立一個folder，<br>
 這個folder是待會要mapping到container裡面的volume，<br>
 然後MongoDB上的data都會存在這個volume上。</p>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>mkdir ~/monogo-data
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ mkdir ~/monogo-data
 </code></pre></div>
 <p></br></p>
 
@@ -369,8 +369,8 @@
 <hr>
 
 <p>接著就可以把MongoDB的image抓下來以及run。  </p>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>docker pull mongo:latest
-<span class="nv">$ </span>docker run -v ~/mongo-data:/data <span class="se">\ </span>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ docker pull mongo:latest
+$ docker run -v ~/mongo-data:/data <span class="se">\ </span>
              --name ken-mongo <span class="se">\</span>
              -d <span class="se">\</span>
              mongo <span class="se">\</span>
@@ -396,19 +396,19 @@
 因為第一種方法，待會會透過NodeJS的container來示範。<br>
 我們透過<code>exec</code>，然後用參數<code>-it</code>與ken-mongo進行互動，<br>
 進去以後在再試試看create db以及新增一筆資料至table student之中。</p>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>docker <span class="nb">exec</span> -it ken-mongo bash
-<span class="nv">$ </span>mongo
-<span class="nv">$ </span>use school
-<span class="nv">$ </span>db.student.insert<span class="o">({</span><span class="s2">&quot;name&quot;</span>: <span class="s2">&quot;ken&quot;</span><span class="o">})</span>
-<span class="nv">$ </span>db.student.find<span class="o">()</span>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ docker <span class="nb">exec</span> -it ken-mongo bash
+$ mongo
+$ use school
+$ db.student.insert<span class="o">({</span><span class="s2">&quot;name&quot;</span>: <span class="s2">&quot;ken&quot;</span><span class="o">})</span>
+$ db.student.find<span class="o">()</span>
 </code></pre></div>
 <p></br></p>
 
-<h3 id="2-在docker上部署nodejs-express">2. 在Docker上部署NodeJS+Express</h3>
+<h3 id="2-docker-nodejs-express">2. 在Docker上部署NodeJS+Express</h3>
 
 <p>首先先建立一個folder，用來放置source code以及json等檔案。</p>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>mkdir <span class="nb">test</span>-app
-<span class="nv">$ </span><span class="nb">cd test</span>-app
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ mkdir test-app
+$ <span class="nb">cd</span> test-app
 </code></pre></div>
 <p></br></p>
 
@@ -418,7 +418,7 @@
 
 <p>接著在<code>test-app</code>這個folder底下，建立一個<code>package.json</code>，<br>
 <code>package.json</code>是用來定義這個app的dependcies以及一些基本資料。  </p>
-<div class="highlight"><pre><code class="language-json" data-lang="json"><span class="p">{</span>
+<div class="highlight"><pre><code class="language-json" data-lang="json"><span></span><span class="p">{</span>
   <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;node-centos&quot;</span><span class="p">,</span>
   <span class="nt">&quot;private&quot;</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
   <span class="nt">&quot;version&quot;</span><span class="p">:</span> <span class="s2">&quot;0.0.1&quot;</span><span class="p">,</span>
@@ -446,7 +446,7 @@
 
 <p>接著一樣在<code>test-app</code>底下，建立一個<code>Schema.js</code>，<br>
 <code>Schema.js</code>是用來定義你的MongoDB的schema。</p>
-<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">mongoose</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span> <span class="s1">&#39;mongoose&#39;</span> <span class="p">);</span>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="kd">var</span> <span class="nx">mongoose</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span> <span class="s1">&#39;mongoose&#39;</span> <span class="p">);</span>
 <span class="kd">var</span> <span class="nx">Schema</span>   <span class="o">=</span> <span class="nx">mongoose</span><span class="p">.</span><span class="nx">Schema</span><span class="p">;</span>
 
 <span class="kd">var</span> <span class="nx">Student</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Schema</span><span class="p">({</span>
@@ -463,7 +463,7 @@
 
 <p>接著一樣在<code>test-app</code>底下，建立一個<code>index.js</code>，<br>
 <code>index.js</code>就是待會這個app的進入點。  </p>
-<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">express</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;express&#39;</span><span class="p">);</span>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="kd">var</span> <span class="nx">express</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;express&#39;</span><span class="p">);</span>
 <span class="kd">var</span> <span class="nx">mongoose</span><span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;mongoose&#39;</span><span class="p">);</span>
 <span class="nx">require</span><span class="p">(</span> <span class="s1">&#39;./schema&#39;</span> <span class="p">);</span>
 
@@ -512,7 +512,7 @@
 
 <p>接著建立<code>DockerFile</code>，<br>
 <code>DockerFile</code>就像是<code>makefile</code>一樣，用來定義如何build這個image。</p>
-<div class="highlight"><pre><code class="language-text" data-lang="text">FROM    centos:centos6
+<div class="highlight"><pre><code class="language-text" data-lang="text"><span></span>FROM    centos:centos6
 
 # Enable Extra Packages for Enterprise Linux (EPEL) for CentOS
 RUN     yum install -y epel-release
@@ -537,21 +537,21 @@ CMD [&quot;node&quot;, &quot;/src/index.js&quot;]
 
 <p></br></p>
 
-<h4 id="build-image-amp-run">Build image &amp; Run</h4>
+<h4 id="build-image-run">Build image &amp; Run</h4>
 
 <hr>
 
 <p>有了<code>DockerFile</code>以後，就可以來build以及run了。</p>
-<div class="highlight"><pre><code class="language-text" data-lang="text">$ docker build -t ken-yang/centos-nodejs:v1 .
+<div class="highlight"><pre><code class="language-text" data-lang="text"><span></span>$ docker build -t ken-yang/centos-nodejs:v1 .
 </code></pre></div>
 <p></br>
 Build完以後，就可以用下面的指令去把container run起來。<br>
 注意<code>--link ken-mongo:db</code>，<br>
 意思就是把現在正在running的<code>ken-mongo</code>與現在這個新的container連起來。<br>
 以及給它一個alias <code>db</code>。</p>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>docker run -d <span class="se">\</span>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ docker run -d <span class="se">\</span>
              --name ken-node <span class="se">\</span>
-             -p 80:8080 <span class="se">\</span>
+             -p <span class="m">80</span>:8080 <span class="se">\</span>
              --link ken-mongo:db <span class="se">\</span>
              ken-yang/centos-nodejs:v1
 </code></pre></div>
@@ -562,12 +562,12 @@ Build完以後，就可以用下面的指令去把container run起來。<br>
 <hr>
 
 <p>最後用<code>curl</code>來發request測試，</p>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>curl -X POST -d <span class="s1">&#39;name=kenyang&#39;</span> 192.168.99.100/insert
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ curl -X POST -d <span class="s1">&#39;name=kenyang&#39;</span> <span class="m">192</span>.168.99.100/insert
 </code></pre></div>
 <p>然後可以再去看是否有新增成功，</p>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>docker -exec -it ken-mongo bash
-<span class="nv">$ </span>mongo
-<span class="nv">$ </span>db.students.find<span class="o">()</span>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ docker -exec -it ken-mongo bash
+$ mongo
+$ db.students.find<span class="o">()</span>
 </code></pre></div>
 <p></font></p>
 

@@ -298,6 +298,67 @@
     </div>
     <!-- This loops through the paginated posts -->
     
+      <h1><a style="color: #F22430" href="/2016/06/22/android-app-bartool-bar">Android: App bar/Tool bar</a></h1>
+      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
+      <p class="author">
+      <div class="date">
+        <span>22 June 2016</span>
+      </div>
+      </p>
+      <div class="content" style="line-height: 28px;">
+        <p><font size="3"></p>
+
+<p>大概一年多沒有寫Android了，最近發現好多不一樣了，</br>
+譬如說ActionBar變成AppBar..不過以前的ActionBar還能繼續用，</br>
+但還是得學一下怎麼用App bar跟上潮流。</p>
+
+<p><a href="https://github.com/Ken-Yang/AndroidAppBar">Example Code on Github</a></p>
+
+<p></br></p>
+
+<hr>
+
+<h3 id="1-create-new-project">1. Create new project</h3>
+
+<hr>
+
+<p>首先先建立一個新的project，然後選擇Empty activity。</p>
+
+<p></br></p>
+
+<hr>
+
+<h3 id="2-add-dependency">2. Add dependency</h3>
+
+<hr>
+
+<p>接著打開build.gradle，把appcompat加入dependency，</br>
+不過如果你的Android Studio是新版的，就會自動幫你加入了。</p>
+<div class="highlight"><pre><code class="language-xml" data-lang="xml"><span></span>dependencies {
+    compile fileTree(dir: &#39;libs&#39;, include: [&#39;*.jar&#39;])
+    testCompile &#39;junit:junit:4.12&#39;
+    compile &#39;com.android.support:appcompat-v7:23.1.1&#39;
+}
+</code></pre></div>
+      </div>
+      <footer>
+        <p><a class="myButton" href="/2016/06/22/android-app-bartool-bar">read more &raquo;</a></p>
+        <div>
+          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- ken on github -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3783438370424072"
+     data-ad-slot="1516206098"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+        </div>
+      </footer>
+      <hr>
+    
       <h1><a style="color: #F22430" href="/2016/04/16/setting-up-an-https-server-with-nodejs">Setting up an HTTPS server with Node.js</a></h1>
       <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
       <p class="author">
@@ -322,13 +383,13 @@
 
 <p>在create certificate之前，必須要先有<code>private key</code>以及<code>CSR</code> (certificate signing request)，</br>
 所以我們要先generate出private key以及CSR。</p>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="c"># generate private key</span>
-<span class="nv">$ </span>openssl genrsa -des3 -passout pass:kenyang -out server.pass.key 2048
-<span class="nv">$ </span>openssl rsa -passin pass:kenyang -in server.pass.key -out server.key
-<span class="nv">$ </span>rm server.pass.key
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span><span class="c1"># generate private key</span>
+$ openssl genrsa -des3 -passout pass:kenyang -out server.pass.key <span class="m">2048</span>
+$ openssl rsa -passin pass:kenyang -in server.pass.key -out server.key
+$ rm server.pass.key
 
-<span class="c"># generate csr</span>
-<span class="nv">$ </span>openssl req -new -key server.key -out server.csr
+<span class="c1"># generate csr</span>
+$ openssl req -new -key server.key -out server.csr
 </code></pre></div>
 <p></br></p>
 
@@ -389,85 +450,22 @@
 <strong>安裝Google Cloud SDK</strong></p>
 
 <p>Google Cloud SDK這個tool讓你可以對Google Cloud Platform進行操作。安裝指令如下，Default installation path會在你的home目錄底下，</p>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>curl https://sdk.cloud.google.com <span class="p">|</span> bash
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ curl https://sdk.cloud.google.com <span class="p">|</span> bash
 </code></pre></div>
 <p></br>
 接著要restart shell和設定gcloud environment，<code>gcloud init</code>這個指令會彈出browser要你login，以及要你輸入default zone，我是選asia-east1-a。</p>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span><span class="nb">exec</span> -l <span class="nv">$SHELL</span>
-<span class="nv">$ </span>gcloud init
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ <span class="nb">exec</span> -l <span class="nv">$SHELL</span>
+$ gcloud init
 </code></pre></div>
 <p></br>
 <strong>安裝kubectl</strong></p>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>gcloud components install kubectl
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ gcloud components install kubectl
 </code></pre></div>
 <p></br></p>
 
       </div>
       <footer>
         <p><a class="myButton" href="/2016/04/07/getting-started-with-kubernetes">read more &raquo;</a></p>
-        <div>
-          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<!-- ken on github -->
-<ins class="adsbygoogle"
-     style="display:block"
-     data-ad-client="ca-pub-3783438370424072"
-     data-ad-slot="1516206098"
-     data-ad-format="auto"></ins>
-<script>
-(adsbygoogle = window.adsbygoogle || []).push({});
-</script>
-
-        </div>
-      </footer>
-      <hr>
-    
-      <h1><a style="color: #F22430" href="/2016/02/15/heroku-redis-connecting-in-python">Heroku Redis: Connecting in Python</a></h1>
-      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
-      <p class="author">
-      <div class="date">
-        <span>15 February 2016</span>
-      </div>
-      </p>
-      <div class="content" style="line-height: 28px;">
-        <p><font size=3></p>
-
-<p>這篇要講怎麼在Heroku上，使用它的<a href="https://devcenter.heroku.com/articles/heroku-redis">Heroku Redis</a>，<br>
-大致上分為三個步驟，分別為安裝，配置，寫code。</p>
-
-<p></br></p>
-
-<hr>
-
-<h3 id="1-installing-cli">1. Installing CLI</h3>
-
-<hr>
-
-<p>第一步驟是要先安裝heroku-redis的command line tools，
-但如果你不想要用command line，你也可以至heroku的後台裡面的Add-ons加一台redis。</p>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>heroku plugins:install heroku-redis
-</code></pre></div>
-<p></br></p>
-
-<hr>
-
-<h3 id="2-provisioning-the-add-on">2. Provisioning the add-on</h3>
-
-<hr>
-
-<p>接著要配置一台Redis server，有二個比較特別的參數，</p>
-
-<ol>
-<li>hobby-dev: 這個是這台server的<a href="http://elements.heroku.com/addons/heroku-redis">Plan &amp; Pricing</a>，hobby-dev是免費的。</li>
-<li>sushi: 你的heroku app name</li>
-</ol>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>heroku addons:create heroku-redis:hobby-dev -a sushi
-</code></pre></div>
-<p></br>
-當你成功配置一台redis以後，你可以透過下面的指令找到該台redis URL，</p>
-
-      </div>
-      <footer>
-        <p><a class="myButton" href="/2016/02/15/heroku-redis-connecting-in-python">read more &raquo;</a></p>
         <div>
           <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 <!-- ken on github -->

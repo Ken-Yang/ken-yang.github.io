@@ -298,6 +298,69 @@
     </div>
     <!-- This loops through the paginated posts -->
     
+      <h1><a style="color: #F22430" href="/2016/02/15/heroku-redis-connecting-in-python">Heroku Redis: Connecting in Python</a></h1>
+      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
+      <p class="author">
+      <div class="date">
+        <span>15 February 2016</span>
+      </div>
+      </p>
+      <div class="content" style="line-height: 28px;">
+        <p><font size=3></p>
+
+<p>這篇要講怎麼在Heroku上，使用它的<a href="https://devcenter.heroku.com/articles/heroku-redis">Heroku Redis</a>，<br>
+大致上分為三個步驟，分別為安裝，配置，寫code。</p>
+
+<p></br></p>
+
+<hr>
+
+<h3 id="1-installing-cli">1. Installing CLI</h3>
+
+<hr>
+
+<p>第一步驟是要先安裝heroku-redis的command line tools，
+但如果你不想要用command line，你也可以至heroku的後台裡面的Add-ons加一台redis。</p>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ heroku plugins:install heroku-redis
+</code></pre></div>
+<p></br></p>
+
+<hr>
+
+<h3 id="2-provisioning-the-add-on">2. Provisioning the add-on</h3>
+
+<hr>
+
+<p>接著要配置一台Redis server，有二個比較特別的參數，</p>
+
+<ol>
+<li>hobby-dev: 這個是這台server的<a href="http://elements.heroku.com/addons/heroku-redis">Plan &amp; Pricing</a>，hobby-dev是免費的。</li>
+<li>sushi: 你的heroku app name</li>
+</ol>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ heroku addons:create heroku-redis:hobby-dev -a sushi
+</code></pre></div>
+<p></br>
+當你成功配置一台redis以後，你可以透過下面的指令找到該台redis URL，</p>
+
+      </div>
+      <footer>
+        <p><a class="myButton" href="/2016/02/15/heroku-redis-connecting-in-python">read more &raquo;</a></p>
+        <div>
+          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- ken on github -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3783438370424072"
+     data-ad-slot="1516206098"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+        </div>
+      </footer>
+      <hr>
+    
       <h1><a style="color: #F22430" href="/2015/12/12/android-fingerprint-api">Android Fingerprint API</a></h1>
       <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
       <p class="author">
@@ -320,7 +383,7 @@
 <hr>
 
 <p>首先要在<code>AndroidManifest.xml</code>中設定permission，</p>
-<div class="highlight"><pre><code class="language-xml" data-lang="xml"><span class="nt">&lt;uses-permission</span> <span class="na">android:name=</span><span class="s">&quot;android.permission.USE_FINGERPRINT&quot;</span> <span class="nt">/&gt;</span>
+<div class="highlight"><pre><code class="language-xml" data-lang="xml"><span></span><span class="nt">&lt;uses-permission</span> <span class="na">android:name=</span><span class="s">&quot;android.permission.USE_FINGERPRINT&quot;</span> <span class="nt">/&gt;</span>
 </code></pre></div>
 <p></br></p>
 
@@ -379,56 +442,15 @@
 <hr>
 
 <p>由於mac預設就有zsh了，所以不需要安裝，只需要把default shell改成zsh即可。</p>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>chsh -s /bin/zsh
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ chsh -s /bin/zsh
 </code></pre></div>
 <p></br>
 接著就安裝<code>oh-my-zsh</code>，</p>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>curl -L https://github.com/robbyrussell/oh-my-zsh/raw/master/tools/install.sh <span class="p">|</span> sh
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ curl -L https://github.com/robbyrussell/oh-my-zsh/raw/master/tools/install.sh <span class="p">|</span> sh
 </code></pre></div>
       </div>
       <footer>
         <p><a class="myButton" href="/2015/12/11/install-zsh-oh-my-zsh-on-mac">read more &raquo;</a></p>
-        <div>
-          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<!-- ken on github -->
-<ins class="adsbygoogle"
-     style="display:block"
-     data-ad-client="ca-pub-3783438370424072"
-     data-ad-slot="1516206098"
-     data-ad-format="auto"></ins>
-<script>
-(adsbygoogle = window.adsbygoogle || []).push({});
-</script>
-
-        </div>
-      </footer>
-      <hr>
-    
-      <h1><a style="color: #F22430" href="/2015/12/05/jcconf-taiwan-2015-day-2">JCConf Taiwan 2015   Day 2</a></h1>
-      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
-      <p class="author">
-      <div class="date">
-        <span>05 December 2015</span>
-      </div>
-      </p>
-      <div class="content" style="line-height: 28px;">
-        <p><font size=3></p>
-
-<p>這篇只是紀錄Java Community Conference 2015的第二天筆記，<br>
-今天聽了以下幾個session，</p>
-
-<ol>
-<li>阿里 JVM 的工作方向</li>
-<li>Universal Scala<br></li>
-<li>Deploy your own Spark cluster in 4 minutes using sbt</li>
-<li>Immutable Infrastructure：觀念與實作 </li>
-<li>JDK8 JIT 行為和效能分析</li>
-<li>自己的JVM自己救 - 解救 OOM 實務經驗談 </li>
-</ol>
-
-      </div>
-      <footer>
-        <p><a class="myButton" href="/2015/12/05/jcconf-taiwan-2015-day-2">read more &raquo;</a></p>
         <div>
           <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 <!-- ken on github -->

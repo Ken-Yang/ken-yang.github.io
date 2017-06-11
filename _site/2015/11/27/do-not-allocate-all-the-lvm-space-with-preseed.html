@@ -350,7 +350,7 @@
 並無法做到只使用某部分的VG就好，<br>
 舉例來說，假設你有一個100G的硬碟，<br>
 然後preseed file如下，</p>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash">d-i partman-auto/expert_recipe string  <span class="se">\</span>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>d-i partman-auto/expert_recipe string  <span class="se">\</span>
       boot-root ::                                                  <span class="se">\</span>
               <span class="m">20480</span> <span class="m">10</span> <span class="m">20480</span> ext4                                   <span class="se">\</span>
                       <span class="nv">$lvmok</span><span class="o">{}</span> lv_name<span class="o">{</span> root <span class="o">}</span> <span class="nv">$defaultignore</span><span class="o">{</span> <span class="o">}</span>    <span class="se">\</span>
@@ -379,7 +379,7 @@
 然後把所有的free space都指派給<code>to_be_free</code>，<br>
 最後在<code>late_command</code>裡，用<code>lvremove</code>把<code>to_be_free</code>砍掉，<br>
 這樣就可以做到把某部分space歸還了。  </p>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash">d-i partman-auto/expert_recipe string  <span class="se">\</span>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>d-i partman-auto/expert_recipe string  <span class="se">\</span>
       boot-root ::                                                  <span class="se">\</span>
               <span class="m">20480</span> <span class="m">10</span> <span class="m">20480</span> ext4                                   <span class="se">\</span>
                       <span class="nv">$lvmok</span><span class="o">{}</span> lv_name<span class="o">{</span> root <span class="o">}</span> <span class="nv">$defaultignore</span><span class="o">{</span> <span class="o">}</span>    <span class="se">\</span>
@@ -401,7 +401,7 @@
 
 d-i preseed/late_command string <span class="se">\</span>
 umount /target/to_be_free/ <span class="p">;</span> <span class="se">\</span>
-lvremove -f /dev/*/*to_be_free &gt; /dev/null 2&gt;<span class="p">&amp;</span><span class="m">1</span> <span class="p">;</span> <span class="se">\</span>
+lvremove -f /dev/*/*to_be_free &gt; /dev/null <span class="m">2</span>&gt;<span class="p">&amp;</span><span class="m">1</span> <span class="p">;</span> <span class="se">\</span>
 sed -i <span class="s1">&#39;/to_be_free/d&#39;</span> /target/etc/fstab <span class="p">;</span> <span class="se">\</span>
 </code></pre></div>
 <p></font></p>

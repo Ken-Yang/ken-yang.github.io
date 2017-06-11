@@ -358,11 +358,11 @@
 <hr>
 
 <p>首先，先用CLI去建立一個topic，這topic等等會被Node.js subcribe。</p>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span><span class="nb">cd</span> <span class="nv">$YOUR_PATH</span>/kafka_2.11-0.10.1.0
-<span class="nv">$ </span>bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor <span class="m">1</span> --partitions <span class="m">1</span> --topic open
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ <span class="nb">cd</span> <span class="nv">$YOUR_PATH</span>/kafka_2.11-0.10.1.0
+$ bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor <span class="m">1</span> --partitions <span class="m">1</span> --topic open
 </code></pre></div>
 <p>可以用下面的指令去看topic是否建立成功：</p>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>bin/kafka-topics.sh --list --zookeeper localhost:2181
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ bin/kafka-topics.sh --list --zookeeper localhost:2181
 </code></pre></div>
 <p></br></p>
 
@@ -375,9 +375,9 @@
 <hr>
 
 <p>這一步驟要安裝kafka的Node.js module，這裡選用的是<code>kafka-node</code>（其實選擇也不多）。</p>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>mkdir /opt/kafka-test
-<span class="nv">$ </span><span class="nb">cd</span> /opt/kafka-test
-<span class="nv">$ </span>npm install kafka-node --no-optional --save
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ mkdir /opt/kafka-test
+$ <span class="nb">cd</span> /opt/kafka-test
+$ npm install kafka-node --no-optional --save
 </code></pre></div>
 <p></br></p>
 
@@ -389,7 +389,7 @@
 
 <p>接著就可以在Node.js中使用<code>kafka-node</code>，首先要先connect到你自己的Zookeeper，再來就可以對我們剛剛建立的topic進行傳送訊息。</br>
 傳訊息是透過<code>producer.send</code>這方式，成功以後我會去做<code>client.close()</code>的動作，因此這隻node.js每次執行完就會關閉了。</p>
-<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">kafka</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;kafka-node&#39;</span><span class="p">),</span>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="kd">var</span> <span class="nx">kafka</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;kafka-node&#39;</span><span class="p">),</span>
     <span class="nx">Producer</span> <span class="o">=</span> <span class="nx">kafka</span><span class="p">.</span><span class="nx">Producer</span><span class="p">,</span>
     <span class="nx">client</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">kafka</span><span class="p">.</span><span class="nx">Client</span><span class="p">(</span><span class="s1">&#39;${YOUR_HOST}:2181&#39;</span><span class="p">),</span>
     <span class="nx">producer</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Producer</span><span class="p">(</span><span class="nx">client</span><span class="p">),</span>
@@ -415,7 +415,7 @@
 <hr>
 
 <p>接著就是implement <code>consumer.js</code>，基本上跟上面的Producer沒有太大差別，比較需要說明的參數是<code>autoCommit</code>，一旦設為true，在你的consumer收到這則message時，就會被標記已讀的概念，接下來其他的consumer就不會再收到。</p>
-<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">kafka</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;kafka-node&#39;</span><span class="p">),</span>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="kd">var</span> <span class="nx">kafka</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;kafka-node&#39;</span><span class="p">),</span>
     <span class="nx">Consumer</span> <span class="o">=</span> <span class="nx">kafka</span><span class="p">.</span><span class="nx">Consumer</span><span class="p">,</span>
     <span class="nx">client</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">kafka</span><span class="p">.</span><span class="nx">Client</span><span class="p">(</span><span class="s1">&#39;${YOUR_HOST}:2181&#39;</span><span class="p">),</span>
     <span class="nx">consumer</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Consumer</span><span class="p">(</span>
@@ -435,7 +435,7 @@
 <p></br></p>
 
 <p>這裡我有踩到一個雷，由於我是把Kafka放在EC2上，然後EC2綁了一個elastic IP，但我的consumer並不是放在EC2上，而是放在某個local VM裡面，在連接的時候，一直遇到下面的error message，解決方式很簡單，只要在你的<code>/etc/hosts</code>裡面增加一筆mapping就好了。</p>
-<div class="highlight"><pre><code class="language-text" data-lang="text">Error: getaddrinfo ENOTFOUND ip-xxx-xxx-xxx-xxx ip-xxx-xxx-xxx-xxx:9092
+<div class="highlight"><pre><code class="language-text" data-lang="text"><span></span>Error: getaddrinfo ENOTFOUND ip-xxx-xxx-xxx-xxx ip-xxx-xxx-xxx-xxx:9092
 </code></pre></div>
 <p></br></p>
 
@@ -446,10 +446,10 @@
 <hr>
 
 <p>先在放置consumer.js的機器上執行它，</p>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>node consumer.js
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ node consumer.js
 </code></pre></div>
 <p>接下來就執行producer.js，由於上面第三步驟有提到，在send完以後會把close client，所以執行完producer以後，這隻js就會被關閉。可以一直不斷執行這隻檔案，你會在consumer那台機器上不斷看到訊息傳遞過來。</p>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>node producer.js
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ node producer.js
 </code></pre></div>
 <p></br></p>
 
@@ -463,7 +463,7 @@
 </br>
 </br>
 由於我的EC2 ram很小，所以在launch Kafka時，一直發生OOM，解決方式是去<code>bin/kafka-server-start.sh</code>改<code>KAFKA_HEAP_OPTS</code>，</p>
-<div class="highlight"><pre><code class="language-text" data-lang="text">if [ &quot;x$KAFKA_HEAP_OPTS&quot; = &quot;x&quot; ]; then
+<div class="highlight"><pre><code class="language-text" data-lang="text"><span></span>if [ &quot;x$KAFKA_HEAP_OPTS&quot; = &quot;x&quot; ]; then
     export KAFKA_HEAP_OPTS=&quot;-Xmx500M -Xms500M&quot;
 fi
 </code></pre></div>

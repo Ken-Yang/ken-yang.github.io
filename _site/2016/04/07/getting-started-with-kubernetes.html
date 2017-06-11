@@ -375,16 +375,16 @@
 <strong>安裝Google Cloud SDK</strong></p>
 
 <p>Google Cloud SDK這個tool讓你可以對Google Cloud Platform進行操作。安裝指令如下，Default installation path會在你的home目錄底下，</p>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>curl https://sdk.cloud.google.com <span class="p">|</span> bash
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ curl https://sdk.cloud.google.com <span class="p">|</span> bash
 </code></pre></div>
 <p></br>
 接著要restart shell和設定gcloud environment，<code>gcloud init</code>這個指令會彈出browser要你login，以及要你輸入default zone，我是選asia-east1-a。</p>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span><span class="nb">exec</span> -l <span class="nv">$SHELL</span>
-<span class="nv">$ </span>gcloud init
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ <span class="nb">exec</span> -l <span class="nv">$SHELL</span>
+$ gcloud init
 </code></pre></div>
 <p></br>
 <strong>安裝kubectl</strong></p>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>gcloud components install kubectl
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ gcloud components install kubectl
 </code></pre></div>
 <p></br></p>
 
@@ -441,13 +441,13 @@
 
 <p>接著來寫一個簡單的Node.js application，等等會把這application包成docker image，</br>
 先create一個folder，然後建立一個server.js，</p>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>mkdir hellonode-app
-<span class="nv">$ </span><span class="nb">cd </span>hellonode-app
-<span class="nv">$ </span>vim server.js
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ mkdir hellonode-app
+$ <span class="nb">cd</span> hellonode-app
+$ vim server.js
 </code></pre></div>
 <p></br>
 再把下面的內容貼入到server.js當中，下面的內容就是建立一個http server，且listen在8080 port上，</p>
-<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">http</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;http&#39;</span><span class="p">);</span>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="kd">var</span> <span class="nx">http</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;http&#39;</span><span class="p">);</span>
 <span class="kd">var</span> <span class="nx">handleRequest</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">request</span><span class="p">,</span> <span class="nx">response</span><span class="p">)</span> <span class="p">{</span>
   <span class="nx">response</span><span class="p">.</span><span class="nx">writeHead</span><span class="p">(</span><span class="mi">200</span><span class="p">);</span>
   <span class="nx">response</span><span class="p">.</span><span class="nx">end</span><span class="p">(</span><span class="s2">&quot;Hello World!&quot;</span><span class="p">);</span>
@@ -466,25 +466,25 @@
 <p>接著要把上面的application變成一個docker image以及把image push上去，所以首先要先建立一個<code>Dockerfile</code>，Dockerfile作用在之前的<a href="http://blog.kenyang.net/2015/11/30/how-to-use-nodejs-mongodb-with-docker">文章</a>就有解釋過了，
 </br>
 簡單說就是用來定義這個image的資訊。</p>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash">FROM node:0.12
-EXPOSE 8080
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>FROM node:0.12
+EXPOSE <span class="m">8080</span>
 COPY server.js .
 CMD node server.js
 </code></pre></div>
 <p></br>
 有了<code>Dockerfile</code>以後，就可以來build image了，記得把下面的<code>ken-kubernetes-lab</code>換成你們自己的project id，</p>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>docker build -t gcr.io/ken-kubernetes-lab/hello-node:v1 .
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ docker build -t gcr.io/ken-kubernetes-lab/hello-node:v1 .
 </code></pre></div>
 <p></br>
 build完以後，可以在自己local測試看看，</p>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>docker run -d -p 8080:8080 gcr.io/ken-kubernetes-lab/hello-node:v1
-<span class="nv">$ </span>curl http://localhost:8080
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ docker run -d -p <span class="m">8080</span>:8080 gcr.io/ken-kubernetes-lab/hello-node:v1
+$ curl http://localhost:8080
 </code></pre></div>
 <p></br>
 接著就可以把image push上去Google Container Registry，</p>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>gcloud docker push gcr.io/ken-kubernetes-lab/hello-node:v1
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ gcloud docker push gcr.io/ken-kubernetes-lab/hello-node:v1
 </code></pre></div>
-<h2 id=""></br></h2>
+<h2 id="part-310c583402"></br></h2>
 
 <h3 id="5-create-a-cluster">5. Create a cluster</h3>
 
@@ -496,9 +496,9 @@ build完以後，可以在自己local測試看看，</p>
 
 <p></br>
 建完以後，就把cluster的info餵給kubectl，記得把<code>cluster-1</code>改成你的cluster名稱。</p>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>gcloud container clusters get-credentials cluster-1
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ gcloud container clusters get-credentials cluster-1
 </code></pre></div>
-<h2 id=""></br></h2>
+<h2 id="part-310c583402"></br></h2>
 
 <h3 id="6-create-a-pod">6. Create a pod</h3>
 
@@ -510,33 +510,33 @@ build完以後，可以在自己local測試看看，</p>
 <code>一組</code>container的意思是，這個pod裡面由一個以上的container所組成。
 </br></br>
 用kubectl run來建立一個pod:</p>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>kubectl run hello-node --image<span class="o">=</span>gcr.io/ken-kubernetes-lab/hello-node:v1 --port<span class="o">=</span>8080
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ kubectl run hello-node --image<span class="o">=</span>gcr.io/ken-kubernetes-lab/hello-node:v1 --port<span class="o">=</span><span class="m">8080</span>
 deployment <span class="s2">&quot;hello-node&quot;</span> created
 </code></pre></div>
 <p>如上面的output所示，<code>kubectl run</code>建立了一個<code>deployment</code>，<code>deployment</code>主要是用來建立或者scale一個pod的一種方式，以這個例子來說，deployment管理了1個pod replica，想看deployment的資訊，就打：</p>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>kubectl get deployments
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ kubectl get deployments
 NAME         DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
 hello-node   <span class="m">1</span>         <span class="m">1</span>         <span class="m">1</span>            <span class="m">1</span>           3d
 </code></pre></div>
-<h2 id=""></br></h2>
+<h2 id="part-310c583402"></br></h2>
 
 <h3 id="7-allow-external-traffic">7. Allow external traffic</h3>
 
 <hr>
 
 <p>pod預設只能被內部access，如果想要讓外部存取，必須把<code>pod</code> expose成一個<code>service</code>:</p>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>kubectl expose deployment hello-node --type<span class="o">=</span><span class="s2">&quot;LoadBalancer&quot;</span>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ kubectl expose deployment hello-node --type<span class="o">=</span><span class="s2">&quot;LoadBalancer&quot;</span>
 </code></pre></div>
 <p>你會發現上面的指令，我們是expose deployment這個object出來，而不是pod，</br>
 如上面所說，deployment可能會管理多個pods，所以可以透過deployment來當作load balancer。
 取得service ip的指令，請打:</p>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>kubectl get services hello-node
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ kubectl get services hello-node
 NAME         CLUSTER-IP       EXTERNAL-IP       PORT<span class="o">(</span>S<span class="o">)</span>    AGE
-hello-node   10.123.244.242   130.211.247.198   8080/TCP   3d
+hello-node   <span class="m">10</span>.123.244.242   <span class="m">130</span>.211.247.198   <span class="m">8080</span>/TCP   3d
 </code></pre></div>
 <p><code>EXTERNAL_IP</code>可能需要一點點時間才會顯示出來，所以如果<code>EXTERNAL_IP</code>一開始是空白的，請等一下再試一次。</p>
 
-<h2 id=""></br></h2>
+<h2 id="part-310c583402"></br></h2>
 
 <h3 id="8-scale-up-your-website">8. Scale up your website</h3>
 
@@ -545,20 +545,20 @@ hello-node   10.123.244.242   130.211.247.198   8080/TCP   3d
 <p>Kubernetes其中最強大的一點就是可以很輕鬆的scale你的application，
 </br>
 假設你的application突然需要更多的capacity，你可以簡單地叫<code>deployment</code>去建立新的replica:</p>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>kubectl scale deployment hello-node --replicas<span class="o">=</span>4
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ kubectl scale deployment hello-node --replicas<span class="o">=</span><span class="m">4</span>
 </code></pre></div>
 <p>現在你的application就有4個replicas，每一個獨立地在cluster中運作，且load balancer去serve traffic。</p>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>kubectl get deployments
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ kubectl get deployments
 NAME         DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
 hello-node   <span class="m">4</span>         <span class="m">4</span>         <span class="m">4</span>            <span class="m">4</span>           3d
-</code></pre></div><div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>kubectl get pods
+</code></pre></div><div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ kubectl get pods
 NAME                          READY     STATUS    RESTARTS   AGE
-hello-node-3344141985-j2zun   1/1       Running   <span class="m">0</span>          2m
-hello-node-3344141985-j70fh   1/1       Running   <span class="m">0</span>          2m
-hello-node-3344141985-lzynx   1/1       Running   <span class="m">0</span>          3d
-hello-node-3344141985-x3ycw   1/1       Running   <span class="m">0</span>          2m
+hello-node-3344141985-j2zun   <span class="m">1</span>/1       Running   <span class="m">0</span>          2m
+hello-node-3344141985-j70fh   <span class="m">1</span>/1       Running   <span class="m">0</span>          2m
+hello-node-3344141985-lzynx   <span class="m">1</span>/1       Running   <span class="m">0</span>          3d
+hello-node-3344141985-x3ycw   <span class="m">1</span>/1       Running   <span class="m">0</span>          2m
 </code></pre></div>
-<h2 id=""></br></h2>
+<h2 id="part-310c583402"></br></h2>
 
 <h3 id="9-roll-out-an-upgrade-to-your-website">9. Roll out an upgrade to your website</h3>
 
@@ -566,33 +566,33 @@ hello-node-3344141985-x3ycw   1/1       Running   <span class="m">0</span>      
 
 <p>假設你的application有bug fixes，Kubernetes也可以輕易地幫助你deploy新版本上去。</br>
 首先，先來改剛剛的<code>server.js</code>，修改response message:</p>
-<div class="highlight"><pre><code class="language-javascript" data-lang="javascript">  <span class="nx">response</span><span class="p">.</span><span class="nx">end</span><span class="p">(</span><span class="s2">&quot;Hello Kubernetes World!&quot;</span><span class="p">);</span>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span>  <span class="nx">response</span><span class="p">.</span><span class="nx">end</span><span class="p">(</span><span class="s2">&quot;Hello Kubernetes World!&quot;</span><span class="p">);</span>
 </code></pre></div>
 <p>接著可以build及publish新版本至registry:</p>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>docker build -t gcr.io/ken-kubernetes-lab/hello-node:v2 . 
-<span class="nv">$ </span>gcloud docker push gcr.io/ken-kubernetes-lab/hello-node:v2
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ docker build -t gcr.io/ken-kubernetes-lab/hello-node:v2 . 
+$ gcloud docker push gcr.io/ken-kubernetes-lab/hello-node:v2
 </code></pre></div>
 <p>push完成以後，我們就有一個v2版本的image可以使用，接下來只要透過<code>kubectl edit</code>指令就可以進行update，
 </br>
 這個指令會打開一個text editor，內容是一個deployment的yaml config，</br>
 我們只需要把<strong><code>gcr.io/ken-kubernetes-lab/hello-node:v1</code></strong>改成<strong><code>gcr.io/ken-kubernetes-lab/hello-node:v2</code></strong>就好。</p>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>kubectl edit deployment hello-node
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ kubectl edit deployment hello-node
 </code></pre></div>
 <p>編輯完成以後，可以去看看pods有什麼變化:</p>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>kubectl get pods
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ kubectl get pods
 NAME                          READY     STATUS        RESTARTS   AGE
-hello-node-3344141985-j2zun   1/1       Terminating   <span class="m">0</span>          19m
-hello-node-3344141985-j70fh   1/1       Terminating   <span class="m">0</span>          19m
-hello-node-3344141985-lzynx   1/1       Terminating   <span class="m">0</span>          3d
-hello-node-3344141985-x3ycw   1/1       Terminating   <span class="m">0</span>          19m
-hello-node-3422850722-b0niu   1/1       Running       <span class="m">0</span>          13s
-hello-node-3422850722-gu7c3   1/1       Running       <span class="m">0</span>          19s
-hello-node-3422850722-oaqw7   1/1       Running       <span class="m">0</span>          19s
-hello-node-3422850722-ria1t   1/1       Running       <span class="m">0</span>          13s
+hello-node-3344141985-j2zun   <span class="m">1</span>/1       Terminating   <span class="m">0</span>          19m
+hello-node-3344141985-j70fh   <span class="m">1</span>/1       Terminating   <span class="m">0</span>          19m
+hello-node-3344141985-lzynx   <span class="m">1</span>/1       Terminating   <span class="m">0</span>          3d
+hello-node-3344141985-x3ycw   <span class="m">1</span>/1       Terminating   <span class="m">0</span>          19m
+hello-node-3422850722-b0niu   <span class="m">1</span>/1       Running       <span class="m">0</span>          13s
+hello-node-3422850722-gu7c3   <span class="m">1</span>/1       Running       <span class="m">0</span>          19s
+hello-node-3422850722-oaqw7   <span class="m">1</span>/1       Running       <span class="m">0</span>          19s
+hello-node-3422850722-ria1t   <span class="m">1</span>/1       Running       <span class="m">0</span>          13s
 </code></pre></div>
 <p>從output中會發現，deployment建立新的pod，把舊版的pod關掉了。</p>
 
-<h2 id=""></br></h2>
+<h2 id="part-310c583402"></br></h2>
 
 <h3 id="10-delete">10. Delete</h3>
 
@@ -600,10 +600,10 @@ hello-node-3422850722-ria1t   1/1       Running       <span class="m">0</span>  
 
 <p>由於只有300美金啊，雖然我開了三天也才花費五塊美金，不過沒在用還是關掉吧！</br>
 刪除Deployment時，也會一併刪除pod；刪除service會刪除load balancer。</p>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>kubectl delete service,deployment hello-node
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ kubectl delete service,deployment hello-node
 </code></pre></div>
 <p>最後記得cluster也要刪除:</p>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>gcloud container clusters delete cluster-1
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ gcloud container clusters delete cluster-1
 </code></pre></div>
 <p></br>
 </br>

@@ -359,7 +359,7 @@
 <hr>
 
 <p>首先要在<code>AndroidManifest.xml</code>中設定permission，</p>
-<div class="highlight"><pre><code class="language-xml" data-lang="xml"><span class="nt">&lt;uses-permission</span> <span class="na">android:name=</span><span class="s">&quot;android.permission.USE_FINGERPRINT&quot;</span> <span class="nt">/&gt;</span>
+<div class="highlight"><pre><code class="language-xml" data-lang="xml"><span></span><span class="nt">&lt;uses-permission</span> <span class="na">android:name=</span><span class="s">&quot;android.permission.USE_FINGERPRINT&quot;</span> <span class="nt">/&gt;</span>
 </code></pre></div>
 <p></br></p>
 
@@ -378,7 +378,7 @@
 </ol>
 
 <!--more-->
-<div class="highlight"><pre><code class="language-java" data-lang="java"><span class="kd">private</span> <span class="n">KeyguardManager</span> <span class="n">km</span><span class="o">;</span>
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="kd">private</span> <span class="n">KeyguardManager</span> <span class="n">km</span><span class="o">;</span>
 <span class="kd">private</span> <span class="n">FingerprintManager</span> <span class="n">fm</span><span class="o">;</span>
 <span class="kd">private</span> <span class="n">CancellationSignal</span> <span class="n">cancellationSignal</span><span class="o">;</span>
 
@@ -422,7 +422,7 @@
 <hr>
 
 <p>如果通過上述的檢查之後，就可以透過<code>FingerprintManager</code>進行<code>Authenticate</code>的動作，method call為：</p>
-<div class="highlight"><pre><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kt">void</span> <span class="nf">authenticate</span> <span class="o">(</span><span class="n">FingerprintManager</span><span class="o">.</span><span class="na">CryptoObject</span> <span class="n">crypto</span><span class="o">,</span> 
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="kd">public</span> <span class="kt">void</span> <span class="nf">authenticate</span> <span class="o">(</span><span class="n">FingerprintManager</span><span class="o">.</span><span class="na">CryptoObject</span> <span class="n">crypto</span><span class="o">,</span> 
                           <span class="n">CancellationSignal</span> <span class="n">cancel</span><span class="o">,</span> 
                           <span class="kt">int</span> <span class="n">flags</span><span class="o">,</span> 
                           <span class="n">FingerprintManager</span><span class="o">.</span><span class="na">AuthenticationCallback</span> <span class="n">callback</span><span class="o">,</span> 
@@ -447,7 +447,7 @@
 <p></br></p>
 
 <p>了解參數以後就可以開始進行<strong>authenticate</strong>，</p>
-<div class="highlight"><pre><code class="language-java" data-lang="java"><span class="nd">@Override</span>
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="nd">@Override</span>
 <span class="kd">protected</span> <span class="kt">void</span> <span class="nf">onCreate</span><span class="o">(</span><span class="n">Bundle</span> <span class="n">savedInstanceState</span><span class="o">)</span> <span class="o">{</span>
     <span class="o">....</span> <span class="n">ignore</span> <span class="o">...</span>
     <span class="n">startListening</span><span class="o">();</span>
@@ -455,7 +455,7 @@
 
 <span class="kd">private</span> <span class="kt">void</span> <span class="nf">startListening</span><span class="o">()</span> <span class="o">{</span>
 
-    <span class="n">cancellationSignal</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">CancellationSignal</span><span class="o">();</span>
+    <span class="n">cancellationSignal</span> <span class="o">=</span> <span class="k">new</span> <span class="n">CancellationSignal</span><span class="o">();</span>
 
     <span class="n">fm</span><span class="o">.</span><span class="na">authenticate</span><span class="o">(</span><span class="kc">null</span><span class="o">,</span>
                     <span class="n">cancellationSignal</span><span class="o">,</span>

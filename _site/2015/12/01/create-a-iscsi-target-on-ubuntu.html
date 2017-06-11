@@ -356,7 +356,7 @@
 <hr>
 
 <p>首先要先安裝tgt這個package。  </p>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>apt-get install tgt
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ apt-get install tgt
 </code></pre></div>
 <p></br></p>
 
@@ -366,8 +366,8 @@
 
 <p>這裡會用<code>dd</code>來建立幾個假的block device，<br>
 待會就把devices加入到iSCSI中。</p>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>dd <span class="k">if</span><span class="o">=</span>/dev/zero <span class="nv">of</span><span class="o">=</span>/var/tmp/iscsi-disk1 <span class="nv">bs</span><span class="o">=</span>1M <span class="nv">count</span><span class="o">=</span>100
-<span class="nv">$ </span>dd <span class="k">if</span><span class="o">=</span>/dev/zero <span class="nv">of</span><span class="o">=</span>/var/tmp/iscsi-disk2 <span class="nv">bs</span><span class="o">=</span>1M <span class="nv">count</span><span class="o">=</span>100
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ dd <span class="k">if</span><span class="o">=</span>/dev/zero <span class="nv">of</span><span class="o">=</span>/var/tmp/iscsi-disk1 <span class="nv">bs</span><span class="o">=</span>1M <span class="nv">count</span><span class="o">=</span><span class="m">100</span>
+$ dd <span class="k">if</span><span class="o">=</span>/dev/zero <span class="nv">of</span><span class="o">=</span>/var/tmp/iscsi-disk2 <span class="nv">bs</span><span class="o">=</span>1M <span class="nv">count</span><span class="o">=</span><span class="m">100</span>
 </code></pre></div>
 <p></br></p>
 
@@ -381,8 +381,8 @@
 <li>iqn.2015-07.net.kenyang:ken.iscsi.1</li>
 <li>iqn.2015-07.net.kenyang:ken.iscsi.2</li>
 </ul>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>tgtadm --lld iscsi --op new --mode target --tid <span class="m">1</span> -T iqn.2015-07.net.kenyang:ken.iscsi.1
-<span class="nv">$ </span>tgtadm --lld iscsi --op new --mode target --tid <span class="m">2</span> -T iqn.2015-07.net.kenyang:ken.iscsi.2
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ tgtadm --lld iscsi --op new --mode target --tid <span class="m">1</span> -T iqn.2015-07.net.kenyang:ken.iscsi.1
+$ tgtadm --lld iscsi --op new --mode target --tid <span class="m">2</span> -T iqn.2015-07.net.kenyang:ken.iscsi.2
 </code></pre></div>
 <!--more-->
 
@@ -393,8 +393,8 @@
 <hr>
 
 <p>然後替上面的2個target各加入一個LUN。</p>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>tgtadm --lld iscsi --mode logicalunit --op new --tid <span class="m">1</span> --lun <span class="m">1</span> -b /var/tmp/iscsi-disk1
-<span class="nv">$ </span>tgtadm --lld iscsi --mode logicalunit --op new --tid <span class="m">2</span> --lun <span class="m">1</span> -b /var/tmp/iscsi-disk2
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ tgtadm --lld iscsi --mode logicalunit --op new --tid <span class="m">1</span> --lun <span class="m">1</span> -b /var/tmp/iscsi-disk1
+$ tgtadm --lld iscsi --mode logicalunit --op new --tid <span class="m">2</span> --lun <span class="m">1</span> -b /var/tmp/iscsi-disk2
 </code></pre></div>
 <p></br></p>
 
@@ -405,8 +405,8 @@
 <p>如果你想要讓你的target，<br>
 可以讓任何人連，不需要密碼，<br>
 就可以用下面的指令。</p>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>tgtadm --lld iscsi --op <span class="nb">bind</span> --mode target --tid <span class="m">1</span> -I ALL
-<span class="nv">$ </span>tgtadm --lld iscsi --op <span class="nb">bind</span> --mode target --tid <span class="m">2</span> -I ALL
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ tgtadm --lld iscsi --op <span class="nb">bind</span> --mode target --tid <span class="m">1</span> -I ALL
+$ tgtadm --lld iscsi --op <span class="nb">bind</span> --mode target --tid <span class="m">2</span> -I ALL
 </code></pre></div>
 <p></br></p>
 
@@ -416,15 +416,15 @@
 
 <p>如果你想要讓你的target，有credential才能連，<br>
 那就要create user，以及把user bind在某個target上。</p>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>tgtadm --mode account --op new --user safesync --password safesync
-<span class="nv">$ </span>tgtadm --mode account --op <span class="nb">bind</span> --tid <span class="m">1</span> --user safesync
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ tgtadm --mode account --op new --user safesync --password safesync
+$ tgtadm --mode account --op <span class="nb">bind</span> --tid <span class="m">1</span> --user safesync
 </code></pre></div>
 <p></br></p>
 
 <h4 id="show-configuration">Show configuration</h4>
 
 <hr>
-<div class="highlight"><pre><code class="language-text" data-lang="text">$ tgtadm --lld iscsi --mode target --op show
+<div class="highlight"><pre><code class="language-text" data-lang="text"><span></span>$ tgtadm --lld iscsi --mode target --op show
 </code></pre></div>
 <p></font></p>
 

@@ -368,7 +368,7 @@
 
 <!--more-->
 
-<h2 id="1-建立github-repo">1. 建立github repo</h2>
+<h2 id="1-github-repo">1. 建立github repo</h2>
 
 <p>首先要先去<a href="https://github.com/new">github</a>的網站建立一個新的repo，<br>
 repo名稱為<code>your_name.github.io</code>，<br>
@@ -382,28 +382,28 @@ repo名稱為<code>your_name.github.io</code>，<br>
 可以讓你快速地建立一個template，<br>
 然後這個template是以boostrap為基底。<br>
 使用方式如下（記得把<code>USERNAME</code>換成你的<code>your_name</code>)：</p>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>git clone https://github.com/plusjade/jekyll-bootstrap.git USERNAME.github.io
-<span class="nv">$ </span><span class="nb">cd </span>USERNAME.github.io
-<span class="nv">$ </span>git remote <span class="nb">set</span>-url origin git@github.com:USERNAME/USERNAME.github.ui.git
-<span class="nv">$ </span>git push origin master
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ git clone https://github.com/plusjade/jekyll-bootstrap.git USERNAME.github.io
+$ <span class="nb">cd</span> USERNAME.github.io
+$ git remote set-url origin git@github.com:USERNAME/USERNAME.github.ui.git
+$ git push origin master
 </code></pre></div>
 <p>接著你就可以去<code>USERNAME.github.io</code>看看，應該會有default的index。</p>
 
 <p></br> </p>
 
-<h2 id="3-jekyll-import-（匯出與匯入）">3. jekyll-import （匯出與匯入）</h2>
+<h2 id="3-jekyll-import">3. jekyll-import （匯出與匯入）</h2>
 
 <p>接著我們要把原本在google blogger上的資料轉出來，<br>
 這裡使用<a href="http://import.jekyllrb.com/docs/installation/">jekyll-import</a>這個tool。
 安裝<a href="http://import.jekyllrb.com/docs/installation/">jekyll-import</a>之前，<br>
 如果你是用MAC，請先安裝xcode，<br>
 如果是用linux，請先安裝make。</p>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>gem install -n jekyll-import
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ gem install -n jekyll-import
 </code></pre></div>
 <p>安裝成功以後，去google blogger的後台把文章通通export出來。<br>
 然後再terminal執行下面的指令，<br>
 記得把<code>/path/to/blog-MM-DD-YYYY.xml</code>換成對應的位置。</p>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>ruby -rubygems -e <span class="s1">&#39;require &quot;jekyll-import&quot;;</span>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ ruby -rubygems -e <span class="s1">&#39;require &quot;jekyll-import&quot;;</span>
 <span class="s1">    JekyllImport::Importers::Blogger.run({</span>
 <span class="s1">      &quot;source&quot;                =&gt; &quot;/path/to/blog-MM-DD-YYYY.xml&quot;,</span>
 <span class="s1">      &quot;no-blogger-info&quot;       =&gt; false, # not to leave blogger-URL info (id and old URL) in the front matter</span>
@@ -418,11 +418,11 @@ repo名稱為<code>your_name.github.io</code>，<br>
 </ul>
 
 <p>接著就把_posts底下的資料搬移至剛剛的git project底下，</p>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash">cp _posts/* USERNAME.github.ui.git/_posts/
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>cp _posts/* USERNAME.github.ui.git/_posts/
 </code></pre></div>
 <p></br></p>
 
-<h2 id="4-安裝jekyll">4. 安裝jekyll</h2>
+<h2 id="4-jekyll">4. 安裝jekyll</h2>
 
 <p>接著安裝<a href="https://jekyllrb.com/">jekyll</a>，<br>
 jekyll主要功用為:</p>
@@ -433,32 +433,32 @@ jekyll主要功用為:</p>
 </ul>
 
 <p>安裝方式一樣是透過gem，</p>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>gem install -n /usr/local/bin jekyll
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ gem install -n /usr/local/bin jekyll
 </code></pre></div>
 <p>安裝成功就可以用jekyll去preview你的posts，</p>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span><span class="nb">cd </span>USERNAME.github.io
-<span class="nv">$ </span>jekyll serve
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ <span class="nb">cd</span> USERNAME.github.io
+$ jekyll serve
 </code></pre></div>
 <p>然後會在你的local起一個web server，<br>
 網址是<code>http://localhost:4000</code>，<br>
 在執行<code>serve</code>的當下就會幫我們render post了，<br>
 接著就可以把所有的changed push回去github上。  </p>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>git add . 
-<span class="nv">$ </span>git cm -m <span class="s1">&#39;add posts&#39;</span>
-<span class="nv">$ </span>git push origin master
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ git add . 
+$ git cm -m <span class="s1">&#39;add posts&#39;</span>
+$ git push origin master
 </code></pre></div>
 <p>然後一樣去<code>USERNAME.github.io</code>看看，會有原本在blogger上的posts了！</p>
 
 <p></br></p>
 
-<h2 id="5-安裝jekyll-paginate">5. 安裝jekyll-paginate</h2>
+<h2 id="5-jekyll-paginate">5. 安裝jekyll-paginate</h2>
 
 <p>jekyll-paginate功用就是分頁，如果你不想要你的首頁就把所有的post通通列出來，<br>
 那麼就可以安裝這個plugin，  </p>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>gem install -n /usr/local/bin jekyll-paginate
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ gem install -n /usr/local/bin jekyll-paginate
 </code></pre></div>
 <p>接著打開<code>_config.yml</code>，然後加入下面三行，</p>
-<div class="highlight"><pre><code class="language-text" data-lang="text">gems: [jekyll-paginate]
+<div class="highlight"><pre><code class="language-text" data-lang="text"><span></span>gems: [jekyll-paginate]
 paginate: 3
 paginate_path: &quot;/blog/page:num&quot;
 </code></pre></div>
@@ -467,74 +467,74 @@ paginate_path: &quot;/blog/page:num&quot;
 必須是index.html，但很簡單，你只要把<code>mv index.md  index.html</code>即可，<br>
 mv完成以後，接著打開<code>index.html</code>，<br>
 然後把下面的code貼入。</p>
-<div class="highlight"><pre><code class="language-html" data-lang="html">{% for post in paginator.posts %}
-  <span class="nt">&lt;h1&gt;&lt;a</span> <span class="na">style=</span><span class="s">&quot;color: #F22430&quot;</span> <span class="na">href=</span><span class="s">&quot;{{ post.url }}&quot;</span><span class="nt">&gt;</span>{{ post.title }}<span class="nt">&lt;/a&gt;&lt;/h1&gt;</span>
-  <span class="nt">&lt;div</span> <span class="na">style=</span><span class="s">&quot;width: 100%; border-bottom: 1px solid #E7E7E7;&quot;</span><span class="nt">&gt;&lt;/div&gt;</span>
-  <span class="nt">&lt;p</span> <span class="na">class=</span><span class="s">&quot;author&quot;</span><span class="nt">&gt;</span>
-    <span class="nt">&lt;span</span> <span class="na">class=</span><span class="s">&quot;date&quot;</span><span class="nt">&gt;</span>{{ post.date | date_to_long_string }}<span class="nt">&lt;/span&gt;</span>
-  <span class="nt">&lt;/p&gt;</span>
-  <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;content&quot;</span><span class="nt">&gt;</span>
+<div class="highlight"><pre><code class="language-html" data-lang="html"><span></span>{% for post in paginator.posts %}
+  <span class="p">&lt;</span><span class="nt">h1</span><span class="p">&gt;&lt;</span><span class="nt">a</span> <span class="na">style</span><span class="o">=</span><span class="s">&quot;color: #F22430&quot;</span> <span class="na">href</span><span class="o">=</span><span class="s">&quot;{{ post.url }}&quot;</span><span class="p">&gt;</span>{{ post.title }}<span class="p">&lt;/</span><span class="nt">a</span><span class="p">&gt;&lt;/</span><span class="nt">h1</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">div</span> <span class="na">style</span><span class="o">=</span><span class="s">&quot;width: 100%; border-bottom: 1px solid #E7E7E7;&quot;</span><span class="p">&gt;&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">p</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;author&quot;</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">span</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;date&quot;</span><span class="p">&gt;</span>{{ post.date | date_to_long_string }}<span class="p">&lt;/</span><span class="nt">span</span><span class="p">&gt;</span>
+  <span class="p">&lt;/</span><span class="nt">p</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;content&quot;</span><span class="p">&gt;</span>
     {{ post.excerpt }}
-  <span class="nt">&lt;/div&gt;</span>
-  <span class="nt">&lt;footer&gt;</span>
-    <span class="nt">&lt;p&gt;&lt;a</span> <span class="na">class=</span><span class="s">&quot;myButton&quot;</span> <span class="na">href=</span><span class="s">&quot;{{ post.url | prepend: site.baseurl }}&quot;</span><span class="nt">&gt;</span>{{ site.more }} <span class="ni">&amp;raquo;</span><span class="nt">&lt;/a&gt;&lt;/p&gt;</span>
-  <span class="nt">&lt;/footer&gt;</span>
-  <span class="nt">&lt;hr&gt;</span>
+  <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">footer</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">p</span><span class="p">&gt;&lt;</span><span class="nt">a</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;myButton&quot;</span> <span class="na">href</span><span class="o">=</span><span class="s">&quot;{{ post.url | prepend: site.baseurl }}&quot;</span><span class="p">&gt;</span>{{ site.more }} <span class="ni">&amp;raquo;</span><span class="p">&lt;/</span><span class="nt">a</span><span class="p">&gt;&lt;/</span><span class="nt">p</span><span class="p">&gt;</span>
+  <span class="p">&lt;/</span><span class="nt">footer</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">hr</span><span class="p">&gt;</span>
 {% endfor %}
 <span class="c">&lt;!-- Pagination links --&gt;</span>
-<span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;pagination&quot;</span><span class="nt">&gt;</span>
+<span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;pagination&quot;</span><span class="p">&gt;</span>
   {% if paginator.previous_page %}
-    <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">&quot;{{ paginator.previous_page_path }}&quot;</span> <span class="na">class=</span><span class="s">&quot;previous&quot;</span><span class="nt">&gt;</span>Previous<span class="nt">&lt;/a&gt;</span>
+    <span class="p">&lt;</span><span class="nt">a</span> <span class="na">href</span><span class="o">=</span><span class="s">&quot;{{ paginator.previous_page_path }}&quot;</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;previous&quot;</span><span class="p">&gt;</span>Previous<span class="p">&lt;/</span><span class="nt">a</span><span class="p">&gt;</span>
   {% else %}
-    <span class="nt">&lt;span</span> <span class="na">class=</span><span class="s">&quot;previous&quot;</span><span class="nt">&gt;</span>Previous<span class="nt">&lt;/span&gt;</span>
+    <span class="p">&lt;</span><span class="nt">span</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;previous&quot;</span><span class="p">&gt;</span>Previous<span class="p">&lt;/</span><span class="nt">span</span><span class="p">&gt;</span>
   {% endif %}
-    <span class="nt">&lt;span</span> <span class="na">class=</span><span class="s">&quot;page_number &quot;</span><span class="nt">&gt;</span>Page: {{ paginator.page }} of {{ paginator.total_pages }}<span class="nt">&lt;/span&gt;</span>
+    <span class="p">&lt;</span><span class="nt">span</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;page_number &quot;</span><span class="p">&gt;</span>Page: {{ paginator.page }} of {{ paginator.total_pages }}<span class="p">&lt;/</span><span class="nt">span</span><span class="p">&gt;</span>
   {% if paginator.next_page %}
-    <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">&quot;{{ paginator.next_page_path }}&quot;</span> <span class="na">class=</span><span class="s">&quot;next&quot;</span><span class="nt">&gt;</span>Next<span class="nt">&lt;/a&gt;</span>
+    <span class="p">&lt;</span><span class="nt">a</span> <span class="na">href</span><span class="o">=</span><span class="s">&quot;{{ paginator.next_page_path }}&quot;</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;next&quot;</span><span class="p">&gt;</span>Next<span class="p">&lt;/</span><span class="nt">a</span><span class="p">&gt;</span>
   {% else %}
-    <span class="nt">&lt;span</span> <span class="na">class=</span><span class="s">&quot;next &quot;</span><span class="nt">&gt;</span>Next<span class="nt">&lt;/span&gt;</span>
+    <span class="p">&lt;</span><span class="nt">span</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;next &quot;</span><span class="p">&gt;</span>Next<span class="p">&lt;/</span><span class="nt">span</span><span class="p">&gt;</span>
   {% endif %}
-<span class="nt">&lt;/div&gt;</span>
+<span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
 </code></pre></div>
 <p>接著就在重新render一次。</p>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>jekyll serve
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ jekyll serve
 </code></pre></div>
 <p>完成以後，在<code>_site/blog/</code>底下，就會有很多<code>pageX</code>的資料夾，<br>
 接著就可以通通在push回去github上。</p>
 
 <p></br></p>
 
-<h2 id="6-整合adsense">6. 整合Adsense</h2>
+<h2 id="6-adsense">6. 整合Adsense</h2>
 
 <p>這裡用adsense當作廣告source，<br>
 首先先去adsense網站上申請，這裡就不教怎麼申請了，<br>
 申請完以後，會給你一串javascript，<br>
 把它複製起來，然後建立一個新的html檔案。</p>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash">vim _includes/adsense.html
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>vim _includes/adsense.html
 </code></pre></div>
 <p>然後把剛剛adsense給的那串javascript貼進去，如下，</p>
-<div class="highlight"><pre><code class="language-html" data-lang="html"><span class="nt">&lt;script </span><span class="na">async</span> <span class="na">src=</span><span class="s">&quot;//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
+<div class="highlight"><pre><code class="language-html" data-lang="html"><span></span><span class="p">&lt;</span><span class="nt">script</span> <span class="na">async</span> <span class="na">src</span><span class="o">=</span><span class="s">&quot;//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js&quot;</span><span class="p">&gt;&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
 <span class="c">&lt;!-- id10t_top --&gt;</span>
-<span class="nt">&lt;ins</span> <span class="na">class=</span><span class="s">&quot;adsbygoogle&quot;</span>
-<span class="na">style=</span><span class="s">&quot;display:block&quot;</span>
-<span class="na">data-ad-client=</span><span class="s">&quot;ca-pub-xxxxxxxxxxxx&quot;</span>
-<span class="na">data-ad-slot=</span><span class="s">&quot;1161208442&quot;</span>
-<span class="na">data-ad-format=</span><span class="s">&quot;auto&quot;</span><span class="nt">&gt;&lt;/ins&gt;</span>
-<span class="nt">&lt;script&gt;</span>
+<span class="p">&lt;</span><span class="nt">ins</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;adsbygoogle&quot;</span>
+<span class="na">style</span><span class="o">=</span><span class="s">&quot;display:block&quot;</span>
+<span class="na">data-ad-client</span><span class="o">=</span><span class="s">&quot;ca-pub-xxxxxxxxxxxx&quot;</span>
+<span class="na">data-ad-slot</span><span class="o">=</span><span class="s">&quot;1161208442&quot;</span>
+<span class="na">data-ad-format</span><span class="o">=</span><span class="s">&quot;auto&quot;</span><span class="p">&gt;&lt;/</span><span class="nt">ins</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">script</span><span class="p">&gt;</span>
     <span class="p">(</span><span class="nx">adsbygoogle</span> <span class="o">=</span> <span class="nb">window</span><span class="p">.</span><span class="nx">adsbygoogle</span> <span class="o">||</span> <span class="p">[]).</span><span class="nx">push</span><span class="p">({});</span>
-<span class="nt">&lt;/script&gt;</span>
+<span class="p">&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
 </code></pre></div>
 <p>接著我們就可以在想要放廣告的page裡面，include <code>adsense.html</code>這個file，<br>
 假設我們想要在首頁放廣告，那麼就是打開 <code>index.html</code> ，<br>
 然後在適當的地方貼入下面的code，  </p>
-<div class="highlight"><pre><code class="language-html" data-lang="html">{% include adsense.html %}
+<div class="highlight"><pre><code class="language-html" data-lang="html"><span></span>{% include adsense.html %}
 </code></pre></div>
 <p>接著一樣重新render一次就完成了。</p>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>jekyll serve
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ jekyll serve
 </code></pre></div>
 <p></br></p>
 
-<h2 id="7-整合comment-system">7. 整合Comment system</h2>
+<h2 id="7-comment-system">7. 整合Comment system</h2>
 
 <p>jekyll裡面內建了很多的comment system，有disqus、facebook...etc.<br>
 這裡我選擇了<a href="https://disqus.com/home/explore/">disgus</a>，因為預設也是使用它。<br>
@@ -543,7 +543,7 @@ mv完成以後，接著打開<code>index.html</code>，<br>
 註冊完成以後就會取得一個<code>short name</code>，<br>
 有了<code>short name</code>以後，就打開<code>_config.yml</code>，<br>
 然後找到<code>comments</code>這個key，然後把你的<code>short name</code>填入即可。</p>
-<div class="highlight"><pre><code class="language-text" data-lang="text">comments :
+<div class="highlight"><pre><code class="language-text" data-lang="text"><span></span>comments :
   provider : disqus
   disqus :
     short_name : your_short_name
@@ -552,14 +552,14 @@ mv完成以後，接著打開<code>index.html</code>，<br>
 
 <p></br></p>
 
-<h2 id="8-整合google-analytics">8. 整合Google Analytics</h2>
+<h2 id="8-google-analytics">8. 整合Google Analytics</h2>
 
 <p>jekyll也有內建analytics的功能，其實跟上面的comment system差不多，<br>
 一樣填入analytics id即可。<br>
 但我發現jekyll的analytics 好像比較舊。<br>
 所以我就不用它內建的，我就用與adsense的方式一樣，<br>
 先create一個<code>analytics.html</code>，接著把下面的code貼入，</p>
-<div class="highlight"><pre><code class="language-html" data-lang="html"><span class="nt">&lt;script&gt;</span>
+<div class="highlight"><pre><code class="language-html" data-lang="html"><span></span><span class="p">&lt;</span><span class="nt">script</span><span class="p">&gt;</span>
   <span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">i</span><span class="p">,</span><span class="nx">s</span><span class="p">,</span><span class="nx">o</span><span class="p">,</span><span class="nx">g</span><span class="p">,</span><span class="nx">r</span><span class="p">,</span><span class="nx">a</span><span class="p">,</span><span class="nx">m</span><span class="p">){</span><span class="nx">i</span><span class="p">[</span><span class="s1">&#39;GoogleAnalyticsObject&#39;</span><span class="p">]</span><span class="o">=</span><span class="nx">r</span><span class="p">;</span><span class="nx">i</span><span class="p">[</span><span class="nx">r</span><span class="p">]</span><span class="o">=</span><span class="nx">i</span><span class="p">[</span><span class="nx">r</span><span class="p">]</span><span class="o">||</span><span class="kd">function</span><span class="p">(){</span>
   <span class="p">(</span><span class="nx">i</span><span class="p">[</span><span class="nx">r</span><span class="p">].</span><span class="nx">q</span><span class="o">=</span><span class="nx">i</span><span class="p">[</span><span class="nx">r</span><span class="p">].</span><span class="nx">q</span><span class="o">||</span><span class="p">[]).</span><span class="nx">push</span><span class="p">(</span><span class="nx">arguments</span><span class="p">)},</span><span class="nx">i</span><span class="p">[</span><span class="nx">r</span><span class="p">].</span><span class="nx">l</span><span class="o">=</span><span class="mi">1</span><span class="o">*</span><span class="k">new</span> <span class="nb">Date</span><span class="p">();</span><span class="nx">a</span><span class="o">=</span><span class="nx">s</span><span class="p">.</span><span class="nx">createElement</span><span class="p">(</span><span class="nx">o</span><span class="p">),</span>
   <span class="nx">m</span><span class="o">=</span><span class="nx">s</span><span class="p">.</span><span class="nx">getElementsByTagName</span><span class="p">(</span><span class="nx">o</span><span class="p">)[</span><span class="mi">0</span><span class="p">];</span><span class="nx">a</span><span class="p">.</span><span class="nx">async</span><span class="o">=</span><span class="mi">1</span><span class="p">;</span><span class="nx">a</span><span class="p">.</span><span class="nx">src</span><span class="o">=</span><span class="nx">g</span><span class="p">;</span><span class="nx">m</span><span class="p">.</span><span class="nx">parentNode</span><span class="p">.</span><span class="nx">insertBefore</span><span class="p">(</span><span class="nx">a</span><span class="p">,</span><span class="nx">m</span><span class="p">)</span>
@@ -568,10 +568,10 @@ mv完成以後，接著打開<code>index.html</code>，<br>
   <span class="nx">ga</span><span class="p">(</span><span class="s1">&#39;create&#39;</span><span class="p">,</span> <span class="s1">&#39;UA-xxxxxx-1&#39;</span><span class="p">,</span> <span class="s1">&#39;auto&#39;</span><span class="p">);</span>
   <span class="nx">ga</span><span class="p">(</span><span class="s1">&#39;send&#39;</span><span class="p">,</span> <span class="s1">&#39;pageview&#39;</span><span class="p">);</span>
 
-<span class="nt">&lt;/script&gt;</span>
+<span class="p">&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
 </code></pre></div>
 <p>然後在我想要track的地方，貼入下面的code，</p>
-<div class="highlight"><pre><code class="language-html" data-lang="html">{% include analytics.html %}
+<div class="highlight"><pre><code class="language-html" data-lang="html"><span></span>{% include analytics.html %}
 </code></pre></div>
 <p>然後在重新render就完成了！<br>
 最後只要把你的cname指向username.github.io，<br>

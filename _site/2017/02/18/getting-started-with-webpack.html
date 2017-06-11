@@ -354,7 +354,7 @@
 
 <hr>
 
-<h3 id="1-what-39-s-webpack">1. What&#39;s webpack?</h3>
+<h3 id="1-whats-webpack">1. What&#39;s webpack?</h3>
 
 <hr>
 
@@ -390,13 +390,13 @@
 <p></br></p>
 
 <h4 id="local-installation">Local Installation</h4>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash">npm install webpack --save-dev
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>npm install webpack --save-dev
 
 npm install webpack@&lt;version&gt; --save-dev
 </code></pre></div>
 <p>官方是最建議用第一種的Local Installation，
 但因為是install在local node_modules底下，即便你在此project folder底下，打<code>webpack</code>指令，也是會找不到，但如果你是使用npm script在你的project中的話，就不用太擔心，因為npm會去你的node_modules底下找webpack。</p>
-<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="s2">&quot;scripts&quot;</span> <span class="o">:</span> <span class="p">{</span>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="s2">&quot;scripts&quot;</span> <span class="o">:</span> <span class="p">{</span>
     <span class="s2">&quot;start&quot;</span><span class="o">:</span> <span class="s2">&quot;webpack --config mywebpack.config.js&quot;</span>
 <span class="p">}</span>
 </code></pre></div>
@@ -405,14 +405,14 @@ npm install webpack@&lt;version&gt; --save-dev
 <h4 id="global-installation">Global Installation</h4>
 
 <p>第二種是官方不推薦使用的Global方式，原因是你會被鎖死在某一個webpack版本，然後假設你有多個project，那有可能就會造成一些error。 </p>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash">npm install webpack -g
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>npm install webpack -g
 </code></pre></div>
 <p></br></p>
 
 <h4 id="bleeding-edge">Bleeding Edge</h4>
 
 <p>第三種就是geek在用的，如果想體驗新版本的話就使用此方式。</p>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash">npm install webpack/webpack#&lt;tagname/branchname&gt;
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>npm install webpack/webpack#&lt;tagname/branchname&gt;
 </code></pre></div>
 <p></br></p>
 
@@ -425,37 +425,37 @@ npm install webpack@&lt;version&gt; --save-dev
 <p>安裝完成以後，要來使用<code>webpack</code>來bundle一個project，首先要先建立三個檔案，分別為index.html、app.js以及util.js。</p>
 
 <p><strong>utils.js</strong></p>
-<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">div</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">createElement</span><span class="p">(</span><span class="s2">&quot;div&quot;</span><span class="p">)</span>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="kd">var</span> <span class="nx">div</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">createElement</span><span class="p">(</span><span class="s2">&quot;div&quot;</span><span class="p">)</span>
 <span class="nx">div</span><span class="p">.</span><span class="nx">innerHTML</span><span class="o">=</span><span class="s2">&quot;Hello worl Ken!&quot;</span><span class="p">;</span>
 <span class="nb">document</span><span class="p">.</span><span class="nx">body</span><span class="p">.</span><span class="nx">appendChild</span><span class="p">(</span><span class="nx">div</span><span class="p">);</span>
 </code></pre></div>
 <p>util.js會去建立一個div element，然後把它塞入body之中。</br></p>
 
 <p><strong>app.js</strong></p>
-<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s1">&#39;app&#39;</span><span class="p">).</span><span class="nx">innerHTML</span><span class="o">=</span><span class="s2">&quot;Your first webpack pacakge&quot;</span><span class="p">;</span>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s1">&#39;app&#39;</span><span class="p">).</span><span class="nx">innerHTML</span><span class="o">=</span><span class="s2">&quot;Your first webpack pacakge&quot;</span><span class="p">;</span>
 <span class="nx">require</span><span class="p">(</span><span class="s2">&quot;./util.js&quot;</span><span class="p">);</span>
 </code></pre></div>
 <p>app.js會去找到id為app的element，然後把它塞入字串。</p>
 
 <p><strong>index.html</strong></p>
-<div class="highlight"><pre><code class="language-html" data-lang="html"><span class="cp">&lt;!DOCTYPE html&gt;</span>
-<span class="nt">&lt;html</span> <span class="na">lang=</span><span class="s">&quot;en&quot;</span><span class="nt">&gt;</span>
-    <span class="nt">&lt;body&gt;</span>
-        <span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">&quot;app&quot;</span><span class="nt">&gt;&lt;/div&gt;</span>
-        <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&quot;bundle.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
-    <span class="nt">&lt;/body&gt;</span>
-<span class="nt">&lt;/html&gt;</span>
+<div class="highlight"><pre><code class="language-html" data-lang="html"><span></span><span class="cp">&lt;!DOCTYPE html&gt;</span>
+<span class="p">&lt;</span><span class="nt">html</span> <span class="na">lang</span><span class="o">=</span><span class="s">&quot;en&quot;</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">body</span><span class="p">&gt;</span>
+        <span class="p">&lt;</span><span class="nt">div</span> <span class="na">id</span><span class="o">=</span><span class="s">&quot;app&quot;</span><span class="p">&gt;&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+        <span class="p">&lt;</span><span class="nt">script</span> <span class="na">src</span><span class="o">=</span><span class="s">&quot;bundle.js&quot;</span><span class="p">&gt;&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+    <span class="p">&lt;/</span><span class="nt">body</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">html</span><span class="p">&gt;</span>
 </code></pre></div>
 <p>你會發現index.html中，使用的js是bundle.js，卻不是先前建立的任何一隻js！因為bundle.js就是透過webpack bundle出來的js file。</br>
 有了檔案以後，接下來就可以透過<code>webpack</code>來bundle，如果成功的話，就會看到bundle的過程，以及有哪幾隻檔案。</p>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>webpack app.js bundle.js
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ webpack app.js bundle.js
 Hash: dc7cbcef87369e1a8e24
-Version: webpack 2.2.1
+Version: webpack <span class="m">2</span>.2.1
 Time: 79ms
     Asset     Size  Chunks             Chunk Names
-bundle.js  2.78 kB       <span class="m">0</span>  <span class="o">[</span>emitted<span class="o">]</span>  main
-   <span class="o">[</span>0<span class="o">]</span> ./util.js <span class="m">104</span> bytes <span class="o">{</span>0<span class="o">}</span> <span class="o">[</span>built<span class="o">]</span>
-   <span class="o">[</span>1<span class="o">]</span> ./app.js <span class="m">87</span> bytes <span class="o">{</span>0<span class="o">}</span> <span class="o">[</span>built<span class="o">]</span>
+bundle.js  <span class="m">2</span>.78 kB       <span class="m">0</span>  <span class="o">[</span>emitted<span class="o">]</span>  main
+   <span class="o">[</span><span class="m">0</span><span class="o">]</span> ./util.js <span class="m">104</span> bytes <span class="o">{</span><span class="m">0</span><span class="o">}</span> <span class="o">[</span>built<span class="o">]</span>
+   <span class="o">[</span><span class="m">1</span><span class="o">]</span> ./app.js <span class="m">87</span> bytes <span class="o">{</span><span class="m">0</span><span class="o">}</span> <span class="o">[</span>built<span class="o">]</span>
 </code></pre></div>
 <p></br></p>
 
@@ -474,7 +474,7 @@ bundle.js  2.78 kB       <span class="m">0</span>  <span class="o">[</span>emitt
 <p>如果我每次改一次檔案就要打一次build指令，然後又都那麼長，是不是很煩？不用擔心，哪一種工具會沒提供configuration？不管是json or yaml，所以webpack也有提供。根據上面的指令，所對應的configuration會長的像下面一樣，</p>
 
 <p><strong>webpack.config.js</strong></p>
-<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">Webpack</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s2">&quot;webpack&quot;</span><span class="p">);</span>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="kd">var</span> <span class="nx">Webpack</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s2">&quot;webpack&quot;</span><span class="p">);</span>
 <span class="nx">module</span><span class="p">.</span><span class="nx">exports</span> <span class="o">=</span> <span class="p">{</span>
     <span class="nx">entry</span><span class="o">:</span> <span class="p">[</span><span class="s2">&quot;./app.js&quot;</span><span class="p">],</span>
     <span class="nx">output</span><span class="o">:</span> <span class="p">{</span>
@@ -498,13 +498,13 @@ bundle.js  2.78 kB       <span class="m">0</span>  <span class="o">[</span>emitt
 </ol>
 
 <p>了解各個參數的意思以後，就可以直接在資料夾下，輸入<code>webpack</code>就可以build了，不需要再打很長串的指令。</p>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash">webpack -p
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>webpack -p
 </code></pre></div>
 <p></br></p>
 
 <hr>
 
-<h3 id="5-what-39-s-loader">5. What&#39;s loader?</h3>
+<h3 id="5-whats-loader">5. What&#39;s loader?</h3>
 
 <hr>
 
@@ -525,23 +525,23 @@ bundle.js  2.78 kB       <span class="m">0</span>  <span class="o">[</span>emitt
 <h4 id="css-loader-style-loader">css-loader style-loader</h4>
 
 <p>首先先安裝<code>css-loader</code>和<code>style-loader</code>，</p>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>npm install css-loader style-loader --save-dev
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ npm install css-loader style-loader --save-dev
 </code></pre></div>
 <p></br>
 然後來撰寫我們的style.css，</p>
-<div class="highlight"><pre><code class="language-css" data-lang="css"><span class="nt">div</span> <span class="p">{</span>
-    <span class="k">color</span><span class="o">:</span> <span class="nb">red</span><span class="p">;</span>
+<div class="highlight"><pre><code class="language-css" data-lang="css"><span></span><span class="nt">div</span> <span class="p">{</span>
+    <span class="k">color</span><span class="p">:</span> <span class="kc">red</span><span class="p">;</span>
 <span class="p">}</span>
 </code></pre></div>
 <p>然後在<code>app.js</code>中，引用這個css，</p>
-<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s1">&#39;app&#39;</span><span class="p">).</span><span class="nx">innerHTML</span><span class="o">=</span><span class="s2">&quot;first webpack pacakge&quot;</span><span class="p">;</span>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s1">&#39;app&#39;</span><span class="p">).</span><span class="nx">innerHTML</span><span class="o">=</span><span class="s2">&quot;first webpack pacakge&quot;</span><span class="p">;</span>
 <span class="nx">require</span><span class="p">(</span><span class="s2">&quot;./util.js&quot;</span><span class="p">);</span>
 <span class="nx">require</span><span class="p">(</span><span class="s2">&quot;./style.css&quot;</span><span class="p">);</span>
 </code></pre></div>
 <p>接著把loader的設定加入至<code>webpack.config.js</code>，然後重新build一次，</p>
 
 <p><strong>webpack.config.js</strong></p>
-<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">Webpack</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s2">&quot;webpack&quot;</span><span class="p">);</span>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="kd">var</span> <span class="nx">Webpack</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s2">&quot;webpack&quot;</span><span class="p">);</span>
 <span class="nx">module</span><span class="p">.</span><span class="nx">exports</span> <span class="o">=</span> <span class="p">{</span>
     <span class="nx">entry</span><span class="o">:</span> <span class="p">[</span><span class="s2">&quot;./app.js&quot;</span><span class="p">],</span>
     <span class="nx">output</span><span class="o">:</span> <span class="p">{</span>
@@ -555,7 +555,7 @@ bundle.js  2.78 kB       <span class="m">0</span>  <span class="o">[</span>emitt
         <span class="p">}]</span>
     <span class="p">}</span>
 <span class="p">}</span>
-</code></pre></div><div class="highlight"><pre><code class="language-bash" data-lang="bash">webpack -p
+</code></pre></div><div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>webpack -p
 </code></pre></div>
 <p>再打開index.html，就會發現你的字體顏色變紅色了</p>
 
@@ -564,28 +564,28 @@ bundle.js  2.78 kB       <span class="m">0</span>  <span class="o">[</span>emitt
 <h4 id="url-loader">url-loader</h4>
 
 <p>我覺得這是一個超強大的loader，他可以根據你的需求，把一些圖片轉成base64，這樣就可以減輕一些loading！首先先來安裝<code>url-loader</code>，</p>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash">npm install url-loader --save-dev
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>npm install url-loader --save-dev
 </code></pre></div>
 <p>安裝完之後，來編輯<code>style.css</code>，在裡面設定image，</p>
-<div class="highlight"><pre><code class="language-css" data-lang="css"><span class="nf">#content</span> <span class="p">{</span>
-    <span class="k">background-image</span><span class="o">:</span> <span class="sx">url(img/bg.png)</span><span class="p">;</span>
+<div class="highlight"><pre><code class="language-css" data-lang="css"><span></span><span class="p">#</span><span class="nn">content</span> <span class="p">{</span>
+    <span class="k">background-image</span><span class="p">:</span> <span class="nb">url</span><span class="p">(</span><span class="sx">img/bg.png</span><span class="p">);</span>
 <span class="p">}</span>
 </code></pre></div>
 <p>然後在<code>index.html</code>中，加入對應的<code>id</code>，</p>
-<div class="highlight"><pre><code class="language-html" data-lang="html"><span class="cp">&lt;!DOCTYPE html&gt;</span>
-<span class="nt">&lt;html</span> <span class="na">lang=</span><span class="s">&quot;en&quot;</span><span class="nt">&gt;</span>
-<span class="nt">&lt;head&gt;</span>
-    <span class="nt">&lt;meta</span> <span class="na">charset=</span><span class="s">&quot;utf-8&quot;</span><span class="nt">&gt;</span>
-<span class="nt">&lt;/head&gt;</span>
-<span class="nt">&lt;body&gt;</span>
-    <span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">&quot;app&quot;</span><span class="nt">&gt;&lt;/div&gt;</span>
-    <span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">&quot;content&quot;</span><span class="nt">&gt;&lt;/div&gt;</span> 
-    <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&quot;bundle.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
-<span class="nt">&lt;/body&gt;</span>
-<span class="nt">&lt;/html&gt;</span>
+<div class="highlight"><pre><code class="language-html" data-lang="html"><span></span><span class="cp">&lt;!DOCTYPE html&gt;</span>
+<span class="p">&lt;</span><span class="nt">html</span> <span class="na">lang</span><span class="o">=</span><span class="s">&quot;en&quot;</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">head</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">meta</span> <span class="na">charset</span><span class="o">=</span><span class="s">&quot;utf-8&quot;</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">head</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">body</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">div</span> <span class="na">id</span><span class="o">=</span><span class="s">&quot;app&quot;</span><span class="p">&gt;&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">div</span> <span class="na">id</span><span class="o">=</span><span class="s">&quot;content&quot;</span><span class="p">&gt;&lt;/</span><span class="nt">div</span><span class="p">&gt;</span> 
+    <span class="p">&lt;</span><span class="nt">script</span> <span class="na">src</span><span class="o">=</span><span class="s">&quot;bundle.js&quot;</span><span class="p">&gt;&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">body</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">html</span><span class="p">&gt;</span>
 </code></pre></div>
 <p>然後一樣要在<code>webpack.config.js</code>中加入url-loader的設定，</p>
-<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">Webpack</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s2">&quot;webpack&quot;</span><span class="p">);</span>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="kd">var</span> <span class="nx">Webpack</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s2">&quot;webpack&quot;</span><span class="p">);</span>
 <span class="nx">module</span><span class="p">.</span><span class="nx">exports</span> <span class="o">=</span> <span class="p">{</span>
     <span class="nx">entry</span><span class="o">:</span> <span class="p">[</span><span class="s2">&quot;./app.js&quot;</span><span class="p">],</span>
     <span class="nx">output</span><span class="o">:</span> <span class="p">{</span>
@@ -601,7 +601,7 @@ bundle.js  2.78 kB       <span class="m">0</span>  <span class="o">[</span>emitt
 <span class="p">}</span>
 </code></pre></div>
 <p>最後再來build一次，</p>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash">webpack -p
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>webpack -p
 </code></pre></div>
 <p>build完以後，打開<code>index.html</code>以及browser developer mode，會發現該張圖片已經變成base64編碼。</p>
 
@@ -619,10 +619,10 @@ bundle.js  2.78 kB       <span class="m">0</span>  <span class="o">[</span>emitt
 然後馬上跑去browser看，會發現它已經變更了！完全不用自己手動refresh！</br></p>
 
 <p>使用方式很簡單，首先先安裝，</p>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash">npm install webpack-dev-server -g
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>npm install webpack-dev-server -g
 </code></pre></div>
 <p>安裝完以後，在放置<code>webpack.config.js</code>的folder底下，輸入指令，</p>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash">webpack-dev-server
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>webpack-dev-server
 </code></pre></div>
 <p>如果成功應該會看到一長串的內容，包含跟你說server的port等等相關資訊。
 webpack就先講到這了，有進階應用的話再來補充。</p>
@@ -674,7 +674,7 @@ webpack就先講到這了，有進階應用的話再來補充。</p>
     
       <li><a href="/archive.html">Archive</a></li>
     
-      <li class="next disabled"><a>Next &rarr;</a>
+      <li class="next"><a href="/2017/06/11/whats-mysql-partition" title="What's MySQL partition">Next &raquo;</a></li>
     
     </ul>
     <hr>

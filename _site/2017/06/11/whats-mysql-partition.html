@@ -1,0 +1,787 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>What's MySQL partition</title>
+    <meta name="description" content="">
+    <meta name="author" content="Ken Yang">
+
+    <!-- Enable responsive viewport -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Bootstrap styles -->
+    <link href="/assets/themes/bootstrap-3/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Optional theme -->
+    <link href="/assets/themes/bootstrap-3/bootstrap/css/bootstrap-theme.min.css" rel="stylesheet">
+    <!-- Sticky Footer -->
+    <link href="/assets/themes/bootstrap-3/bootstrap/css/bs-sticky-footer.css" rel="stylesheet">
+    
+    <!-- Custom styles -->
+    <link href="/assets/themes/bootstrap-3/css/style.css?body=1" rel="stylesheet" type="text/css" media="all">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Fav and touch icons -->
+    <!-- Update these with your own images
+      <link rel="shortcut icon" href="images/favicon.ico">
+      <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+      <link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-72x72.png">
+      <link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png">
+    -->
+
+    <!-- atom & rss feed -->
+    <link href="/atom.xml" type="application/atom+xml" rel="alternate" title="Sitewide ATOM Feed">
+    <link href="/rss.xml" type="application/rss+xml" rel="alternate" title="Sitewide RSS Feed">
+
+  </head>
+
+  <body>
+    <div id="wrap">
+      <nav class="navbar navbar-default" role="navigation">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#jb-navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/">Ken Yang筆記</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="jb-navbar-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+            
+
+
+  
+    
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/about">About Ken Yang</a></li>
+      	
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/archive">Archive</a></li>
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+  
+    
+      
+    
+  
+    
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/tags">Tags</a></li>
+      	
+      
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+
+
+
+          </ul>
+          <form method="get" class="navbar-form navbar-right" role="search" action="https://www.google.com/search">
+            <div class="form-group">
+              <input name="q" id="search-value" type="text" class="form-control" placeholder="Search">
+              <input style="display: none" name="as_sitesearch" id="search-value" type="text" class="form-control" value="blog.kenyang.net">
+            </div>
+            <button type="submit" class="btn btn-default">Submit</button>
+          </form>
+        </div><!-- /.navbar-collapse -->
+      </nav>
+
+      <div class="container">
+        <style>
+/* Adjusted to give override background and text colour */
+.highlight pre, pre, .highlight .hll {
+    background-color: #49483E;
+    border: 1px solid #ccc;
+    padding: 6px 10px;
+    border-radius: 3px;
+    color: #FFFFFF;
+}
+/* Highlights taken from https://gist.github.com/asaaki/1007420  for Monokai theme */
+.c                 { color: #75715e }               /* Comment                     */
+.err               { color: #960050;
+                     background-color: #1e0010 }    /* Error                       */
+.k                 { color: #66d9ef }               /* Keyword                     */
+.l                 { color: #ae81ff }               /* Literal                     */
+.n                 { color: #f8f8f2 }               /* Name                        */
+.o                 { color: #f92672 }               /* Operator                    */
+.p                 { color: #f8f8f2 }               /* Punctuation                 */
+.cm                { color: #75715e }               /* Comment.Multiline           */
+.cp                { color: #75715e }               /* Comment.Preproc             */
+.c1                { color: #75715e }               /* Comment.Single              */
+.cs                { color: #75715e }               /* Comment.Special             */
+.ge                { font-style: italic }           /* Generic.Emph                */
+.gs                { font-weight: bold }            /* Generic.Strong              */
+.kc                { color: #66d9ef }               /* Keyword.Constant            */
+.kd                { color: #66d9ef }               /* Keyword.Declaration         */
+.kn                { color: #f92672 }               /* Keyword.Namespace           */
+.kp                { color: #66d9ef }               /* Keyword.Pseudo              */
+.kr                { color: #66d9ef }               /* Keyword.Reserved            */
+.kt                { color: #66d9ef }               /* Keyword.Type                */
+.ld                { color: #e6db74 }               /* Literal.Date                */
+.m                 { color: #ae81ff }               /* Literal.Number              */
+.s                 { color: #e6db74 }               /* Literal.String              */
+.na                { color: #a6e22e }               /* Name.Attribute              */
+.nb                { color: #f8f8f2 }               /* Name.Builtin                */
+.nc                { color: #a6e22e }               /* Name.Class                  */
+.no                { color: #66d9ef }               /* Name.Constant               */
+.nd                { color: #a6e22e }               /* Name.Decorator              */
+.ni                { color: #f8f8f2 }               /* Name.Entity                 */
+.ne                { color: #a6e22e }               /* Name.Exception              */
+.nf                { color: #a6e22e }               /* Name.Function               */
+.nl                { color: #f8f8f2 }               /* Name.Label                  */
+.nn                { color: #f8f8f2 }               /* Name.Namespace              */
+.nx                { color: #a6e22e }               /* Name.Other                  */
+.py                { color: #f8f8f2 }               /* Name.Property               */
+.nt                { color: #f92672 }               /* Name.Tag                    */
+.nv                { color: #f8f8f2 }               /* Name.Variable               */
+.ow                { color: #f92672 }               /* Operator.Word               */
+.w                 { color: #f8f8f2 }               /* Text.Whitespace             */
+.mf                { color: #ae81ff }               /* Literal.Number.Float        */
+.mh                { color: #ae81ff }               /* Literal.Number.Hex          */
+.mi                { color: #ae81ff }               /* Literal.Number.Integer      */
+.mo                { color: #ae81ff }               /* Literal.Number.Oct          */
+.sb                { color: #e6db74 }               /* Literal.String.Backtick     */
+.sc                { color: #e6db74 }               /* Literal.String.Char         */
+.sd                { color: #e6db74 }               /* Literal.String.Doc          */
+.s2                { color: #e6db74 }               /* Literal.String.Double       */
+.se                { color: #ae81ff }               /* Literal.String.Escape       */
+.sh                { color: #e6db74 }               /* Literal.String.Heredoc      */
+.si                { color: #e6db74 }               /* Literal.String.Interpol     */
+.sx                { color: #e6db74 }               /* Literal.String.Other        */
+.sr                { color: #e6db74 }               /* Literal.String.Regex        */
+.s1                { color: #e6db74 }               /* Literal.String.Single       */
+.ss                { color: #e6db74 }               /* Literal.String.Symbol       */
+.bp                { color: #f8f8f2 }               /* Name.Builtin.Pseudo         */
+.vc                { color: #f8f8f2 }               /* Name.Variable.Class         */
+.vg                { color: #f8f8f2 }               /* Name.Variable.Global        */
+.vi                { color: #f8f8f2 }               /* Name.Variable.Instance      */
+.il                { color: #ae81ff }               /* Literal.Number.Integer.Long */
+</style>
+
+
+<div class="page-header">
+  <h1>What's MySQL partition </h1>
+</div>
+
+<div class="row post-full">
+  <div>
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- ken on github -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3783438370424072"
+     data-ad-slot="1516206098"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+  </div>
+  <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-70705007-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+
+  <div class="col-xs-12">
+    <div class="date">
+      <span>11 June 2017</span>
+    </div>
+    <div class="content" style="line-height: 28px;">
+      <p><font size="3"></p>
+
+<p>最近在面試幾個candidate，都說自己有MySQL tuning的經驗，
+但進一步問下去，發現連MySQL怎麼用BTree放index，或者怎麼使用partition or sharding都不了解，所以打算來寫一系列的MySQL文章，這篇就先挑簡單的partition來寫。</p>
+
+<p></br></p>
+
+<hr>
+
+<h3 id="1-whats-partition-and-why">1. What&#39;s Partition and Why?</h3>
+
+<hr>
+
+<p>簡單說，Partition是將你的table，根據你的配置去divide成好幾個part；最重要的是，資料都是在同一個DB裡面，這對application來說，可以無感的使用它，卻又享有它的優點。</br></p>
+
+<p>那麼為何要用partition呢？partition的優點在於：</p>
+
+<ul>
+<li><code>Partition Pruning</code>：基於已經知道資料在哪個partition的條件下，讓你的SQL operation變快，這包含了<code>select, insert, update ,delete</code></li>
+<li><code>刪除資料</code>：當你的table很大時，刪除是非常耗時的一件工作，有了partition以後，你可以直接drop該partition，且時間上可以快上非常多。</li>
+</ul>
+
+<p></br></p>
+
+<!--more-->
+
+<hr>
+
+<h3 id="2-when-to-use-partition">2. When to use partition?</h3>
+
+<hr>
+
+<p>而使用partition的時機點，取決於資料量的大小，如果當你的資料只有幾千筆時，其實做partition的意義就不大了。
+</br>
+不過partition也不是萬靈丹，當你的資料量成長到一定的數量時，可能也意味著你的application使用人數也成長了，當你所有的操作都在同一個DB上時，partition也是救不了你的application，所以才會有進階的做法，就是<code>sharding</code>，但<code>sharding</code>就比較複雜了，不管是對application還是replication來說，所以這就等下一篇有機會再寫吧。
+</br>
+簡單說，基於下面的條件你就可以使用partition：</p>
+
+<ul>
+<li>如果你的table很大</li>
+<li>如果你知道你一定會去查詢會被partition的column</li>
+<li>如果你想要快速的刪除歷史資料</li>
+</ul>
+
+<p></br></p>
+
+<hr>
+
+<h3 id="3-horizontal-vs-vertical">3. Horizontal vs Vertical</h3>
+
+<hr>
+
+<p>Partition分為兩種類型：</p>
+
+<ol>
+<li>Horizontal：同一個row資料可以存在不同的partition上</li>
+<li>Vertical：不同的column存在不同的partition上</li>
+</ol>
+
+<p>目前MySQL只支援horizontal partition。</p>
+
+<p></br></p>
+
+<hr>
+
+<h3 id="4-types-of-mysql-partition">4. Types of MySQL partition</h3>
+
+<hr>
+
+<p>而上面有說到，你可以配置你想要MySQL怎麼擺放你的資料，而配置的種類如下：</p>
+
+<ol>
+<li>Key(column)：deleted by partition not works</li>
+<li>Hash(INT expression)：deleted by partition not works</li>
+<li>RANGE(INT expression) or RANGE COLUMNS()</li>
+<li>LIST(INT expression) or LIST COLUMNS()</li>
+</ol>
+
+<p>接下來會ㄧ一說明各個的差別。</p>
+
+<p></br></p>
+
+<h4 id="4-1-key-partitioning">4-1. Key partitioning</h4>
+
+<p>如果你是使用key partitioning的話，MySQL會用它自己的hash function算出你這筆資料要放哪裡。</br>
+key的用法為<code>key(column)</code>，裡面必須為table中的某個欄位，範例如下：</p>
+<div class="highlight"><pre><code class="language-sql" data-lang="sql"><span></span><span class="k">CREATE</span> <span class="k">TABLE</span> <span class="n">t</span> <span class="p">(</span>
+    <span class="n">id</span> <span class="nb">INT</span><span class="p">,</span> 
+    <span class="n">create_time</span> <span class="n">DATETIME</span>
+<span class="p">)</span>    
+<span class="n">PARTITION</span> <span class="k">BY</span> <span class="k">KEY</span><span class="p">(</span><span class="n">create_time</span><span class="p">)</span>
+<span class="n">PARTITIONS</span> <span class="mi">10</span><span class="p">;</span>
+</code></pre></div>
+<p>上面的範例，就會根據data的create_time，去divide出10個partition，然後當塞入資料時，會決定要放置到哪個partition。
+有二點要注意，key只能使用column當作判斷指標，不能使用expression，以及如果使用key的話，無法根據partition進行刪除。</p>
+
+<p></br></p>
+
+<h4 id="4-2-hash-partitioning">4-2. Hash partitioning</h4>
+
+<p>Hash的用法為<code>HASH(INT expression)</code>，裡面一定要是</p>
+
+<ul>
+<li>Int</li>
+<li>expression且是回傳Int，如<code>MONTH(now())</code></li>
+</ul>
+<div class="highlight"><pre><code class="language-sql" data-lang="sql"><span></span><span class="k">CREATE</span> <span class="k">TABLE</span> <span class="n">t</span> <span class="p">(</span>
+    <span class="n">id</span> <span class="nb">INT</span><span class="p">,</span> 
+    <span class="n">create_time</span> <span class="n">DATETIME</span>
+<span class="p">)</span>    
+<span class="n">PARTITION</span> <span class="k">BY</span> <span class="n">HASH</span><span class="p">(</span><span class="k">MONTH</span><span class="p">(</span><span class="n">create_time</span><span class="p">))</span>
+<span class="n">PARTITIONS</span> <span class="mi">12</span><span class="p">;</span>
+</code></pre></div>
+<p>上面的範例，就會根據data的create_time，去divide出12個partition。然後HASH一樣無法根據partition進行刪除。</p>
+
+<p></br></p>
+
+<h4 id="4-3-list-partitioning">4-3. LIST partitioning</h4>
+
+<p>LIST的用法為<code>LIST(INT expression)</code>，參數也一定要是</p>
+
+<ul>
+<li>Int</li>
+<li>expression且是回傳Int，如<code>MONTH(now())</code></li>
+</ul>
+<div class="highlight"><pre><code class="language-sql" data-lang="sql"><span></span><span class="k">CREATE</span> <span class="k">TABLE</span> <span class="n">t</span> <span class="p">(</span>
+    <span class="n">id</span> <span class="nb">INT</span><span class="p">,</span> 
+    <span class="n">create_time</span> <span class="n">DATETIME</span>
+<span class="p">)</span>    
+<span class="n">PARTITION</span> <span class="k">BY</span> <span class="n">LIST</span><span class="p">(</span><span class="n">DAYOFWEEK</span><span class="p">(</span><span class="n">create_time</span><span class="p">))</span> <span class="p">(</span>
+    <span class="n">PARTITION</span> <span class="n">pMon</span> <span class="k">VALUES</span> <span class="k">IN</span> <span class="p">(</span><span class="mi">1</span><span class="p">),</span>
+    <span class="n">PARTITION</span> <span class="n">pTue</span> <span class="k">VALUES</span> <span class="k">IN</span> <span class="p">(</span><span class="mi">2</span><span class="p">),</span>
+    <span class="n">PARTITION</span> <span class="n">pWed</span> <span class="k">VALUES</span> <span class="k">IN</span> <span class="p">(</span><span class="mi">3</span><span class="p">),</span>
+    <span class="n">PARTITION</span> <span class="n">pThu</span> <span class="k">VALUES</span> <span class="k">IN</span> <span class="p">(</span><span class="mi">4</span><span class="p">)</span>        
+<span class="p">);</span>
+</code></pre></div>
+<p>上面的範例，就會根據data的DAYOFWEEK(create_time)，去divide出4個partition。</p>
+
+<p></br></p>
+
+<h4 id="4-4-range-partitioning">4-4.  Range partitioning</h4>
+
+<p>Range的用法為<code>Range(INT expression)</code>，參數也一定要是</p>
+
+<ul>
+<li>Int</li>
+<li>expression且是回傳Int，如<code>YEAR(now())</code></li>
+</ul>
+<div class="highlight"><pre><code class="language-sql" data-lang="sql"><span></span><span class="k">CREATE</span> <span class="k">TABLE</span> <span class="n">t</span> <span class="p">(</span>
+    <span class="n">id</span> <span class="nb">INT</span><span class="p">,</span> 
+    <span class="n">create_time</span> <span class="n">DATETIME</span>
+<span class="p">)</span>    
+<span class="n">PARTITION</span> <span class="k">BY</span> <span class="n">RANGE</span><span class="p">(</span><span class="k">YEAR</span><span class="p">(</span><span class="n">create_time</span><span class="p">))</span> <span class="p">(</span>
+    <span class="n">PARTITION</span> <span class="n">p2017</span> <span class="k">VALUES</span> <span class="k">LESS</span> <span class="k">THAN</span> <span class="p">(</span><span class="mi">2018</span><span class="p">),</span>
+    <span class="n">PARTITION</span> <span class="n">p2018</span> <span class="k">VALUES</span> <span class="k">LESS</span> <span class="k">THAN</span> <span class="p">(</span><span class="mi">2019</span><span class="p">),</span>
+    <span class="n">PARTITION</span> <span class="n">p2019</span> <span class="k">VALUES</span> <span class="k">LESS</span> <span class="k">THAN</span> <span class="p">(</span><span class="mi">2020</span><span class="p">)</span>
+<span class="p">);</span>
+</code></pre></div>
+<p>上面的範例，就會根據data的YEAR(create_time)，簡單說，就是會根據年份去divide出4個partition。
+</br>
+使用Range，有二點要注意，必須由低往高去設定，以及會無法insert超出range的資料。</p>
+
+<p></br></p>
+
+<hr>
+
+<h3 id="5-manage-partition">5. Manage partition</h3>
+
+<hr>
+
+<p>上面已經說明怎麼去設置不同type of partition了，接著要說明怎麼<code>新增</code> and <code>刪除</code> partition，</p>
+
+<h4 id="5-1-drop-partition">5-1. Drop partition</h4>
+
+<p>前面有說到，當table資料量很大時，delete會是一個很耗時的工作，但可以透過drop partition的方式達到相同目的，
+當然前提是你知道你的資料在哪個partition上。</p>
+<div class="highlight"><pre><code class="language-sql" data-lang="sql"><span></span><span class="k">ALTER</span> <span class="k">TABLE</span> <span class="n">t</span> <span class="k">DROP</span> <span class="n">PARTITION</span> <span class="n">p2019</span><span class="p">;</span>
+</code></pre></div>
+<h4 id="5-2-add-partition">5-2. Add partition</h4>
+
+<p>由於一開始在建立range or list partition時，不一定會一次建好所有的partition，
+以上面的<code>range</code>範例來說，我們也只建立了近3年的資料，但如果到了2020以後，就會無法<code>insert</code>了，
+所以勢必得動態add partition。</p>
+<div class="highlight"><pre><code class="language-sql" data-lang="sql"><span></span><span class="k">ALTER</span> <span class="k">TABLE</span> <span class="n">t</span> <span class="k">ADD</span> <span class="n">PARTITION</span> <span class="p">(</span><span class="n">PARTITION</span> <span class="n">p2020</span> <span class="k">VALUES</span> <span class="k">LESS</span> <span class="k">THAN</span> <span class="p">(</span><span class="mi">2021</span><span class="p">));</span>
+</code></pre></div>
+<p></br></p>
+
+<hr>
+
+<h3 id="6-partition-pruning">6. Partition Pruning</h3>
+
+<hr>
+
+<p>接著要講partition的其中一個優點，就是partition pruning，先建立二張table，一張有partition，另外一張則沒有，
+然後依樣塞入一些年份不同的資料。</p>
+<div class="highlight"><pre><code class="language-sql" data-lang="sql"><span></span><span class="k">CREATE</span> <span class="k">TABLE</span> <span class="n">t_partioned</span> <span class="p">(</span>
+    <span class="n">id</span> <span class="nb">INT</span><span class="p">,</span> 
+    <span class="n">create_time</span> <span class="n">DATETIME</span>
+<span class="p">)</span>    
+<span class="n">PARTITION</span> <span class="k">BY</span> <span class="n">RANGE</span><span class="p">(</span><span class="k">YEAR</span><span class="p">(</span><span class="n">create_time</span><span class="p">))</span> <span class="p">(</span>
+    <span class="n">PARTITION</span> <span class="n">p2017</span> <span class="k">VALUES</span> <span class="k">LESS</span> <span class="k">THAN</span> <span class="p">(</span><span class="mi">2018</span><span class="p">),</span>
+    <span class="n">PARTITION</span> <span class="n">p2018</span> <span class="k">VALUES</span> <span class="k">LESS</span> <span class="k">THAN</span> <span class="p">(</span><span class="mi">2019</span><span class="p">),</span>
+    <span class="n">PARTITION</span> <span class="n">p2019</span> <span class="k">VALUES</span> <span class="k">LESS</span> <span class="k">THAN</span> <span class="p">(</span><span class="mi">2020</span><span class="p">)</span>
+<span class="p">);</span>
+<span class="k">insert</span> <span class="k">into</span> <span class="n">t_partioned</span> <span class="k">values</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">now</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">+</span> <span class="nb">interval</span> <span class="mi">0</span> <span class="k">year</span><span class="p">);</span>
+<span class="k">insert</span> <span class="k">into</span> <span class="n">t_partioned</span> <span class="k">values</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="n">now</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">+</span> <span class="nb">interval</span> <span class="mi">0</span> <span class="k">year</span><span class="p">);</span>
+<span class="k">insert</span> <span class="k">into</span> <span class="n">t_partioned</span> <span class="k">values</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="n">now</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">+</span> <span class="nb">interval</span> <span class="mi">0</span> <span class="k">year</span><span class="p">);</span>
+<span class="k">insert</span> <span class="k">into</span> <span class="n">t_partioned</span> <span class="k">values</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="n">now</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">+</span> <span class="nb">interval</span> <span class="mi">1</span> <span class="k">year</span><span class="p">);</span>
+<span class="k">insert</span> <span class="k">into</span> <span class="n">t_partioned</span> <span class="k">values</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="n">now</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">+</span> <span class="nb">interval</span> <span class="mi">1</span> <span class="k">year</span><span class="p">);</span>
+<span class="k">insert</span> <span class="k">into</span> <span class="n">t_partioned</span> <span class="k">values</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="n">now</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">+</span> <span class="nb">interval</span> <span class="mi">1</span> <span class="k">year</span><span class="p">);</span>
+<span class="k">insert</span> <span class="k">into</span> <span class="n">t_partioned</span> <span class="k">values</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span><span class="n">now</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">+</span> <span class="nb">interval</span> <span class="mi">1</span> <span class="k">year</span><span class="p">);</span>
+<span class="k">insert</span> <span class="k">into</span> <span class="n">t_partioned</span> <span class="k">values</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span><span class="n">now</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">+</span> <span class="nb">interval</span> <span class="mi">2</span> <span class="k">year</span><span class="p">);</span>
+<span class="k">insert</span> <span class="k">into</span> <span class="n">t_partioned</span> <span class="k">values</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span><span class="n">now</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">+</span> <span class="nb">interval</span> <span class="mi">2</span> <span class="k">year</span><span class="p">);</span>
+<span class="k">insert</span> <span class="k">into</span> <span class="n">t_partioned</span> <span class="k">values</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="n">now</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">+</span> <span class="nb">interval</span> <span class="mi">2</span> <span class="k">year</span><span class="p">);</span>
+<span class="k">insert</span> <span class="k">into</span> <span class="n">t_partioned</span> <span class="k">values</span><span class="p">(</span><span class="mi">11</span><span class="p">,</span><span class="n">now</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">+</span> <span class="nb">interval</span> <span class="mi">2</span> <span class="k">year</span><span class="p">);</span>
+
+
+
+<span class="k">CREATE</span> <span class="k">TABLE</span> <span class="n">t_no_partioned</span> <span class="p">(</span>
+    <span class="n">id</span> <span class="nb">INT</span><span class="p">,</span> 
+    <span class="n">create_time</span> <span class="n">DATETIME</span>
+<span class="p">);</span>
+<span class="k">insert</span> <span class="k">into</span> <span class="n">t_no_partioned</span> <span class="k">values</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">now</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">+</span> <span class="nb">interval</span> <span class="mi">0</span> <span class="k">year</span><span class="p">);</span>
+<span class="k">insert</span> <span class="k">into</span> <span class="n">t_no_partioned</span> <span class="k">values</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="n">now</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">+</span> <span class="nb">interval</span> <span class="mi">0</span> <span class="k">year</span><span class="p">);</span>
+<span class="k">insert</span> <span class="k">into</span> <span class="n">t_no_partioned</span> <span class="k">values</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="n">now</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">+</span> <span class="nb">interval</span> <span class="mi">0</span> <span class="k">year</span><span class="p">);</span>
+<span class="k">insert</span> <span class="k">into</span> <span class="n">t_no_partioned</span> <span class="k">values</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="n">now</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">+</span> <span class="nb">interval</span> <span class="mi">1</span> <span class="k">year</span><span class="p">);</span>
+<span class="k">insert</span> <span class="k">into</span> <span class="n">t_no_partioned</span> <span class="k">values</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="n">now</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">+</span> <span class="nb">interval</span> <span class="mi">1</span> <span class="k">year</span><span class="p">);</span>
+<span class="k">insert</span> <span class="k">into</span> <span class="n">t_no_partioned</span> <span class="k">values</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="n">now</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">+</span> <span class="nb">interval</span> <span class="mi">1</span> <span class="k">year</span><span class="p">);</span>
+<span class="k">insert</span> <span class="k">into</span> <span class="n">t_no_partioned</span> <span class="k">values</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span><span class="n">now</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">+</span> <span class="nb">interval</span> <span class="mi">1</span> <span class="k">year</span><span class="p">);</span>
+<span class="k">insert</span> <span class="k">into</span> <span class="n">t_no_partioned</span> <span class="k">values</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span><span class="n">now</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">+</span> <span class="nb">interval</span> <span class="mi">2</span> <span class="k">year</span><span class="p">);</span>
+<span class="k">insert</span> <span class="k">into</span> <span class="n">t_no_partioned</span> <span class="k">values</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span><span class="n">now</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">+</span> <span class="nb">interval</span> <span class="mi">2</span> <span class="k">year</span><span class="p">);</span>
+<span class="k">insert</span> <span class="k">into</span> <span class="n">t_no_partioned</span> <span class="k">values</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="n">now</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">+</span> <span class="nb">interval</span> <span class="mi">2</span> <span class="k">year</span><span class="p">);</span>
+<span class="k">insert</span> <span class="k">into</span> <span class="n">t_no_partioned</span> <span class="k">values</span><span class="p">(</span><span class="mi">11</span><span class="p">,</span><span class="n">now</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">+</span> <span class="nb">interval</span> <span class="mi">2</span> <span class="k">year</span><span class="p">);</span>
+</code></pre></div>
+<p></br></p>
+
+<p>然後我們可以用MySQL的<code>explain</code>去觀察select這2張table時，會有什麼變化，以下面的例子來看，
+可以發現當查詢有partition的table時，也只去scan 7 rows，且直接從partition p2017, p2018去獲取資料；
+反之去查詢沒有partition的table時，是整張table都掃了一次，才找到要的資料。</p>
+<div class="highlight"><pre><code class="language-sql" data-lang="sql"><span></span><span class="n">mysql</span><span class="o">&gt;</span>  <span class="k">explain</span> <span class="k">select</span> <span class="o">*</span> <span class="k">from</span> <span class="n">t_partioned</span> <span class="k">where</span> <span class="n">create_time</span> <span class="o">&gt;</span> <span class="n">now</span><span class="p">()</span> <span class="k">and</span> <span class="n">create_time</span> <span class="o">&lt;</span> <span class="n">now</span><span class="p">()</span> <span class="o">+</span> <span class="nb">interval</span> <span class="mi">1</span> <span class="k">year</span><span class="p">;</span>
+<span class="o">+</span><span class="c1">----+-------------+-------------+-------------+------+---------------+------+---------+------+------+----------+-------------+</span>
+<span class="o">|</span> <span class="n">id</span> <span class="o">|</span> <span class="n">select_type</span> <span class="o">|</span> <span class="k">table</span>       <span class="o">|</span> <span class="n">partitions</span>  <span class="o">|</span> <span class="k">type</span> <span class="o">|</span> <span class="n">possible_keys</span> <span class="o">|</span> <span class="k">key</span>  <span class="o">|</span> <span class="n">key_len</span> <span class="o">|</span> <span class="k">ref</span>  <span class="o">|</span> <span class="k">rows</span> <span class="o">|</span> <span class="n">filtered</span> <span class="o">|</span> <span class="n">Extra</span>       <span class="o">|</span>
+<span class="o">+</span><span class="c1">----+-------------+-------------+-------------+------+---------------+------+---------+------+------+----------+-------------+</span>
+<span class="o">|</span>  <span class="mi">1</span> <span class="o">|</span> <span class="k">SIMPLE</span>      <span class="o">|</span> <span class="n">t_partioned</span> <span class="o">|</span> <span class="n">p2017</span><span class="p">,</span><span class="n">p2018</span> <span class="o">|</span> <span class="k">ALL</span>  <span class="o">|</span> <span class="k">NULL</span>          <span class="o">|</span> <span class="k">NULL</span> <span class="o">|</span> <span class="k">NULL</span>    <span class="o">|</span> <span class="k">NULL</span> <span class="o">|</span>    <span class="mi">7</span> <span class="o">|</span>    <span class="mi">14</span><span class="p">.</span><span class="mi">29</span> <span class="o">|</span> <span class="k">Using</span> <span class="k">where</span> <span class="o">|</span>
+<span class="o">+</span><span class="c1">----+-------------+-------------+-------------+------+---------------+------+---------+------+------+----------+-------------+</span>
+
+<span class="n">mysql</span><span class="o">&gt;</span> <span class="k">explain</span> <span class="k">select</span> <span class="o">*</span> <span class="k">from</span> <span class="n">t_no_partioned</span> <span class="k">where</span> <span class="n">create_time</span> <span class="o">&gt;</span> <span class="n">now</span><span class="p">()</span> <span class="k">and</span> <span class="n">create_time</span> <span class="o">&lt;</span> <span class="n">now</span><span class="p">()</span> <span class="o">+</span> <span class="nb">interval</span> <span class="mi">1</span> <span class="k">year</span><span class="p">;</span>
+<span class="o">+</span><span class="c1">----+-------------+----------------+------------+------+---------------+------+---------+------+------+----------+-------------+</span>
+<span class="o">|</span> <span class="n">id</span> <span class="o">|</span> <span class="n">select_type</span> <span class="o">|</span> <span class="k">table</span>          <span class="o">|</span> <span class="n">partitions</span> <span class="o">|</span> <span class="k">type</span> <span class="o">|</span> <span class="n">possible_keys</span> <span class="o">|</span> <span class="k">key</span>  <span class="o">|</span> <span class="n">key_len</span> <span class="o">|</span> <span class="k">ref</span>  <span class="o">|</span> <span class="k">rows</span> <span class="o">|</span> <span class="n">filtered</span> <span class="o">|</span> <span class="n">Extra</span>       <span class="o">|</span>
+<span class="o">+</span><span class="c1">----+-------------+----------------+------------+------+---------------+------+---------+------+------+----------+-------------+</span>
+<span class="o">|</span>  <span class="mi">1</span> <span class="o">|</span> <span class="k">SIMPLE</span>      <span class="o">|</span> <span class="n">t_no_partioned</span> <span class="o">|</span> <span class="k">NULL</span>       <span class="o">|</span> <span class="k">ALL</span>  <span class="o">|</span> <span class="k">NULL</span>          <span class="o">|</span> <span class="k">NULL</span> <span class="o">|</span> <span class="k">NULL</span>    <span class="o">|</span> <span class="k">NULL</span> <span class="o">|</span>   <span class="mi">11</span> <span class="o">|</span>    <span class="mi">11</span><span class="p">.</span><span class="mi">11</span> <span class="o">|</span> <span class="k">Using</span> <span class="k">where</span> <span class="o">|</span>
+<span class="o">+</span><span class="c1">----+-------------+----------------+------------+------+---------------+------+---------+------+------+----------+-------------+</span>
+</code></pre></div>
+<p></br>
+但是要做到partition pruning，根據不同的配置是有不同的條件的：</p>
+
+<ol>
+<li><code>PARTITION BY KEY(id)</code>
+
+<ul>
+<li>WHERE id = &#39;xxxx&#39;;</li>
+</ul></li>
+<li><code>PARTITION BY HASH(MONTH(create_time))</code>
+
+<ul>
+<li>WHERE create_time = &#39;12&#39;;</li>
+</ul></li>
+<li><code>PARTITION BY LIST(DAYOFWEEK(create_time))</code>
+
+<ul>
+<li>WHERE create_time = DAYOFWEEK(now());</li>
+</ul></li>
+<li><code>PARTITION BY RANGE(YEAR(create_time))</code>
+
+<ul>
+<li>WHERE create_time = now();</li>
+<li>WHERE create_time between now() AND now() + interval 1 year;</li>
+<li>WHERE create_time &gt; now();</li>
+</ul></li>
+</ol>
+
+<p></br></p>
+
+<hr>
+
+<h3 id="7-sub-partition">7. Sub partition</h3>
+
+<hr>
+
+<p>sub partition就是可以讓你在partition中再一次地切割，不過sub partition有先限制，</p>
+
+<ul>
+<li>只有<code>RANGE</code> and <code>LIST</code>是可以使用sub partition的</li>
+<li>sub partition type只能是<code>HASH</code> and <code>KEY</code></li>
+</ul>
+
+<p>以下面的例子來看，我們主要的partition是以RANGE(id)為主，然後有四個partition（p0,p1,p2,p3），每個底下又根據KEY(name)各切了2個，所以這例子來看，總共有2x4=8個partitions。</p>
+<div class="highlight"><pre><code class="language-sql" data-lang="sql"><span></span><span class="k">CREATE</span> <span class="k">TABLE</span> <span class="n">t</span> <span class="p">(</span>
+    <span class="n">id</span> <span class="nb">INT</span> <span class="k">NOT</span> <span class="k">NULL</span> <span class="n">AUTO_INCREMENT</span><span class="p">,</span>
+    <span class="n">name</span> <span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">25</span><span class="p">)</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
+    <span class="k">PRIMARY</span> <span class="k">KEY</span> <span class="n">pk</span> <span class="p">(</span><span class="n">id</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+<span class="p">)</span> 
+<span class="n">PARTITION</span> <span class="k">BY</span> <span class="n">RANGE</span><span class="p">(</span><span class="n">id</span><span class="p">)</span>
+<span class="n">SUBPARTITION</span> <span class="k">BY</span> <span class="k">KEY</span> <span class="p">(</span><span class="n">name</span><span class="p">)</span>
+<span class="n">SUBPARTITIONS</span> <span class="mi">2</span> <span class="p">(</span>
+    <span class="n">PARTITION</span> <span class="n">p0</span> <span class="k">VALUES</span> <span class="k">LESS</span> <span class="k">THAN</span> <span class="p">(</span><span class="mi">5</span><span class="p">),</span>
+    <span class="n">PARTITION</span> <span class="n">p1</span> <span class="k">VALUES</span> <span class="k">LESS</span> <span class="k">THAN</span> <span class="p">(</span><span class="mi">10</span><span class="p">),</span>
+    <span class="n">PARTITION</span> <span class="n">p2</span> <span class="k">VALUES</span> <span class="k">LESS</span> <span class="k">THAN</span> <span class="p">(</span><span class="mi">15</span><span class="p">),</span>
+    <span class="n">PARTITION</span> <span class="n">p3</span> <span class="k">VALUES</span> <span class="k">LESS</span> <span class="k">THAN</span> <span class="k">MAXVALUE</span>
+<span class="p">);</span>
+</code></pre></div>
+<p></br>
+查詢時，可以直接下</p>
+<div class="highlight"><pre><code class="language-sql" data-lang="sql"><span></span><span class="k">SELECT</span> <span class="n">id</span> <span class="k">FROM</span> <span class="n">t</span> <span class="n">PARTITION</span> <span class="p">(</span><span class="n">p0sp1</span><span class="p">);</span>
+</code></pre></div>
+<p></br></p>
+
+<hr>
+
+<h3 id="8-conclusion">8. Conclusion</h3>
+
+<hr>
+
+<p>上面是partition的基本知識，這裡彙整一些重點：</p>
+
+<ul>
+<li>partition不是萬靈丹，當用戶數多時，還是得考慮sharding其他方式</li>
+<li>如果你的table很大，可以考慮使用</li>
+<li>如果你一定會查詢會被partition的column，可以考慮使用</li>
+<li>如果你想要快速的刪除歷史資料，可以考慮使用</li>
+<li>Type of KEY and HASH不能根據partition去刪除資料</li>
+<li>只有RANGE and LIST可以使用sub partition</li>
+</ul>
+
+<p></br>
+</br>
+</br></p>
+
+<p></font></p>
+
+    </div>
+
+    
+
+  
+    <ul class="tag_box inline">
+      <li><i class="glyphicon glyphicon-tags"></i></li>
+      
+      
+
+
+  
+     
+    	<li><a href="/tags.html#mysql-ref">mysql <span>2</span></a></li>
+     
+    	<li><a href="/tags.html#partition-ref">partition <span>1</span></a></li>
+    
+  
+
+
+
+    </ul>
+    
+  <div>
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <!-- ken on github -->
+    <ins class="adsbygoogle"
+         style="display:block"
+         data-ad-client="ca-pub-3783438370424072"
+         data-ad-slot="1516206098"
+         data-ad-format="auto"></ins>
+    <script>
+    (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+  </div>
+  
+    <hr>
+    <ul class="pagination">
+    
+      <li class="prev"><a href="/2017/02/18/getting-started-with-webpack" title="Getting started with webpack">&laquo; Previous</a></li>
+    
+      <li><a href="/archive.html">Archive</a></li>
+    
+      <li class="next disabled"><a>Next &rarr;</a>
+    
+    </ul>
+    <hr>
+    
+
+
+  <div id="disqus_thread"></div>
+<script type="text/javascript">
+    
+    var disqus_developer = 1;
+    var disqus_shortname = 'ken-yang'; // required: replace example with your forum shortname
+    
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+
+
+
+  </div>
+</div>
+
+
+      </div>
+
+    </div>
+
+    <div id="footer">
+      <div class="container">
+        <p>&copy; 2017 Ken Yang
+          with help from <a href="http://jekyllbootstrap.com" target="_blank" title="The Definitive Jekyll Blogging Framework">Jekyll Bootstrap</a>
+          and <a href="http://getbootstrap.com" target="_blank">Bootstrap</a>
+        </p>
+      </div>
+    </div>
+
+    
+
+
+
+
+
+    <!-- Latest compiled and minified JavaScript, requires jQuery 1.x (2.x not supported in IE8) -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="/assets/themes/bootstrap-3/bootstrap/js/bootstrap.min.js"></script>
+  </body>
+</html>
+

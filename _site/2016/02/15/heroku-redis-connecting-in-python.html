@@ -360,7 +360,7 @@
 
 <p>第一步驟是要先安裝heroku-redis的command line tools，
 但如果你不想要用command line，你也可以至heroku的後台裡面的Add-ons加一台redis。</p>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>heroku plugins:install heroku-redis
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ heroku plugins:install heroku-redis
 </code></pre></div>
 <p></br></p>
 
@@ -376,13 +376,13 @@
 <li>hobby-dev: 這個是這台server的<a href="http://elements.heroku.com/addons/heroku-redis">Plan &amp; Pricing</a>，hobby-dev是免費的。</li>
 <li>sushi: 你的heroku app name</li>
 </ol>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>heroku addons:create heroku-redis:hobby-dev -a sushi
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ heroku addons:create heroku-redis:hobby-dev -a sushi
 </code></pre></div>
 <p></br>
 當你成功配置一台redis以後，你可以透過下面的指令找到該台redis URL，</p>
 
 <!--more-->
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>heroku config <span class="p">|</span> grep REDIS
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ heroku config <span class="p">|</span> grep REDIS
 </code></pre></div>
 <p></br></p>
 
@@ -393,30 +393,30 @@
 <hr>
 
 <p>要在Python中使用Redis，你必須安裝<code>redis</code>這個package，</p>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>pip install redis
-<span class="nv">$ </span>pip freeze &gt; requirements.txt
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ pip install redis
+$ pip freeze &gt; requirements.txt
 </code></pre></div>
 <p></br>
 接著就可以用這個<code>redis</code>這個package連結至redis server，<br>
 下面的example是用Flask這個framework來做示範，分別有<code>get</code>和<code>set</code>這二個URL。</p>
-<div class="highlight"><pre><code class="language-python" data-lang="python"><span class="kn">import</span> <span class="nn">os</span>
+<div class="highlight"><pre><code class="language-python" data-lang="python"><span></span><span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">redis</span>
 
-<span class="n">r</span> <span class="o">=</span> <span class="n">redis</span><span class="o">.</span><span class="n">from_url</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;REDIS_URL&quot;</span><span class="p">))</span>
+<span class="n">r</span> <span class="o">=</span> <span class="n">redis</span><span class="o">.</span><span class="n">from_url</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;REDIS_URL&quot;</span><span class="p">))</span>
 
-<span class="nd">@app.route</span><span class="p">(</span><span class="s">&#39;/get&#39;</span><span class="p">)</span>
+<span class="nd">@app.route</span><span class="p">(</span><span class="s1">&#39;/get&#39;</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">get</span><span class="p">():</span>
-    <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;name&quot;</span><span class="p">)</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-        <span class="k">return</span> <span class="s">&quot;no such key in Redis&quot;</span>
+    <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">)</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">&quot;no such key in Redis&quot;</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">r</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;name&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">r</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">)</span>
 
-<span class="nd">@app.route</span><span class="p">(</span><span class="s">&#39;/set&#39;</span><span class="p">)</span>
+<span class="nd">@app.route</span><span class="p">(</span><span class="s1">&#39;/set&#39;</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">set</span><span class="p">():</span>
-    <span class="n">r</span><span class="o">.</span><span class="n">setex</span><span class="p">(</span><span class="s">&#39;name&#39;</span><span class="p">,</span><span class="s">&#39;Ken Yang&#39;</span><span class="p">,</span><span class="mi">10</span><span class="p">)</span>
-    <span class="k">return</span> <span class="s">&quot;set done&quot;</span>
+    <span class="n">r</span><span class="o">.</span><span class="n">setex</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">,</span><span class="s1">&#39;Ken Yang&#39;</span><span class="p">,</span><span class="mi">10</span><span class="p">)</span>
+    <span class="k">return</span> <span class="s2">&quot;set done&quot;</span>
 </code></pre></div>
-<h2 id=""></br></h2>
+<h2 id="part-310c583402"></br></h2>
 
 <h3 id="4-testing-in-local-environment">4. Testing in local environment</h3>
 
@@ -424,8 +424,8 @@
 
 <p>如果你想要在local測試，需要把REDIS_URL的參數寫在.env裡面才行。<br>
 否則會找不到Redis在哪。</p>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>heroku config:get REDIS_URL -s  &gt;&gt; .env
-<span class="nv">$ </span>heroku <span class="nb">local </span>web
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ heroku config:get REDIS_URL -s  &gt;&gt; .env
+$ heroku <span class="nb">local</span> web
 </code></pre></div>
 <p></font></p>
 
