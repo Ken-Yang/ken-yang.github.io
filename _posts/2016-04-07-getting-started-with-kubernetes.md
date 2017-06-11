@@ -191,7 +191,7 @@ $ gcloud container clusters get-credentials cluster-1
 <br />
 簡單說，如果你要在kubernetes的cluster裡面run起來`一組`container，就得有一個pod，<br />
 `一組`container的意思是，這個pod裡面由一個以上的container所組成。
-<br /></br>
+<br /><br />
 用kubectl run來建立一個pod:
 
 ```bash

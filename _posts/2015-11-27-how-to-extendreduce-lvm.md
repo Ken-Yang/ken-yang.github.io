@@ -164,7 +164,7 @@ $ vgextend ubuntu-vg /dev/sdb1
 
 
 
-<br /></br></br>
+<br /><br /><br />
 
 
 ### 2. Shrink
