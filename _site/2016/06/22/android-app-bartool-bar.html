@@ -350,14 +350,14 @@
       
 <font size="3">
 
-大概一年多沒有寫Android了，最近發現好多不一樣了，
-譬如說ActionBar變成AppBar..不過以前的ActionBar還能繼續用，
+大概一年多沒有寫Android了，最近發現好多不一樣了，&lt;/br&gt;
+譬如說ActionBar變成AppBar..不過以前的ActionBar還能繼續用，&lt;/br&gt;
 但還是得學一下怎麼用App bar跟上潮流。
 
 [Example Code on Github] (https://github.com/Ken-Yang/AndroidAppBar)
 
 
-
+&lt;/br&gt;
 
 ---
 ### 1. Create new project
@@ -365,13 +365,13 @@
 
 首先先建立一個新的project，然後選擇Empty activity。
 
-
+&lt;/br&gt;
 
 ---
 ### 2. Add dependency
 ---
 
-接著打開build.gradle，把appcompat加入dependency，
+接著打開build.gradle，把appcompat加入dependency，&lt;/br&gt;
 不過如果你的Android Studio是新版的，就會自動幫你加入了。
 
 ```xml
@@ -384,13 +384,13 @@ dependencies {
 
 <!--more-->
 
-
+&lt;/br&gt;
 
 ---
 ### 3. Remove actionbar
 ---
 
-因為Default style會去繼承ActionBar Theme，所以我們要把它移除掉，
+因為Default style會去繼承ActionBar Theme，所以我們要把它移除掉，&lt;/br&gt;
 打開`style.xml`，然後把parent改成`Theme.AppCompat.Light.NoActionBar`。
 
 ```xml
@@ -399,7 +399,7 @@ dependencies {
 </style>
 ```
 
-
+&lt;/br&gt;
 
 ---
 ### 4. Color your App Bar
@@ -410,7 +410,7 @@ dependencies {
 1. **colorPrimary** : 以前ActionBar那條的背景顏色
 2. **colorPrimaryDark** : Status 那條的背景顏色
 
-
+&lt;/br&gt;
 
 首先要先在`color.xml`中，新增上述的二個顏色。
 
@@ -433,7 +433,7 @@ dependencies {
 </style>
 ```
 
-
+&lt;/br&gt;
 
 ---
 ### 5. Create a toobar
@@ -447,12 +447,12 @@ dependencies {
 
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.toolbar xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto" android:layout_width="match_parent" android:layout_height="?attr/actionBarSize" app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" app:popuptheme="@style/ThemeOverlay.AppCompat.Light" android:background="@color/colorPrimary">
+<android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto" android:layout_width="match_parent" android:layout_height="?attr/actionBarSize" app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" app:popupTheme="@style/ThemeOverlay.AppCompat.Light" android:background="@color/colorPrimary">
 
-</android.support.v7.widget.toolbar>
+</android.support.v7.widget.Toolbar>
 ```
 
-
+&lt;/br&gt;
 
 ---
 ### 6. Add the toolbar into activity
@@ -462,23 +462,23 @@ dependencies {
 
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
-<relativelayout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent" android:layout_height="match_parent" tools:context="com.ag888.ams.LoginActivity">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent" android:layout_height="match_parent" tools:context="com.ag888.ams.LoginActivity">
 
     <include android:id="@+id/tool_bar" layout="@layout/tool_bar" />
 
-    <textview android:layout_below="@+id/tool_bar" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Hello World!" />
-</relativelayout>
+    <TextView android:layout_below="@+id/tool_bar" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Hello World!" />
+</RelativeLayout>
 
 ```
 
-
+&lt;/br&gt;
 
 ---
 ### 7. Setup toolbar as actionbar
 ---
 
-完成上面步驟以後，你可以試著run看看，但你會發現就只是簡單的一條bar而已，
-並沒有title或者action item之類的，所以接下要把toolbar設定成ActionBar，
+完成上面步驟以後，你可以試著run看看，但你會發現就只是簡單的一條bar而已，&lt;/br&gt;
+並沒有title或者action item之類的，所以接下要把toolbar設定成ActionBar，&lt;/br&gt;
 把`ToolBar`丟進去`setSupportActionBar()`就可以了。
 
 ```java
@@ -492,7 +492,7 @@ protected void onCreate(Bundle savedInstanceState) {
 }
 ```
 
-
+&lt;/br&gt;&lt;/br&gt;&lt;/br&gt;&lt;/br&gt;
 
 
 </font>

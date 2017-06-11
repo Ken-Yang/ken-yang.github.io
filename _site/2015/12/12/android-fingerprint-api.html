@@ -350,26 +350,26 @@
       
 <p>&lt;font size=3&gt;</p>
 
-<p>Google在Android 6.0中，釋放了對[Fingerprint] (http://developer.android.com/intl/zh-tw/reference/android/hardware/fingerprint/FingerprintManager.html)操作的API，  <br />
+<p>Google在Android 6.0中，釋放了對[Fingerprint] (http://developer.android.com/intl/zh-tw/reference/android/hardware/fingerprint/FingerprintManager.html)操作的API，<br />
 而最近剛好也買了Nexus 6P，因此有了機會來玩看看。</p>
 
 <p>&lt;/br&gt;</p>
 
 <hr />
-<p>### 1. AndroidManifest.xml<br />
-—</p>
+<h3 id="1-androidmanifestxml">1. AndroidManifest.xml</h3>
+<hr />
 
 <p>首先要在<code class="highlighter-rouge">AndroidManifest.xml</code>中設定permission，</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="nt">&lt;uses-permission</span> <span class="na">android:name=</span><span class="s">"android.permission.USE_FINGERPRINT"</span> <span class="nt">/&gt;</span>
+<div class="language-xml highlighter-rouge"><pre class="highlight"><code><span class="nt">&lt;uses-permission</span> <span class="na">android:name=</span><span class="s">"android.permission.USE_FINGERPRINT"</span> <span class="nt">/&gt;</span>
 </code></pre>
 </div>
 
 <p>&lt;/br&gt;</p>
 
 <hr />
-<p>### 2. Check Requirement<br />
-—</p>
+<h3 id="2-check-requirement">2. Check Requirement</h3>
+<hr />
 
 <p>接著要檢查device上，是否有fingerprint reader，以及是否有設置了至少一枚fingerprint。下面這段code，主要檢查了三件事情：</p>
 
@@ -381,7 +381,7 @@
 
 <!--more-->
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="kd">private</span> <span class="n">KeyguardManager</span> <span class="n">km</span><span class="o">;</span>
+<div class="language-java highlighter-rouge"><pre class="highlight"><code><span class="kd">private</span> <span class="n">KeyguardManager</span> <span class="n">km</span><span class="o">;</span>
 <span class="kd">private</span> <span class="n">FingerprintManager</span> <span class="n">fm</span><span class="o">;</span>
 <span class="kd">private</span> <span class="n">CancellationSignal</span> <span class="n">cancellationSignal</span><span class="o">;</span>
 
@@ -421,12 +421,12 @@
 <p>&lt;/br&gt;</p>
 
 <hr />
-<p>### 3. Authenticate<br />
-—</p>
+<h3 id="3-authenticate">3. Authenticate</h3>
+<hr />
 
 <p>如果通過上述的檢查之後，就可以透過<code class="highlighter-rouge">FingerprintManager</code>進行<code class="highlighter-rouge">Authenticate</code>的動作，method call為：</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="kd">public</span> <span class="kt">void</span> <span class="nf">authenticate</span> <span class="p">(</span><span class="n">FingerprintManager</span><span class="o">.</span><span class="na">CryptoObject</span> <span class="n">crypto</span><span class="o">,</span> 
+<div class="language-java highlighter-rouge"><pre class="highlight"><code><span class="kd">public</span> <span class="kt">void</span> <span class="nf">authenticate</span> <span class="p">(</span><span class="n">FingerprintManager</span><span class="o">.</span><span class="na">CryptoObject</span> <span class="n">crypto</span><span class="o">,</span> 
                           <span class="n">CancellationSignal</span> <span class="n">cancel</span><span class="o">,</span> 
                           <span class="kt">int</span> <span class="n">flags</span><span class="o">,</span> 
                           <span class="n">FingerprintManager</span><span class="o">.</span><span class="na">AuthenticationCallback</span> <span class="n">callback</span><span class="o">,</span> 
@@ -453,7 +453,7 @@
 
 <p>了解參數以後就可以開始進行<strong>authenticate</strong>，</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>
+<div class="language-java highlighter-rouge"><pre class="highlight"><code>
 <span class="nd">@Override</span>
 <span class="kd">protected</span> <span class="kt">void</span> <span class="nf">onCreate</span><span class="p">(</span><span class="n">Bundle</span> <span class="n">savedInstanceState</span><span class="o">)</span> <span class="o">{</span>
 	<span class="o">....</span> <span class="n">ignore</span> <span class="o">...</span>

@@ -310,14 +310,14 @@
         
 <font size="3">
 
-大概一年多沒有寫Android了，最近發現好多不一樣了，
-譬如說ActionBar變成AppBar..不過以前的ActionBar還能繼續用，
+大概一年多沒有寫Android了，最近發現好多不一樣了，&lt;/br&gt;
+譬如說ActionBar變成AppBar..不過以前的ActionBar還能繼續用，&lt;/br&gt;
 但還是得學一下怎麼用App bar跟上潮流。
 
 [Example Code on Github] (https://github.com/Ken-Yang/AndroidAppBar)
 
 
-
+&lt;/br&gt;
 
 ---
 ### 1. Create new project
@@ -325,13 +325,13 @@
 
 首先先建立一個新的project，然後選擇Empty activity。
 
-
+&lt;/br&gt;
 
 ---
 ### 2. Add dependency
 ---
 
-接著打開build.gradle，把appcompat加入dependency，
+接著打開build.gradle，把appcompat加入dependency，&lt;/br&gt;
 不過如果你的Android Studio是新版的，就會自動幫你加入了。
 
 ```xml
@@ -376,20 +376,20 @@ dependencies {
         
 <p>&lt;font size=3&gt;</p>
 
-<p>這篇要講怎麼用Node.js建立一個HTTPS的server，如果你的certificate不是self-signed的，&lt;/br&gt;<br />
-那設定HTTPS並不難，產生CSR給CA provider，然後就會有certificate，把它放進去就好，&lt;/br&gt;<br />
+<p>這篇要講怎麼用Node.js建立一個HTTPS的server，如果你的certificate不是self-signed的，&lt;/br&gt;
+那設定HTTPS並不難，產生CSR給CA provider，然後就會有certificate，把它放進去就好，&lt;/br&gt;
 但如果是self-signed，那過程就有點麻煩，每次要弄的時候，都還是會有點忘記，所以乾脆把過程記錄下來好了。&lt;/br&gt;</p>
 
 <p>&lt;/br&gt;</p>
 
 <hr />
-<p>### 1. Creating a private key and CSR<br />
-—</p>
+<h3 id="1-creating-a-private-key-and-csr">1. Creating a private key and CSR</h3>
+<hr />
 
-<p>在create certificate之前，必須要先有<code class="highlighter-rouge">private key</code>以及<code class="highlighter-rouge">CSR</code> (certificate signing request)，&lt;/br&gt;<br />
+<p>在create certificate之前，必須要先有<code class="highlighter-rouge">private key</code>以及<code class="highlighter-rouge">CSR</code> (certificate signing request)，&lt;/br&gt;
 所以我們要先generate出private key以及CSR。</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="c"># generate private key</span>
+<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="c"># generate private key</span>
 <span class="gp">$ </span>openssl genrsa -des3 -passout pass:kenyang -out server.pass.key 2048
 <span class="gp">$ </span>openssl rsa -passin pass:kenyang -in server.pass.key -out server.key
 <span class="gp">$ </span>rm server.pass.key
@@ -432,15 +432,15 @@ dependencies {
         
 <p>&lt;font size=3&gt;</p>
 
-<p>Docker玩了一陣子，總覺得沒有玩一些container management的service好像少了點什麼，&lt;/br&gt;<br />
-剛好team裡用到<a href="http://kubernetes.io/docs/">Kubernetes</a>，所以這裡就記錄一下怎麼使用<a href="http://kubernetes.io/docs/">Kubernetes</a>。&lt;/br&gt;<br />
+<p>Docker玩了一陣子，總覺得沒有玩一些container management的service好像少了點什麼，&lt;/br&gt;
+剛好team裡用到<a href="http://kubernetes.io/docs/">Kubernetes</a>，所以這裡就記錄一下怎麼使用<a href="http://kubernetes.io/docs/">Kubernetes</a>。&lt;/br&gt;
 然後這篇會把Kubernetes架在Google Cloud Platform上面，所以還得去安裝Google Cloud SDK。</p>
 
 <p>&lt;/br&gt;</p>
 
 <hr />
-<p>### 1. Downloading Kubernetes<br />
-—</p>
+<h3 id="1-downloading-kubernetes">1. Downloading Kubernetes</h3>
+<hr />
 
 <p>第一步驟要先安裝Kubernetes，安裝方式有好幾種，</p>
 
@@ -454,25 +454,25 @@ dependencies {
 
 <p>各個的詳細步驟可以去<a href="http://kubernetes.io/docs/getting-started-guides/binary_release/">Kubernetes安裝頁面</a>看，我自己是選擇透過Google Cloud SDK來安裝，所以首先要先安裝Google Cloud SDK。</p>
 
-<p>&lt;/br&gt;<br />
+<p>&lt;/br&gt;
 <strong>安裝Google Cloud SDK</strong></p>
 
 <p>Google Cloud SDK這個tool讓你可以對Google Cloud Platform進行操作。安裝指令如下，Default installation path會在你的home目錄底下，</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>curl https://sdk.cloud.google.com | bash
+<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>curl https://sdk.cloud.google.com | bash
 </code></pre>
 </div>
-<p>&lt;/br&gt;<br />
+<p>&lt;/br&gt;
 接著要restart shell和設定gcloud environment，<code class="highlighter-rouge">gcloud init</code>這個指令會彈出browser要你login，以及要你輸入default zone，我是選asia-east1-a。</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span><span class="nb">exec</span> -l <span class="nv">$SHELL</span>
+<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span><span class="nb">exec</span> -l <span class="nv">$SHELL</span>
 <span class="gp">$ </span>gcloud init
 </code></pre>
 </div>
-<p>&lt;/br&gt;<br />
+<p>&lt;/br&gt;
 <strong>安裝kubectl</strong></p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>gcloud components install kubectl
+<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>gcloud components install kubectl
 </code></pre>
 </div>
 

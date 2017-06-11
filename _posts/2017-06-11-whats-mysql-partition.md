@@ -7,13 +7,9 @@ tags: [mysql, partition]
 ---
 {% include JB/setup %}
 
-<font size="3">
 
 最近在面試幾個candidate，都說自己有MySQL tuning的經驗，
 但進一步問下去，發現連MySQL怎麼用BTree放index，或者怎麼使用partition or sharding都不了解，所以打算來寫一系列的MySQL文章，這篇就先挑簡單的partition來寫。
-
-
-</br>
 
 ---
 ### 1. What's Partition and Why?
@@ -86,6 +82,7 @@ Partition分為兩種類型：
 如果你是使用key partitioning的話，MySQL會用它自己的hash function算出你這筆資料要放哪裡。</br>
 key的用法為`key(column)`，裡面必須為table中的某個欄位，範例如下：
 
+
 ```sql
 CREATE TABLE t (
 	id INT, 
@@ -94,6 +91,7 @@ CREATE TABLE t (
 PARTITION BY KEY(create_time)
 PARTITIONS 10;
 ```
+
 
 上面的範例，就會根據data的create_time，去divide出10個partition，然後當塞入資料時，會決定要放置到哪個partition。
 有二點要注意，key只能使用column當作判斷指標，不能使用expression，以及如果使用key的話，無法根據partition進行刪除。

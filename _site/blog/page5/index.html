@@ -310,7 +310,7 @@
         
 <p>&lt;font size=3&gt;</p>
 
-<p>這篇只是紀錄Java Community Conference 2015的第二天筆記，  <br />
+<p>這篇只是紀錄Java Community Conference 2015的第二天筆記，<br />
 今天聽了以下幾個session，</p>
 
 <ol>
@@ -353,9 +353,9 @@
         
 <p>&lt;font size=3&gt;</p>
 
-<p><img src="/assets/2015-12-04-ticket.jpg" alt="Ticket" /></p>
+<p><img src="http://localhost:4000/assets/2015-12-04-ticket.jpg" alt="Ticket" /></p>
 
-<p>這篇只是紀錄Java Community Conference 2015的第一天筆記，  <br />
+<p>這篇只是紀錄Java Community Conference 2015的第一天筆記，<br />
 今天聽了以下幾個session，</p>
 
 <ol>
@@ -396,34 +396,34 @@
       </p>
       <div class="content" style="line-height: 28px;">
         
-<p>&lt;font size=3&gt;<br />
-這篇會介紹如何在Ubuntu上，建立一個iSCSI Target Server，  <br />
+<p>&lt;font size=3&gt;
+這篇會介紹如何在Ubuntu上，建立一個iSCSI Target Server，<br />
 提供給別人測試使用。</p>
 
-<p>&lt;/br&gt;<br />
-#### Install tgt<br />
-—<br />
-首先要先安裝tgt這個package。</p>
+<p>&lt;/br&gt;</p>
+<h4 id="install-tgt">Install tgt</h4>
+<hr />
+<p>首先要先安裝tgt這個package。</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>apt-get install tgt
+<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>apt-get install tgt
 </code></pre>
 </div>
 
-<p>&lt;/br&gt;<br />
-#### Create virtual disks<br />
-—</p>
+<p>&lt;/br&gt;</p>
+<h4 id="create-virtual-disks">Create virtual disks</h4>
+<hr />
 
-<p>這裡會用<code class="highlighter-rouge">dd</code>來建立幾個假的block device，  <br />
+<p>這裡會用<code class="highlighter-rouge">dd</code>來建立幾個假的block device，<br />
 待會就把devices加入到iSCSI中。</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>dd <span class="k">if</span><span class="o">=</span>/dev/zero <span class="nv">of</span><span class="o">=</span>/var/tmp/iscsi-disk1 <span class="nv">bs</span><span class="o">=</span>1M <span class="nv">count</span><span class="o">=</span>100
+<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>dd <span class="k">if</span><span class="o">=</span>/dev/zero <span class="nv">of</span><span class="o">=</span>/var/tmp/iscsi-disk1 <span class="nv">bs</span><span class="o">=</span>1M <span class="nv">count</span><span class="o">=</span>100
 <span class="gp">$ </span>dd <span class="k">if</span><span class="o">=</span>/dev/zero <span class="nv">of</span><span class="o">=</span>/var/tmp/iscsi-disk2 <span class="nv">bs</span><span class="o">=</span>1M <span class="nv">count</span><span class="o">=</span>100
 </code></pre>
 </div>
 
-<p>&lt;/br&gt;<br />
-#### Create targets<br />
-—</p>
+<p>&lt;/br&gt;</p>
+<h4 id="create-targets">Create targets</h4>
+<hr />
 
 <p>這裡建立了2個target，分別為，</p>
 
@@ -432,7 +432,7 @@
   <li>iqn.2015-07.net.kenyang:ken.iscsi.2</li>
 </ul>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>tgtadm --lld iscsi --op new --mode target --tid 1 -T iqn.2015-07.net.kenyang:ken.iscsi.1
+<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>tgtadm --lld iscsi --op new --mode target --tid 1 -T iqn.2015-07.net.kenyang:ken.iscsi.1
 <span class="gp">$ </span>tgtadm --lld iscsi --op new --mode target --tid 2 -T iqn.2015-07.net.kenyang:ken.iscsi.2
 </code></pre>
 </div>

@@ -348,13 +348,13 @@
     </div>
     <div class="content" style="line-height: 28px;">
       
-<p>&lt;font size=3&gt;<br />
-使用Preseed file分割LVM時，  <br />
-並無法做到只使用某部分的VG就好，  <br />
-舉例來說，假設你有一個100G的硬碟，    <br />
+<p>&lt;font size=3&gt;
+使用Preseed file分割LVM時，<br />
+並無法做到只使用某部分的VG就好，<br />
+舉例來說，假設你有一個100G的硬碟，  <br />
 然後preseed file如下，</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>d-i partman-auto/expert_recipe string  <span class="se">\</span>
+<div class="language-bash highlighter-rouge"><pre class="highlight"><code>d-i partman-auto/expert_recipe string  <span class="se">\</span>
       boot-root ::                                                  <span class="se">\</span>
               20480 10 20480 ext4                                   <span class="se">\</span>
                       <span class="nv">$lvmok</span><span class="o">{}</span> lv_name<span class="o">{</span> root <span class="o">}</span> <span class="nv">$defaultignore</span><span class="o">{</span> <span class="o">}</span>    <span class="se">\</span>
@@ -377,16 +377,16 @@
   <li><code class="highlighter-rouge">log</code>  : 20G</li>
 </ul>
 
-<p>你可能會以為，剩下的60G不會被加到LV裡面，  <br />
+<p>你可能會以為，剩下的60G不會被加到LV裡面，<br />
 但其實剩下的60G會通通被放到log裡面去。</p>
 
-<p>不過有比較tricky的解法，可以參考下面的Preseed file，  <br />
-我們多增加了一個LV，叫做<code class="highlighter-rouge">to_be_free</code>，  <br />
-然後把所有的free space都指派給<code class="highlighter-rouge">to_be_free</code>，  <br />
-最後在<code class="highlighter-rouge">late_command</code>裡，用<code class="highlighter-rouge">lvremove</code>把<code class="highlighter-rouge">to_be_free</code>砍掉，  <br />
+<p>不過有比較tricky的解法，可以參考下面的Preseed file，<br />
+我們多增加了一個LV，叫做<code class="highlighter-rouge">to_be_free</code>，<br />
+然後把所有的free space都指派給<code class="highlighter-rouge">to_be_free</code>，<br />
+最後在<code class="highlighter-rouge">late_command</code>裡，用<code class="highlighter-rouge">lvremove</code>把<code class="highlighter-rouge">to_be_free</code>砍掉，<br />
 這樣就可以做到把某部分space歸還了。</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>d-i partman-auto/expert_recipe string  <span class="se">\</span>
+<div class="language-bash highlighter-rouge"><pre class="highlight"><code>d-i partman-auto/expert_recipe string  <span class="se">\</span>
       boot-root ::                                                  <span class="se">\</span>
               20480 10 20480 ext4                                   <span class="se">\</span>
                       <span class="nv">$lvmok</span><span class="o">{}</span> lv_name<span class="o">{</span> root <span class="o">}</span> <span class="nv">$defaultignore</span><span class="o">{</span> <span class="o">}</span>    <span class="se">\</span>

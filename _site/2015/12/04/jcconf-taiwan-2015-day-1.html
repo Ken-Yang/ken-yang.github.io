@@ -350,9 +350,9 @@
       
 <p>&lt;font size=3&gt;</p>
 
-<p><img src="/assets/2015-12-04-ticket.jpg" alt="Ticket" /></p>
+<p><img src="http://localhost:4000/assets/2015-12-04-ticket.jpg" alt="Ticket" /></p>
 
-<p>這篇只是紀錄Java Community Conference 2015的第一天筆記，  <br />
+<p>這篇只是紀錄Java Community Conference 2015的第一天筆記，<br />
 今天聽了以下幾個session，</p>
 
 <ol>
@@ -366,7 +366,7 @@
 
 <!--more-->
 
-<h3 id="jruby">1. JRuby</h3>
+<h3 id="1-jruby">1. JRuby</h3>
 <hr />
 
 <ul>
@@ -410,7 +410,7 @@
   <li>JNI
     <ul>
       <li>Speaker doesn’t like it.</li>
-      <li>you need to implement a feature for each platform (win, mac, linux)<br />
+      <li>you need to implement a feature for each platform (win, mac, linux)
     * ex: if you want to get pid() in java.</li>
     </ul>
   </li>
@@ -431,14 +431,14 @@
 </ul>
 
 <h4 id="why-use-jvm">why use JVM?</h4>
-<p>someone ask why not use standard ruby?<br />
+<p>someone ask why not use standard ruby?
 author answer: hard to implement JIT.</p>
 
 <p>&lt;/br&gt;</p>
 
 <hr />
-<p>### 2. Asynchronous and Non-blocking in Scala<br />
-—</p>
+<h3 id="2-asynchronous-and-non-blocking-in-scala">2. Asynchronous and Non-blocking in Scala</h3>
+<hr />
 
 <ul>
   <li>I/O is very slow, so we need aysnc and non-blocking.</li>
@@ -470,20 +470,20 @@ author answer: hard to implement JIT.</p>
 <p>&lt;/br&gt;</p>
 
 <hr />
-<p>### 3. 使用zookeeper打造軟體式負載平衡<br />
-—</p>
+<h3 id="3-使用zookeeper打造軟體式負載平衡">3. 使用zookeeper打造軟體式負載平衡</h3>
+<hr />
 
-<p>這個session主要在介紹zookeeper，由於時間很短，只有15分鐘。  <br />
+<p>這個session主要在介紹zookeeper，由於時間很短，只有15分鐘。<br />
 所以都是講很high level，並沒有講到detail的實作。</p>
 
 <p>&lt;/br&gt;</p>
 
 <hr />
-<p>### 4. workshop動手玩Java專案建置工具：以Gradle與Docker為例<br />
-—</p>
+<h3 id="4-workshop動手玩java專案建置工具以gradle與docker為例">4. workshop動手玩Java專案建置工具：以Gradle與Docker為例</h3>
+<hr />
 
-<p>這個session在介紹他們team是怎麼用<code class="highlighter-rouge">docker</code>建立test env，  <br />
-然後再透過<code class="highlighter-rouge">Geb</code>去進行automation，  <br />
+<p>這個session在介紹他們team是怎麼用<code class="highlighter-rouge">docker</code>建立test env，<br />
+然後再透過<code class="highlighter-rouge">Geb</code>去進行automation，<br />
 主要提供了以下二個docker images讓我們練習測試，</p>
 
 <ol>
@@ -491,8 +491,8 @@ author answer: hard to implement JIT.</p>
   <li>main：groovy</li>
 </ol>
 
-<p>由於我對於<code class="highlighter-rouge">docker</code>算是瞭解，因此這個session沒有全部聽完就先去趕場了。  <br />
-簡單的說，整個流程就是先透過docker叫起<code class="highlighter-rouge">client</code>，  <br />
+<p>由於我對於<code class="highlighter-rouge">docker</code>算是瞭解，因此這個session沒有全部聽完就先去趕場了。<br />
+簡單的說，整個流程就是先透過docker叫起<code class="highlighter-rouge">client</code>，<br />
 之後再叫起<code class="highlighter-rouge">main</code>來對<code class="highlighter-rouge">client</code>進行測試。</p>
 
 <h3 id="resource">Resource</h3>
@@ -521,18 +521,18 @@ author answer: hard to implement JIT.</p>
 <p>&lt;/br&gt;</p>
 
 <hr />
-<p>### 5. Akka Cluster in Java<br />
-—</p>
+<h3 id="5-akka-cluster-in-java">5. Akka Cluster in Java</h3>
+<hr />
 
 <p>[Git repo for Akka cluster example] (https://github.com/jiayun/akka_samples)</p>
 
 <p>&lt;/br&gt;</p>
 
 <hr />
-<p>### 6. 使用Java的Future/Promise API來撰寫非同步程式<br />
-—</p>
+<h3 id="6-使用java的futurepromise-api來撰寫非同步程式">6. 使用Java的Future/Promise API來撰寫非同步程式</h3>
+<hr />
 
-<p>前陣子也剛好在研究<code class="highlighter-rouge">CompletableFuture</code>，  <br />
+<p>前陣子也剛好在研究<code class="highlighter-rouge">CompletableFuture</code>，<br />
 所以這是今天最有共鳴的一場session，</p>
 
 <h3 id="speaker">Speaker</h3>
@@ -541,7 +541,7 @@ author answer: hard to implement JIT.</p>
   <li>work at Line (located at Japan)</li>
 </ul>
 
-<h4 id="thread">傳統做法開thread</h4>
+<h4 id="傳統做法開thread">傳統做法開thread</h4>
 
 <p>thread缺點</p>
 
@@ -597,16 +597,16 @@ author answer: hard to implement JIT.</p>
 <p>&lt;/br&gt;</p>
 
 <hr />
-<p>### 7. Other<br />
-—</p>
+<h3 id="7-other">7. Other</h3>
+<hr />
 
-<h4 id="sudo">攤位sudo</h4>
+<h4 id="攤位sudo">攤位sudo</h4>
 <ul>
   <li>yvette lin 曾經做過創投</li>
   <li>就專業的人力資源公司，但focus on RD</li>
 </ul>
 
-<h4 id="mysql">攤位mysql</h4>
+<h4 id="攤位mysql">攤位mysql</h4>
 <ul>
   <li>speaker很專業</li>
   <li>詢問了master與master的架構時，當replication發生error時，通常得取捨一台，必定有資料會遺失，該怎麼辦？
@@ -622,32 +622,32 @@ author answer: hard to implement JIT.</p>
   <li>還賺到了一隻MySQL的海豚玩偶</li>
 </ul>
 
-<p><img src="/assets/2015-12-04-mysql-dophin.jpg" alt="Ticket" /></p>
+<p><img src="http://localhost:4000/assets/2015-12-04-mysql-dophin.jpg" alt="Ticket" /></p>
 
-<h4 id="section">攤位微軟</h4>
+<h4 id="攤位微軟">攤位微軟</h4>
 <ul>
   <li>介紹Azure</li>
 </ul>
 
-<h4 id="kxxxx-banking">攤位Kxxxx banking</h4>
+<h4 id="攤位kxxxx-banking">攤位Kxxxx banking</h4>
 <ul>
   <li>在做財務管理系統</li>
   <li>在徵人，要<code class="highlighter-rouge">java</code>，前端用<code class="highlighter-rouge">extJS</code></li>
 </ul>
 
-<h4 id="ruckus">攤位ruckus</h4>
+<h4 id="攤位ruckus">攤位ruckus</h4>
 <ul>
   <li>主要做無線網路設備</li>
   <li>也是Java</li>
 </ul>
 
-<h4 id="safari-book-online">攤位safari book online</h4>
+<h4 id="攤位safari-book-online">攤位safari book online</h4>
 <ul>
   <li>線上遊覽書籍之類的網站</li>
   <li>[Link] (https://www.safaribooksonline.com/)</li>
 </ul>
 
-<h4 id="lightning-show">晚上的lightning show</h4>
+<h4 id="晚上的lightning-show">晚上的lightning show</h4>
 <ul>
   <li>ruckus的人出來送價值6000元的ap，很幸運地被我同事拿到</li>
   <li>中鋼的人來分享他們內部系統心路歷程</li>

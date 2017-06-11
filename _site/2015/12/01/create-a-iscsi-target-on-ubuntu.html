@@ -348,34 +348,34 @@
     </div>
     <div class="content" style="line-height: 28px;">
       
-<p>&lt;font size=3&gt;<br />
-這篇會介紹如何在Ubuntu上，建立一個iSCSI Target Server，  <br />
+<p>&lt;font size=3&gt;
+這篇會介紹如何在Ubuntu上，建立一個iSCSI Target Server，<br />
 提供給別人測試使用。</p>
 
-<p>&lt;/br&gt;<br />
-#### Install tgt<br />
-—<br />
-首先要先安裝tgt這個package。</p>
+<p>&lt;/br&gt;</p>
+<h4 id="install-tgt">Install tgt</h4>
+<hr />
+<p>首先要先安裝tgt這個package。</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>apt-get install tgt
+<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>apt-get install tgt
 </code></pre>
 </div>
 
-<p>&lt;/br&gt;<br />
-#### Create virtual disks<br />
-—</p>
+<p>&lt;/br&gt;</p>
+<h4 id="create-virtual-disks">Create virtual disks</h4>
+<hr />
 
-<p>這裡會用<code class="highlighter-rouge">dd</code>來建立幾個假的block device，  <br />
+<p>這裡會用<code class="highlighter-rouge">dd</code>來建立幾個假的block device，<br />
 待會就把devices加入到iSCSI中。</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>dd <span class="k">if</span><span class="o">=</span>/dev/zero <span class="nv">of</span><span class="o">=</span>/var/tmp/iscsi-disk1 <span class="nv">bs</span><span class="o">=</span>1M <span class="nv">count</span><span class="o">=</span>100
+<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>dd <span class="k">if</span><span class="o">=</span>/dev/zero <span class="nv">of</span><span class="o">=</span>/var/tmp/iscsi-disk1 <span class="nv">bs</span><span class="o">=</span>1M <span class="nv">count</span><span class="o">=</span>100
 <span class="gp">$ </span>dd <span class="k">if</span><span class="o">=</span>/dev/zero <span class="nv">of</span><span class="o">=</span>/var/tmp/iscsi-disk2 <span class="nv">bs</span><span class="o">=</span>1M <span class="nv">count</span><span class="o">=</span>100
 </code></pre>
 </div>
 
-<p>&lt;/br&gt;<br />
-#### Create targets<br />
-—</p>
+<p>&lt;/br&gt;</p>
+<h4 id="create-targets">Create targets</h4>
+<hr />
 
 <p>這裡建立了2個target，分別為，</p>
 
@@ -384,52 +384,52 @@
   <li>iqn.2015-07.net.kenyang:ken.iscsi.2</li>
 </ul>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>tgtadm --lld iscsi --op new --mode target --tid 1 -T iqn.2015-07.net.kenyang:ken.iscsi.1
+<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>tgtadm --lld iscsi --op new --mode target --tid 1 -T iqn.2015-07.net.kenyang:ken.iscsi.1
 <span class="gp">$ </span>tgtadm --lld iscsi --op new --mode target --tid 2 -T iqn.2015-07.net.kenyang:ken.iscsi.2
 </code></pre>
 </div>
 
 <!--more-->
 
-<p>&lt;/br&gt;<br />
-#### Create LUN<br />
-—</p>
+<p>&lt;/br&gt;</p>
+<h4 id="create-lun">Create LUN</h4>
+<hr />
 
 <p>然後替上面的2個target各加入一個LUN。</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>tgtadm --lld iscsi --mode logicalunit --op new --tid 1 --lun 1 -b /var/tmp/iscsi-disk1
+<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>tgtadm --lld iscsi --mode logicalunit --op new --tid 1 --lun 1 -b /var/tmp/iscsi-disk1
 <span class="gp">$ </span>tgtadm --lld iscsi --mode logicalunit --op new --tid 2 --lun 1 -b /var/tmp/iscsi-disk2
 </code></pre>
 </div>
 
-<p>&lt;/br&gt;<br />
-#### Enable the target to accept any initiators<br />
-—</p>
+<p>&lt;/br&gt;</p>
+<h4 id="enable-the-target-to-accept-any-initiators">Enable the target to accept any initiators</h4>
+<hr />
 
-<p>如果你想要讓你的target，  <br />
-可以讓任何人連，不需要密碼，  <br />
+<p>如果你想要讓你的target，<br />
+可以讓任何人連，不需要密碼，<br />
 就可以用下面的指令。</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>tgtadm --lld iscsi --op <span class="nb">bind</span> --mode target --tid 1 -I ALL
+<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>tgtadm --lld iscsi --op <span class="nb">bind</span> --mode target --tid 1 -I ALL
 <span class="gp">$ </span>tgtadm --lld iscsi --op <span class="nb">bind</span> --mode target --tid 2 -I ALL
 </code></pre>
 </div>
 
-<p>&lt;/br&gt;<br />
-#### Create user<br />
-—</p>
+<p>&lt;/br&gt;</p>
+<h4 id="create-user">Create user</h4>
+<hr />
 
-<p>如果你想要讓你的target，有credential才能連，  <br />
+<p>如果你想要讓你的target，有credential才能連，<br />
 那就要create user，以及把user bind在某個target上。</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>tgtadm --mode account --op new --user safesync --password safesync
+<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>tgtadm --mode account --op new --user safesync --password safesync
 <span class="gp">$ </span>tgtadm --mode account --op <span class="nb">bind</span> --tid 1 --user safesync
 </code></pre>
 </div>
 
-<p>&lt;/br&gt;<br />
-#### Show configuration<br />
-—</p>
+<p>&lt;/br&gt;</p>
+<h4 id="show-configuration">Show configuration</h4>
+<hr />
 
 <div class="highlighter-rouge"><pre class="highlight"><code>$ tgtadm --lld iscsi --mode target --op show
 </code></pre>

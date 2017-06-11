@@ -350,27 +350,27 @@
       
 <p>&lt;font size=3&gt;</p>
 
-<p>這篇要講怎麼在Heroku上，使用它的<a href="https://devcenter.heroku.com/articles/heroku-redis">Heroku Redis</a>，  <br />
+<p>這篇要講怎麼在Heroku上，使用它的<a href="https://devcenter.heroku.com/articles/heroku-redis">Heroku Redis</a>，<br />
 大致上分為三個步驟，分別為安裝，配置，寫code。</p>
 
 <p>&lt;/br&gt;</p>
 
 <hr />
-<p>### 1. Installing CLI<br />
-—</p>
+<h3 id="1-installing-cli">1. Installing CLI</h3>
+<hr />
 
-<p>第一步驟是要先安裝heroku-redis的command line tools，<br />
+<p>第一步驟是要先安裝heroku-redis的command line tools，
 但如果你不想要用command line，你也可以至heroku的後台裡面的Add-ons加一台redis。</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>heroku plugins:install heroku-redis
+<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>heroku plugins:install heroku-redis
 </code></pre>
 </div>
 
 <p>&lt;/br&gt;</p>
 
 <hr />
-<p>### 2. Provisioning the add-on<br />
-—</p>
+<h3 id="2-provisioning-the-add-on">2. Provisioning the add-on</h3>
+<hr />
 
 <p>接著要配置一台Redis server，有二個比較特別的參數，</p>
 
@@ -379,36 +379,36 @@
   <li>sushi: 你的heroku app name</li>
 </ol>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>heroku addons:create heroku-redis:hobby-dev -a sushi
+<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>heroku addons:create heroku-redis:hobby-dev -a sushi
 </code></pre>
 </div>
 
-<p>&lt;/br&gt;<br />
+<p>&lt;/br&gt;
 當你成功配置一台redis以後，你可以透過下面的指令找到該台redis URL，</p>
 
 <!--more-->
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>heroku config | grep REDIS
+<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>heroku config | grep REDIS
 </code></pre>
 </div>
 
 <p>&lt;/br&gt;</p>
 
 <hr />
-<p>### 3. Connecting in Python<br />
-—</p>
+<h3 id="3-connecting-in-python">3. Connecting in Python</h3>
+<hr />
 
 <p>要在Python中使用Redis，你必須安裝<code class="highlighter-rouge">redis</code>這個package，</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>pip install redis
+<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>pip install redis
 <span class="gp">$ </span>pip freeze &gt; requirements.txt
 </code></pre>
 </div>
-<p>&lt;/br&gt;<br />
-接著就可以用這個<code class="highlighter-rouge">redis</code>這個package連結至redis server，  <br />
+<p>&lt;/br&gt;
+接著就可以用這個<code class="highlighter-rouge">redis</code>這個package連結至redis server，<br />
 下面的example是用Flask這個framework來做示範，分別有<code class="highlighter-rouge">get</code>和<code class="highlighter-rouge">set</code>這二個URL。</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">os</span>
+<div class="language-python highlighter-rouge"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">redis</span>
 
 <span class="n">r</span> <span class="o">=</span> <span class="n">redis</span><span class="o">.</span><span class="n">from_url</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">"REDIS_URL"</span><span class="p">))</span>
@@ -428,13 +428,13 @@
 </div>
 
 <h2 id="br">&lt;/br&gt;</h2>
-<p>### 4. Testing in local environment<br />
-—</p>
+<h3 id="4-testing-in-local-environment">4. Testing in local environment</h3>
+<hr />
 
-<p>如果你想要在local測試，需要把REDIS_URL的參數寫在.env裡面才行。  <br />
+<p>如果你想要在local測試，需要把REDIS_URL的參數寫在.env裡面才行。<br />
 否則會找不到Redis在哪。</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>heroku config:get REDIS_URL -s  &gt;&gt; .env
+<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>heroku config:get REDIS_URL -s  &gt;&gt; .env
 <span class="gp">$ </span>heroku <span class="nb">local </span>web
 </code></pre>
 </div>

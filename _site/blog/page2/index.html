@@ -313,7 +313,7 @@
 之前有講過[Kafka的用途以及如何安裝](http://blog.kenyang.net/2015/06/25/apache-kafka-distributed-messaging)，這篇會講如何用`Node.js`去連結`Kafka`，至於安裝Kafka的部分就請去[上一篇](http://blog.kenyang.net/2015/06/25/apache-kafka-distributed-messaging)來看。
 
 
-
+&lt;/br&gt;
 
 ---
 ### 1. Create a topic
@@ -332,7 +332,7 @@ $ bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1
 $ bin/kafka-topics.sh --list --zookeeper localhost:2181
 ```
 
-
+&lt;/br&gt;
 
 
 
@@ -375,7 +375,7 @@ $ bin/kafka-topics.sh --list --zookeeper localhost:2181
 2. 開會時會通知
 3. 11:30提醒要吃飯了
 
-總覺得少了點什麼，於是就想說來做個機器人自動開門。
+總覺得少了點什麼，於是就想說來做個機器人自動開門。&lt;/br&gt;
 在開始之前，先準備以下材料：
 
 1. Raspberry Pi 3: 1台
@@ -386,10 +386,10 @@ $ bin/kafka-topics.sh --list --zookeeper localhost:2181
 
 下圖為完成品，
 
-![Ticket](/assets/2016-09-14-finish.jpg)
+![Ticket](http://localhost:4000/assets/2016-09-14-finish.jpg)
 
 
-
+&lt;/br&gt;
 
 
 
@@ -425,13 +425,13 @@ $ bin/kafka-topics.sh --list --zookeeper localhost:2181
         
 <font size="3">
 
-今天看到一個朋友寫了FacebookBot，還整了AWS Lambda、斷詞API，突然感到很興奮，
-但我沒打算花太多時間在Bot上，只打算做一個簡單的資訊查詢的bot，
-所以選擇了[Telegram Bot](https://core.telegram.org/bots/api)，原因是我們公司內部使用Telegram來溝通，
+今天看到一個朋友寫了FacebookBot，還整了AWS Lambda、斷詞API，突然感到很興奮，&lt;/br&gt;
+但我沒打算花太多時間在Bot上，只打算做一個簡單的資訊查詢的bot，&lt;/br&gt;
+所以選擇了[Telegram Bot](https://core.telegram.org/bots/api)，原因是我們公司內部使用Telegram來溝通，&lt;/br&gt;
 所以就想做一個Bot讓公司的同事查詢一些公司資訊（ex: wifi, 統編）。
 
 
-
+&lt;/br&gt;
 
 ---
 ### 1. Add BotFather as friend
@@ -439,21 +439,21 @@ $ bin/kafka-topics.sh --list --zookeeper localhost:2181
 
 首先我們要使用telegram加`BotFather`這個user，透過`BotFather`去create bot。
 
-![Ticket](/assets/2016-09-06-add-bot-father.png)
+![Ticket](http://localhost:4000/assets/2016-09-06-add-bot-father.png)
 
 
-
+&lt;/br&gt;
 
 ---
 ### 2. Create a bot
 ---
 
-成功加入`BotFather`以後，就可以透過指令`/newbot`去create bot，
-整個過程會以對話的方式進行（如下圖），會先問你的bot名稱要叫什麼以及它的username（類似ID，用來被search），
+成功加入`BotFather`以後，就可以透過指令`/newbot`去create bot，&lt;/br&gt;
+整個過程會以對話的方式進行（如下圖），會先問你的bot名稱要叫什麼以及它的username（類似ID，用來被search），&lt;/br&gt;
 
-![Ticket](/assets/2016-09-06-create-bot.png)
+![Ticket](http://localhost:4000/assets/2016-09-06-create-bot.png)
 
-
+&lt;/br&gt;
 
 建立成功以後，BotFather就會跟你說的你的bot token，這token很重要，是之後要用來request API用的。
 
@@ -462,7 +462,7 @@ Use this token to access the HTTP API:
 2X2X2XXX0:XXXXXXXXXXXXXXXXXXXXXXX
 ```
 
-
+&lt;/br&gt;
 
 
 
