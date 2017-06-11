@@ -11,7 +11,7 @@ tags: [iSCSI, ubuntu]
 這篇會介紹如何在Ubuntu上，建立一個iSCSI Target Server，  
 提供給別人測試使用。
 
-</br>
+<br />
 #### Install tgt
 ---
 首先要先安裝tgt這個package。  
@@ -20,7 +20,7 @@ tags: [iSCSI, ubuntu]
 $ apt-get install tgt
 ```
 
-</br>
+<br />
 #### Create virtual disks
 ---
 
@@ -32,7 +32,7 @@ $ dd if=/dev/zero of=/var/tmp/iscsi-disk1 bs=1M count=100
 $ dd if=/dev/zero of=/var/tmp/iscsi-disk2 bs=1M count=100
 ```
 
-</br>
+<br />
 #### Create targets
 ---
 
@@ -49,7 +49,7 @@ $ tgtadm --lld iscsi --op new --mode target --tid 2 -T iqn.2015-07.net.kenyang:k
 
 <!--more-->
 
-</br>
+<br />
 #### Create LUN
 ---
 
@@ -60,7 +60,7 @@ $ tgtadm --lld iscsi --mode logicalunit --op new --tid 1 --lun 1 -b /var/tmp/isc
 $ tgtadm --lld iscsi --mode logicalunit --op new --tid 2 --lun 1 -b /var/tmp/iscsi-disk2
 ```
 
-</br>
+<br />
 #### Enable the target to accept any initiators
 ---
 
@@ -75,7 +75,7 @@ $ tgtadm --lld iscsi --op bind --mode target --tid 2 -I ALL
 
 
 
-</br>
+<br />
 #### Create user
 ---
 
@@ -87,7 +87,7 @@ $ tgtadm --mode account --op new --user safesync --password safesync
 $ tgtadm --mode account --op bind --tid 1 --user safesync
 ```
 
-</br>
+<br />
 #### Show configuration
 ---
 

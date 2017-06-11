@@ -348,8 +348,6 @@
     </div>
     <div class="content" style="line-height: 28px;">
       
-<p>&lt;font size=3&gt;</p>
-
 <p>這篇會講如何在Docker上部署一個NodeJS+MongoDB的application，<br />
 所以會分二個部分來講，</p>
 
@@ -368,7 +366,7 @@
 </code></pre>
 </div>
 
-<p>&lt;/br&gt;</p>
+<p><br /></p>
 <h4 id="create-a-container">Create a container</h4>
 <hr />
 <p>接著就可以把MongoDB的image抓下來以及run。</p>
@@ -384,7 +382,7 @@
 
 <!--more-->
 
-<p>&lt;/br&gt;</p>
+<p><br /></p>
 <h4 id="connect-to-a-container">Connect to a container</h4>
 <hr />
 <p>那麼怎麼連進去這個MongoDB呢？<br />
@@ -408,7 +406,7 @@
 </code></pre>
 </div>
 
-<p>&lt;/br&gt;</p>
+<p><br /></p>
 <h3 id="2-在docker上部署nodejsexpress">2. 在Docker上部署NodeJS+Express</h3>
 
 <p>首先先建立一個folder，用來放置source code以及json等檔案。</p>
@@ -418,7 +416,7 @@
 </code></pre>
 </div>
 
-<p>&lt;/br&gt;</p>
+<p><br /></p>
 <h4 id="packagejson">Package.json</h4>
 <hr />
 <p>接著在<code class="highlighter-rouge">test-app</code>這個folder底下，建立一個<code class="highlighter-rouge">package.json</code>，<br />
@@ -446,7 +444,7 @@
   <li><code class="highlighter-rouge">mongoose</code> : MongoDB client driver</li>
 </ol>
 
-<p>&lt;/br&gt;</p>
+<p><br /></p>
 <h4 id="schemajs">Schema.js</h4>
 <hr />
 <p>接著一樣在<code class="highlighter-rouge">test-app</code>底下，建立一個<code class="highlighter-rouge">Schema.js</code>， <br />
@@ -464,7 +462,7 @@
 </code></pre>
 </div>
 
-<p>&lt;/br&gt;</p>
+<p><br /></p>
 <h4 id="indexjs">Index.js</h4>
 <hr />
 <p>接著一樣在<code class="highlighter-rouge">test-app</code>底下，建立一個<code class="highlighter-rouge">index.js</code>，<br />
@@ -513,7 +511,7 @@
 是待會會透過<code class="highlighter-rouge">--link</code>的指令指定的，<br />
 一旦你指定了，就會在container中的<code class="highlighter-rouge">/etc/hosts</code>裡面增加一筆record。</p>
 
-<p>&lt;/br&gt;</p>
+<p><br /></p>
 <h4 id="dockerfile">DockerFile</h4>
 <hr />
 
@@ -544,7 +542,7 @@ CMD ["node", "/src/index.js"]
 這個是用來設置環境變數，因為我們設定了<code class="highlighter-rouge">dev</code>，<br />
 所以在<code class="highlighter-rouge">index.js</code>中，才會去configure dev。</p>
 
-<p>&lt;/br&gt;</p>
+<p><br /></p>
 <h4 id="build-image--run">Build image &amp; Run</h4>
 <hr />
 
@@ -553,7 +551,7 @@ CMD ["node", "/src/index.js"]
 <div class="highlighter-rouge"><pre class="highlight"><code>$ docker build -t ken-yang/centos-nodejs:v1 .
 </code></pre>
 </div>
-<p>&lt;/br&gt;
+<p><br />
 Build完以後，就可以用下面的指令去把container run起來。<br />
 注意<code class="highlighter-rouge">--link ken-mongo:db</code>，<br />
 意思就是把現在正在running的<code class="highlighter-rouge">ken-mongo</code>與現在這個新的container連起來。<br />
@@ -567,7 +565,7 @@ Build完以後，就可以用下面的指令去把container run起來。<br />
 </code></pre>
 </div>
 
-<p>&lt;/br&gt;</p>
+<p><br /></p>
 <h4 id="test">Test</h4>
 <hr />
 
@@ -585,7 +583,6 @@ Build完以後，就可以用下面的指令去把container run起來。<br />
 </code></pre>
 </div>
 
-<p>&lt;/font&gt;</p>
 
     </div>
 

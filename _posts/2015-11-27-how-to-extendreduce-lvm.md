@@ -22,7 +22,7 @@ Extend會講二種方法，分別為，
    * 1-1. Extend from `VG`
    * 1-2. Extend from `new disk`
 
-</br>
+<br />
 #### 1-1. Extend from PV
 ---
 第一種是延續[上一篇](http://blog.kenyang.net/2015/11/27/do-not-allocate-all-the-lvm-space-with-preseed/)，  
@@ -55,14 +55,14 @@ $ lvs
 1. lvresize
 2. resize2fs
 
-</br>
+<br />
 使用方式如下，
 
 ```bash
 $ lvresize -L +100G /dev/mapper/ubuntu--vg-tmp
 ```
 
-</br>
+<br />
 完成上述指令以後，可以再透過`lvs`來看一下tmp這個LV是否真的有加大100G。  
 
 ```bash
@@ -78,7 +78,7 @@ $ df -h /tmp/
 Filesystem                  Size  Used Avail Use% Mounted on
 /dev/mapper/ubuntu--vg-tmp   19G   44M   18G   1% /tmp
 ```
-</br>
+<br />
 根據上面的output，你會發現`LV`真的有加大100G，  
 可是`df`中的filesystem size並沒有變動，  
 因為少用了`resize2fs`。  
@@ -91,7 +91,7 @@ $ resize2fs /dev/mapper/ubuntu--vg-tmp [119G]
 最後一個是size的參數，其實可以不用加，  
 如果不加，就是用整個LV可以用的空間。
 
-</br>
+<br />
 #### 1-2. Extend from new disk
 ---
 第二種Extend的方法是把新disk來加入至lv中。  
@@ -112,7 +112,7 @@ fd0    2:0    1     4K  0 disk
 sda    8:0    0  1020G  0 disk
 sdb    8:16   0   200G  0 disk
 ```
-</br>
+<br />
 
 在新增一個`PV`前，  
 必須先format disk成LVM的格式。
@@ -138,7 +138,7 @@ $ fdsik /dev/sdb
 ```bash
 $ fdisk -l /dev/sdb
 ```
-</br>
+<br />
 這時候就可以用`pvcreate `來新增一個PV，  
 然後再用`pvs`看看是否有成功。
 
@@ -150,21 +150,21 @@ $ pvs
   /dev/sda5  ubuntu-vg lvm2 a-   1019.76g 629.99g
   /dev/sdb1            lvm2 a-    200.00g 200.00g
 ```
-</br>
+<br />
 接著就可以用`vgextend`這個指令，  
 把剛剛新增的`PV`加入至原有的`ubuntu-vg`當中，
 
 ```bash
 $ vgextend ubuntu-vg /dev/sdb1
 ```
-</br>
+<br />
 然後一樣用`vgs`去看看`Free PE`，應該會多了200g。  
 然後就可以用上面的`lvresize`以及`resize2fs`去Extend某個LV了。
 
 
 
 
-</br></br></br>
+<br /></br></br>
 
 
 ### 2. Shrink
@@ -182,14 +182,14 @@ $ vgextend ubuntu-vg /dev/sdb1
 ```bash
 $ umount /tmp
 ```
-</br>
+<br />
 接著才可以shrink filesystem，  
 透過`resize2fs`去把`tmp`縮到19G。
 
 ```bash
 $ resize2fs /dev/mapper/ubuntu--vg-tmp 19G
 ```
-</br>
+<br />
 
 最後才是去shrink LV，一樣是用`lvresize`去做，  
 過程中會show warning，告訴你資料可能會遺失，是否真的要做shrink？  
@@ -203,7 +203,7 @@ Do you really want to reduce tmp? [y/n]: y
   Reducing logical volume tmp to 19.07 GiB
   Logical volume tmp successfully resized
 ```
-</br>
+<br />
 最後在mount起來，以及用`df`去看，  
 應該會發現`tmp`只剩下19G了！
 

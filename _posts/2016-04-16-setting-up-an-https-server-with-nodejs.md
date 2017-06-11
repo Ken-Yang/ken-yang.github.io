@@ -9,18 +9,18 @@ tags: [node.js, ssl, csr, nodejs]
 
 
 
-這篇要講怎麼用Node.js建立一個HTTPS的server，如果你的certificate不是self-signed的，</br>
-那設定HTTPS並不難，產生CSR給CA provider，然後就會有certificate，把它放進去就好，</br>
-但如果是self-signed，那過程就有點麻煩，每次要弄的時候，都還是會有點忘記，所以乾脆把過程記錄下來好了。</br>
+這篇要講怎麼用Node.js建立一個HTTPS的server，如果你的certificate不是self-signed的，<br />
+那設定HTTPS並不難，產生CSR給CA provider，然後就會有certificate，把它放進去就好，<br />
+但如果是self-signed，那過程就有點麻煩，每次要弄的時候，都還是會有點忘記，所以乾脆把過程記錄下來好了。<br />
 
 
-</br>
+<br />
 
 ---
 ### 1. Creating a private key and CSR
 ---
 
-在create certificate之前，必須要先有`private key`以及`CSR` (certificate signing request)，</br>
+在create certificate之前，必須要先有`private key`以及`CSR` (certificate signing request)，<br />
 所以我們要先generate出private key以及CSR。
 
 ```bash
@@ -33,7 +33,7 @@ $ rm server.pass.key
 $ openssl req -new -key server.key -out server.csr
 ```
 
-</br>
+<br />
 
 <!--more-->
 
@@ -47,22 +47,22 @@ $ openssl req -new -key server.key -out server.csr
 $ openssl x509 -req -days 365 -in server.csr -signkey server.key -out server.crt
 ```
 
-</br>
+<br />
 
 
 ---
 ### 3. Configuring SSL in Node.js
 ---
 
-有了certificate以後，就可以把它放在Node.js中使用，</br>
-這裡我搭配的`express`+`https`這二個module，https這個module，default就有了，</br>
+有了certificate以後，就可以把它放在Node.js中使用，<br />
+這裡我搭配的`express`+`https`這二個module，https這個module，default就有了，<br />
 所以我們只需要安裝`express`就好。
 
 ```bash
 $ npm install --save express
 ```
 
-</br>
+<br />
 接著就把下面的內容貼入到`index.js`當中，
 
 ```javascript
@@ -85,11 +85,11 @@ https.createServer(SERVER_CONFIG, app)
 );
 ```
 
-</br>
-靠`fs`去讀取certificate，然後再餵給`createServer`，這樣就完成了https server。</br>
+<br />
+靠`fs`去讀取certificate，然後再餵給`createServer`，這樣就完成了https server。<br />
 
-</br>
-</br>
-</br>
-</br>
+<br />
+<br />
+<br />
+<br />
 

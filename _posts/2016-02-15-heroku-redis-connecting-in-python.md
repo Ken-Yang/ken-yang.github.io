@@ -13,7 +13,7 @@ tags: [heroku, redis]
 大致上分為三個步驟，分別為安裝，配置，寫code。
 
 
-</br>
+<br />
 
 ---
 ### 1. Installing CLI
@@ -26,7 +26,7 @@ tags: [heroku, redis]
 $ heroku plugins:install heroku-redis
 ```
 
-</br>
+<br />
 
 ---
 ### 2. Provisioning the add-on
@@ -42,7 +42,7 @@ $ heroku addons:create heroku-redis:hobby-dev -a sushi
 ```
 
 
-</br>
+<br />
 當你成功配置一台redis以後，你可以透過下面的指令找到該台redis URL，
 
 <!--more-->
@@ -51,7 +51,7 @@ $ heroku addons:create heroku-redis:hobby-dev -a sushi
 $ heroku config | grep REDIS
 ```
 
-</br>
+<br />
 
 ---
 ### 3. Connecting in Python
@@ -63,7 +63,7 @@ $ heroku config | grep REDIS
 $ pip install redis
 $ pip freeze > requirements.txt
 ```
-</br>
+<br />
 接著就可以用這個`redis`這個package連結至redis server，  
 下面的example是用Flask這個framework來做示範，分別有`get`和`set`這二個URL。
 
@@ -86,7 +86,7 @@ def set():
     return "set done"
 ```
 
-</br>
+<br />
 ---
 ### 4. Testing in local environment
 ---

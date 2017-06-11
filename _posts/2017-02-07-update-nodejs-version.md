@@ -17,7 +17,7 @@ Today, I'm gonna use `n` to update `Node.js`.
 
 
 
-</br>
+<br />
 
 <!--more-->
 
@@ -29,7 +29,7 @@ Today, I'm gonna use `n` to update `Node.js`.
 $ npm install -g n
 ```
 
-</br>
+<br />
 
 ---
 ### 2. Update Node.js to stable version
@@ -41,7 +41,7 @@ $ n stable
 
 You can replace the `stable` with whataver version you want.
 
-</br>
+<br />
 
 ---
 ### 3. Check what versions are installed

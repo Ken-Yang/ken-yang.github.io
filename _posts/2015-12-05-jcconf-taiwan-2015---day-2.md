@@ -21,7 +21,7 @@ tags: [JCConf, java]
 
 <!--more-->
 
-</br>
+<br />
 
 ---
 ### 1. 阿里 JVM 的工作方向
@@ -44,7 +44,7 @@ tags: [JCConf, java]
 
 **Java young generation, old generation**
 
-</br>
+<br />
 
 ---
 ### 2. Universal Scala
@@ -88,7 +88,7 @@ tags: [JCConf, java]
 **Example code**
 - [github] (https://github.com/weihsiu/universal.git)
 
-</br>
+<br />
 
 ---
 ### 3. Deploy your own Spark cluster in 4 minutes using sbt.
@@ -150,7 +150,7 @@ tags: [JCConf, java]
 - sbt
 - AWS\_ACCESS\_KEY\_ID
 
-</br>
+<br />
 
 ---
 ### 4. Immutable Infrastructure：觀念與實作 
@@ -229,7 +229,7 @@ s.toLowerCase();
 
 
 
-</br>
+<br />
 
 ---
 ### 5. JDK8 JIT 行為和效能分析
@@ -278,7 +278,7 @@ Jserv一樣講得很專業，但真的是不同領域，幾乎都聽不懂。
 
 **匿名class本質上會生出另一個class，inner class，和lambda不一樣**
 
-</br>
+<br />
 
 ---
 ### 6. 自己的JVM自己救 - 解救 OOM 實務經驗談 
@@ -293,7 +293,7 @@ Jserv一樣講得很專業，但真的是不同領域，幾乎都聽不懂。
 **Retained heap**
 
 
-</br>
+<br />
 
 ---
 ### 感想

@@ -348,154 +348,170 @@
     </div>
     <div class="content" style="line-height: 28px;">
       
-<font size="3">
+<p>大概一年多沒有寫Android了，最近發現好多不一樣了，<br />
+譬如說ActionBar變成AppBar..不過以前的ActionBar還能繼續用，<br />
+但還是得學一下怎麼用App bar跟上潮流。</p>
 
-大概一年多沒有寫Android了，最近發現好多不一樣了，&lt;/br&gt;
-譬如說ActionBar變成AppBar..不過以前的ActionBar還能繼續用，&lt;/br&gt;
-但還是得學一下怎麼用App bar跟上潮流。
+<p>[Example Code on Github] (https://github.com/Ken-Yang/AndroidAppBar)</p>
 
-[Example Code on Github] (https://github.com/Ken-Yang/AndroidAppBar)
+<p><br /></p>
 
+<hr />
+<h3 id="1-create-new-project">1. Create new project</h3>
+<hr />
 
-&lt;/br&gt;
+<p>首先先建立一個新的project，然後選擇Empty activity。</p>
 
----
-### 1. Create new project
----
+<p><br /></p>
 
-首先先建立一個新的project，然後選擇Empty activity。
+<hr />
+<h3 id="2-add-dependency">2. Add dependency</h3>
+<hr />
 
-&lt;/br&gt;
+<p>接著打開build.gradle，把appcompat加入dependency，<br />
+不過如果你的Android Studio是新版的，就會自動幫你加入了。</p>
 
----
-### 2. Add dependency
----
-
-接著打開build.gradle，把appcompat加入dependency，&lt;/br&gt;
-不過如果你的Android Studio是新版的，就會自動幫你加入了。
-
-```xml
-dependencies {
+<div class="language-xml highlighter-rouge"><pre class="highlight"><code>dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:23.1.1'
 }
-```
+</code></pre>
+</div>
 
 <!--more-->
 
-&lt;/br&gt;
+<p><br /></p>
 
----
-### 3. Remove actionbar
----
+<hr />
+<h3 id="3-remove-actionbar">3. Remove actionbar</h3>
+<hr />
 
-因為Default style會去繼承ActionBar Theme，所以我們要把它移除掉，&lt;/br&gt;
-打開`style.xml`，然後把parent改成`Theme.AppCompat.Light.NoActionBar`。
+<p>因為Default style會去繼承ActionBar Theme，所以我們要把它移除掉，<br />
+打開<code class="highlighter-rouge">style.xml</code>，然後把parent改成<code class="highlighter-rouge">Theme.AppCompat.Light.NoActionBar</code>。</p>
 
-```xml
-<!-- Base application theme. -->
-<style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
-</style>
-```
+<div class="language-xml highlighter-rouge"><pre class="highlight"><code><span class="c">&lt;!-- Base application theme. --&gt;</span>
+<span class="nt">&lt;style</span> <span class="na">name=</span><span class="s">"AppTheme"</span> <span class="na">parent=</span><span class="s">"Theme.AppCompat.Light.NoActionBar"</span><span class="nt">&gt;</span>
+<span class="nt">&lt;/style&gt;</span>
+</code></pre>
+</div>
 
-&lt;/br&gt;
+<p><br /></p>
 
----
-### 4. Color your App Bar
----
+<hr />
+<h3 id="4-color-your-app-bar">4. Color your App Bar</h3>
+<hr />
 
-接著要去設定App Bar的顏色，AppBar主要有兩種顏色：
+<p>接著要去設定App Bar的顏色，AppBar主要有兩種顏色：</p>
 
-1. **colorPrimary** : 以前ActionBar那條的背景顏色
-2. **colorPrimaryDark** : Status 那條的背景顏色
+<ol>
+  <li><strong>colorPrimary</strong> : 以前ActionBar那條的背景顏色</li>
+  <li><strong>colorPrimaryDark</strong> : Status 那條的背景顏色</li>
+</ol>
 
-&lt;/br&gt;
+<p><br /></p>
 
-首先要先在`color.xml`中，新增上述的二個顏色。
+<p>首先要先在<code class="highlighter-rouge">color.xml</code>中，新增上述的二個顏色。</p>
 
-```xml
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <color name="colorPrimary">#FF5722</color>
-    <color name="colorPrimaryDark">#E64A19</color>
-</resources>
-```
+<div class="language-xml highlighter-rouge"><pre class="highlight"><code><span class="cp">&lt;?xml version="1.0" encoding="utf-8"?&gt;</span>
+<span class="nt">&lt;resources&gt;</span>
+    <span class="nt">&lt;color</span> <span class="na">name=</span><span class="s">"colorPrimary"</span><span class="nt">&gt;</span>#FF5722<span class="nt">&lt;/color&gt;</span>
+    <span class="nt">&lt;color</span> <span class="na">name=</span><span class="s">"colorPrimaryDark"</span><span class="nt">&gt;</span>#E64A19<span class="nt">&lt;/color&gt;</span>
+<span class="nt">&lt;/resources&gt;</span>
+</code></pre>
+</div>
 
-接著在`style.xml`中指定上述的二個顏色。
+<p>接著在<code class="highlighter-rouge">style.xml</code>中指定上述的二個顏色。</p>
 
-```xml
-<!-- Base application theme. -->
-<style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
-    <!-- Customize your theme here. -->
-    <item name="colorPrimary">@color/colorPrimary</item>
-    <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-</style>
-```
+<div class="language-xml highlighter-rouge"><pre class="highlight"><code><span class="c">&lt;!-- Base application theme. --&gt;</span>
+<span class="nt">&lt;style</span> <span class="na">name=</span><span class="s">"AppTheme"</span> <span class="na">parent=</span><span class="s">"Theme.AppCompat.Light.NoActionBar"</span><span class="nt">&gt;</span>
+    <span class="c">&lt;!-- Customize your theme here. --&gt;</span>
+    <span class="nt">&lt;item</span> <span class="na">name=</span><span class="s">"colorPrimary"</span><span class="nt">&gt;</span>@color/colorPrimary<span class="nt">&lt;/item&gt;</span>
+    <span class="nt">&lt;item</span> <span class="na">name=</span><span class="s">"colorPrimaryDark"</span><span class="nt">&gt;</span>@color/colorPrimaryDark<span class="nt">&lt;/item&gt;</span>
+<span class="nt">&lt;/style&gt;</span>
+</code></pre>
+</div>
 
-&lt;/br&gt;
+<p><br /></p>
 
----
-### 5. Create a toobar
----
+<hr />
+<h3 id="5-create-a-toobar">5. Create a toobar</h3>
+<hr />
 
-接著去`res/layout`資料夾中，建立一個名稱為`too_bar.xml`的layout file，內容如下，有幾個需要說明的屬性為：
+<p>接著去<code class="highlighter-rouge">res/layout</code>資料夾中，建立一個名稱為<code class="highlighter-rouge">too_bar.xml</code>的layout file，內容如下，有幾個需要說明的屬性為：</p>
 
-1. **theme**: 指定了Dark.ActionBar，是為了設定AppBar的一些style，譬如說字體顏色，Dark.ActionBar的字體顏色就是白色
-2. **popupTheme**: 當你點擊ActionItem時，會popup一個list，這個list的theme
-3. **background** : Toolbar的背景顏色
+<ol>
+  <li><strong>theme</strong>: 指定了Dark.ActionBar，是為了設定AppBar的一些style，譬如說字體顏色，Dark.ActionBar的字體顏色就是白色</li>
+  <li><strong>popupTheme</strong>: 當你點擊ActionItem時，會popup一個list，這個list的theme</li>
+  <li><strong>background</strong> : Toolbar的背景顏色</li>
+</ol>
 
-```xml
-<?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto" android:layout_width="match_parent" android:layout_height="?attr/actionBarSize" app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" app:popupTheme="@style/ThemeOverlay.AppCompat.Light" android:background="@color/colorPrimary">
+<div class="language-xml highlighter-rouge"><pre class="highlight"><code><span class="cp">&lt;?xml version="1.0" encoding="utf-8"?&gt;</span>
+<span class="nt">&lt;android.support.v7.widget.Toolbar</span>
+    <span class="na">xmlns:android=</span><span class="s">"http://schemas.android.com/apk/res/android"</span>
+    <span class="na">xmlns:app=</span><span class="s">"http://schemas.android.com/apk/res-auto"</span>
+    <span class="na">android:layout_width=</span><span class="s">"match_parent"</span>
+    <span class="na">android:layout_height=</span><span class="s">"?attr/actionBarSize"</span>
+    <span class="na">app:theme=</span><span class="s">"@style/ThemeOverlay.AppCompat.Dark.ActionBar"</span>
+    <span class="na">app:popupTheme=</span><span class="s">"@style/ThemeOverlay.AppCompat.Light"</span>
+    <span class="na">android:background=</span><span class="s">"@color/colorPrimary"</span><span class="nt">&gt;</span>
 
-</android.support.v7.widget.Toolbar>
-```
+<span class="nt">&lt;/android.support.v7.widget.Toolbar&gt;</span>
+</code></pre>
+</div>
 
-&lt;/br&gt;
+<p><br /></p>
 
----
-### 6. Add the toolbar into activity
----
+<hr />
+<h3 id="6-add-the-toolbar-into-activity">6. Add the toolbar into activity</h3>
+<hr />
 
-然後要在主要的layout中，include上面的`tool_bar.xml`。
+<p>然後要在主要的layout中，include上面的<code class="highlighter-rouge">tool_bar.xml</code>。</p>
 
-```xml
-<?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent" android:layout_height="match_parent" tools:context="com.ag888.ams.LoginActivity">
+<div class="language-xml highlighter-rouge"><pre class="highlight"><code><span class="cp">&lt;?xml version="1.0" encoding="utf-8"?&gt;</span>
+<span class="nt">&lt;RelativeLayout</span> <span class="na">xmlns:android=</span><span class="s">"http://schemas.android.com/apk/res/android"</span>
+    <span class="na">xmlns:tools=</span><span class="s">"http://schemas.android.com/tools"</span>
+    <span class="na">android:layout_width=</span><span class="s">"match_parent"</span>
+    <span class="na">android:layout_height=</span><span class="s">"match_parent"</span>
+    <span class="na">tools:context=</span><span class="s">"com.ag888.ams.LoginActivity"</span><span class="nt">&gt;</span>
 
-    <include android:id="@+id/tool_bar" layout="@layout/tool_bar" />
+    <span class="nt">&lt;include</span>
+        <span class="na">android:id=</span><span class="s">"@+id/tool_bar"</span>
+        <span class="na">layout=</span><span class="s">"@layout/tool_bar"</span><span class="nt">/&gt;</span>
 
-    <TextView android:layout_below="@+id/tool_bar" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Hello World!" />
-</RelativeLayout>
+    <span class="nt">&lt;TextView</span>
+        <span class="na">android:layout_below=</span><span class="s">"@+id/tool_bar"</span>
+        <span class="na">android:layout_width=</span><span class="s">"wrap_content"</span>
+        <span class="na">android:layout_height=</span><span class="s">"wrap_content"</span>
+        <span class="na">android:text=</span><span class="s">"Hello World!"</span> <span class="nt">/&gt;</span>
+<span class="nt">&lt;/RelativeLayout&gt;</span>
 
-```
+</code></pre>
+</div>
 
-&lt;/br&gt;
+<p><br /></p>
 
----
-### 7. Setup toolbar as actionbar
----
+<hr />
+<h3 id="7-setup-toolbar-as-actionbar">7. Setup toolbar as actionbar</h3>
+<hr />
 
-完成上面步驟以後，你可以試著run看看，但你會發現就只是簡單的一條bar而已，&lt;/br&gt;
-並沒有title或者action item之類的，所以接下要把toolbar設定成ActionBar，&lt;/br&gt;
-把`ToolBar`丟進去`setSupportActionBar()`就可以了。
+<p>完成上面步驟以後，你可以試著run看看，但你會發現就只是簡單的一條bar而已，<br />
+並沒有title或者action item之類的，所以接下要把toolbar設定成ActionBar，<br />
+把<code class="highlighter-rouge">ToolBar</code>丟進去<code class="highlighter-rouge">setSupportActionBar()</code>就可以了。</p>
 
-```java
-@Override
-protected void onCreate(Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
-    setContentView(R.layout.activity_login);
+<div class="language-java highlighter-rouge"><pre class="highlight"><code><span class="nd">@Override</span>
+<span class="kd">protected</span> <span class="kt">void</span> <span class="nf">onCreate</span><span class="p">(</span><span class="n">Bundle</span> <span class="n">savedInstanceState</span><span class="o">)</span> <span class="o">{</span>
+    <span class="kd">super</span><span class="o">.</span><span class="na">onCreate</span><span class="o">(</span><span class="n">savedInstanceState</span><span class="o">);</span>
+    <span class="n">setContentView</span><span class="o">(</span><span class="n">R</span><span class="o">.</span><span class="na">layout</span><span class="o">.</span><span class="na">activity_login</span><span class="o">);</span>
 
-    toolbar = (Toolbar) findViewById(R.id.tool_bar);
-    setSupportActionBar(toolbar);
-}
-```
+    <span class="n">toolbar</span> <span class="o">=</span> <span class="o">(</span><span class="n">Toolbar</span><span class="o">)</span> <span class="n">findViewById</span><span class="o">(</span><span class="n">R</span><span class="o">.</span><span class="na">id</span><span class="o">.</span><span class="na">tool_bar</span><span class="o">);</span>
+    <span class="n">setSupportActionBar</span><span class="o">(</span><span class="n">toolbar</span><span class="o">);</span>
+<span class="o">}</span>
+</code></pre>
+</div>
 
-&lt;/br&gt;&lt;/br&gt;&lt;/br&gt;&lt;/br&gt;
+<p><br />&lt;/br&gt;&lt;/br&gt;&lt;/br&gt;</p>
 
-
-</font>
 
     </div>
 

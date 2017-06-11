@@ -31,7 +31,7 @@ published: false
 * **目標**：將大量workload整併到
 
 
-</br>
+<br />
 ---
 ### 2. 以Mesos搭建大規模Container平台
 ---
@@ -72,7 +72,7 @@ published: false
 - REST interface
 
 
-</br>
+<br />
 ---
 ### 3. Docker in CI：Cacoo與Backlog導入Docker的經驗分享
 ---
@@ -99,7 +99,7 @@ published: false
 **Use Case in CI**
 **Summary**
 
-</br>
+<br />
 ---
 ### 4. 談Docker對傳統DevOps工具鏈的衝擊
 ---
@@ -161,7 +161,7 @@ kubectl rolling-update my-nginx --image=nginx:1.9.1
 要像對待乳牛一樣！壞了在抓別隻來擠就好！
 
 
-</br>
+<br />
 ---
 ### 5. 如何在Kubernetes上持續部署微服務型應用
 ---
@@ -193,7 +193,7 @@ kubectl rolling-update my-nginx --image=nginx:1.9.1
 
 
 
-</br>
+<br />
 ---
 ### 6. 如何搭建企業級容器服務
 ---
@@ -212,7 +212,7 @@ kubectl rolling-update my-nginx --image=nginx:1.9.1
 - open source container management platform for building a private container service
 
 
-</br>
+<br />
 ---
 7. 	深入瞭解Docker Container Networks
 ---
@@ -258,7 +258,7 @@ kubectl rolling-update my-nginx --image=nginx:1.9.1
 連起來有什麼特別意義？
 
 
-</br>
+<br />
 ---
 8. 以Docker swarm打造多主機cluster環境
 ---
@@ -275,7 +275,7 @@ github.
 
 
 
-</br>
+<br />
 ---
 1. Clone cobalt2
 ---

@@ -348,19 +348,17 @@
     </div>
     <div class="content" style="line-height: 28px;">
       
-<p>&lt;font size=3&gt;</p>
+<p>這篇要講怎麼用Node.js建立一個HTTPS的server，如果你的certificate不是self-signed的，<br />
+那設定HTTPS並不難，產生CSR給CA provider，然後就會有certificate，把它放進去就好，<br />
+但如果是self-signed，那過程就有點麻煩，每次要弄的時候，都還是會有點忘記，所以乾脆把過程記錄下來好了。<br /></p>
 
-<p>這篇要講怎麼用Node.js建立一個HTTPS的server，如果你的certificate不是self-signed的，&lt;/br&gt;
-那設定HTTPS並不難，產生CSR給CA provider，然後就會有certificate，把它放進去就好，&lt;/br&gt;
-但如果是self-signed，那過程就有點麻煩，每次要弄的時候，都還是會有點忘記，所以乾脆把過程記錄下來好了。&lt;/br&gt;</p>
-
-<p>&lt;/br&gt;</p>
+<p><br /></p>
 
 <hr />
 <h3 id="1-creating-a-private-key-and-csr">1. Creating a private key and CSR</h3>
 <hr />
 
-<p>在create certificate之前，必須要先有<code class="highlighter-rouge">private key</code>以及<code class="highlighter-rouge">CSR</code> (certificate signing request)，&lt;/br&gt;
+<p>在create certificate之前，必須要先有<code class="highlighter-rouge">private key</code>以及<code class="highlighter-rouge">CSR</code> (certificate signing request)，<br />
 所以我們要先generate出private key以及CSR。</p>
 
 <div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="c"># generate private key</span>
@@ -373,7 +371,7 @@
 </code></pre>
 </div>
 
-<p>&lt;/br&gt;</p>
+<p><br /></p>
 
 <!--more-->
 
@@ -387,21 +385,21 @@
 </code></pre>
 </div>
 
-<p>&lt;/br&gt;</p>
+<p><br /></p>
 
 <hr />
 <h3 id="3-configuring-ssl-in-nodejs">3. Configuring SSL in Node.js</h3>
 <hr />
 
-<p>有了certificate以後，就可以把它放在Node.js中使用，&lt;/br&gt;
-這裡我搭配的<code class="highlighter-rouge">express</code>+<code class="highlighter-rouge">https</code>這二個module，https這個module，default就有了，&lt;/br&gt;
+<p>有了certificate以後，就可以把它放在Node.js中使用，<br />
+這裡我搭配的<code class="highlighter-rouge">express</code>+<code class="highlighter-rouge">https</code>這二個module，https這個module，default就有了，<br />
 所以我們只需要安裝<code class="highlighter-rouge">express</code>就好。</p>
 
 <div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>npm install --save express
 </code></pre>
 </div>
 
-<p>&lt;/br&gt;
+<p><br />
 接著就把下面的內容貼入到<code class="highlighter-rouge">index.js</code>當中，</p>
 
 <div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="kr">const</span> <span class="nx">https</span>     <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s2">"https"</span><span class="p">);</span>
@@ -424,15 +422,14 @@
 </code></pre>
 </div>
 
-<p>&lt;/br&gt;
-靠<code class="highlighter-rouge">fs</code>去讀取certificate，然後再餵給<code class="highlighter-rouge">createServer</code>，這樣就完成了https server。&lt;/br&gt;</p>
+<p><br />
+靠<code class="highlighter-rouge">fs</code>去讀取certificate，然後再餵給<code class="highlighter-rouge">createServer</code>，這樣就完成了https server。<br /></p>
 
-<p>&lt;/br&gt;
-&lt;/br&gt;
-&lt;/br&gt;
-&lt;/br&gt;</p>
+<p><br />
+<br />
+<br />
+<br /></p>
 
-<p>&lt;/font&gt;</p>
 
     </div>
 

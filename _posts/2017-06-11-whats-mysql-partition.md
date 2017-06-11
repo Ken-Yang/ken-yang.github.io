@@ -15,14 +15,14 @@ tags: [mysql, partition]
 ### 1. What's Partition and Why?
 ---
 
-簡單說，Partition是將你的table，根據你的配置去divide成好幾個part；最重要的是，資料都是在同一個DB裡面，這對application來說，可以無感的使用它，卻又享有它的優點。</br>
+簡單說，Partition是將你的table，根據你的配置去divide成好幾個part；最重要的是，資料都是在同一個DB裡面，這對application來說，可以無感的使用它，卻又享有它的優點。<br />
 
 那麼為何要用partition呢？partition的優點在於：
 
 - `Partition Pruning`：基於已經知道資料在哪個partition的條件下，讓你的SQL operation變快，這包含了`select, insert, update ,delete`
 - `刪除資料`：當你的table很大時，刪除是非常耗時的一件工作，有了partition以後，你可以直接drop該partition，且時間上可以快上非常多。
 
-</br>
+<br />
 
 
 <!--more-->
@@ -33,9 +33,9 @@ tags: [mysql, partition]
 ---
 
 而使用partition的時機點，取決於資料量的大小，如果當你的資料只有幾千筆時，其實做partition的意義就不大了。
-</br>
+<br />
 不過partition也不是萬靈丹，當你的資料量成長到一定的數量時，可能也意味著你的application使用人數也成長了，當你所有的操作都在同一個DB上時，partition也是救不了你的application，所以才會有進階的做法，就是`sharding`，但`sharding`就比較複雜了，不管是對application還是replication來說，所以這就等下一篇有機會再寫吧。
-</br>
+<br />
 簡單說，基於下面的條件你就可以使用partition：
 
 - 如果你的table很大
@@ -43,7 +43,7 @@ tags: [mysql, partition]
 - 如果你想要快速的刪除歷史資料
 
 
-</br>
+<br />
 
 ---
 ### 3. Horizontal vs Vertical
@@ -57,7 +57,7 @@ Partition分為兩種類型：
 目前MySQL只支援horizontal partition。
 
 
-</br>
+<br />
 
 ---
 ### 4. Types of MySQL partition
@@ -73,13 +73,13 @@ Partition分為兩種類型：
 接下來會ㄧ一說明各個的差別。
 
 
-</br>
+<br />
 
 
 #### 4-1. Key partitioning
 
 
-如果你是使用key partitioning的話，MySQL會用它自己的hash function算出你這筆資料要放哪裡。</br>
+如果你是使用key partitioning的話，MySQL會用它自己的hash function算出你這筆資料要放哪裡。<br />
 key的用法為`key(column)`，裡面必須為table中的某個欄位，範例如下：
 
 
@@ -98,7 +98,7 @@ PARTITIONS 10;
 
 
 
-</br>
+<br />
 
 #### 4-2. Hash partitioning
 
@@ -122,7 +122,7 @@ PARTITIONS 12;
 
 
 
-</br>
+<br />
 
 #### 4-3. LIST partitioning
 
@@ -149,7 +149,7 @@ PARTITION BY LIST(DAYOFWEEK(create_time)) (
 上面的範例，就會根據data的DAYOFWEEK(create_time)，去divide出4個partition。
 
 
-</br>
+<br />
 
 #### 4-4.  Range partitioning
 
@@ -173,11 +173,11 @@ PARTITION BY RANGE(YEAR(create_time)) (
 ```
 
 上面的範例，就會根據data的YEAR(create_time)，簡單說，就是會根據年份去divide出4個partition。
-</br>
+<br />
 使用Range，有二點要注意，必須由低往高去設定，以及會無法insert超出range的資料。
 
 
-</br>
+<br />
 
 ---
 ### 5. Manage partition
@@ -206,7 +206,7 @@ ALTER TABLE t ADD PARTITION (PARTITION p2020 VALUES LESS THAN (2021));
 ```
 
 
-</br>
+<br />
 
 ---
 ### 6. Partition Pruning
@@ -257,7 +257,7 @@ insert into t_no_partioned values(10,now(3) + interval 2 year);
 insert into t_no_partioned values(11,now(3) + interval 2 year);
 ```
 
-</br>
+<br />
 
 然後我們可以用MySQL的`explain`去觀察select這2張table時，會有什麼變化，以下面的例子來看，
 可以發現當查詢有partition的table時，也只去scan 7 rows，且直接從partition p2017, p2018去獲取資料；
@@ -280,7 +280,7 @@ mysql> explain select * from t_no_partioned where create_time > now() and create
 +----+-------------+----------------+------------+------+---------------+------+---------+------+------+----------+-------------+
 ```
 
-</br>
+<br />
 但是要做到partition pruning，根據不同的配置是有不同的條件的：
 
 1. `PARTITION BY KEY(id)`
@@ -297,7 +297,7 @@ mysql> explain select * from t_no_partioned where create_time > now() and create
 
 
 
-</br>
+<br />
 
 ---
 ### 7. Sub partition
@@ -326,7 +326,7 @@ SUBPARTITIONS 2 (
 );
 ```
 
-</br>
+<br />
 查詢時，可以直接下
 
 ```sql
@@ -335,7 +335,7 @@ SELECT id FROM t PARTITION (p0sp1);
 
 
 
-</br>
+<br />
 
 ---
 ### 8. Conclusion
@@ -354,9 +354,9 @@ SELECT id FROM t PARTITION (p0sp1);
 
 
 
-</br>
-</br>
-</br>
+<br />
+<br />
+<br />
 
 
 

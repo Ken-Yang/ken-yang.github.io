@@ -348,203 +348,197 @@
     </div>
     <div class="content" style="line-height: 28px;">
       
-<font size="3">
+<p>今天看到一個朋友寫了FacebookBot，還整了AWS Lambda、斷詞API，突然感到很興奮，<br />
+但我沒打算花太多時間在Bot上，只打算做一個簡單的資訊查詢的bot，<br />
+所以選擇了<a href="https://core.telegram.org/bots/api">Telegram Bot</a>，原因是我們公司內部使用Telegram來溝通，<br />
+所以就想做一個Bot讓公司的同事查詢一些公司資訊（ex: wifi, 統編）。</p>
 
-今天看到一個朋友寫了FacebookBot，還整了AWS Lambda、斷詞API，突然感到很興奮，&lt;/br&gt;
-但我沒打算花太多時間在Bot上，只打算做一個簡單的資訊查詢的bot，&lt;/br&gt;
-所以選擇了[Telegram Bot](https://core.telegram.org/bots/api)，原因是我們公司內部使用Telegram來溝通，&lt;/br&gt;
-所以就想做一個Bot讓公司的同事查詢一些公司資訊（ex: wifi, 統編）。
+<p><br /></p>
 
+<hr />
+<h3 id="1-add-botfather-as-friend">1. Add BotFather as friend</h3>
+<hr />
 
-&lt;/br&gt;
+<p>首先我們要使用telegram加<code class="highlighter-rouge">BotFather</code>這個user，透過<code class="highlighter-rouge">BotFather</code>去create bot。</p>
 
----
-### 1. Add BotFather as friend
----
+<p><img src="http://localhost:4000/assets/2016-09-06-add-bot-father.png" alt="Ticket" /></p>
 
-首先我們要使用telegram加`BotFather`這個user，透過`BotFather`去create bot。
+<p><br /></p>
 
-![Ticket](http://localhost:4000/assets/2016-09-06-add-bot-father.png)
+<hr />
+<h3 id="2-create-a-bot">2. Create a bot</h3>
+<hr />
 
+<p>成功加入<code class="highlighter-rouge">BotFather</code>以後，就可以透過指令<code class="highlighter-rouge">/newbot</code>去create bot，<br />
+整個過程會以對話的方式進行（如下圖），會先問你的bot名稱要叫什麼以及它的username（類似ID，用來被search），<br /></p>
 
-&lt;/br&gt;
+<p><img src="http://localhost:4000/assets/2016-09-06-create-bot.png" alt="Ticket" /></p>
 
----
-### 2. Create a bot
----
+<p><br /></p>
 
-成功加入`BotFather`以後，就可以透過指令`/newbot`去create bot，&lt;/br&gt;
-整個過程會以對話的方式進行（如下圖），會先問你的bot名稱要叫什麼以及它的username（類似ID，用來被search），&lt;/br&gt;
+<p>建立成功以後，BotFather就會跟你說的你的bot token，這token很重要，是之後要用來request API用的。</p>
 
-![Ticket](http://localhost:4000/assets/2016-09-06-create-bot.png)
-
-&lt;/br&gt;
-
-建立成功以後，BotFather就會跟你說的你的bot token，這token很重要，是之後要用來request API用的。
-
-```
-Use this token to access the HTTP API:
+<div class="highlighter-rouge"><pre class="highlight"><code>Use this token to access the HTTP API:
 2X2X2XXX0:XXXXXXXXXXXXXXXXXXXXXXX
-```
+</code></pre>
+</div>
 
-&lt;/br&gt;
+<p><br /></p>
 
 <!--more-->
 
+<hr />
+<h3 id="3-sendreceive-message-from-bot">3. Send/Receive message from bot</h3>
+<hr />
 
----
-### 3. Send/Receive message from bot
----
-
-Telegram在receive訊息有二種方式，一種是透過RESTful API去要，但是被動的方式，得透過long-pulling的方式去拿，&lt;/br&gt;
-另外一種就是透過web hook，是主動的方式，有任何訊息給bot，Telegram會主動的去打我們的Server，&lt;/br&gt;
-這裡的案例是使用webhook，而在send and receive訊息之前，&lt;/br&gt;
-我們必須先建立一個**HTTPS** server，Telegram規定一定必須為HTTPS，&lt;/br&gt;
-不過是允許用self-signed的，但前提是你得把public key上傳至telegram，&lt;/br&gt;
+<p>Telegram在receive訊息有二種方式，一種是透過RESTful API去要，但是被動的方式，得透過long-pulling的方式去拿，<br />
+另外一種就是透過web hook，是主動的方式，有任何訊息給bot，Telegram會主動的去打我們的Server，<br />
+這裡的案例是使用webhook，而在send and receive訊息之前，<br />
+我們必須先建立一個<strong>HTTPS</strong> server，Telegram規定一定必須為HTTPS，<br />
+不過是允許用self-signed的，但前提是你得把public key上傳至telegram，<br />
 稍後都會說明如何上傳。
-這裡我選擇在ubuntu上，使用Node.js來建立HTTPS server，下面的步驟分為三個部分：&lt;/br&gt;
+這裡我選擇在ubuntu上，使用Node.js來建立HTTPS server，下面的步驟分為三個部分：<br /></p>
 
-1. Install Node.js
-2. Create web project
-3. Generate SSL certificate
+<ol>
+  <li>Install Node.js</li>
+  <li>Create web project</li>
+  <li>Generate SSL certificate</li>
+</ol>
 
+<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="c"># Install Node.js</span>
+<span class="gp">$ </span>wget https://nodejs.org/dist/v4.4.7/node-v4.4.7-linux-x64.tar.gz
+<span class="gp">$ </span>tar -xvzf node-v4.4.7-linux-x64.tar.gz
+<span class="gp">$ </span><span class="nb">export </span><span class="nv">PATH</span><span class="o">=</span>/home/ubuntu/node-v4.4.7-linux-x64/bin:<span class="nv">$PATH</span>
 
-```bash
-# Install Node.js
-$ wget https://nodejs.org/dist/v4.4.7/node-v4.4.7-linux-x64.tar.gz
-$ tar -xvzf node-v4.4.7-linux-x64.tar.gz
-$ export PATH=/home/ubuntu/node-v4.4.7-linux-x64/bin:$PATH
+<span class="c"># Create bot web project</span>
+<span class="gp">$ </span><span class="nb">cd</span> ~/
+<span class="gp">$ </span>mkdir bot/
+<span class="gp">$ </span><span class="nb">cd </span>bot
+<span class="gp">$ </span>npm init
+<span class="gp">$ </span>npm install --save express
+<span class="gp">$ </span>npm install --save body-parser
+<span class="gp">$ </span>npm install --save request
+<span class="gp">$ </span>npm install --save morgan
+<span class="gp">$ </span>npm install -g pm2
+<span class="gp">$ </span>mkdir ssl
+<span class="gp">$ </span><span class="nb">cd </span>ssl
 
-# Create bot web project
-$ cd ~/
-$ mkdir bot/
-$ cd bot
-$ npm init
-$ npm install --save express
-$ npm install --save body-parser
-$ npm install --save request
-$ npm install --save morgan
-$ npm install -g pm2
-$ mkdir ssl
-$ cd ssl
+<span class="c"># Generate SSL certificate</span>
+<span class="gp">$ </span>openssl req -newkey rsa:2048 -sha256 -nodes -keyout server.key -x509 -days 3650 -out server.pem -subj <span class="s2">"/C=TW/ST=Taipei/L=Taipei/O=None/CN=bot.kenyang.net"</span>
+<span class="gp">$ </span><span class="nb">cd</span> ../
+<span class="gp">$ </span>mkdir -p /var/log/bot/
+</code></pre>
+</div>
 
-# Generate SSL certificate
-$ openssl req -newkey rsa:2048 -sha256 -nodes -keyout server.key -x509 -days 3650 -out server.pem -subj "/C=TW/ST=Taipei/L=Taipei/O=None/CN=bot.kenyang.net"
-$ cd ../
-$ mkdir -p /var/log/bot/
-```
+<p><br />
+接著來寫我們的主程式<code class="highlighter-rouge">index.js</code>，記得把下面的<code class="highlighter-rouge">YOUR_TOKEN</code>換成你自己的token，</p>
 
-&lt;/br&gt;
-接著來寫我們的主程式`index.js`，記得把下面的`YOUR_TOKEN`換成你自己的token，
+<div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="kr">const</span> <span class="nx">https</span>     <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s2">"https"</span><span class="p">);</span>
+<span class="kr">const</span> <span class="nx">express</span>   <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s2">"express"</span><span class="p">);</span>
+<span class="kr">const</span> <span class="nx">bodyParser</span>    <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'body-parser'</span><span class="p">);</span>
+<span class="kr">const</span> <span class="nx">logger</span>        <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'morgan'</span><span class="p">);</span>
+<span class="kr">const</span> <span class="nx">fs</span>            <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'fs'</span><span class="p">);</span>
+<span class="kr">const</span> <span class="nx">request</span>     <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'request'</span><span class="p">);</span>
+<span class="kr">const</span> <span class="nx">logStream</span>     <span class="o">=</span> <span class="nx">fs</span><span class="p">.</span><span class="nx">createWriteStream</span><span class="p">(</span><span class="s1">'/var/log/bot/access.log'</span><span class="p">,</span> <span class="p">{</span><span class="na">flags</span><span class="p">:</span> <span class="s1">'a'</span><span class="p">});</span>
 
-```javascript
-const https     = require("https");
-const express   = require("express");
-const bodyParser    = require('body-parser');
-const logger        = require('morgan');
-const fs            = require('fs');
-const request     = require('request');
-const logStream     = fs.createWriteStream('/var/log/bot/access.log', {flags: 'a'});
+<span class="kr">const</span> <span class="nx">SERVER_CONFIG</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="na">key</span><span class="p">:</span>  <span class="nx">fs</span><span class="p">.</span><span class="nx">readFileSync</span><span class="p">(</span><span class="s1">'./ssl/server.key'</span><span class="p">),</span>
+    <span class="na">cert</span><span class="p">:</span> <span class="nx">fs</span><span class="p">.</span><span class="nx">readFileSync</span><span class="p">(</span><span class="s1">'./ssl/server.pem'</span><span class="p">)</span>
+<span class="p">};</span>
 
-const SERVER_CONFIG = {
-    key:  fs.readFileSync('./ssl/server.key'),
-    cert: fs.readFileSync('./ssl/server.pem')
-};
+<span class="kd">var</span> <span class="nx">app</span> <span class="o">=</span> <span class="nx">express</span><span class="p">();</span>
 
-var app = express();
+<span class="nx">app</span><span class="p">.</span><span class="nx">use</span><span class="p">(</span><span class="nx">logger</span><span class="p">(</span><span class="s1">'combined'</span><span class="p">,</span> <span class="p">{</span><span class="na">stream</span><span class="p">:</span> <span class="nx">logStream</span><span class="p">}));</span>
+<span class="nx">app</span><span class="p">.</span><span class="nx">use</span><span class="p">(</span><span class="nx">logger</span><span class="p">(</span><span class="s1">'dev'</span><span class="p">));</span>
+<span class="nx">app</span><span class="p">.</span><span class="nx">use</span><span class="p">(</span><span class="nx">bodyParser</span><span class="p">.</span><span class="nx">json</span><span class="p">());</span>
 
-app.use(logger('combined', {stream: logStream}));
-app.use(logger('dev'));
-app.use(bodyParser.json());
+<span class="nx">app</span><span class="p">.</span><span class="nx">post</span><span class="p">(</span><span class="s1">'/receive'</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">req</span><span class="p">,</span><span class="nx">resp</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">req</span><span class="p">.</span><span class="nx">body</span><span class="p">);</span>
+    <span class="kd">var</span> <span class="nx">body</span> <span class="o">=</span> <span class="nx">req</span><span class="p">.</span><span class="nx">body</span><span class="p">;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">body</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">resp</span><span class="p">.</span><span class="nx">status</span><span class="p">(</span><span class="mi">200</span><span class="p">).</span><span class="nx">json</span><span class="p">({</span><span class="s2">"STATUS"</span><span class="p">:</span><span class="s2">"No body"</span><span class="p">});</span>
+        <span class="k">return</span><span class="p">;</span>
+    <span class="p">}</span>
 
-app.post('/receive', function(req,resp) {
-    console.log(req.body);
-    var body = req.body;
-    if (!body) {
-        resp.status(200).json({"STATUS":"No body"});
-        return;
-    }
+    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">body</span><span class="p">.</span><span class="nx">message</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">resp</span><span class="p">.</span><span class="nx">status</span><span class="p">(</span><span class="mi">200</span><span class="p">).</span><span class="nx">json</span><span class="p">({</span><span class="s2">"STATUS"</span><span class="p">:</span><span class="s2">"No message"</span><span class="p">});</span>
+        <span class="k">return</span><span class="p">;</span>
+    <span class="p">}</span>
 
-    if (!body.message) {
-        resp.status(200).json({"STATUS":"No message"});
-        return;
-    }
-
-    var chatId = body.message.chat.id;
-    var cmd    = body.message.text;
-    cmd = cmd.toLowerCase();
+    <span class="kd">var</span> <span class="nx">chatId</span> <span class="o">=</span> <span class="nx">body</span><span class="p">.</span><span class="nx">message</span><span class="p">.</span><span class="nx">chat</span><span class="p">.</span><span class="nx">id</span><span class="p">;</span>
+    <span class="kd">var</span> <span class="nx">cmd</span>    <span class="o">=</span> <span class="nx">body</span><span class="p">.</span><span class="nx">message</span><span class="p">.</span><span class="nx">text</span><span class="p">;</span>
+    <span class="nx">cmd</span> <span class="o">=</span> <span class="nx">cmd</span><span class="p">.</span><span class="nx">toLowerCase</span><span class="p">();</span>
     
-    // 記得把YOUR_TOKEN換成你自己的
-    var options = {
-        url: 'https://api.telegram.org/botYOUR_TOKEN/sendMessage',
-        form : {
-            chat_id: chatId
-        }
-    };
+    <span class="c1">// 記得把YOUR_TOKEN換成你自己的</span>
+    <span class="kd">var</span> <span class="nx">options</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="na">url</span><span class="p">:</span> <span class="s1">'https://api.telegram.org/botYOUR_TOKEN/sendMessage'</span><span class="p">,</span>
+        <span class="na">form</span> <span class="p">:</span> <span class="p">{</span>
+            <span class="na">chat_id</span><span class="p">:</span> <span class="nx">chatId</span>
+        <span class="p">}</span>
+    <span class="p">};</span>
 
-    if (cmd == '/wifi') {
-        options.form.text =  'Your Wi-Fi password is : !@#!$%^&amp;*&amp;$#';
-    } else if (cmd == '/address' || cmd == '/addr' || cmd == '/office') {
-        options.form.text =  '台北市信義區松X路XXX號XX樓';
-    } else if (cmd == '/統編') {
-        options.form.text =  'xxxxxxxxx';
-    } else if (cmd == '/ken') {
-        options.form.text =  'Ken is an engineer.';
-    } else {
-        options.form.text =  'I don\'t know what you are talking...';
-    }
+    <span class="k">if</span> <span class="p">(</span><span class="nx">cmd</span> <span class="o">==</span> <span class="s1">'/wifi'</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">options</span><span class="p">.</span><span class="nx">form</span><span class="p">.</span><span class="nx">text</span> <span class="o">=</span>  <span class="s1">'Your Wi-Fi password is : !@#!$%^&amp;*&amp;$#'</span><span class="p">;</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">cmd</span> <span class="o">==</span> <span class="s1">'/address'</span> <span class="o">||</span> <span class="nx">cmd</span> <span class="o">==</span> <span class="s1">'/addr'</span> <span class="o">||</span> <span class="nx">cmd</span> <span class="o">==</span> <span class="s1">'/office'</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">options</span><span class="p">.</span><span class="nx">form</span><span class="p">.</span><span class="nx">text</span> <span class="o">=</span>  <span class="s1">'台北市信義區松X路XXX號XX樓'</span><span class="p">;</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">cmd</span> <span class="o">==</span> <span class="s1">'/統編'</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">options</span><span class="p">.</span><span class="nx">form</span><span class="p">.</span><span class="nx">text</span> <span class="o">=</span>  <span class="s1">'xxxxxxxxx'</span><span class="p">;</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">cmd</span> <span class="o">==</span> <span class="s1">'/ken'</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">options</span><span class="p">.</span><span class="nx">form</span><span class="p">.</span><span class="nx">text</span> <span class="o">=</span>  <span class="s1">'Ken is an engineer.'</span><span class="p">;</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+        <span class="nx">options</span><span class="p">.</span><span class="nx">form</span><span class="p">.</span><span class="nx">text</span> <span class="o">=</span>  <span class="s1">'I don\'t know what you are talking...'</span><span class="p">;</span>
+    <span class="p">}</span>
 
-    request.post(options, function(err,httpResponse,body){
-        if (err) {
-            console.log('err' + err);
-            resp.status(200).json({"STATUS":"FAIL"});
-            return;
-        }
-        console.log(body);
-        resp.status(200).json({"STATUS":"OK"});
-    });
+    <span class="nx">request</span><span class="p">.</span><span class="nx">post</span><span class="p">(</span><span class="nx">options</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span><span class="nx">httpResponse</span><span class="p">,</span><span class="nx">body</span><span class="p">){</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'err'</span> <span class="o">+</span> <span class="nx">err</span><span class="p">);</span>
+            <span class="nx">resp</span><span class="p">.</span><span class="nx">status</span><span class="p">(</span><span class="mi">200</span><span class="p">).</span><span class="nx">json</span><span class="p">({</span><span class="s2">"STATUS"</span><span class="p">:</span><span class="s2">"FAIL"</span><span class="p">});</span>
+            <span class="k">return</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">body</span><span class="p">);</span>
+        <span class="nx">resp</span><span class="p">.</span><span class="nx">status</span><span class="p">(</span><span class="mi">200</span><span class="p">).</span><span class="nx">json</span><span class="p">({</span><span class="s2">"STATUS"</span><span class="p">:</span><span class="s2">"OK"</span><span class="p">});</span>
+    <span class="p">});</span>
 
-});
+<span class="p">});</span>
 
-https.createServer(SERVER_CONFIG, app)
-     .listen(443,function() { console.log("HTTPS sever started"); }
-);
+<span class="nx">https</span><span class="p">.</span><span class="nx">createServer</span><span class="p">(</span><span class="nx">SERVER_CONFIG</span><span class="p">,</span> <span class="nx">app</span><span class="p">)</span>
+     <span class="p">.</span><span class="nx">listen</span><span class="p">(</span><span class="mi">443</span><span class="p">,</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span> <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">"HTTPS sever started"</span><span class="p">);</span> <span class="p">}</span>
+<span class="p">);</span>
 
-```
+</code></pre>
+</div>
 
-&lt;/br&gt;
-完成以後就用pm2把它run起來，
+<p><br />
+完成以後就用pm2把它run起來，</p>
 
-```
-$ pm2 start index.js
-```
+<div class="highlighter-rouge"><pre class="highlight"><code>$ pm2 start index.js
+</code></pre>
+</div>
 
-&lt;/br&gt;
+<p><br /></p>
 
----
-### 4. Set webhook
----
+<hr />
+<h3 id="4-set-webhook">4. Set webhook</h3>
+<hr />
 
-接著我們得向Telegram註冊剛剛建立的API，讓bot收到訊息時，Telegram會主動通知我們，&lt;/br&gt;
-我們透過curl去註冊，同時會把剛剛create的certificate上傳上去Telegram，&lt;/br&gt;
-記得把下面參數換成你自己的。
+<p>接著我們得向Telegram註冊剛剛建立的API，讓bot收到訊息時，Telegram會主動通知我們，<br />
+我們透過curl去註冊，同時會把剛剛create的certificate上傳上去Telegram，<br />
+記得把下面參數換成你自己的。</p>
 
-```
-$ curl -i -X POST -H "Content-Type: multipart/form-data" -F "certificate=@server.pem" -F "url=https://YOUR_DOMAIN/receive" https://api.telegram.org/botYOUR_TOKEN/setWebhook
-```
+<div class="highlighter-rouge"><pre class="highlight"><code>$ curl -i -X POST -H "Content-Type: multipart/form-data" -F "certificate=@server.pem" -F "url=https://YOUR_DOMAIN/receive" https://api.telegram.org/botYOUR_TOKEN/setWebhook
+</code></pre>
+</div>
 
-&lt;/br&gt;
+<p><br /></p>
 
----
-### 5. Test
----
+<hr />
+<h3 id="5-test">5. Test</h3>
+<hr />
 
-Set webhook成功以後，就可以跟你的bot進行互動測試了。
+<p>Set webhook成功以後，就可以跟你的bot進行互動測試了。</p>
 
-![Ticket](http://localhost:4000/assets/2016-09-06-test.png)
+<p><img src="http://localhost:4000/assets/2016-09-06-test.png" alt="Ticket" /></p>
 
-
-</font>
 
     </div>
 

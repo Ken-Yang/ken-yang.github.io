@@ -9,14 +9,14 @@ tags: [Android, actionbar, appbar, toolbar, meterial design]
 
 
 
-大概一年多沒有寫Android了，最近發現好多不一樣了，</br>
-譬如說ActionBar變成AppBar..不過以前的ActionBar還能繼續用，</br>
+大概一年多沒有寫Android了，最近發現好多不一樣了，<br />
+譬如說ActionBar變成AppBar..不過以前的ActionBar還能繼續用，<br />
 但還是得學一下怎麼用App bar跟上潮流。
 
 [Example Code on Github] (https://github.com/Ken-Yang/AndroidAppBar)
 
 
-</br>
+<br />
 
 ---
 ### 1. Create new project
@@ -24,13 +24,13 @@ tags: [Android, actionbar, appbar, toolbar, meterial design]
 
 首先先建立一個新的project，然後選擇Empty activity。
 
-</br>
+<br />
 
 ---
 ### 2. Add dependency
 ---
 
-接著打開build.gradle，把appcompat加入dependency，</br>
+接著打開build.gradle，把appcompat加入dependency，<br />
 不過如果你的Android Studio是新版的，就會自動幫你加入了。
 
 ```xml
@@ -43,13 +43,13 @@ dependencies {
 
 <!--more-->
 
-</br>
+<br />
 
 ---
 ### 3. Remove actionbar
 ---
 
-因為Default style會去繼承ActionBar Theme，所以我們要把它移除掉，</br>
+因為Default style會去繼承ActionBar Theme，所以我們要把它移除掉，<br />
 打開`style.xml`，然後把parent改成`Theme.AppCompat.Light.NoActionBar`。
 
 ```xml
@@ -58,7 +58,7 @@ dependencies {
 </style>
 ```
 
-</br>
+<br />
 
 ---
 ### 4. Color your App Bar
@@ -69,7 +69,7 @@ dependencies {
 1. **colorPrimary** : 以前ActionBar那條的背景顏色
 2. **colorPrimaryDark** : Status 那條的背景顏色
 
-</br>
+<br />
 
 首先要先在`color.xml`中，新增上述的二個顏色。
 
@@ -92,7 +92,7 @@ dependencies {
 </style>
 ```
 
-</br>
+<br />
 
 ---
 ### 5. Create a toobar
@@ -118,7 +118,7 @@ dependencies {
 </android.support.v7.widget.Toolbar>
 ```
 
-</br>
+<br />
 
 ---
 ### 6. Add the toolbar into activity
@@ -147,14 +147,14 @@ dependencies {
 
 ```
 
-</br>
+<br />
 
 ---
 ### 7. Setup toolbar as actionbar
 ---
 
-完成上面步驟以後，你可以試著run看看，但你會發現就只是簡單的一條bar而已，</br>
-並沒有title或者action item之類的，所以接下要把toolbar設定成ActionBar，</br>
+完成上面步驟以後，你可以試著run看看，但你會發現就只是簡單的一條bar而已，<br />
+並沒有title或者action item之類的，所以接下要把toolbar設定成ActionBar，<br />
 把`ToolBar`丟進去`setSupportActionBar()`就可以了。
 
 ```java
@@ -168,6 +168,6 @@ protected void onCreate(Bundle savedInstanceState) {
 }
 ```
 
-</br></br></br></br>
+<br /></br></br></br>
 
 

@@ -12,7 +12,7 @@ tags: [webpack,loader]
 最近在看Vue.js，很多文章都是搭配著Webpack來說明，所以也順便研究了一下webpack，
 這篇會說明[webpack](https://webpack.js.org/)的優點、以及用途。
 
-</br>
+<br />
 
 ---
 ### 1. What's webpack?
@@ -28,7 +28,7 @@ tags: [webpack,loader]
 一句話簡單說，可以想像成`打包工具` （但當然不僅於此，否則不會這麼紅）。
 
 
-</br>
+<br />
 
 <!--more-->
 
@@ -42,7 +42,7 @@ tags: [webpack,loader]
 2. Global Installation (我使用這種）
 3. Bleeding Edge
 
-</br>
+<br />
 
 #### Local Installation
 
@@ -61,7 +61,7 @@ npm install webpack@<version> --save-dev
 }
 ```
 
-</br>
+<br />
 
 
 #### Global Installation
@@ -72,7 +72,7 @@ npm install webpack@<version> --save-dev
 npm install webpack -g
 ```
 
-</br>
+<br />
 
 #### Bleeding Edge
 
@@ -82,7 +82,7 @@ npm install webpack -g
 npm install webpack/webpack#<tagname/branchname>
 ```
 
-</br>
+<br />
 
 ---
 ### 3. How to bundle?
@@ -98,7 +98,7 @@ div.innerHTML="Hello worl Ken!";
 document.body.appendChild(div);
 ```
 
-util.js會去建立一個div element，然後把它塞入body之中。</br>
+util.js會去建立一個div element，然後把它塞入body之中。<br />
 
 **app.js**
 
@@ -121,7 +121,7 @@ app.js會去找到id為app的element，然後把它塞入字串。
 </html>
 ```
 
-你會發現index.html中，使用的js是bundle.js，卻不是先前建立的任何一隻js！因為bundle.js就是透過webpack bundle出來的js file。</br>
+你會發現index.html中，使用的js是bundle.js，卻不是先前建立的任何一隻js！因為bundle.js就是透過webpack bundle出來的js file。<br />
 有了檔案以後，接下來就可以透過`webpack`來bundle，如果成功的話，就會看到bundle的過程，以及有哪幾隻檔案。
 
 ```bash
@@ -135,13 +135,13 @@ bundle.js  2.78 kB       0  [emitted]  main
    [1] ./app.js 87 bytes {0} [built]
 ```
 
-</br>
+<br />
 
 webpack會從app.js中去resolve dependency，把相關的js都bundle至bundle.js當中，而每個js都會被視為一個module，webpack會給每個module一個id，然後透過`__webpack_require__`去呼叫其他module，
 
 完成以後，就可以打開`index.html`，就會看到對應的文字了。
 
-</br>
+<br />
 
 
 ---
@@ -181,7 +181,7 @@ module.exports = {
 webpack -p
 ```
 
-</br>
+<br />
 
 ---
 ### 5. What's loader?
@@ -191,15 +191,15 @@ webpack -p
 
 
 
-</br>
+<br />
 
 ---
 ### 6. How to use loader?
 ---
 
-loader在npm上，有很多種，有html template、css、i18n、url-loader、json等等之類的。</br>
+loader在npm上，有很多種，有html template、css、i18n、url-loader、json等等之類的。<br />
 我會以css loader和url-loader來做說明，
-</br>
+<br />
 
 #### css-loader style-loader
 
@@ -210,7 +210,7 @@ loader在npm上，有很多種，有html template、css、i18n、url-loader、js
 $ npm install css-loader style-loader --save-dev
 ```
 
-</br>
+<br />
 然後來撰寫我們的style.css，
 
 ```css
@@ -255,7 +255,7 @@ webpack -p
 
 再打開index.html，就會發現你的字體顏色變紅色了
 
-</br>
+<br />
 
 #### url-loader
 
@@ -318,16 +318,16 @@ webpack -p
 build完以後，打開`index.html`以及browser developer mode，會發現該張圖片已經變成base64編碼。
 
 
-</br>
+<br />
 
 ---
 ### 7. webpack-dev-server
 ---
 
-這應該是我覺得webpack這屌的東西了，`webpack-dev-server`是一個小型的Node.js Express server，一旦你啟動了`webpack-dev-server`，</br>
-它會根據你的`config`去bundle，然後host一個HTTP Server，你可以透過此server看到你的html。</br>
-最強的是！它會去幫你monitor你所有檔案，一旦有變更，都會是live reload，譬如說你改了css某個值，</br>
-然後馬上跑去browser看，會發現它已經變更了！完全不用自己手動refresh！</br>
+這應該是我覺得webpack這屌的東西了，`webpack-dev-server`是一個小型的Node.js Express server，一旦你啟動了`webpack-dev-server`，<br />
+它會根據你的`config`去bundle，然後host一個HTTP Server，你可以透過此server看到你的html。<br />
+最強的是！它會去幫你monitor你所有檔案，一旦有變更，都會是live reload，譬如說你改了css某個值，<br />
+然後馬上跑去browser看，會發現它已經變更了！完全不用自己手動refresh！<br />
 
 使用方式很簡單，首先先安裝，
 
@@ -344,7 +344,7 @@ webpack-dev-server
 如果成功應該會看到一長串的內容，包含跟你說server的port等等相關資訊。
 webpack就先講到這了，有進階應用的話再來補充。
 
-</br>
+<br />
 
 
 

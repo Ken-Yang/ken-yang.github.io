@@ -14,7 +14,7 @@ tags: []
 
 
 
-</br>
+<br />
 
 ---
 ### 1. Install oh-my-zsh
@@ -25,7 +25,7 @@ tags: []
 ```bash
 $ chsh -s /bin/zsh
 ```
-</br>
+<br />
 接著就安裝`oh-my-zsh`，
 
 ```bash
@@ -34,7 +34,7 @@ $ curl -L https://github.com/robbyrussell/oh-my-zsh/raw/master/tools/install.sh 
 
 <!--more-->
 
-</br>
+<br />
 
 ---
 ### 2. Clone cobalt2
@@ -51,7 +51,7 @@ $ cd Cobalt2-iterm
 $ mv cobalt2.zsh-theme ~/.oh-my-zsh/themes/
 ```
 
-</br>
+<br />
 然後打開iterm，
 
 1. 點選`Preferences`
@@ -65,7 +65,7 @@ $ mv cobalt2.zsh-theme ~/.oh-my-zsh/themes/
 9. 選擇`Set as default`
 
 
-</br>
+<br />
 
 ---
 ### 3. Install font
@@ -78,7 +78,7 @@ $ git clone https://github.com/powerline/fonts.git
 $ cd fonts
 $ ./install.sh
 ```
-</br>
+<br />
 接著一樣在打開iterm，
 
 1. 點選`Preferences`
@@ -88,7 +88,7 @@ $ ./install.sh
 5. 選擇`inconsolata for powerline`
 
 
-</br>
+<br />
 
 ---
 ### 4. 變更Theme
@@ -100,7 +100,7 @@ $ ./install.sh
 $ vim ~/.zshrc
 ```
 
-</br>
+<br />
 然後把ZSH_THEME換成cobalt2
 
 ```
@@ -113,7 +113,7 @@ $ source ~/.zshrc
 ```
 
  
-</br>
+<br />
 
 ---
 ### 5. 客製化

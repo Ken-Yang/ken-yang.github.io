@@ -348,153 +348,142 @@
     </div>
     <div class="content" style="line-height: 28px;">
       
-<font size="3">
+<p>之前有講過<a href="http://blog.kenyang.net/2015/06/25/apache-kafka-distributed-messaging">Kafka的用途以及如何安裝</a>，這篇會講如何用<code class="highlighter-rouge">Node.js</code>去連結<code class="highlighter-rouge">Kafka</code>，至於安裝Kafka的部分就請去<a href="http://blog.kenyang.net/2015/06/25/apache-kafka-distributed-messaging">上一篇</a>來看。</p>
 
-之前有講過[Kafka的用途以及如何安裝](http://blog.kenyang.net/2015/06/25/apache-kafka-distributed-messaging)，這篇會講如何用`Node.js`去連結`Kafka`，至於安裝Kafka的部分就請去[上一篇](http://blog.kenyang.net/2015/06/25/apache-kafka-distributed-messaging)來看。
+<p><br /></p>
 
+<hr />
+<h3 id="1-create-a-topic">1. Create a topic</h3>
+<hr />
 
-&lt;/br&gt;
+<p>首先，先用CLI去建立一個topic，這topic等等會被Node.js subcribe。</p>
 
----
-### 1. Create a topic
----
+<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span><span class="nb">cd</span> <span class="nv">$YOUR_PATH</span>/kafka_2.11-0.10.1.0
+<span class="gp">$ </span>bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic open
+</code></pre>
+</div>
 
-首先，先用CLI去建立一個topic，這topic等等會被Node.js subcribe。
+<p>可以用下面的指令去看topic是否建立成功：</p>
 
-```bash
-$ cd $YOUR_PATH/kafka_2.11-0.10.1.0
-$ bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic open
-```
+<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>bin/kafka-topics.sh --list --zookeeper localhost:2181
+</code></pre>
+</div>
 
-可以用下面的指令去看topic是否建立成功：
-
-```bash
-$ bin/kafka-topics.sh --list --zookeeper localhost:2181
-```
-
-&lt;/br&gt;
-
+<p><br /></p>
 
 <!--more-->
 
+<hr />
+<h3 id="2-install-kafka-node">2. Install kafka-node</h3>
+<hr />
 
----
-### 2. Install kafka-node
----
+<p>這一步驟要安裝kafka的Node.js module，這裡選用的是<code class="highlighter-rouge">kafka-node</code>（其實選擇也不多）。</p>
 
-這一步驟要安裝kafka的Node.js module，這裡選用的是`kafka-node`（其實選擇也不多）。
+<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>mkdir /opt/kafka-test
+<span class="gp">$ </span><span class="nb">cd</span> /opt/kafka-test
+<span class="gp">$ </span>npm install kafka-node --no-optional --save
+</code></pre>
+</div>
 
-```bash
-$ mkdir /opt/kafka-test
-$ cd /opt/kafka-test
-$ npm install kafka-node --no-optional --save
-```
+<p><br /></p>
 
-&lt;/br&gt;
+<hr />
+<h3 id="3-connect-to-zookeeper-and-send-message-producerjs">3. Connect to Zookeeper and Send message (Producer.js)</h3>
+<hr />
 
----
-### 3. Connect to Zookeeper and Send message (Producer.js)
----
+<p>接著就可以在Node.js中使用<code class="highlighter-rouge">kafka-node</code>，首先要先connect到你自己的Zookeeper，再來就可以對我們剛剛建立的topic進行傳送訊息。<br />
+傳訊息是透過<code class="highlighter-rouge">producer.send</code>這方式，成功以後我會去做<code class="highlighter-rouge">client.close()</code>的動作，因此這隻node.js每次執行完就會關閉了。</p>
 
-接著就可以在Node.js中使用`kafka-node`，首先要先connect到你自己的Zookeeper，再來就可以對我們剛剛建立的topic進行傳送訊息。&lt;/br&gt;
-傳訊息是透過`producer.send`這方式，成功以後我會去做`client.close()`的動作，因此這隻node.js每次執行完就會關閉了。
+<div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="kd">var</span> <span class="nx">kafka</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'kafka-node'</span><span class="p">),</span>
+    <span class="nx">Producer</span> <span class="o">=</span> <span class="nx">kafka</span><span class="p">.</span><span class="nx">Producer</span><span class="p">,</span>
+    <span class="nx">client</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">kafka</span><span class="p">.</span><span class="nx">Client</span><span class="p">(</span><span class="s1">'${YOUR_HOST}:2181'</span><span class="p">),</span>
+    <span class="nx">producer</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Producer</span><span class="p">(</span><span class="nx">client</span><span class="p">),</span>
+    <span class="nx">payloads</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">{</span> <span class="na">topic</span><span class="p">:</span> <span class="s1">'open'</span><span class="p">,</span> <span class="na">messages</span><span class="p">:</span> <span class="p">[</span><span class="s1">'hello world from nodejs'</span><span class="p">]</span> <span class="p">}</span>
+    <span class="p">];</span>
 
-```javascript
-var kafka = require('kafka-node'),
-    Producer = kafka.Producer,
-    client = new kafka.Client('${YOUR_HOST}:2181'),
-    producer = new Producer(client),
-    payloads = [
-        { topic: 'open', messages: ['hello world from nodejs'] }
-    ];
+<span class="nx">producer</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">'ready'</span><span class="p">,</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+    <span class="nx">producer</span><span class="p">.</span><span class="nx">send</span><span class="p">(</span><span class="nx">payloads</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">err</span> <span class="o">||</span> <span class="nx">data</span><span class="p">);</span>
+        <span class="nx">client</span><span class="p">.</span><span class="nx">close</span><span class="p">();</span>
+    <span class="p">});</span>
+<span class="p">});</span>
 
-producer.on('ready', function () {
-    producer.send(payloads, function (err, data) {
-        console.log(err || data);
-        client.close();
-    });
-});
+<span class="nx">producer</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">'error'</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="p">{})</span>
+</code></pre>
+</div>
 
-producer.on('error', function (err) {})
-```
+<p><br /></p>
 
-&lt;/br&gt;
+<hr />
+<h3 id="4-connecto-to-kafka-server-and-receiver-message-consumerjs">4. Connecto to Kafka Server and Receiver message (Consumer.js)</h3>
+<hr />
 
----
-### 4. Connecto to Kafka Server and Receiver message (Consumer.js)
----
+<p>接著就是implement <code class="highlighter-rouge">consumer.js</code>，基本上跟上面的Producer沒有太大差別，比較需要說明的參數是<code class="highlighter-rouge">autoCommit</code>，一旦設為true，在你的consumer收到這則message時，就會被標記已讀的概念，接下來其他的consumer就不會再收到。</p>
 
-接著就是implement `consumer.js`，基本上跟上面的Producer沒有太大差別，比較需要說明的參數是`autoCommit`，一旦設為true，在你的consumer收到這則message時，就會被標記已讀的概念，接下來其他的consumer就不會再收到。
+<div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="kd">var</span> <span class="nx">kafka</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'kafka-node'</span><span class="p">),</span>
+    <span class="nx">Consumer</span> <span class="o">=</span> <span class="nx">kafka</span><span class="p">.</span><span class="nx">Consumer</span><span class="p">,</span>
+    <span class="nx">client</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">kafka</span><span class="p">.</span><span class="nx">Client</span><span class="p">(</span><span class="s1">'${YOUR_HOST}:2181'</span><span class="p">),</span>
+    <span class="nx">consumer</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Consumer</span><span class="p">(</span>
+        <span class="nx">client</span><span class="p">,</span>
+        <span class="p">[</span>
+            <span class="p">{</span> <span class="na">topic</span><span class="p">:</span> <span class="s1">'open'</span><span class="p">,</span> <span class="na">partition</span><span class="p">:</span> <span class="mi">0</span> <span class="p">}</span>
+        <span class="p">],</span>
+        <span class="p">{</span>
+            <span class="na">autoCommit</span><span class="p">:</span> <span class="kc">true</span>
+        <span class="p">}</span>
+    <span class="p">);</span>
 
-```javascript
-var kafka = require('kafka-node'),
-    Consumer = kafka.Consumer,
-    client = new kafka.Client('${YOUR_HOST}:2181'),
-    consumer = new Consumer(
-        client,
-        [
-            { topic: 'open', partition: 0 }
-        ],
-        {
-            autoCommit: true
-        }
-    );
+<span class="nx">consumer</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">'message'</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">message</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">message</span><span class="p">);</span>
+<span class="p">});</span>
 
-consumer.on('message', function (message) {
-    console.log(message);
-});
+</code></pre>
+</div>
 
-```
+<p><br /></p>
 
-&lt;/br&gt;
+<p>這裡我有踩到一個雷，由於我是把Kafka放在EC2上，然後EC2綁了一個elastic IP，但我的consumer並不是放在EC2上，而是放在某個local VM裡面，在連接的時候，一直遇到下面的error message，解決方式很簡單，只要在你的<code class="highlighter-rouge">/etc/hosts</code>裡面增加一筆mapping就好了。</p>
 
-這裡我有踩到一個雷，由於我是把Kafka放在EC2上，然後EC2綁了一個elastic IP，但我的consumer並不是放在EC2上，而是放在某個local VM裡面，在連接的時候，一直遇到下面的error message，解決方式很簡單，只要在你的`/etc/hosts`裡面增加一筆mapping就好了。
+<div class="highlighter-rouge"><pre class="highlight"><code>Error: getaddrinfo ENOTFOUND ip-xxx-xxx-xxx-xxx ip-xxx-xxx-xxx-xxx:9092
+</code></pre>
+</div>
 
-```
-Error: getaddrinfo ENOTFOUND ip-xxx-xxx-xxx-xxx ip-xxx-xxx-xxx-xxx:9092
-```
+<p><br /></p>
 
-&lt;/br&gt;
+<hr />
+<h3 id="5-testing">5. Testing</h3>
+<hr />
 
----
-### 5. Testing
----
+<p>先在放置consumer.js的機器上執行它，</p>
 
-先在放置consumer.js的機器上執行它，
+<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>node consumer.js
+</code></pre>
+</div>
 
-```bash
-$ node consumer.js
-```
+<p>接下來就執行producer.js，由於上面第三步驟有提到，在send完以後會把close client，所以執行完producer以後，這隻js就會被關閉。可以一直不斷執行這隻檔案，你會在consumer那台機器上不斷看到訊息傳遞過來。</p>
 
-接下來就執行producer.js，由於上面第三步驟有提到，在send完以後會把close client，所以執行完producer以後，這隻js就會被關閉。可以一直不斷執行這隻檔案，你會在consumer那台機器上不斷看到訊息傳遞過來。
+<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>node producer.js
+</code></pre>
+</div>
 
-```bash
-$ node producer.js
-```
+<p><br /></p>
 
-&lt;/br&gt;
+<hr />
+<h3 id="6-advance">6. Advance</h3>
+<hr />
 
----
-### 6. Advance
----
+<p>kafka server在連zookeeper時，default的IP and Port是存在<code class="highlighter-rouge">config/server.properties</code>裡面的<code class="highlighter-rouge">zookeeper.connect</code>。
+<br />
+<br />
+由於我的EC2 ram很小，所以在launch Kafka時，一直發生OOM，解決方式是去<code class="highlighter-rouge">bin/kafka-server-start.sh</code>改<code class="highlighter-rouge">KAFKA_HEAP_OPTS</code>，</p>
 
-kafka server在連zookeeper時，default的IP and Port是存在`config/server.properties`裡面的`zookeeper.connect`。
-&lt;/br&gt;
-&lt;/br&gt;
-由於我的EC2 ram很小，所以在launch Kafka時，一直發生OOM，解決方式是去`bin/kafka-server-start.sh`改`KAFKA_HEAP_OPTS`，
-
-```
-if [ "x$KAFKA_HEAP_OPTS" = "x" ]; then
+<div class="highlighter-rouge"><pre class="highlight"><code>if [ "x$KAFKA_HEAP_OPTS" = "x" ]; then
     export KAFKA_HEAP_OPTS="-Xmx500M -Xms500M"
 fi
-```
+</code></pre>
+</div>
 
-
-
-
-
-
-</font>
 
     </div>
 

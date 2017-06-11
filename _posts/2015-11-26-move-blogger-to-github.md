@@ -36,7 +36,7 @@ tags:
 repo名稱為`your_name.github.io`，  
 所以我的就是`ken-yang.github.io`。
 
-</br> 
+<br /> 
   
 ## 2. jekyll-bootstrap
 
@@ -54,7 +54,7 @@ $ git push origin master
 
 接著你就可以去`USERNAME.github.io`看看，應該會有default的index。
 
-</br> 
+<br /> 
 
 ## 3. jekyll-import （匯出與匯入）
 
@@ -92,7 +92,7 @@ $ ruby -rubygems -e 'require "jekyll-import";
 cp _posts/* USERNAME.github.ui.git/_posts/
 ```
 
-</br>
+<br />
 ## 4. 安裝jekyll
 
 接著安裝[jekyll](https://jekyllrb.com/)，  
@@ -125,7 +125,7 @@ $ git push origin master
 然後一樣去`USERNAME.github.io`看看，會有原本在blogger上的posts了！
 
 
-</br>
+<br />
 ## 5. 安裝jekyll-paginate
 
 jekyll-paginate功用就是分頁，如果你不想要你的首頁就把所有的post通通列出來，  
@@ -193,7 +193,7 @@ $ jekyll serve
 接著就可以通通在push回去github上。
 
 
-</br>
+<br />
 ## 6. 整合Adsense
 
 這裡用adsense當作廣告source，  
@@ -235,7 +235,7 @@ data-ad-format="auto"></ins>
 $ jekyll serve
 ```
 
-</br>
+<br />
 ## 7. 整合Comment system
 
 jekyll裡面內建了很多的comment system，有disqus、facebook...etc.  
@@ -255,7 +255,7 @@ comments :
 
 完成以後，一樣重新render就完成了。
 
-</br>
+<br />
 ## 8. 整合Google Analytics
 
 jekyll也有內建analytics的功能，其實跟上面的comment system差不多，  

@@ -355,7 +355,7 @@
 <h3 id="1-whats-partition-and-why">1. What’s Partition and Why?</h3>
 <hr />
 
-<p>簡單說，Partition是將你的table，根據你的配置去divide成好幾個part；最重要的是，資料都是在同一個DB裡面，這對application來說，可以無感的使用它，卻又享有它的優點。&lt;/br&gt;</p>
+<p>簡單說，Partition是將你的table，根據你的配置去divide成好幾個part；最重要的是，資料都是在同一個DB裡面，這對application來說，可以無感的使用它，卻又享有它的優點。<br /></p>
 
 <p>那麼為何要用partition呢？partition的優點在於：</p>
 
@@ -364,7 +364,7 @@
   <li><code class="highlighter-rouge">刪除資料</code>：當你的table很大時，刪除是非常耗時的一件工作，有了partition以後，你可以直接drop該partition，且時間上可以快上非常多。</li>
 </ul>
 
-<p>&lt;/br&gt;</p>
+<p><br /></p>
 
 <!--more-->
 
@@ -373,9 +373,9 @@
 <hr />
 
 <p>而使用partition的時機點，取決於資料量的大小，如果當你的資料只有幾千筆時，其實做partition的意義就不大了。
-&lt;/br&gt;
+<br />
 不過partition也不是萬靈丹，當你的資料量成長到一定的數量時，可能也意味著你的application使用人數也成長了，當你所有的操作都在同一個DB上時，partition也是救不了你的application，所以才會有進階的做法，就是<code class="highlighter-rouge">sharding</code>，但<code class="highlighter-rouge">sharding</code>就比較複雜了，不管是對application還是replication來說，所以這就等下一篇有機會再寫吧。
-&lt;/br&gt;
+<br />
 簡單說，基於下面的條件你就可以使用partition：</p>
 
 <ul>
@@ -384,7 +384,7 @@
   <li>如果你想要快速的刪除歷史資料</li>
 </ul>
 
-<p>&lt;/br&gt;</p>
+<p><br /></p>
 
 <hr />
 <h3 id="3-horizontal-vs-vertical">3. Horizontal vs Vertical</h3>
@@ -399,7 +399,7 @@
 
 <p>目前MySQL只支援horizontal partition。</p>
 
-<p>&lt;/br&gt;</p>
+<p><br /></p>
 
 <hr />
 <h3 id="4-types-of-mysql-partition">4. Types of MySQL partition</h3>
@@ -416,11 +416,11 @@
 
 <p>接下來會ㄧ一說明各個的差別。</p>
 
-<p>&lt;/br&gt;</p>
+<p><br /></p>
 
 <h4 id="4-1-key-partitioning">4-1. Key partitioning</h4>
 
-<p>如果你是使用key partitioning的話，MySQL會用它自己的hash function算出你這筆資料要放哪裡。&lt;/br&gt;
+<p>如果你是使用key partitioning的話，MySQL會用它自己的hash function算出你這筆資料要放哪裡。<br />
 key的用法為<code class="highlighter-rouge">key(column)</code>，裡面必須為table中的某個欄位，範例如下：</p>
 
 <div class="language-sql highlighter-rouge"><pre class="highlight"><code><span class="k">CREATE</span> <span class="k">TABLE</span> <span class="n">t</span> <span class="p">(</span>
@@ -435,7 +435,7 @@ key的用法為<code class="highlighter-rouge">key(column)</code>，裡面必須
 <p>上面的範例，就會根據data的create_time，去divide出10個partition，然後當塞入資料時，會決定要放置到哪個partition。
 有二點要注意，key只能使用column當作判斷指標，不能使用expression，以及如果使用key的話，無法根據partition進行刪除。</p>
 
-<p>&lt;/br&gt;</p>
+<p><br /></p>
 
 <h4 id="4-2-hash-partitioning">4-2. Hash partitioning</h4>
 
@@ -457,7 +457,7 @@ key的用法為<code class="highlighter-rouge">key(column)</code>，裡面必須
 
 <p>上面的範例，就會根據data的create_time，去divide出12個partition。然後HASH一樣無法根據partition進行刪除。</p>
 
-<p>&lt;/br&gt;</p>
+<p><br /></p>
 
 <h4 id="4-3-list-partitioning">4-3. LIST partitioning</h4>
 
@@ -483,7 +483,7 @@ key的用法為<code class="highlighter-rouge">key(column)</code>，裡面必須
 
 <p>上面的範例，就會根據data的DAYOFWEEK(create_time)，去divide出4個partition。</p>
 
-<p>&lt;/br&gt;</p>
+<p><br /></p>
 
 <h4 id="4-4--range-partitioning">4-4.  Range partitioning</h4>
 
@@ -507,10 +507,10 @@ key的用法為<code class="highlighter-rouge">key(column)</code>，裡面必須
 </div>
 
 <p>上面的範例，就會根據data的YEAR(create_time)，簡單說，就是會根據年份去divide出4個partition。
-&lt;/br&gt;
+<br />
 使用Range，有二點要注意，必須由低往高去設定，以及會無法insert超出range的資料。</p>
 
-<p>&lt;/br&gt;</p>
+<p><br /></p>
 
 <hr />
 <h3 id="5-manage-partition">5. Manage partition</h3>
@@ -537,7 +537,7 @@ key的用法為<code class="highlighter-rouge">key(column)</code>，裡面必須
 </code></pre>
 </div>
 
-<p>&lt;/br&gt;</p>
+<p><br /></p>
 
 <hr />
 <h3 id="6-partition-pruning">6. Partition Pruning</h3>
@@ -587,7 +587,7 @@ key的用法為<code class="highlighter-rouge">key(column)</code>，裡面必須
 </code></pre>
 </div>
 
-<p>&lt;/br&gt;</p>
+<p><br /></p>
 
 <p>然後我們可以用MySQL的<code class="highlighter-rouge">explain</code>去觀察select這2張table時，會有什麼變化，以下面的例子來看，
 可以發現當查詢有partition的table時，也只去scan 7 rows，且直接從partition p2017, p2018去獲取資料；
@@ -609,7 +609,7 @@ key的用法為<code class="highlighter-rouge">key(column)</code>，裡面必須
 </span></code></pre>
 </div>
 
-<p>&lt;/br&gt;
+<p><br />
 但是要做到partition pruning，根據不同的配置是有不同的條件的：</p>
 
 <ol>
@@ -637,7 +637,7 @@ key的用法為<code class="highlighter-rouge">key(column)</code>，裡面必須
   </li>
 </ol>
 
-<p>&lt;/br&gt;</p>
+<p><br /></p>
 
 <hr />
 <h3 id="7-sub-partition">7. Sub partition</h3>
@@ -668,14 +668,14 @@ key的用法為<code class="highlighter-rouge">key(column)</code>，裡面必須
 </code></pre>
 </div>
 
-<p>&lt;/br&gt;
+<p><br />
 查詢時，可以直接下</p>
 
 <div class="language-sql highlighter-rouge"><pre class="highlight"><code><span class="k">SELECT</span> <span class="n">id</span> <span class="k">FROM</span> <span class="n">t</span> <span class="n">PARTITION</span> <span class="p">(</span><span class="n">p0sp1</span><span class="p">);</span>
 </code></pre>
 </div>
 
-<p>&lt;/br&gt;</p>
+<p><br /></p>
 
 <hr />
 <h3 id="8-conclusion">8. Conclusion</h3>
@@ -692,11 +692,10 @@ key的用法為<code class="highlighter-rouge">key(column)</code>，裡面必須
   <li>只有RANGE and LIST可以使用sub partition</li>
 </ul>
 
-<p>&lt;/br&gt;
-&lt;/br&gt;
-&lt;/br&gt;</p>
+<p><br />
+<br />
+<br /></p>
 
-<p>&lt;/font&gt;</p>
 
     </div>
 

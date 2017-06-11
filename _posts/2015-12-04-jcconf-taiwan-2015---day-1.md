@@ -66,7 +66,7 @@ tags: [JCConf, java]
 someone ask why not use standard ruby?
 author answer: hard to implement JIT.
 
-</br>
+<br />
 
 ----
 ### 2. Asynchronous and Non-blocking in Scala
@@ -89,7 +89,7 @@ author answer: hard to implement JIT.
 #### case object
 - singleton in Java. there is no static in Scala.
 
-</br>
+<br />
 
 ---
 ### 3. 使用zookeeper打造軟體式負載平衡
@@ -98,7 +98,7 @@ author answer: hard to implement JIT.
 這個session主要在介紹zookeeper，由於時間很短，只有15分鐘。  
 所以都是講很high level，並沒有講到detail的實作。
 
-</br>
+<br />
 
 ---
 ### 4. workshop動手玩Java專案建置工具：以Gradle與Docker為例
@@ -130,7 +130,7 @@ author answer: hard to implement JIT.
 - http://learngeb.readbook.tw/
 - functional test
 
-</br>
+<br />
 
 ---
 ### 5. Akka Cluster in Java
@@ -138,7 +138,7 @@ author answer: hard to implement JIT.
 
 [Git repo for Akka cluster example] (https://github.com/jiayun/akka_samples)
 
-</br>
+<br />
 
 ---
 ### 6. 使用Java的Future/Promise API來撰寫非同步程式
@@ -191,7 +191,7 @@ thread缺點
 	- 盡量使用Async語尾的API
 
 
-</br>
+<br />
 
 
 

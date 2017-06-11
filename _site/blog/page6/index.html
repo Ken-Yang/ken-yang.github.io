@@ -308,8 +308,6 @@
       </p>
       <div class="content" style="line-height: 28px;">
         
-<p>&lt;font size=3&gt;</p>
-
 <p>這篇會講如何在Docker上部署一個NodeJS+MongoDB的application，<br />
 所以會分二個部分來講，</p>
 
@@ -328,7 +326,7 @@
 </code></pre>
 </div>
 
-<p>&lt;/br&gt;</p>
+<p><br /></p>
 <h4 id="create-a-container">Create a container</h4>
 <hr />
 <p>接著就可以把MongoDB的image抓下來以及run。</p>
@@ -371,8 +369,6 @@
       </p>
       <div class="content" style="line-height: 28px;">
         
-<p>&lt;font size=3&gt;</p>
-
 <p>這篇算是延續<a href="http://blog.kenyang.net/2015/11/27/do-not-allocate-all-the-lvm-space-with-preseed/">上一篇</a>的主題，假設VG裡面還有free space尚未用到，<br />
 那麼過一段時間以後，該怎麼把它拿出來用?<br />
 所以這篇主要會講到下面2個主題：</p>
@@ -391,7 +387,7 @@
   <li>1-2. Extend from <code class="highlighter-rouge">new disk</code></li>
 </ul>
 
-<p>&lt;/br&gt;</p>
+<p><br /></p>
 <h4 id="1-1-extend-from-pv">1-1. Extend from PV</h4>
 <hr />
 <p>第一種是延續<a href="http://blog.kenyang.net/2015/11/27/do-not-allocate-all-the-lvm-space-with-preseed/">上一篇</a>，<br />
@@ -445,8 +441,7 @@ $ lvs
       </p>
       <div class="content" style="line-height: 28px;">
         
-<p>&lt;font size=3&gt;
-使用Preseed file分割LVM時，<br />
+<p>使用Preseed file分割LVM時，<br />
 並無法做到只使用某部分的VG就好，<br />
 舉例來說，假設你有一個100G的硬碟，  <br />
 然後preseed file如下，</p>
@@ -510,7 +505,6 @@ sed -i <span class="s1">'/to_be_free/d'</span> /target/etc/fstab ; <span class="
 </code></pre>
 </div>
 
-<p>&lt;/font&gt;</p>
 
       </div>
       <footer>

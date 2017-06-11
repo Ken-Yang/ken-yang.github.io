@@ -12,7 +12,7 @@ tags: []
 之前有講過[Kafka的用途以及如何安裝](http://blog.kenyang.net/2015/06/25/apache-kafka-distributed-messaging)，這篇會講如何用`Node.js`去連結`Kafka`，至於安裝Kafka的部分就請去[上一篇](http://blog.kenyang.net/2015/06/25/apache-kafka-distributed-messaging)來看。
 
 
-</br>
+<br />
 
 ---
 ### 1. Create a topic
@@ -31,7 +31,7 @@ $ bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1
 $ bin/kafka-topics.sh --list --zookeeper localhost:2181
 ```
 
-</br>
+<br />
 
 
 <!--more-->
@@ -49,13 +49,13 @@ $ cd /opt/kafka-test
 $ npm install kafka-node --no-optional --save
 ```
 
-</br>
+<br />
 
 ---
 ### 3. Connect to Zookeeper and Send message (Producer.js)
 ---
 
-接著就可以在Node.js中使用`kafka-node`，首先要先connect到你自己的Zookeeper，再來就可以對我們剛剛建立的topic進行傳送訊息。</br>
+接著就可以在Node.js中使用`kafka-node`，首先要先connect到你自己的Zookeeper，再來就可以對我們剛剛建立的topic進行傳送訊息。<br />
 傳訊息是透過`producer.send`這方式，成功以後我會去做`client.close()`的動作，因此這隻node.js每次執行完就會關閉了。
 
 ```javascript
@@ -77,7 +77,7 @@ producer.on('ready', function () {
 producer.on('error', function (err) {})
 ```
 
-</br>
+<br />
 
 ---
 ### 4. Connecto to Kafka Server and Receiver message (Consumer.js)
@@ -105,7 +105,7 @@ consumer.on('message', function (message) {
 
 ```
 
-</br>
+<br />
 
 這裡我有踩到一個雷，由於我是把Kafka放在EC2上，然後EC2綁了一個elastic IP，但我的consumer並不是放在EC2上，而是放在某個local VM裡面，在連接的時候，一直遇到下面的error message，解決方式很簡單，只要在你的`/etc/hosts`裡面增加一筆mapping就好了。
 
@@ -113,7 +113,7 @@ consumer.on('message', function (message) {
 Error: getaddrinfo ENOTFOUND ip-xxx-xxx-xxx-xxx ip-xxx-xxx-xxx-xxx:9092
 ```
 
-</br>
+<br />
 
 ---
 ### 5. Testing
@@ -131,15 +131,15 @@ $ node consumer.js
 $ node producer.js
 ```
 
-</br>
+<br />
 
 ---
 ### 6. Advance
 ---
 
 kafka server在連zookeeper時，default的IP and Port是存在`config/server.properties`裡面的`zookeeper.connect`。
-</br>
-</br>
+<br />
+<br />
 由於我的EC2 ram很小，所以在launch Kafka時，一直發生OOM，解決方式是去`bin/kafka-server-start.sh`改`KAFKA_HEAP_OPTS`，
 
 ```

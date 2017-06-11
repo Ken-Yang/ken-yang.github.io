@@ -14,7 +14,7 @@ Google在Android 6.0中，釋放了對[Fingerprint] (http://developer.android.co
 
 
 
-</br>
+<br />
 
 ---
 ### 1. AndroidManifest.xml
@@ -27,7 +27,7 @@ Google在Android 6.0中，釋放了對[Fingerprint] (http://developer.android.co
 ```
 
 
-</br>
+<br />
 
 ---
 ### 2. Check Requirement
@@ -80,7 +80,7 @@ protected void onCreate(Bundle savedInstanceState) {
 
 
 
-</br>
+<br />
 
 ---
 ### 3. Authenticate
@@ -106,7 +106,7 @@ public void authenticate (FingerprintManager.CryptoObject crypto,
 	* onAuthenticationSucceeded 
 5. `Handler` : optional的參數，如果有使用，FingerprintManager會透過它來傳遞訊息
 
-</br>
+<br />
 
 了解參數以後就可以開始進行**authenticate**，
 
@@ -153,12 +153,12 @@ public void onPause() {
 }
 ```
 
-</br>
+<br />
 
 這樣就完成了一個簡單的example，但這example並沒有使用`CryptoObject`，所以如果你想要更安全一點，記得請加上`CryptoObject`。
 
 
-</br>
+<br />
 
 
 

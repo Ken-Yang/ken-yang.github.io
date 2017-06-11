@@ -25,7 +25,7 @@ tags: [docker, nodejs, mongodb, express, mongoose]
 $ mkdir ~/monogo-data
 ```
 
-</br>
+<br />
 #### Create a container
 ---
 接著就可以把MongoDB的image抓下來以及run。  
@@ -41,7 +41,7 @@ $ docker run -v ~/mongo-data:/data \
 
 <!--more-->
 
-</br>
+<br />
 #### Connect to a container
 ---
 那麼怎麼連進去這個MongoDB呢？  
@@ -63,7 +63,7 @@ $ db.student.insert({"name": "ken"})
 $ db.student.find()
 ```
 
-</br>
+<br />
 ### 2. 在Docker上部署NodeJS+Express
 
 首先先建立一個folder，用來放置source code以及json等檔案。
@@ -73,7 +73,7 @@ $ mkdir test-app
 $ cd test-app
 ```
 
-</br>
+<br />
 #### Package.json
 ---
 接著在`test-app`這個folder底下，建立一個`package.json`，  
@@ -99,7 +99,7 @@ $ cd test-app
 1. `express`  : Web framework
 2. `mongoose` : MongoDB client driver
 
-</br>
+<br />
 #### Schema.js
 ---
 接著一樣在`test-app`底下，建立一個`Schema.js`，   
@@ -118,7 +118,7 @@ mongoose.model('Student', Student);
 ```
 
 
-</br>
+<br />
 #### Index.js
 ---
 接著一樣在`test-app`底下，建立一個`index.js`，  
@@ -167,7 +167,7 @@ console.log('Running on http://localhost:' + PORT);
 是待會會透過`--link`的指令指定的，  
 一旦你指定了，就會在container中的`/etc/hosts`裡面增加一筆record。
 
-</br>
+<br />
 #### DockerFile
 ---
 
@@ -199,7 +199,7 @@ CMD ["node", "/src/index.js"]
 所以在`index.js`中，才會去configure dev。
 
 
-</br>
+<br />
 #### Build image & Run
 ---
 
@@ -208,7 +208,7 @@ CMD ["node", "/src/index.js"]
 ```
 $ docker build -t ken-yang/centos-nodejs:v1 .
 ```
-</br>
+<br />
 Build完以後，就可以用下面的指令去把container run起來。  
 注意`--link ken-mongo:db`，  
 意思就是把現在正在running的`ken-mongo`與現在這個新的container連起來。  
@@ -223,7 +223,7 @@ $ docker run -d \
              ken-yang/centos-nodejs:v1
 ```
 
-</br>
+<br />
 #### Test
 ---
 
