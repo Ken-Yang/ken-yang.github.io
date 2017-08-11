@@ -225,6 +225,8 @@
   
     
   
+    
+  
 
 
 
@@ -299,6 +301,54 @@
     </div>
     <!-- This loops through the paginated posts -->
     
+      <h1><a style="color: #F22430" href="/2017/08/08/fluentd-amazon-s3-installation">fluentd + Amazon S3 installation</a></h1>
+      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
+      <p class="author">
+      <div class="date">
+        <span>08 August 2017</span>
+      </div>
+      </p>
+      <div class="content" style="line-height: 28px;">
+        
+<hr />
+<h3 id="1-whats-fluentd">1. What’s fluentd?</h3>
+<hr />
+
+<p><a href="https://www.fluentd.org/">fluentd</a>是一個用來搜集data的open source，以及可以對搜集來的data進行簡單的分析，
+甚至可以把搜集來的data再foward出去mongodb, Elasticsearch, S3, GCP…etc.
+<br /></p>
+
+<p>因為我們的API有好多台，在管理log時非常不方便，必須ssh進去每一台看，或者scp出來，這方法實在太落後，
+因此最近才把fluentd整進來，我們應用的情景如下：</p>
+
+<ul>
+  <li>安裝一台Log Server (儲存所有API上的log)</li>
+  <li>每一台API Server都裝有fluentd，並且把本地的log foward to Log Server</li>
+  <li>把本地的Log上傳至S3備份</li>
+</ul>
+
+<p><br /></p>
+
+
+      </div>
+      <footer>
+        <p><a class="myButton" href="/2017/08/08/fluentd-amazon-s3-installation">read more &raquo;</a></p>
+        <div>
+          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- ken on github -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3783438370424072"
+     data-ad-slot="1516206098"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+        </div>
+      </footer>
+      <hr>
+    
       <h1><a style="color: #F22430" href="/2017/06/11/whats-mysql-partition">What's MySQL partition</a></h1>
       <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
       <p class="author">
@@ -308,27 +358,14 @@
       </p>
       <div class="content" style="line-height: 28px;">
         
-<p>efefe</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code>this is a code
-</code></pre>
-</div>
-
-<p>ssfwefijawefowejo
-最近在面試幾個candidate，都說自己有MySQL tuning的經驗，
+<p>最近在面試幾個candidate，都說自己有MySQL tuning的經驗，
 但進一步問下去，發現連MySQL怎麼用BTree放index，或者怎麼使用partition or sharding都不了解，所以打算來寫一系列的MySQL文章，這篇就先挑簡單的partition來寫。</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code>this is a code
-</code></pre>
-</div>
-
-<p>&lt;/br&gt;</p>
 
 <hr />
 <h3 id="1-whats-partition-and-why">1. What’s Partition and Why?</h3>
 <hr />
 
-<p>簡單說，Partition是將你的table，根據你的配置去divide成好幾個part；最重要的是，資料都是在同一個DB裡面，這對application來說，可以無感的使用它，卻又享有它的優點。&lt;/br&gt;</p>
+<p>簡單說，Partition是將你的table，根據你的配置去divide成好幾個part；最重要的是，資料都是在同一個DB裡面，這對application來說，可以無感的使用它，卻又享有它的優點。<br /></p>
 
 <p>那麼為何要用partition呢？partition的優點在於：</p>
 
@@ -337,7 +374,7 @@
   <li><code class="highlighter-rouge">刪除資料</code>：當你的table很大時，刪除是非常耗時的一件工作，有了partition以後，你可以直接drop該partition，且時間上可以快上非常多。</li>
 </ul>
 
-<p>&lt;/br&gt;</p>
+<p><br /></p>
 
 
       </div>
@@ -368,81 +405,32 @@
       </p>
       <div class="content" style="line-height: 28px;">
         
-<font size="3">
+<p>最近在看Vue.js，很多文章都是搭配著Webpack來說明，所以也順便研究了一下webpack，
+這篇會說明<a href="https://webpack.js.org/">webpack</a>的優點、以及用途。</p>
 
-最近在看Vue.js，很多文章都是搭配著Webpack來說明，所以也順便研究了一下webpack，
-這篇會說明[webpack](https://webpack.js.org/)的優點、以及用途。
+<p><br /></p>
 
-&lt;/br&gt;
+<hr />
+<h3 id="1-whats-webpack">1. What’s webpack?</h3>
+<hr />
 
----
-### 1. What's webpack?
----
+<p>什麼是<a href="https://webpack.js.org/">webpack</a>呢？其實官網用一張圖片說明的很清楚，圖片上有幾個title，分別為:</p>
 
-什麼是[webpack](https://webpack.js.org/)呢？其實官網用一張圖片說明的很清楚，圖片上有幾個title，分別為:
+<ol>
+  <li>bundle your assests</li>
+  <li>bundle your scripts</li>
+  <li>bundle your images</li>
+  <li>bundle your styles</li>
+</ol>
 
-1. bundle your assests
-1. bundle your scripts
-1. bundle your images
-1. bundle your styles
+<p>一句話簡單說，可以想像成<code class="highlighter-rouge">打包工具</code> （但當然不僅於此，否則不會這麼紅）。</p>
 
-一句話簡單說，可以想像成`打包工具` （但當然不僅於此，否則不會這麼紅）。
+<p><br /></p>
 
-
-&lt;/br&gt;
-
-
-
-</font>
 
       </div>
       <footer>
         <p><a class="myButton" href="/2017/02/18/getting-started-with-webpack">read more &raquo;</a></p>
-        <div>
-          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<!-- ken on github -->
-<ins class="adsbygoogle"
-     style="display:block"
-     data-ad-client="ca-pub-3783438370424072"
-     data-ad-slot="1516206098"
-     data-ad-format="auto"></ins>
-<script>
-(adsbygoogle = window.adsbygoogle || []).push({});
-</script>
-
-        </div>
-      </footer>
-      <hr>
-    
-      <h1><a style="color: #F22430" href="/2017/02/07/update-nodejs-version">Update Node.js version</a></h1>
-      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
-      <p class="author">
-      <div class="date">
-        <span>07 February 2017</span>
-      </div>
-      </p>
-      <div class="content" style="line-height: 28px;">
-        
-<font size="3">
-
-Node.js updates quickly. Fortunately, there are a ton of tools for updating Node.js easily.
-
-1. nvm
-2. n
-
-Today, I'm gonna use `n` to update `Node.js`.
-
-
-
-&lt;/br&gt;
-
-
-
-</font>
-
-      </div>
-      <footer>
-        <p><a class="myButton" href="/2017/02/07/update-nodejs-version">read more &raquo;</a></p>
         <div>
           <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 <!-- ken on github -->
@@ -465,7 +453,7 @@ Today, I'm gonna use `n` to update `Node.js`.
       
         <span class="previous">Previous</span>
       
-      <span class="page_number ">Page: 1 of 59</span>
+      <span class="page_number ">Page: 1 of 60</span>
       
         <a href="/blog/page2" class="next">Next</a>
       

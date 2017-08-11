@@ -225,6 +225,8 @@
   
     
   
+    
+  
 
 
 
@@ -299,6 +301,34 @@
     </div>
     <!-- This loops through the paginated posts -->
     
+      <h1><a style="color: #F22430" href="/2010/12/07/android-connect-to-msn-jml">Android connect to MSN (JML)</a></h1>
+      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
+      <p class="author">
+      <div class="date">
+        <span>07 December 2010</span>
+      </div>
+      </p>
+      <div class="content" style="line-height: 28px;">
+        Android connect to MSN (JML)<br /><br />在Android用Java MSN Messenger Library(JML)登入<br /><br />其實JML是一個很好用的lib，<br /><br />在J2SE的環境下使用非常好整合，<br /><br />BUT...要整合至ANDROID中會有幾個小問題。<br /><br />第一：會少了一個GetPropertyAction的CLASS<br /><br />第二：JML裡用的SSL是採取SSLv3，但是android只能支援TLS<br /><br />第三：一樣會少了一個DatatypeFactory這個CLASS<br /><br />解決方法就是<br /><br />直接去找到JML的source code，<br /><br />直接拿它來做修改，而不是直接去拿jar來用。<br /><br />為了解決第一部，<br /><br />我們可以在網路上找到人家寫好的這個class（GetPropertyAction）<br /><br /><a href="http://jcs.mobile-utopia.com/jcs/2154_GetPropertyAction.java">來這下載</a><br /><br />下載好以後，記得放在package名稱為sun.security.action的底下<br /><br /><br /><br />解決第二個方法就是<br /><br />去下載JML的SOURCE CODE<br /><br /><a href="http://sourceforge.net/projects/java-jml/files/java-jml/jml-1.0b4/">來這下載</a>　（是載.ZIP檔案喔，這樣才會有SOURCE CODE）<br /><br />下載完成後，把src資料夾底下的net通通拉進來我們的project裡面<br /><br />拉進來後，畫面會如下<br /><br /><div class="separator" style="clear: both; text-align: center;"><a href="http://4.bp.blogspot.com/_6SxqtkJQECI/TP3tUVeF0VI/AAAAAAAAAPw/kYI6uJ-n4mk/s1600/%25E6%259C%25AA%25E5%2591%25BD%25E5%2590%258D.png" imageanchor="1" style="clear: left; float: left; margin-bottom: 1em; margin-right: 1em;"><img border="0" height="320" src="http://4.bp.blogspot.com/_6SxqtkJQECI/TP3tUVeF0VI/AAAAAAAAAPw/kYI6uJ-n4mk/s320/%25E6%259C%25AA%25E5%2591%25BD%25E5%2590%258D.png" width="217" /></a></div><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />拉進來以後，<br /><br />找到package名稱為net.sf.jml.protocol.soap，<br /><br />點兩下展開以後，<br /><br />點選class名稱為ContactList的class<br /><br />打開以後找到下面那行CODE<br /><br /><pre class="brush: java">    SSLContext sc = SSLContext.getInstance("SSLv3");<br /></pre><br /><br />把它改成下面那行CODE<br /><br /><br /><pre class="brush: java">    SSLContext sc = SSLContext.getInstance("TLS");<br /></pre><br /><br />這樣第二部就解決了。<br /><br />至於第三個解決方式，<br /><br />目前是先把ANDROID SDK設為2.2，<br /><br />2.2就有支援DatatypeFactory，<br /><br /><br /><br />接著來寫連結至msn的code了。<br /><br />其實很簡單，你只要克服上面的問題，<br /><br />CODE應該就難不倒你，<br /><br /><pre class="brush: java">    try {<br />        final String email = "msn帳號";<br />        final String password = "您的密碼";<br />        final MsnMessenger messenger = MsnMessengerFactory.createMsnMessenger(email,<br />                 password);<br /><br />        messenger.getOwner().setInitStatus(MsnUserStatus.ONLINE);<br /><br />        //這邊一定要用thread去執行登入<br />        Thread thread = new Thread(new Runnable() {<br />                public void run() {<br />                    messenger.login();<br />                }<br />        });<br /> <br />        thread.start();  <br /><br />         <br />    } catch (Exception e) {<br />        Log.d("msn",e.toString());<br />    }<br /><br /></pre><br /><br /><br /><br />這樣就完成了MSN登入了。<br /><br />至於怎麼截取聯絡人清單，只要您解決上面那三個問題<br /><br />則擷取連絡人，就不是問題了。<br /><br /><br /><br />
+      </div>
+      <footer>
+        <p><a class="myButton" href="/2010/12/07/android-connect-to-msn-jml">read more &raquo;</a></p>
+        <div>
+          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- ken on github -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3783438370424072"
+     data-ad-slot="1516206098"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+        </div>
+      </footer>
+      <hr>
+    
       <h1><a style="color: #F22430" href="/2010/12/07/android-23-sdk-released">Android 2.3 SDK released!!!</a></h1>
       <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
       <p class="author">
@@ -355,41 +385,13 @@
       </footer>
       <hr>
     
-      <h1><a style="color: #F22430" href="/2010/11/19/requestdispatcherspringmvc">RequestDispatcher和springmvc的差別</a></h1>
-      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
-      <p class="author">
-      <div class="date">
-        <span>19 November 2010</span>
-      </div>
-      </p>
-      <div class="content" style="line-height: 28px;">
-        <br />今天就在想RequestDispatcher和springmvc的差別<br /><br />通常會用springmvc，是因為想要做到MVC的架構，<br /><br />如果單單透過servlet，是無法達到該效果。<br /><br />但是如果透過servlet的RequestDispatcher是可以的!<br /><br />我就突然想到，那這樣我通通用RequestDispatcher不就好了<br /><br />但再仔細想想兩者間的差別，大概的想法如下<br /><br /><br />如果透過RequestDispatcher<br /><br />譬如說我要看會員列表(/action/member/list)<br /><br />就得在web.xml中部屬一個mapping<br /><br />mapping到某隻 servlet（讀取會員清單的操作）<br /><br />再透過RequestDispatcher把會員清單資料傳到應對應到的頁面<br /><br /><br />如果要新增一個會員(/action/member/insert)<br /><br />一樣得在web.xml中mapping到某個servlet<br /><br />這時候在web.xml會有2個serlvet mapping<br /><br /><br /><br />如果是透過springmvc<br /><br />是先透過在web.xml中springmvc設定的DispatcherServlet<br /><br />然後再透過該DispatcherServlet定義的config檔案<br /><br />看要Dispatch到哪個Controller<br /><br />看到這，似乎兩者之間看起來差不多?<br /><br />但是如果我們同樣需要兩個功能<br /><br />一個是新增會員，一個是讀取會員列表<br /><br />我們不需要像上面一樣定義到兩個servlet<br /><br />我們只需要定義一個專門在處理會員的controller<br /><br />然後透過controller去控制<br /><br />該controller裡面就會有兩個method<br /><br />public ModelAndView <span class="Apple-style-span" style="color: red;">list</span>(HttpServletRequest req, HttpServletResponse resp)<br />public ModelAndView <span class="Apple-style-span" style="color: red;">insert</span>(HttpServletRequest req, HttpServletResponse resp)<br /><br /><br /><br />這是我想到的地方，<br /><br />如果有誤，歡迎更正。謝謝<br /><br /><br /><br /><br /><br />
-      </div>
-      <footer>
-        <p><a class="myButton" href="/2010/11/19/requestdispatcherspringmvc">read more &raquo;</a></p>
-        <div>
-          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<!-- ken on github -->
-<ins class="adsbygoogle"
-     style="display:block"
-     data-ad-client="ca-pub-3783438370424072"
-     data-ad-slot="1516206098"
-     data-ad-format="auto"></ins>
-<script>
-(adsbygoogle = window.adsbygoogle || []).push({});
-</script>
-
-        </div>
-      </footer>
-      <hr>
-    
 
     <!-- Pagination links -->
     <div class="pagination">
       
         <a href="/blog/page42" class="previous">Previous</a>
       
-      <span class="page_number ">Page: 43 of 59</span>
+      <span class="page_number ">Page: 43 of 60</span>
       
         <a href="/blog/page44" class="next">Next</a>
       

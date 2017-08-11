@@ -225,6 +225,8 @@
   
     
   
+    
+  
 
 
 
@@ -298,6 +300,56 @@
 
     </div>
     <!-- This loops through the paginated posts -->
+    
+      <h1><a style="color: #F22430" href="/2015/12/11/install-zsh-oh-my-zsh-on-mac">Install zsh and oh-my-zsh on Mac</a></h1>
+      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
+      <p class="author">
+      <div class="date">
+        <span>11 December 2015</span>
+      </div>
+      </p>
+      <div class="content" style="line-height: 28px;">
+        
+<p>今天把mac上面的default shell換成<code class="highlighter-rouge">zsh</code>，其實主要是看上了<code class="highlighter-rouge">oh-my-zsh</code>，所以才想換成zsh。<br />
+過程有點複雜，所以還是紀錄一下怎麼做。</p>
+
+<p><br /></p>
+
+<hr />
+<h3 id="1-install-oh-my-zsh">1. Install oh-my-zsh</h3>
+<hr />
+
+<p>由於mac預設就有zsh了，所以不需要安裝，只需要把default shell改成zsh即可。</p>
+
+<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>chsh -s /bin/zsh
+</code></pre>
+</div>
+<p><br />
+接著就安裝<code class="highlighter-rouge">oh-my-zsh</code>，</p>
+
+<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>curl -L https://github.com/robbyrussell/oh-my-zsh/raw/master/tools/install.sh | sh
+</code></pre>
+</div>
+
+
+      </div>
+      <footer>
+        <p><a class="myButton" href="/2015/12/11/install-zsh-oh-my-zsh-on-mac">read more &raquo;</a></p>
+        <div>
+          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- ken on github -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3783438370424072"
+     data-ad-slot="1516206098"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+        </div>
+      </footer>
+      <hr>
     
       <h1><a style="color: #F22430" href="/2015/12/05/jcconf-taiwan-2015-day-2">JCConf Taiwan 2015   Day 2</a></h1>
       <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
@@ -383,82 +435,13 @@
       </footer>
       <hr>
     
-      <h1><a style="color: #F22430" href="/2015/12/01/create-a-iscsi-target-on-ubuntu">Create a iSCSI target on Ubuntu</a></h1>
-      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
-      <p class="author">
-      <div class="date">
-        <span>01 December 2015</span>
-      </div>
-      </p>
-      <div class="content" style="line-height: 28px;">
-        
-<p>這篇會介紹如何在Ubuntu上，建立一個iSCSI Target Server，<br />
-提供給別人測試使用。</p>
-
-<p><br /></p>
-<h4 id="install-tgt">Install tgt</h4>
-<hr />
-<p>首先要先安裝tgt這個package。</p>
-
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>apt-get install tgt
-</code></pre>
-</div>
-
-<p><br /></p>
-<h4 id="create-virtual-disks">Create virtual disks</h4>
-<hr />
-
-<p>這裡會用<code class="highlighter-rouge">dd</code>來建立幾個假的block device，<br />
-待會就把devices加入到iSCSI中。</p>
-
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>dd <span class="k">if</span><span class="o">=</span>/dev/zero <span class="nv">of</span><span class="o">=</span>/var/tmp/iscsi-disk1 <span class="nv">bs</span><span class="o">=</span>1M <span class="nv">count</span><span class="o">=</span>100
-<span class="gp">$ </span>dd <span class="k">if</span><span class="o">=</span>/dev/zero <span class="nv">of</span><span class="o">=</span>/var/tmp/iscsi-disk2 <span class="nv">bs</span><span class="o">=</span>1M <span class="nv">count</span><span class="o">=</span>100
-</code></pre>
-</div>
-
-<p><br /></p>
-<h4 id="create-targets">Create targets</h4>
-<hr />
-
-<p>這裡建立了2個target，分別為，</p>
-
-<ul>
-  <li>iqn.2015-07.net.kenyang:ken.iscsi.1</li>
-  <li>iqn.2015-07.net.kenyang:ken.iscsi.2</li>
-</ul>
-
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>tgtadm --lld iscsi --op new --mode target --tid 1 -T iqn.2015-07.net.kenyang:ken.iscsi.1
-<span class="gp">$ </span>tgtadm --lld iscsi --op new --mode target --tid 2 -T iqn.2015-07.net.kenyang:ken.iscsi.2
-</code></pre>
-</div>
-
-
-      </div>
-      <footer>
-        <p><a class="myButton" href="/2015/12/01/create-a-iscsi-target-on-ubuntu">read more &raquo;</a></p>
-        <div>
-          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<!-- ken on github -->
-<ins class="adsbygoogle"
-     style="display:block"
-     data-ad-client="ca-pub-3783438370424072"
-     data-ad-slot="1516206098"
-     data-ad-format="auto"></ins>
-<script>
-(adsbygoogle = window.adsbygoogle || []).push({});
-</script>
-
-        </div>
-      </footer>
-      <hr>
-    
 
     <!-- Pagination links -->
     <div class="pagination">
       
         <a href="/blog/page4" class="previous">Previous</a>
       
-      <span class="page_number ">Page: 5 of 59</span>
+      <span class="page_number ">Page: 5 of 60</span>
       
         <a href="/blog/page6" class="next">Next</a>
       

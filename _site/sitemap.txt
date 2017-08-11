@@ -65,7 +65,9 @@ http://blog.kenyang.net/blog/page56/
 http://blog.kenyang.net/blog/page57/
 http://blog.kenyang.net/blog/page58/
 http://blog.kenyang.net/blog/page59/
+http://blog.kenyang.net/blog/page60/
 
+http://blog.kenyang.net/2017/08/08/fluentd-amazon-s3-installation
 http://blog.kenyang.net/2017/06/11/whats-mysql-partition
 http://blog.kenyang.net/2017/02/18/getting-started-with-webpack
 http://blog.kenyang.net/2017/02/07/update-nodejs-version

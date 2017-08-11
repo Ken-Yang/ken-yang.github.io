@@ -5,35 +5,202 @@
         <description>Ken Yang筆記 - Ken Yang</description>
         <link>http://blog.kenyang.net</link>
         <atom:link href="http://blog.kenyang.net/rss.xml" rel="self" type="application/rss+xml" />
-        <lastBuildDate>Sun, 11 Jun 2017 19:25:58 +0800</lastBuildDate>
-        <pubDate>Sun, 11 Jun 2017 19:25:58 +0800</pubDate>
+        <lastBuildDate>Fri, 11 Aug 2017 16:43:45 +0800</lastBuildDate>
+        <pubDate>Fri, 11 Aug 2017 16:43:45 +0800</pubDate>
         <ttl>60</ttl>
 
 
         <item>
+                <title>fluentd + Amazon S3 installation</title>
+                <description>
+&lt;hr /&gt;
+&lt;h3 id=&quot;1-whats-fluentd&quot;&gt;1. What’s fluentd?&lt;/h3&gt;
+&lt;hr /&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://www.fluentd.org/&quot;&gt;fluentd&lt;/a&gt;是一個用來搜集data的open source，以及可以對搜集來的data進行簡單的分析，
+甚至可以把搜集來的data再foward出去mongodb, Elasticsearch, S3, GCP…etc.
+&lt;br /&gt;&lt;/p&gt;
+
+&lt;p&gt;因為我們的API有好多台，在管理log時非常不方便，必須ssh進去每一台看，或者scp出來，這方法實在太落後，
+因此最近才把fluentd整進來，我們應用的情景如下：&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;安裝一台Log Server (儲存所有API上的log)&lt;/li&gt;
+  &lt;li&gt;每一台API Server都裝有fluentd，並且把本地的log foward to Log Server&lt;/li&gt;
+  &lt;li&gt;把本地的Log上傳至S3備份&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
+
+&lt;!--more--&gt;
+
+&lt;hr /&gt;
+&lt;h3 id=&quot;2-install-fluentd-setup-log-server&quot;&gt;2. Install fluentd (Setup log server)&lt;/h3&gt;
+&lt;hr /&gt;
+
+&lt;p&gt;首先在一台linux server（我選用ubuntu 16.04）裡面進行安裝log server，
+這台server是要收來自各地API的log。安裝很簡單，只要一行指令就可以：&lt;br /&gt;&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;curl -L https://toolbelt.treasuredata.com/sh/install-ubuntu-xenial-td-agent2.sh | sh
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;&lt;br /&gt;
+安裝完以後要更改config，cofig路徑為&lt;code class=&quot;highlighter-rouge&quot;&gt;/etc/td-agent/td-agent.conf&lt;/code&gt;，default config裡面有很多設定，預設fluentd會起三個port，分別給不同的用途使用，不過我們不需要用到這麼複雜，所以可以把config改成下面的配置&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;
+# source是指資料從哪裡來的
+&amp;lt;source&amp;gt;
+  @type forward # log source會來自於foward的
+&amp;lt;/source&amp;gt;
+
+# match是用來定義，資料來源為某個tag時，要做的處理
+&amp;lt;match api-server-1&amp;gt; # 記得把這個tag api-server-1改成你要的，tag意思是會把source tag為api-server-1的歸類到這個配置裡
+ @type file # 把source儲存為file
+ path /var/log/td-agent/api-server-1 # 儲存路徑
+ time_slice_format %Y%m%d%H # 當file超過buffer_chunk_limit時，會做切割，此配置為切割的檔名
+ time_slice_wait 10m
+ time_format %Y%m%dT%H%M%S%z # file裡面的時間格式
+ compress gzip # 使用gzip壓縮被切割的log
+ utc
+&amp;lt;/match&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
+
+&lt;p&gt;完成配置以後，就重啟fluentd。&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$ &lt;/span&gt;/etc/init.d/td-agent restart
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
+
+&lt;hr /&gt;
+&lt;h3 id=&quot;3-setup-fluentd-client-on-api-server&quot;&gt;3. Setup fluentd client on API Server&lt;/h3&gt;
+&lt;hr /&gt;
+
+&lt;p&gt;這步驟標題雖然是setup fluentd client，但其實fluentd沒有server與client之分，
+所以安裝方式和第二步驟其實是一樣的，決定他是client還是server的關鍵在於config，
+安裝指令，&lt;/p&gt;
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;curl -L https://toolbelt.treasuredata.com/sh/install-ubuntu-xenial-td-agent2.sh | sh
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;&lt;br /&gt;
+安裝完以後，一樣要更改config，cofig路徑為&lt;code class=&quot;highlighter-rouge&quot;&gt;/etc/td-agent/td-agent.conf&lt;/code&gt;，把config改成下面的配置&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# source是指資料從哪裡來的
+&amp;lt;source&amp;gt;
+  @type tail # 資料會用tail的方式
+  path /var/log/api-server-1/out.log # tail這個檔案
+  pos_file /var/log/td-agent/api-server-1.log.pos # 紀錄out.log最後讀取的position
+  tag api-server-1 # 送過去的tag，記得第二步驟的配置一致
+  format none
+&amp;lt;/source&amp;gt;
+
+# match是用來定義，資料來源為某個tag時，要做的處理
+&amp;lt;match api-server-1&amp;gt;
+  @type forward # 收到來自於api-server-1的log時，要進行foward
+  heartbeat_interval 1s
+  flush_interval 10s # 每10秒送一次
+  
+  # 送至哪個Server
+  &amp;lt;server&amp;gt;
+    name log-server
+    host 123.123.123.123 # 記得改成自己的IP
+    port 24224
+  &amp;lt;/server&amp;gt;
+
+  # 如果失敗以後
+  &amp;lt;secondary&amp;gt;
+    @type file
+    path /var/log/td-agent/forward-failed
+  &amp;lt;/secondary&amp;gt;
+&amp;lt;/match&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
+
+&lt;p&gt;完成配置以後，就重啟fluentd，然後就可以去Log Server上的 &lt;code class=&quot;highlighter-rouge&quot;&gt;/var/log/td-agent/&lt;/code&gt;底下看有沒有一個檔名為 &lt;code class=&quot;highlighter-rouge&quot;&gt;api-server-1.xxxxxxxx&lt;/code&gt;的檔案。&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$ &lt;/span&gt;/etc/init.d/td-agent restart
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
+
+&lt;hr /&gt;
+&lt;h3 id=&quot;4-forward-log-to-s3&quot;&gt;4. Forward log to S3&lt;/h3&gt;
+&lt;hr /&gt;
+
+&lt;p&gt;完成上面的前三步驟，基本上就沒問題了，這一部是進階的。fluentd有很多output plugin，像是S3, splunk, mongodb，甚至有很多人整合了Elasticsearch + Kibana，但我需求沒這麼複雜，所以先用S3就好。首先記得先去你的&lt;a href=&quot;https://console.aws.amazon.com/s3/home?region=ap-northeast-1#&quot;&gt;S3&lt;/a&gt;上面create a bucket。
+&lt;br /&gt;
+接著要先安裝&lt;code class=&quot;highlighter-rouge&quot;&gt;fluent-plugin-s3&lt;/code&gt;，然後可以使用fluentd提供的gem進行安裝，指令如下：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;sudo /usr/sbin/td-agent-gem install fluent-plugin-s3
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;安裝完成之後，一樣去API-SERVER上改掉你的配置，改完以後應該每60秒會上傳一個part上去，記得在正式環境不要用60秒，配置如下：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;
+# source是指資料從哪裡來的
+&amp;lt;source&amp;gt;
+  @type tail # 資料會用tail的方式
+  path /var/log/api-server-1/out.log # tail這個檔案
+  pos_file /var/log/td-agent/api-server-1.log.pos # 紀錄out.log最後讀取的position
+  tag api-server-1 # 送過去的tag，記得第二步驟的配置一致
+  format none
+&amp;lt;/source&amp;gt;
+
+# match是用來定義，資料來源為某個tag時，要做的處理
+&amp;lt;match api-server-1 &amp;gt;
+  @type s3 # 上傳至S3
+  aws_key_id xxxxxx # 記得換成你的key
+  aws_sec_key # 記得換成你的key
+  s3_bucket api-server-1 # 換成你的bucket name
+  s3_region ap-northeast-1
+  path logs/ # bucket name底下的folder
+  buffer_path /var/log/td-agent/s3 # 在上傳上去前，緩存的地方
+
+  time_slice_format %Y%m%d
+  time_slice_wait 1m
+  utc
+
+  buffer_chunk_limit 256m
+  flush_interval 60s  # 每60秒flush一次
+&amp;lt;/match&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;&lt;br /&gt;
+&lt;br /&gt;
+&lt;br /&gt;
+&lt;br /&gt;
+&lt;br /&gt;&lt;/p&gt;
+
+</description>
+                <link>http://blog.kenyang.net/2017/08/08/fluentd-amazon-s3-installation</link>
+                <guid>http://blog.kenyang.net/2017/08/08/fluentd--amazon-s3-installation</guid>
+                <pubDate>Tue, 08 Aug 2017 00:00:00 +0800</pubDate>
+        </item>
+
+        <item>
                 <title>What's MySQL partition</title>
                 <description>
-&lt;p&gt;efefe&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;this is a code
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;ssfwefijawefowejo
-最近在面試幾個candidate，都說自己有MySQL tuning的經驗，
+&lt;p&gt;最近在面試幾個candidate，都說自己有MySQL tuning的經驗，
 但進一步問下去，發現連MySQL怎麼用BTree放index，或者怎麼使用partition or sharding都不了解，所以打算來寫一系列的MySQL文章，這篇就先挑簡單的partition來寫。&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;this is a code
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;&amp;lt;/br&amp;gt;&lt;/p&gt;
 
 &lt;hr /&gt;
 &lt;h3 id=&quot;1-whats-partition-and-why&quot;&gt;1. What’s Partition and Why?&lt;/h3&gt;
 &lt;hr /&gt;
 
-&lt;p&gt;簡單說，Partition是將你的table，根據你的配置去divide成好幾個part；最重要的是，資料都是在同一個DB裡面，這對application來說，可以無感的使用它，卻又享有它的優點。&amp;lt;/br&amp;gt;&lt;/p&gt;
+&lt;p&gt;簡單說，Partition是將你的table，根據你的配置去divide成好幾個part；最重要的是，資料都是在同一個DB裡面，這對application來說，可以無感的使用它，卻又享有它的優點。&lt;br /&gt;&lt;/p&gt;
 
 &lt;p&gt;那麼為何要用partition呢？partition的優點在於：&lt;/p&gt;
 
@@ -42,7 +209,7 @@
   &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;刪除資料&lt;/code&gt;：當你的table很大時，刪除是非常耗時的一件工作，有了partition以後，你可以直接drop該partition，且時間上可以快上非常多。&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;p&gt;&amp;lt;/br&amp;gt;&lt;/p&gt;
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
 
 &lt;!--more--&gt;
 
@@ -51,9 +218,9 @@
 &lt;hr /&gt;
 
 &lt;p&gt;而使用partition的時機點，取決於資料量的大小，如果當你的資料只有幾千筆時，其實做partition的意義就不大了。
-&amp;lt;/br&amp;gt;
+&lt;br /&gt;
 不過partition也不是萬靈丹，當你的資料量成長到一定的數量時，可能也意味著你的application使用人數也成長了，當你所有的操作都在同一個DB上時，partition也是救不了你的application，所以才會有進階的做法，就是&lt;code class=&quot;highlighter-rouge&quot;&gt;sharding&lt;/code&gt;，但&lt;code class=&quot;highlighter-rouge&quot;&gt;sharding&lt;/code&gt;就比較複雜了，不管是對application還是replication來說，所以這就等下一篇有機會再寫吧。
-&amp;lt;/br&amp;gt;
+&lt;br /&gt;
 簡單說，基於下面的條件你就可以使用partition：&lt;/p&gt;
 
 &lt;ul&gt;
@@ -62,7 +229,7 @@
   &lt;li&gt;如果你想要快速的刪除歷史資料&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;p&gt;&amp;lt;/br&amp;gt;&lt;/p&gt;
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
 
 &lt;hr /&gt;
 &lt;h3 id=&quot;3-horizontal-vs-vertical&quot;&gt;3. Horizontal vs Vertical&lt;/h3&gt;
@@ -77,7 +244,7 @@
 
 &lt;p&gt;目前MySQL只支援horizontal partition。&lt;/p&gt;
 
-&lt;p&gt;&amp;lt;/br&amp;gt;&lt;/p&gt;
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
 
 &lt;hr /&gt;
 &lt;h3 id=&quot;4-types-of-mysql-partition&quot;&gt;4. Types of MySQL partition&lt;/h3&gt;
@@ -94,11 +261,11 @@
 
 &lt;p&gt;接下來會ㄧ一說明各個的差別。&lt;/p&gt;
 
-&lt;p&gt;&amp;lt;/br&amp;gt;&lt;/p&gt;
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
 
 &lt;h4 id=&quot;4-1-key-partitioning&quot;&gt;4-1. Key partitioning&lt;/h4&gt;
 
-&lt;p&gt;如果你是使用key partitioning的話，MySQL會用它自己的hash function算出你這筆資料要放哪裡。&amp;lt;/br&amp;gt;
+&lt;p&gt;如果你是使用key partitioning的話，MySQL會用它自己的hash function算出你這筆資料要放哪裡。&lt;br /&gt;
 key的用法為&lt;code class=&quot;highlighter-rouge&quot;&gt;key(column)&lt;/code&gt;，裡面必須為table中的某個欄位，範例如下：&lt;/p&gt;
 
 &lt;div class=&quot;language-sql highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;CREATE&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;TABLE&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;t&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
@@ -113,7 +280,7 @@ key的用法為&lt;code class=&quot;highlighter-rouge&quot;&gt;key(column)&lt;/c
 &lt;p&gt;上面的範例，就會根據data的create_time，去divide出10個partition，然後當塞入資料時，會決定要放置到哪個partition。
 有二點要注意，key只能使用column當作判斷指標，不能使用expression，以及如果使用key的話，無法根據partition進行刪除。&lt;/p&gt;
 
-&lt;p&gt;&amp;lt;/br&amp;gt;&lt;/p&gt;
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
 
 &lt;h4 id=&quot;4-2-hash-partitioning&quot;&gt;4-2. Hash partitioning&lt;/h4&gt;
 
@@ -135,7 +302,7 @@ key的用法為&lt;code class=&quot;highlighter-rouge&quot;&gt;key(column)&lt;/c
 
 &lt;p&gt;上面的範例，就會根據data的create_time，去divide出12個partition。然後HASH一樣無法根據partition進行刪除。&lt;/p&gt;
 
-&lt;p&gt;&amp;lt;/br&amp;gt;&lt;/p&gt;
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
 
 &lt;h4 id=&quot;4-3-list-partitioning&quot;&gt;4-3. LIST partitioning&lt;/h4&gt;
 
@@ -161,7 +328,7 @@ key的用法為&lt;code class=&quot;highlighter-rouge&quot;&gt;key(column)&lt;/c
 
 &lt;p&gt;上面的範例，就會根據data的DAYOFWEEK(create_time)，去divide出4個partition。&lt;/p&gt;
 
-&lt;p&gt;&amp;lt;/br&amp;gt;&lt;/p&gt;
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
 
 &lt;h4 id=&quot;4-4--range-partitioning&quot;&gt;4-4.  Range partitioning&lt;/h4&gt;
 
@@ -185,10 +352,10 @@ key的用法為&lt;code class=&quot;highlighter-rouge&quot;&gt;key(column)&lt;/c
 &lt;/div&gt;
 
 &lt;p&gt;上面的範例，就會根據data的YEAR(create_time)，簡單說，就是會根據年份去divide出4個partition。
-&amp;lt;/br&amp;gt;
+&lt;br /&gt;
 使用Range，有二點要注意，必須由低往高去設定，以及會無法insert超出range的資料。&lt;/p&gt;
 
-&lt;p&gt;&amp;lt;/br&amp;gt;&lt;/p&gt;
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
 
 &lt;hr /&gt;
 &lt;h3 id=&quot;5-manage-partition&quot;&gt;5. Manage partition&lt;/h3&gt;
@@ -215,7 +382,7 @@ key的用法為&lt;code class=&quot;highlighter-rouge&quot;&gt;key(column)&lt;/c
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 
-&lt;p&gt;&amp;lt;/br&amp;gt;&lt;/p&gt;
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
 
 &lt;hr /&gt;
 &lt;h3 id=&quot;6-partition-pruning&quot;&gt;6. Partition Pruning&lt;/h3&gt;
@@ -265,7 +432,7 @@ key的用法為&lt;code class=&quot;highlighter-rouge&quot;&gt;key(column)&lt;/c
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 
-&lt;p&gt;&amp;lt;/br&amp;gt;&lt;/p&gt;
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
 
 &lt;p&gt;然後我們可以用MySQL的&lt;code class=&quot;highlighter-rouge&quot;&gt;explain&lt;/code&gt;去觀察select這2張table時，會有什麼變化，以下面的例子來看，
 可以發現當查詢有partition的table時，也只去scan 7 rows，且直接從partition p2017, p2018去獲取資料；
@@ -287,7 +454,7 @@ key的用法為&lt;code class=&quot;highlighter-rouge&quot;&gt;key(column)&lt;/c
 &lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 
-&lt;p&gt;&amp;lt;/br&amp;gt;
+&lt;p&gt;&lt;br /&gt;
 但是要做到partition pruning，根據不同的配置是有不同的條件的：&lt;/p&gt;
 
 &lt;ol&gt;
@@ -315,7 +482,7 @@ key的用法為&lt;code class=&quot;highlighter-rouge&quot;&gt;key(column)&lt;/c
   &lt;/li&gt;
 &lt;/ol&gt;
 
-&lt;p&gt;&amp;lt;/br&amp;gt;&lt;/p&gt;
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
 
 &lt;hr /&gt;
 &lt;h3 id=&quot;7-sub-partition&quot;&gt;7. Sub partition&lt;/h3&gt;
@@ -346,14 +513,14 @@ key的用法為&lt;code class=&quot;highlighter-rouge&quot;&gt;key(column)&lt;/c
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 
-&lt;p&gt;&amp;lt;/br&amp;gt;
+&lt;p&gt;&lt;br /&gt;
 查詢時，可以直接下&lt;/p&gt;
 
 &lt;div class=&quot;language-sql highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;SELECT&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;id&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;FROM&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;t&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;PARTITION&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;p0sp1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 
-&lt;p&gt;&amp;lt;/br&amp;gt;&lt;/p&gt;
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
 
 &lt;hr /&gt;
 &lt;h3 id=&quot;8-conclusion&quot;&gt;8. Conclusion&lt;/h3&gt;
@@ -370,11 +537,10 @@ key的用法為&lt;code class=&quot;highlighter-rouge&quot;&gt;key(column)&lt;/c
   &lt;li&gt;只有RANGE and LIST可以使用sub partition&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;p&gt;&amp;lt;/br&amp;gt;
-&amp;lt;/br&amp;gt;
-&amp;lt;/br&amp;gt;&lt;/p&gt;
+&lt;p&gt;&lt;br /&gt;
+&lt;br /&gt;
+&lt;br /&gt;&lt;/p&gt;
 
-&lt;p&gt;&amp;lt;/font&amp;gt;&lt;/p&gt;
 </description>
                 <link>http://blog.kenyang.net/2017/06/11/whats-mysql-partition</link>
                 <guid>http://blog.kenyang.net/2017/06/11/whats-mysql-partition</guid>
@@ -384,353 +550,340 @@ key的用法為&lt;code class=&quot;highlighter-rouge&quot;&gt;key(column)&lt;/c
         <item>
                 <title>Getting started with webpack</title>
                 <description>
-&lt;font size=&quot;3&quot;&gt;
+&lt;p&gt;最近在看Vue.js，很多文章都是搭配著Webpack來說明，所以也順便研究了一下webpack，
+這篇會說明&lt;a href=&quot;https://webpack.js.org/&quot;&gt;webpack&lt;/a&gt;的優點、以及用途。&lt;/p&gt;
 
-最近在看Vue.js，很多文章都是搭配著Webpack來說明，所以也順便研究了一下webpack，
-這篇會說明[webpack](https://webpack.js.org/)的優點、以及用途。
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
 
-&amp;lt;/br&amp;gt;
+&lt;hr /&gt;
+&lt;h3 id=&quot;1-whats-webpack&quot;&gt;1. What’s webpack?&lt;/h3&gt;
+&lt;hr /&gt;
 
----
-### 1. What's webpack?
----
+&lt;p&gt;什麼是&lt;a href=&quot;https://webpack.js.org/&quot;&gt;webpack&lt;/a&gt;呢？其實官網用一張圖片說明的很清楚，圖片上有幾個title，分別為:&lt;/p&gt;
 
-什麼是[webpack](https://webpack.js.org/)呢？其實官網用一張圖片說明的很清楚，圖片上有幾個title，分別為:
+&lt;ol&gt;
+  &lt;li&gt;bundle your assests&lt;/li&gt;
+  &lt;li&gt;bundle your scripts&lt;/li&gt;
+  &lt;li&gt;bundle your images&lt;/li&gt;
+  &lt;li&gt;bundle your styles&lt;/li&gt;
+&lt;/ol&gt;
 
-1. bundle your assests
-1. bundle your scripts
-1. bundle your images
-1. bundle your styles
+&lt;p&gt;一句話簡單說，可以想像成&lt;code class=&quot;highlighter-rouge&quot;&gt;打包工具&lt;/code&gt; （但當然不僅於此，否則不會這麼紅）。&lt;/p&gt;
 
-一句話簡單說，可以想像成`打包工具` （但當然不僅於此，否則不會這麼紅）。
-
-
-&amp;lt;/br&amp;gt;
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
 
 &lt;!--more--&gt;
 
----
-### 2. Install webpack
----
+&lt;hr /&gt;
+&lt;h3 id=&quot;2-install-webpack&quot;&gt;2. Install webpack&lt;/h3&gt;
+&lt;hr /&gt;
 
-官網提供了三種的安裝方式，分別為：
+&lt;p&gt;官網提供了三種的安裝方式，分別為：&lt;/p&gt;
 
-1. Local Installation
-2. Global Installation (我使用這種）
-3. Bleeding Edge
+&lt;ol&gt;
+  &lt;li&gt;Local Installation&lt;/li&gt;
+  &lt;li&gt;Global Installation (我使用這種）&lt;/li&gt;
+  &lt;li&gt;Bleeding Edge&lt;/li&gt;
+&lt;/ol&gt;
 
-&amp;lt;/br&amp;gt;
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
 
-#### Local Installation
+&lt;h4 id=&quot;local-installation&quot;&gt;Local Installation&lt;/h4&gt;
 
-```bash
-npm install webpack --save-dev
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;npm install webpack --save-dev
 
-npm install webpack@&lt;version&gt; --save-dev
-```
+npm install webpack@&amp;lt;version&amp;gt; --save-dev
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
 
-官方是最建議用第一種的Local Installation，
-但因為是install在local node\_modules底下，即便你在此project folder底下，打`webpack`指令，也是會找不到，但如果你是使用npm script在你的project中的話，就不用太擔心，因為npm會去你的node_modules底下找webpack。
+&lt;p&gt;官方是最建議用第一種的Local Installation，
+但因為是install在local node_modules底下，即便你在此project folder底下，打&lt;code class=&quot;highlighter-rouge&quot;&gt;webpack&lt;/code&gt;指令，也是會找不到，但如果你是使用npm script在你的project中的話，就不用太擔心，因為npm會去你的node_modules底下找webpack。&lt;/p&gt;
 
-```javascript
-&quot;scripts&quot; : {
-    &quot;start&quot;: &quot;webpack --config mywebpack.config.js&quot;
-}
-```
+&lt;div class=&quot;language-javascript highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;s2&quot;&gt;&quot;scripts&quot;&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;s2&quot;&gt;&quot;start&quot;&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;webpack --config mywebpack.config.js&quot;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
 
-&amp;lt;/br&amp;gt;
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
 
+&lt;h4 id=&quot;global-installation&quot;&gt;Global Installation&lt;/h4&gt;
 
-#### Global Installation
+&lt;p&gt;第二種是官方不推薦使用的Global方式，原因是你會被鎖死在某一個webpack版本，然後假設你有多個project，那有可能就會造成一些error。&lt;/p&gt;
 
-第二種是官方不推薦使用的Global方式，原因是你會被鎖死在某一個webpack版本，然後假設你有多個project，那有可能就會造成一些error。 
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;npm install webpack -g
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
 
-```bash
-npm install webpack -g
-```
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
 
-&amp;lt;/br&amp;gt;
+&lt;h4 id=&quot;bleeding-edge&quot;&gt;Bleeding Edge&lt;/h4&gt;
 
-#### Bleeding Edge
+&lt;p&gt;第三種就是geek在用的，如果想體驗新版本的話就使用此方式。&lt;/p&gt;
 
-第三種就是geek在用的，如果想體驗新版本的話就使用此方式。
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;npm install webpack/webpack#&amp;lt;tagname/branchname&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
 
-```bash
-npm install webpack/webpack#&amp;lt;tagname/branchname&amp;gt;
-```
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
 
-&amp;lt;/br&amp;gt;
+&lt;hr /&gt;
+&lt;h3 id=&quot;3-how-to-bundle&quot;&gt;3. How to bundle?&lt;/h3&gt;
+&lt;hr /&gt;
 
----
-### 3. How to bundle?
----
+&lt;p&gt;安裝完成以後，要來使用&lt;code class=&quot;highlighter-rouge&quot;&gt;webpack&lt;/code&gt;來bundle一個project，首先要先建立三個檔案，分別為index.html、app.js以及util.js。&lt;/p&gt;
 
-安裝完成以後，要來使用`webpack`來bundle一個project，首先要先建立三個檔案，分別為index.html、app.js以及util.js。
+&lt;p&gt;&lt;strong&gt;utils.js&lt;/strong&gt;&lt;/p&gt;
 
-**utils.js**
+&lt;div class=&quot;language-javascript highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;div&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;document&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;createElement&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;div&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;nx&quot;&gt;div&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;innerHTML&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Hello worl Ken!&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;document&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;body&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;appendChild&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;div&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
 
-```javascript
-var div = document.createElement(&quot;div&quot;)
-div.innerHTML=&quot;Hello worl Ken!&quot;;
-document.body.appendChild(div);
-```
+&lt;p&gt;util.js會去建立一個div element，然後把它塞入body之中。&lt;br /&gt;&lt;/p&gt;
 
-util.js會去建立一個div element，然後把它塞入body之中。&amp;lt;/br&amp;gt;
+&lt;p&gt;&lt;strong&gt;app.js&lt;/strong&gt;&lt;/p&gt;
 
-**app.js**
+&lt;div class=&quot;language-javascript highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;document&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;getElementById&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'app'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;innerHTML&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Your first webpack pacakge&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;nx&quot;&gt;require&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;./util.js&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
 
-```javascript
-document.getElementById('app').innerHTML=&quot;Your first webpack pacakge&quot;;
-require(&quot;./util.js&quot;);
-```
+&lt;p&gt;app.js會去找到id為app的element，然後把它塞入字串。&lt;/p&gt;
 
-app.js會去找到id為app的element，然後把它塞入字串。
+&lt;p&gt;&lt;strong&gt;index.html&lt;/strong&gt;&lt;/p&gt;
 
-**index.html**
+&lt;div class=&quot;language-html highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;cp&quot;&gt;&amp;lt;!DOCTYPE html&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;html&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;lang=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;en&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;&amp;lt;body&amp;gt;&lt;/span&gt;
+        &lt;span class=&quot;nt&quot;&gt;&amp;lt;div&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;id=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;app&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&amp;lt;/div&amp;gt;&lt;/span&gt;
+        &lt;span class=&quot;nt&quot;&gt;&amp;lt;script &lt;/span&gt;&lt;span class=&quot;na&quot;&gt;src=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;bundle.js&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&amp;lt;/script&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;&amp;lt;/body&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;/html&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
 
-```html
-&amp;lt;!DOCTYPE html&amp;gt;
-&lt;html lang=&quot;en&quot;&gt;
-    &lt;body&gt;
-        &lt;div id=&quot;app&quot;&gt;&lt;/div&gt;
-        &lt;script src=&quot;bundle.js&quot;&gt;&lt;/script&gt;
-    &lt;/body&gt;
-&lt;/html&gt;
-```
+&lt;p&gt;你會發現index.html中，使用的js是bundle.js，卻不是先前建立的任何一隻js！因為bundle.js就是透過webpack bundle出來的js file。&lt;br /&gt;
+有了檔案以後，接下來就可以透過&lt;code class=&quot;highlighter-rouge&quot;&gt;webpack&lt;/code&gt;來bundle，如果成功的話，就會看到bundle的過程，以及有哪幾隻檔案。&lt;/p&gt;
 
-你會發現index.html中，使用的js是bundle.js，卻不是先前建立的任何一隻js！因為bundle.js就是透過webpack bundle出來的js file。&amp;lt;/br&amp;gt;
-有了檔案以後，接下來就可以透過`webpack`來bundle，如果成功的話，就會看到bundle的過程，以及有哪幾隻檔案。
-
-```bash
-$ webpack app.js bundle.js
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$ &lt;/span&gt;webpack app.js bundle.js
 Hash: dc7cbcef87369e1a8e24
 Version: webpack 2.2.1
 Time: 79ms
     Asset     Size  Chunks             Chunk Names
-bundle.js  2.78 kB       0  [emitted]  main
-   [0] ./util.js 104 bytes {0} [built]
-   [1] ./app.js 87 bytes {0} [built]
-```
+bundle.js  2.78 kB       0  &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;emitted]  main
+   &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;0] ./util.js 104 bytes &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;0&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;built]
+   &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;1] ./app.js 87 bytes &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;0&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;built]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
 
-&amp;lt;/br&amp;gt;
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
 
-webpack會從app.js中去resolve dependency，把相關的js都bundle至bundle.js當中，而每個js都會被視為一個module，webpack會給每個module一個id，然後透過`__webpack_require__`去呼叫其他module，
+&lt;p&gt;webpack會從app.js中去resolve dependency，把相關的js都bundle至bundle.js當中，而每個js都會被視為一個module，webpack會給每個module一個id，然後透過&lt;code class=&quot;highlighter-rouge&quot;&gt;__webpack_require__&lt;/code&gt;去呼叫其他module，&lt;/p&gt;
 
-完成以後，就可以打開`index.html`，就會看到對應的文字了。
+&lt;p&gt;完成以後，就可以打開&lt;code class=&quot;highlighter-rouge&quot;&gt;index.html&lt;/code&gt;，就會看到對應的文字了。&lt;/p&gt;
 
-&amp;lt;/br&amp;gt;
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
 
+&lt;hr /&gt;
+&lt;h3 id=&quot;4-configuration-webpackconfigjs&quot;&gt;4. Configuration (webpack.config.js)&lt;/h3&gt;
+&lt;hr /&gt;
 
----
-### 4. Configuration (webpack.config.js)
----
+&lt;p&gt;如果我每次改一次檔案就要打一次build指令，然後又都那麼長，是不是很煩？不用擔心，哪一種工具會沒提供configuration？不管是json or yaml，所以webpack也有提供。根據上面的指令，所對應的configuration會長的像下面一樣，&lt;/p&gt;
 
-如果我每次改一次檔案就要打一次build指令，然後又都那麼長，是不是很煩？不用擔心，哪一種工具會沒提供configuration？不管是json or yaml，所以webpack也有提供。根據上面的指令，所對應的configuration會長的像下面一樣，
+&lt;p&gt;&lt;strong&gt;webpack.config.js&lt;/strong&gt;&lt;/p&gt;
 
-**webpack.config.js**
+&lt;div class=&quot;language-javascript highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;Webpack&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;require&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;webpack&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;nx&quot;&gt;module&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;exports&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;entry&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;./app.js&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;output&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;na&quot;&gt;path&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;__dirname&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;na&quot;&gt;filename&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;bundle.js&quot;&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;module&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;na&quot;&gt;loaders&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[{&lt;/span&gt;
+            &lt;span class=&quot;na&quot;&gt;test&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;sr&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\.&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;css$/&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+            &lt;span class=&quot;na&quot;&gt;loader&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;style-loader!css-loader&quot;&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;}]&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
 
-```javascript
-var Webpack = require(&quot;webpack&quot;);
-module.exports = {
-    entry: [&quot;./app.js&quot;],
-    output: {
-        path: __dirname,
-        filename: &quot;bundle.js&quot;
-    },
-    module: {
-        loaders: [{
-            test: /\.css$/,
-            loader: &quot;style-loader!css-loader&quot;
-        }]
-    }
-}
-```
+&lt;p&gt;先說明一下上面的每一個參數用意：&lt;/p&gt;
 
-先說明一下上面的每一個參數用意：
+&lt;ol&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;entry&lt;/code&gt; : 就是我們javascript的進入點&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;output&lt;/code&gt; : bundle出來後的檔案位置和檔案名稱&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;module&lt;/code&gt; : 定義如何處理module的邏輯，以上面例子來說，&lt;code class=&quot;highlighter-rouge&quot;&gt;test: /\.css$/&lt;/code&gt;意思是，如果檔案為.css結尾的，就使用style-loader和css-loader來去轉換它&lt;/li&gt;
+&lt;/ol&gt;
 
-1. `entry` : 就是我們javascript的進入點
-2. `output` : bundle出來後的檔案位置和檔案名稱
-3. `module` : 定義如何處理module的邏輯，以上面例子來說，`test: /\.css$/`意思是，如果檔案為.css結尾的，就使用style-loader和css-loader來去轉換它
+&lt;p&gt;了解各個參數的意思以後，就可以直接在資料夾下，輸入&lt;code class=&quot;highlighter-rouge&quot;&gt;webpack&lt;/code&gt;就可以build了，不需要再打很長串的指令。&lt;/p&gt;
 
-了解各個參數的意思以後，就可以直接在資料夾下，輸入`webpack`就可以build了，不需要再打很長串的指令。
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;webpack -p
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
 
-```bash
-webpack -p
-```
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
 
-&amp;lt;/br&amp;gt;
+&lt;hr /&gt;
+&lt;h3 id=&quot;5-whats-loader&quot;&gt;5. What’s loader?&lt;/h3&gt;
+&lt;hr /&gt;
 
----
-### 5. What's loader?
----
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;webpack&lt;/code&gt;本身只能處理javascript的文件，其他靜態的檔案是沒有能力處理的，如果想要處理其他類型的檔案，譬如說css，那就要透過&lt;code class=&quot;highlighter-rouge&quot;&gt;loader&lt;/code&gt;去將css轉換成js module，這樣我們就能用&lt;code class=&quot;highlighter-rouge&quot;&gt;require&lt;/code&gt;的方式去使用css。&lt;/p&gt;
 
-`webpack`本身只能處理javascript的文件，其他靜態的檔案是沒有能力處理的，如果想要處理其他類型的檔案，譬如說css，那就要透過`loader`去將css轉換成js module，這樣我們就能用`require`的方式去使用css。
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
 
+&lt;hr /&gt;
+&lt;h3 id=&quot;6-how-to-use-loader&quot;&gt;6. How to use loader?&lt;/h3&gt;
+&lt;hr /&gt;
 
-
-&amp;lt;/br&amp;gt;
-
----
-### 6. How to use loader?
----
-
-loader在npm上，有很多種，有html template、css、i18n、url-loader、json等等之類的。&amp;lt;/br&amp;gt;
+&lt;p&gt;loader在npm上，有很多種，有html template、css、i18n、url-loader、json等等之類的。&lt;br /&gt;
 我會以css loader和url-loader來做說明，
-&amp;lt;/br&amp;gt;
+&lt;br /&gt;&lt;/p&gt;
 
-#### css-loader style-loader
+&lt;h4 id=&quot;css-loader-style-loader&quot;&gt;css-loader style-loader&lt;/h4&gt;
 
+&lt;p&gt;首先先安裝&lt;code class=&quot;highlighter-rouge&quot;&gt;css-loader&lt;/code&gt;和&lt;code class=&quot;highlighter-rouge&quot;&gt;style-loader&lt;/code&gt;，&lt;/p&gt;
 
-首先先安裝`css-loader`和`style-loader`，
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$ &lt;/span&gt;npm install css-loader style-loader --save-dev
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
 
-```bash
-$ npm install css-loader style-loader --save-dev
-```
+&lt;p&gt;&lt;br /&gt;
+然後來撰寫我們的style.css，&lt;/p&gt;
 
-&amp;lt;/br&amp;gt;
-然後來撰寫我們的style.css，
+&lt;div class=&quot;language-css highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nt&quot;&gt;div&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;nl&quot;&gt;color&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;red&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
 
-```css
-div {
-    color: red;
-}
-```
+&lt;p&gt;然後在&lt;code class=&quot;highlighter-rouge&quot;&gt;app.js&lt;/code&gt;中，引用這個css，&lt;/p&gt;
 
-然後在`app.js`中，引用這個css，
+&lt;div class=&quot;language-javascript highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;document&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;getElementById&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'app'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;innerHTML&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;first webpack pacakge&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;nx&quot;&gt;require&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;./util.js&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;nx&quot;&gt;require&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;./style.css&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
 
-```javascript
-document.getElementById('app').innerHTML=&quot;first webpack pacakge&quot;;
-require(&quot;./util.js&quot;);
-require(&quot;./style.css&quot;);
-```
+&lt;p&gt;接著把loader的設定加入至&lt;code class=&quot;highlighter-rouge&quot;&gt;webpack.config.js&lt;/code&gt;，然後重新build一次，&lt;/p&gt;
 
-接著把loader的設定加入至`webpack.config.js`，然後重新build一次，
+&lt;p&gt;&lt;strong&gt;webpack.config.js&lt;/strong&gt;&lt;/p&gt;
 
+&lt;div class=&quot;language-javascript highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;Webpack&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;require&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;webpack&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;nx&quot;&gt;module&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;exports&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;entry&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;./app.js&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;output&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;na&quot;&gt;path&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;__dirname&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;na&quot;&gt;filename&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;bundle.js&quot;&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;module&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;na&quot;&gt;loaders&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[{&lt;/span&gt;
+            &lt;span class=&quot;na&quot;&gt;test&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;sr&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\.&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;css$/&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+            &lt;span class=&quot;na&quot;&gt;loader&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;style-loader!css-loader&quot;&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;}]&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
 
-**webpack.config.js**
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;webpack -p
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
 
-```javascript
-var Webpack = require(&quot;webpack&quot;);
-module.exports = {
-    entry: [&quot;./app.js&quot;],
-    output: {
-        path: __dirname,
-        filename: &quot;bundle.js&quot;
-    },
-    module: {
-        loaders: [{
-            test: /\.css$/,
-            loader: &quot;style-loader!css-loader&quot;
-        }]
-    }
-}
-```
+&lt;p&gt;再打開index.html，就會發現你的字體顏色變紅色了&lt;/p&gt;
 
-```bash
-webpack -p
-```
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
 
-再打開index.html，就會發現你的字體顏色變紅色了
+&lt;h4 id=&quot;url-loader&quot;&gt;url-loader&lt;/h4&gt;
 
-&amp;lt;/br&amp;gt;
+&lt;p&gt;我覺得這是一個超強大的loader，他可以根據你的需求，把一些圖片轉成base64，這樣就可以減輕一些loading！首先先來安裝&lt;code class=&quot;highlighter-rouge&quot;&gt;url-loader&lt;/code&gt;，&lt;/p&gt;
 
-#### url-loader
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;npm install url-loader --save-dev
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
 
-我覺得這是一個超強大的loader，他可以根據你的需求，把一些圖片轉成base64，這樣就可以減輕一些loading！首先先來安裝`url-loader`，
+&lt;p&gt;安裝完之後，來編輯&lt;code class=&quot;highlighter-rouge&quot;&gt;style.css&lt;/code&gt;，在裡面設定image，&lt;/p&gt;
 
+&lt;div class=&quot;language-css highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nf&quot;&gt;#content&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;nl&quot;&gt;background-image&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;sx&quot;&gt;url(img/bg.png)&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
 
-```bash
-npm install url-loader --save-dev
-```
+&lt;p&gt;然後在&lt;code class=&quot;highlighter-rouge&quot;&gt;index.html&lt;/code&gt;中，加入對應的&lt;code class=&quot;highlighter-rouge&quot;&gt;id&lt;/code&gt;，&lt;/p&gt;
 
-安裝完之後，來編輯`style.css`，在裡面設定image，
+&lt;div class=&quot;language-html highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;cp&quot;&gt;&amp;lt;!DOCTYPE html&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;html&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;lang=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;en&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;head&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;&amp;lt;meta&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;charset=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;utf-8&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;/head&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;body&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;&amp;lt;div&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;id=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;app&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&amp;lt;/div&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;&amp;lt;div&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;id=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;content&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&amp;lt;/div&amp;gt;&lt;/span&gt; 
+    &lt;span class=&quot;nt&quot;&gt;&amp;lt;script &lt;/span&gt;&lt;span class=&quot;na&quot;&gt;src=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;bundle.js&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&amp;lt;/script&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;/body&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;/html&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
 
-```css
-#content {
-    background-image: url(img/bg.png);
-}
-```
+&lt;p&gt;然後一樣要在&lt;code class=&quot;highlighter-rouge&quot;&gt;webpack.config.js&lt;/code&gt;中加入url-loader的設定，&lt;/p&gt;
 
-然後在`index.html`中，加入對應的`id`，
+&lt;div class=&quot;language-javascript highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;Webpack&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;require&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;webpack&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;nx&quot;&gt;module&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;exports&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;entry&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;./app.js&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;output&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;na&quot;&gt;path&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;__dirname&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;na&quot;&gt;filename&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;bundle.js&quot;&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;module&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;na&quot;&gt;loaders&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;
+            &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;test&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;sr&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\.&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;css$/&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;loader&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;style-loader!css-loader&quot;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;
+            &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;test&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;sr&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\.(&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;png|jpg&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;$/&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;loader&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'url-loader?limit=40000'&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
 
-```html
-&amp;lt;!DOCTYPE html&amp;gt;
-&lt;html lang=&quot;en&quot;&gt;
-&lt;head&gt;
-    &lt;meta charset=&quot;utf-8&quot; /&gt;
-&lt;/head&gt;
-&lt;body&gt;
-    &lt;div id=&quot;app&quot;&gt;&lt;/div&gt;
-    &lt;div id=&quot;content&quot;&gt;&lt;/div&gt; 
-    &lt;script src=&quot;bundle.js&quot;&gt;&lt;/script&gt;
-&lt;/body&gt;
-&lt;/html&gt;
-```
+&lt;p&gt;最後再來build一次，&lt;/p&gt;
 
-然後一樣要在`webpack.config.js`中加入url-loader的設定，
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;webpack -p
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
 
-```javascript
-var Webpack = require(&quot;webpack&quot;);
-module.exports = {
-    entry: [&quot;./app.js&quot;],
-    output: {
-        path: __dirname,
-        filename: &quot;bundle.js&quot;
-    },
-    module: {
-        loaders: [
-            { test: /\.css$/, loader: &quot;style-loader!css-loader&quot; },
-            { test: /\.(png|jpg)$/, loader: 'url-loader?limit=40000' }
-        ]
-    }
-}
-```
+&lt;p&gt;build完以後，打開&lt;code class=&quot;highlighter-rouge&quot;&gt;index.html&lt;/code&gt;以及browser developer mode，會發現該張圖片已經變成base64編碼。&lt;/p&gt;
 
-最後再來build一次，
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
 
-```bash
-webpack -p
-```
+&lt;hr /&gt;
+&lt;h3 id=&quot;7-webpack-dev-server&quot;&gt;7. webpack-dev-server&lt;/h3&gt;
+&lt;hr /&gt;
 
-build完以後，打開`index.html`以及browser developer mode，會發現該張圖片已經變成base64編碼。
+&lt;p&gt;這應該是我覺得webpack這屌的東西了，&lt;code class=&quot;highlighter-rouge&quot;&gt;webpack-dev-server&lt;/code&gt;是一個小型的Node.js Express server，一旦你啟動了&lt;code class=&quot;highlighter-rouge&quot;&gt;webpack-dev-server&lt;/code&gt;，&lt;br /&gt;
+它會根據你的&lt;code class=&quot;highlighter-rouge&quot;&gt;config&lt;/code&gt;去bundle，然後host一個HTTP Server，你可以透過此server看到你的html。&lt;br /&gt;
+最強的是！它會去幫你monitor你所有檔案，一旦有變更，都會是live reload，譬如說你改了css某個值，&lt;br /&gt;
+然後馬上跑去browser看，會發現它已經變更了！完全不用自己手動refresh！&lt;br /&gt;&lt;/p&gt;
 
+&lt;p&gt;使用方式很簡單，首先先安裝，&lt;/p&gt;
 
-&amp;lt;/br&amp;gt;
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;npm install webpack-dev-server -g
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
 
----
-### 7. webpack-dev-server
----
+&lt;p&gt;安裝完以後，在放置&lt;code class=&quot;highlighter-rouge&quot;&gt;webpack.config.js&lt;/code&gt;的folder底下，輸入指令，&lt;/p&gt;
 
-這應該是我覺得webpack這屌的東西了，`webpack-dev-server`是一個小型的Node.js Express server，一旦你啟動了`webpack-dev-server`，&amp;lt;/br&amp;gt;
-它會根據你的`config`去bundle，然後host一個HTTP Server，你可以透過此server看到你的html。&amp;lt;/br&amp;gt;
-最強的是！它會去幫你monitor你所有檔案，一旦有變更，都會是live reload，譬如說你改了css某個值，&amp;lt;/br&amp;gt;
-然後馬上跑去browser看，會發現它已經變更了！完全不用自己手動refresh！&amp;lt;/br&amp;gt;
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;webpack-dev-server
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
 
-使用方式很簡單，首先先安裝，
+&lt;p&gt;如果成功應該會看到一長串的內容，包含跟你說server的port等等相關資訊。
+webpack就先講到這了，有進階應用的話再來補充。&lt;/p&gt;
 
-```bash
-npm install webpack-dev-server -g
-```
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
 
-安裝完以後，在放置`webpack.config.js`的folder底下，輸入指令，
-
-```bash
-webpack-dev-server
-```
-
-如果成功應該會看到一長串的內容，包含跟你說server的port等等相關資訊。
-webpack就先講到這了，有進階應用的話再來補充。
-
-&amp;lt;/br&amp;gt;
-
-
-
-
-
-
-
-&amp;lt;/font&amp;gt;
-&lt;/version&gt;&lt;/font&gt;
 </description>
                 <link>http://blog.kenyang.net/2017/02/18/getting-started-with-webpack</link>
                 <guid>http://blog.kenyang.net/2017/02/18/getting-started-with-webpack</guid>
@@ -740,54 +893,49 @@ webpack就先講到這了，有進階應用的話再來補充。
         <item>
                 <title>Update Node.js version</title>
                 <description>
-&lt;font size=&quot;3&quot;&gt;
+&lt;p&gt;Node.js updates quickly. Fortunately, there are a ton of tools for updating Node.js easily.&lt;/p&gt;
 
-Node.js updates quickly. Fortunately, there are a ton of tools for updating Node.js easily.
+&lt;ol&gt;
+  &lt;li&gt;nvm&lt;/li&gt;
+  &lt;li&gt;n&lt;/li&gt;
+&lt;/ol&gt;
 
-1. nvm
-2. n
+&lt;p&gt;Today, I’m gonna use &lt;code class=&quot;highlighter-rouge&quot;&gt;n&lt;/code&gt; to update &lt;code class=&quot;highlighter-rouge&quot;&gt;Node.js&lt;/code&gt;.&lt;/p&gt;
 
-Today, I'm gonna use `n` to update `Node.js`.
-
-
-
-&amp;lt;/br&amp;gt;
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
 
 &lt;!--more--&gt;
 
----
-### 1. Install n
----
+&lt;hr /&gt;
+&lt;h3 id=&quot;1-install-n&quot;&gt;1. Install n&lt;/h3&gt;
+&lt;hr /&gt;
 
-```bash
-$ npm install -g n
-```
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$ &lt;/span&gt;npm install -g n
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
 
-&amp;lt;/br&amp;gt;
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
 
----
-### 2. Update Node.js to stable version
----
+&lt;hr /&gt;
+&lt;h3 id=&quot;2-update-nodejs-to-stable-version&quot;&gt;2. Update Node.js to stable version&lt;/h3&gt;
+&lt;hr /&gt;
 
-```bash
-$ n stable
-```
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$ &lt;/span&gt;n stable
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
 
-You can replace the `stable` with whataver version you want.
+&lt;p&gt;You can replace the &lt;code class=&quot;highlighter-rouge&quot;&gt;stable&lt;/code&gt; with whataver version you want.&lt;/p&gt;
 
-&amp;lt;/br&amp;gt;
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
 
----
-### 3. Check what versions are installed
----
+&lt;hr /&gt;
+&lt;h3 id=&quot;3-check-what-versions-are-installed&quot;&gt;3. Check what versions are installed&lt;/h3&gt;
+&lt;hr /&gt;
 
-```bash
-$ n
-```
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$ &lt;/span&gt;n
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
 
-
-
-&lt;/font&gt;
 </description>
                 <link>http://blog.kenyang.net/2017/02/07/update-nodejs-version</link>
                 <guid>http://blog.kenyang.net/2017/02/07/update-nodejs-version</guid>
@@ -797,153 +945,142 @@ $ n
         <item>
                 <title>Getting started with Kafka in Node.js</title>
                 <description>
-&lt;font size=&quot;3&quot;&gt;
+&lt;p&gt;之前有講過&lt;a href=&quot;http://blog.kenyang.net/2015/06/25/apache-kafka-distributed-messaging&quot;&gt;Kafka的用途以及如何安裝&lt;/a&gt;，這篇會講如何用&lt;code class=&quot;highlighter-rouge&quot;&gt;Node.js&lt;/code&gt;去連結&lt;code class=&quot;highlighter-rouge&quot;&gt;Kafka&lt;/code&gt;，至於安裝Kafka的部分就請去&lt;a href=&quot;http://blog.kenyang.net/2015/06/25/apache-kafka-distributed-messaging&quot;&gt;上一篇&lt;/a&gt;來看。&lt;/p&gt;
 
-之前有講過[Kafka的用途以及如何安裝](http://blog.kenyang.net/2015/06/25/apache-kafka-distributed-messaging)，這篇會講如何用`Node.js`去連結`Kafka`，至於安裝Kafka的部分就請去[上一篇](http://blog.kenyang.net/2015/06/25/apache-kafka-distributed-messaging)來看。
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
 
+&lt;hr /&gt;
+&lt;h3 id=&quot;1-create-a-topic&quot;&gt;1. Create a topic&lt;/h3&gt;
+&lt;hr /&gt;
 
-&amp;lt;/br&amp;gt;
+&lt;p&gt;首先，先用CLI去建立一個topic，這topic等等會被Node.js subcribe。&lt;/p&gt;
 
----
-### 1. Create a topic
----
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cd&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$YOUR_PATH&lt;/span&gt;/kafka_2.11-0.10.1.0
+&lt;span class=&quot;gp&quot;&gt;$ &lt;/span&gt;bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic open
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
 
-首先，先用CLI去建立一個topic，這topic等等會被Node.js subcribe。
+&lt;p&gt;可以用下面的指令去看topic是否建立成功：&lt;/p&gt;
 
-```bash
-$ cd $YOUR_PATH/kafka_2.11-0.10.1.0
-$ bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic open
-```
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$ &lt;/span&gt;bin/kafka-topics.sh --list --zookeeper localhost:2181
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
 
-可以用下面的指令去看topic是否建立成功：
-
-```bash
-$ bin/kafka-topics.sh --list --zookeeper localhost:2181
-```
-
-&amp;lt;/br&amp;gt;
-
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
 
 &lt;!--more--&gt;
 
+&lt;hr /&gt;
+&lt;h3 id=&quot;2-install-kafka-node&quot;&gt;2. Install kafka-node&lt;/h3&gt;
+&lt;hr /&gt;
 
----
-### 2. Install kafka-node
----
+&lt;p&gt;這一步驟要安裝kafka的Node.js module，這裡選用的是&lt;code class=&quot;highlighter-rouge&quot;&gt;kafka-node&lt;/code&gt;（其實選擇也不多）。&lt;/p&gt;
 
-這一步驟要安裝kafka的Node.js module，這裡選用的是`kafka-node`（其實選擇也不多）。
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$ &lt;/span&gt;mkdir /opt/kafka-test
+&lt;span class=&quot;gp&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cd&lt;/span&gt; /opt/kafka-test
+&lt;span class=&quot;gp&quot;&gt;$ &lt;/span&gt;npm install kafka-node --no-optional --save
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
 
-```bash
-$ mkdir /opt/kafka-test
-$ cd /opt/kafka-test
-$ npm install kafka-node --no-optional --save
-```
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
 
-&amp;lt;/br&amp;gt;
+&lt;hr /&gt;
+&lt;h3 id=&quot;3-connect-to-zookeeper-and-send-message-producerjs&quot;&gt;3. Connect to Zookeeper and Send message (Producer.js)&lt;/h3&gt;
+&lt;hr /&gt;
 
----
-### 3. Connect to Zookeeper and Send message (Producer.js)
----
+&lt;p&gt;接著就可以在Node.js中使用&lt;code class=&quot;highlighter-rouge&quot;&gt;kafka-node&lt;/code&gt;，首先要先connect到你自己的Zookeeper，再來就可以對我們剛剛建立的topic進行傳送訊息。&lt;br /&gt;
+傳訊息是透過&lt;code class=&quot;highlighter-rouge&quot;&gt;producer.send&lt;/code&gt;這方式，成功以後我會去做&lt;code class=&quot;highlighter-rouge&quot;&gt;client.close()&lt;/code&gt;的動作，因此這隻node.js每次執行完就會關閉了。&lt;/p&gt;
 
-接著就可以在Node.js中使用`kafka-node`，首先要先connect到你自己的Zookeeper，再來就可以對我們剛剛建立的topic進行傳送訊息。&amp;lt;/br&amp;gt;
-傳訊息是透過`producer.send`這方式，成功以後我會去做`client.close()`的動作，因此這隻node.js每次執行完就會關閉了。
+&lt;div class=&quot;language-javascript highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;kafka&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;require&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'kafka-node'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;
+    &lt;span class=&quot;nx&quot;&gt;Producer&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;kafka&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Producer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;nx&quot;&gt;client&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;kafka&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Client&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'${YOUR_HOST}:2181'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;
+    &lt;span class=&quot;nx&quot;&gt;producer&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;Producer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;client&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;
+    &lt;span class=&quot;nx&quot;&gt;payloads&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;topic&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'open'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;messages&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'hello world from nodejs'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
 
-```javascript
-var kafka = require('kafka-node'),
-    Producer = kafka.Producer,
-    client = new kafka.Client('${YOUR_HOST}:2181'),
-    producer = new Producer(client),
-    payloads = [
-        { topic: 'open', messages: ['hello world from nodejs'] }
-    ];
+&lt;span class=&quot;nx&quot;&gt;producer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;on&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'ready'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;nx&quot;&gt;producer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;send&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;payloads&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;err&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;nx&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;err&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+        &lt;span class=&quot;nx&quot;&gt;client&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;close&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;
 
-producer.on('ready', function () {
-    producer.send(payloads, function (err, data) {
-        console.log(err || data);
-        client.close();
-    });
-});
+&lt;span class=&quot;nx&quot;&gt;producer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;on&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'error'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;err&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{})&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
 
-producer.on('error', function (err) {})
-```
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
 
-&amp;lt;/br&amp;gt;
+&lt;hr /&gt;
+&lt;h3 id=&quot;4-connecto-to-kafka-server-and-receiver-message-consumerjs&quot;&gt;4. Connecto to Kafka Server and Receiver message (Consumer.js)&lt;/h3&gt;
+&lt;hr /&gt;
 
----
-### 4. Connecto to Kafka Server and Receiver message (Consumer.js)
----
+&lt;p&gt;接著就是implement &lt;code class=&quot;highlighter-rouge&quot;&gt;consumer.js&lt;/code&gt;，基本上跟上面的Producer沒有太大差別，比較需要說明的參數是&lt;code class=&quot;highlighter-rouge&quot;&gt;autoCommit&lt;/code&gt;，一旦設為true，在你的consumer收到這則message時，就會被標記已讀的概念，接下來其他的consumer就不會再收到。&lt;/p&gt;
 
-接著就是implement `consumer.js`，基本上跟上面的Producer沒有太大差別，比較需要說明的參數是`autoCommit`，一旦設為true，在你的consumer收到這則message時，就會被標記已讀的概念，接下來其他的consumer就不會再收到。
+&lt;div class=&quot;language-javascript highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;kafka&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;require&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'kafka-node'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;
+    &lt;span class=&quot;nx&quot;&gt;Consumer&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;kafka&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Consumer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;nx&quot;&gt;client&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;kafka&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Client&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'${YOUR_HOST}:2181'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;
+    &lt;span class=&quot;nx&quot;&gt;consumer&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;Consumer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+        &lt;span class=&quot;nx&quot;&gt;client&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;
+            &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;topic&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'open'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;partition&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;],&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+            &lt;span class=&quot;na&quot;&gt;autoCommit&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;true&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
 
-```javascript
-var kafka = require('kafka-node'),
-    Consumer = kafka.Consumer,
-    client = new kafka.Client('${YOUR_HOST}:2181'),
-    consumer = new Consumer(
-        client,
-        [
-            { topic: 'open', partition: 0 }
-        ],
-        {
-            autoCommit: true
-        }
-    );
+&lt;span class=&quot;nx&quot;&gt;consumer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;on&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'message'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;message&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;nx&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;message&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;
 
-consumer.on('message', function (message) {
-    console.log(message);
-});
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
 
-```
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
 
-&amp;lt;/br&amp;gt;
+&lt;p&gt;這裡我有踩到一個雷，由於我是把Kafka放在EC2上，然後EC2綁了一個elastic IP，但我的consumer並不是放在EC2上，而是放在某個local VM裡面，在連接的時候，一直遇到下面的error message，解決方式很簡單，只要在你的&lt;code class=&quot;highlighter-rouge&quot;&gt;/etc/hosts&lt;/code&gt;裡面增加一筆mapping就好了。&lt;/p&gt;
 
-這裡我有踩到一個雷，由於我是把Kafka放在EC2上，然後EC2綁了一個elastic IP，但我的consumer並不是放在EC2上，而是放在某個local VM裡面，在連接的時候，一直遇到下面的error message，解決方式很簡單，只要在你的`/etc/hosts`裡面增加一筆mapping就好了。
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Error: getaddrinfo ENOTFOUND ip-xxx-xxx-xxx-xxx ip-xxx-xxx-xxx-xxx:9092
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
 
-```
-Error: getaddrinfo ENOTFOUND ip-xxx-xxx-xxx-xxx ip-xxx-xxx-xxx-xxx:9092
-```
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
 
-&amp;lt;/br&amp;gt;
+&lt;hr /&gt;
+&lt;h3 id=&quot;5-testing&quot;&gt;5. Testing&lt;/h3&gt;
+&lt;hr /&gt;
 
----
-### 5. Testing
----
+&lt;p&gt;先在放置consumer.js的機器上執行它，&lt;/p&gt;
 
-先在放置consumer.js的機器上執行它，
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$ &lt;/span&gt;node consumer.js
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
 
-```bash
-$ node consumer.js
-```
+&lt;p&gt;接下來就執行producer.js，由於上面第三步驟有提到，在send完以後會把close client，所以執行完producer以後，這隻js就會被關閉。可以一直不斷執行這隻檔案，你會在consumer那台機器上不斷看到訊息傳遞過來。&lt;/p&gt;
 
-接下來就執行producer.js，由於上面第三步驟有提到，在send完以後會把close client，所以執行完producer以後，這隻js就會被關閉。可以一直不斷執行這隻檔案，你會在consumer那台機器上不斷看到訊息傳遞過來。
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$ &lt;/span&gt;node producer.js
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
 
-```bash
-$ node producer.js
-```
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
 
-&amp;lt;/br&amp;gt;
+&lt;hr /&gt;
+&lt;h3 id=&quot;6-advance&quot;&gt;6. Advance&lt;/h3&gt;
+&lt;hr /&gt;
 
----
-### 6. Advance
----
+&lt;p&gt;kafka server在連zookeeper時，default的IP and Port是存在&lt;code class=&quot;highlighter-rouge&quot;&gt;config/server.properties&lt;/code&gt;裡面的&lt;code class=&quot;highlighter-rouge&quot;&gt;zookeeper.connect&lt;/code&gt;。
+&lt;br /&gt;
+&lt;br /&gt;
+由於我的EC2 ram很小，所以在launch Kafka時，一直發生OOM，解決方式是去&lt;code class=&quot;highlighter-rouge&quot;&gt;bin/kafka-server-start.sh&lt;/code&gt;改&lt;code class=&quot;highlighter-rouge&quot;&gt;KAFKA_HEAP_OPTS&lt;/code&gt;，&lt;/p&gt;
 
-kafka server在連zookeeper時，default的IP and Port是存在`config/server.properties`裡面的`zookeeper.connect`。
-&amp;lt;/br&amp;gt;
-&amp;lt;/br&amp;gt;
-由於我的EC2 ram很小，所以在launch Kafka時，一直發生OOM，解決方式是去`bin/kafka-server-start.sh`改`KAFKA_HEAP_OPTS`，
-
-```
-if [ &quot;x$KAFKA_HEAP_OPTS&quot; = &quot;x&quot; ]; then
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;if [ &quot;x$KAFKA_HEAP_OPTS&quot; = &quot;x&quot; ]; then
     export KAFKA_HEAP_OPTS=&quot;-Xmx500M -Xms500M&quot;
 fi
-```
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
 
-
-
-
-
-
-&lt;/font&gt;
 </description>
                 <link>http://blog.kenyang.net/2017/02/07/getting-started-with-kafka-in-nodejs</link>
                 <guid>http://blog.kenyang.net/2017/02/07/getting-started-with-kafka-in-nodejs</guid>
@@ -953,144 +1090,143 @@ fi
         <item>
                 <title>Remotely open door using Raspberry Pi</title>
                 <description>
-&lt;font size=&quot;3&quot;&gt;
+&lt;p&gt;由於上一篇寫了一個Telegram Bot，最近就在幫它加feature，&lt;/p&gt;
 
-由於上一篇寫了一個Telegram Bot，最近就在幫它加feature，
+&lt;ol&gt;
+  &lt;li&gt;出build時會通知&lt;/li&gt;
+  &lt;li&gt;開會時會通知&lt;/li&gt;
+  &lt;li&gt;11:30提醒要吃飯了&lt;/li&gt;
+&lt;/ol&gt;
 
-1. 出build時會通知
-2. 開會時會通知
-3. 11:30提醒要吃飯了
+&lt;p&gt;總覺得少了點什麼，於是就想說來做個機器人自動開門。&lt;br /&gt;
+在開始之前，先準備以下材料：&lt;/p&gt;
 
-總覺得少了點什麼，於是就想說來做個機器人自動開門。&amp;lt;/br&amp;gt;
-在開始之前，先準備以下材料：
+&lt;ol&gt;
+  &lt;li&gt;Raspberry Pi 3: 1台&lt;/li&gt;
+  &lt;li&gt;杜邦線: 至少4條&lt;/li&gt;
+  &lt;li&gt;麵包板: 1塊&lt;/li&gt;
+  &lt;li&gt;漆包線: 可有可無&lt;/li&gt;
+  &lt;li&gt;一顆勇敢的心（因為你可能用壞，導致整個公司的人被反鎖）&lt;/li&gt;
+&lt;/ol&gt;
 
-1. Raspberry Pi 3: 1台
-2. 杜邦線: 至少4條
-3. 麵包板: 1塊
-3. 漆包線: 可有可無
-4. 一顆勇敢的心（因為你可能用壞，導致整個公司的人被反鎖）
+&lt;p&gt;下圖為完成品，&lt;/p&gt;
 
-下圖為完成品，
+&lt;p&gt;&lt;img src=&quot;http://localhost:4000/assets/2016-09-14-finish.jpg&quot; alt=&quot;Ticket&quot; /&gt;&lt;/p&gt;
 
-![Ticket](http://localhost:4000/assets/2016-09-14-finish.jpg)
-
-
-&amp;lt;/br&amp;gt;
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
 
 &lt;!--more--&gt;
 
----
-### 1. 拆開電源座
----
+&lt;hr /&gt;
+&lt;h3 id=&quot;1-拆開電源座&quot;&gt;1. 拆開電源座&lt;/h3&gt;
+&lt;hr /&gt;
 
-大部分的公司，門旁邊應該都有一個開關，不管是感應式的或者是按鈕式的也好，只要一trigger，門就會打開。&amp;lt;/br&amp;gt;
-也就是說開關一定接著門的trigger，所以我們要做man in the middle hack...LOL...&amp;lt;/br&amp;gt;
-所以首先要把電源拆掉，然後拿出來（如下圖），
+&lt;p&gt;大部分的公司，門旁邊應該都有一個開關，不管是感應式的或者是按鈕式的也好，只要一trigger，門就會打開。&lt;br /&gt;
+也就是說開關一定接著門的trigger，所以我們要做man in the middle hack…LOL…&lt;br /&gt;
+所以首先要把電源拆掉，然後拿出來（如下圖），&lt;/p&gt;
 
-![Ticket](http://localhost:4000/assets/2016-09-14-1.jpg)
+&lt;p&gt;&lt;img src=&quot;http://localhost:4000/assets/2016-09-14-1.jpg&quot; alt=&quot;Ticket&quot; /&gt;&lt;/p&gt;
 
-拿出來以後會看到有二條線接在電源開關上，分別為一紅一黑，把這二條線從開關中拔出來，&amp;lt;/br&amp;gt;
-然後你要先找出你的正極跟負極分別為哪一條，我的黑色是正，紅色是負。
+&lt;p&gt;拿出來以後會看到有二條線接在電源開關上，分別為一紅一黑，把這二條線從開關中拔出來，&lt;br /&gt;
+然後你要先找出你的正極跟負極分別為哪一條，我的黑色是正，紅色是負。&lt;/p&gt;
 
-&amp;lt;/br&amp;gt;
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
 
----
-### 2. 接線 （backward compatible）
----
+&lt;hr /&gt;
+&lt;h3 id=&quot;2-接線-backward-compatible&quot;&gt;2. 接線 （backward compatible）&lt;/h3&gt;
+&lt;hr /&gt;
 
-為了讓原本的開關也可以正常work，所以我們必須把上面拆出來的電源線接在麵包板上，然後在接另外2條杜邦線，&amp;lt;/br&amp;gt;
-一頭接在開關上面，另一頭接在麵包板上面，如下圖。
+&lt;p&gt;為了讓原本的開關也可以正常work，所以我們必須把上面拆出來的電源線接在麵包板上，然後在接另外2條杜邦線，&lt;br /&gt;
+一頭接在開關上面，另一頭接在麵包板上面，如下圖。&lt;/p&gt;
 
-![Ticket](http://localhost:4000/assets/2016-09-14-3.png)
+&lt;p&gt;&lt;img src=&quot;http://localhost:4000/assets/2016-09-14-3.png&quot; alt=&quot;Ticket&quot; /&gt;&lt;/p&gt;
 
-&amp;lt;/br&amp;gt;
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
 
----
-### 3. 接上Raspberry Pi 3
----
+&lt;hr /&gt;
+&lt;h3 id=&quot;3-接上raspberry-pi-3&quot;&gt;3. 接上Raspberry Pi 3&lt;/h3&gt;
+&lt;hr /&gt;
 
-接著要再接上2條杜邦線，一頭接在Pi上的GPIO，另一頭一樣接在麵包板上，&amp;lt;/br&amp;gt;
-如果不知道接在哪個Pin腳，可以[Google一下Raspberry Pi 3的GPIO圖](https://www.google.com.tw/search?q=raspberry+3+gpio&amp;amp;source=lnms&amp;amp;tbm=isch&amp;amp;sa=X&amp;amp;ved=0ahUKEwiJl-jJ3o7PAhXEj5QKHdpyC3QQ_AUICCgB&amp;amp;biw=1920&amp;amp;bih=916)，&amp;lt;/br&amp;gt;
-我自己是接在Pin 7 and 6上面，正極在7，負極在6，如下圖。然後分別把它接在對應的麵包板位置上。
+&lt;p&gt;接著要再接上2條杜邦線，一頭接在Pi上的GPIO，另一頭一樣接在麵包板上，&lt;br /&gt;
+如果不知道接在哪個Pin腳，可以&lt;a href=&quot;https://www.google.com.tw/search?q=raspberry+3+gpio&amp;amp;source=lnms&amp;amp;tbm=isch&amp;amp;sa=X&amp;amp;ved=0ahUKEwiJl-jJ3o7PAhXEj5QKHdpyC3QQ_AUICCgB&amp;amp;biw=1920&amp;amp;bih=916&quot;&gt;Google一下Raspberry Pi 3的GPIO圖&lt;/a&gt;，&lt;br /&gt;
+我自己是接在Pin 7 and 6上面，正極在7，負極在6，如下圖。然後分別把它接在對應的麵包板位置上。&lt;/p&gt;
 
-![Ticket](http://localhost:4000/assets/2016-09-14-4.jpg)
+&lt;p&gt;&lt;img src=&quot;http://localhost:4000/assets/2016-09-14-4.jpg&quot; alt=&quot;Ticket&quot; /&gt;&lt;/p&gt;
 
-&amp;lt;/br&amp;gt;
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
 
----
-### 4. 寫Code
----
+&lt;hr /&gt;
+&lt;h3 id=&quot;4-寫code&quot;&gt;4. 寫Code&lt;/h3&gt;
+&lt;hr /&gt;
 
-最後就要來寫code，我這裡是使用NodeJS加上Python，因為用NodeJS setup web server很快速簡單，&amp;lt;/br&amp;gt;
-然後用python控制GPIO也很簡單，所以就用這二種組合。&amp;lt;/br&amp;gt;
-首先先寫Python來透過GPIO來開門，由於現在的Raspbian預設就有Rpi.GPIO，所以你可以直接使用。
+&lt;p&gt;最後就要來寫code，我這裡是使用NodeJS加上Python，因為用NodeJS setup web server很快速簡單，&lt;br /&gt;
+然後用python控制GPIO也很簡單，所以就用這二種組合。&lt;br /&gt;
+首先先寫Python來透過GPIO來開門，由於現在的Raspbian預設就有Rpi.GPIO，所以你可以直接使用。&lt;/p&gt;
 
-```python
-import RPi.GPIO as GPIO
-import time
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;RPi.GPIO&lt;/span&gt; &lt;span class=&quot;kn&quot;&gt;as&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;GPIO&lt;/span&gt;
+&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;time&lt;/span&gt;
 
-GPIO.setmode(GPIO.BOARD)
-GPIO.setup(7, GPIO.OUT)
+&lt;span class=&quot;n&quot;&gt;GPIO&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;setmode&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;GPIO&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;BOARD&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;GPIO&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;setup&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;7&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;GPIO&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;OUT&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
 
-GPIO.output(7, GPIO.LOW)
-time.sleep(0.5)
-GPIO.output(7, GPIO.HIGH)
+&lt;span class=&quot;n&quot;&gt;GPIO&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;output&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;7&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;GPIO&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;LOW&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;time&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sleep&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mf&quot;&gt;0.5&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;GPIO&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;output&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;7&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;GPIO&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;HIGH&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
 
-GPIO.cleanup()
-```
+&lt;span class=&quot;n&quot;&gt;GPIO&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cleanup&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
 
-&amp;lt;/br&amp;gt;
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
 
-接著就來用NodeJS來建立Web Server，詳細的步驟就[參考上一篇](http://blog.kenyang.net/2016/09/06/how-to-create-a-telegram-bot)，&amp;lt;/br&amp;gt;
-如果建立完Web Server以後，我們得加裝另一個module，因為我們要call python script，
+&lt;p&gt;接著就來用NodeJS來建立Web Server，詳細的步驟就&lt;a href=&quot;http://blog.kenyang.net/2016/09/06/how-to-create-a-telegram-bot&quot;&gt;參考上一篇&lt;/a&gt;，&lt;br /&gt;
+如果建立完Web Server以後，我們得加裝另一個module，因為我們要call python script，&lt;/p&gt;
 
-```bash
-npm install --save python-shell
-```
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;npm install --save python-shell
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
 
-&amp;lt;/br&amp;gt;
-接著就可以在index.js裡面加入下面的code，
+&lt;p&gt;&lt;br /&gt;
+接著就可以在index.js裡面加入下面的code，&lt;/p&gt;
 
-```javascript
-const https     = require(&quot;https&quot;);
-const express   = require(&quot;express&quot;);
-const bodyParser    = require('body-parser');
-const logger        = require('morgan');
-const fs            = require('fs');
-const request     = require('request');
-const logStream     = fs.createWriteStream('/var/log/bot/access.log', {flags: 'a'});
-var PythonShell = require('python-shell');
+&lt;div class=&quot;language-javascript highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kr&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;https&lt;/span&gt;     &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;require&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;https&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;kr&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;express&lt;/span&gt;   &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;require&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;express&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;kr&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;bodyParser&lt;/span&gt;    &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;require&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'body-parser'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;kr&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;logger&lt;/span&gt;        &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;require&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'morgan'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;kr&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;fs&lt;/span&gt;            &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;require&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'fs'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;kr&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;request&lt;/span&gt;     &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;require&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'request'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;kr&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;logStream&lt;/span&gt;     &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;fs&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;createWriteStream&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'/var/log/bot/access.log'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;flags&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'a'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;
+&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;PythonShell&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;require&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'python-shell'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
 
-.... ignore ....
+&lt;span class=&quot;p&quot;&gt;....&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;ignore&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;....&lt;/span&gt;
 
-if (cmd == '/open') {
-    PythonShell.run('open.py', {}, function (err, results) {
-        if (err) {
-	        console.log(err);
-	     }
-	 });
-}
-```
+&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;cmd&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'/open'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;nx&quot;&gt;PythonShell&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;run&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'open.py'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{},&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;err&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;results&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;err&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+	        &lt;span class=&quot;nx&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;err&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+	     &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+	 &lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
 
-&amp;lt;/br&amp;gt;
-然後記得restart。
+&lt;p&gt;&lt;br /&gt;
+然後記得restart。&lt;/p&gt;
 
-```bash
-pm2 restart index
-```
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;pm2 restart index
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
 
-&amp;lt;/br&amp;gt;
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
 
----
-### 5. Test
----
+&lt;hr /&gt;
+&lt;h3 id=&quot;5-test&quot;&gt;5. Test&lt;/h3&gt;
+&lt;hr /&gt;
 
-完成上面的步驟以後，你就可以跟你的機器人講`/open`，他就會幫你開門了！
+&lt;p&gt;完成上面的步驟以後，你就可以跟你的機器人講&lt;code class=&quot;highlighter-rouge&quot;&gt;/open&lt;/code&gt;，他就會幫你開門了！&lt;/p&gt;
 
-![Ticket](http://localhost:4000/assets/2016-09-14-5.jpg)
+&lt;p&gt;&lt;img src=&quot;http://localhost:4000/assets/2016-09-14-5.jpg&quot; alt=&quot;Ticket&quot; /&gt;&lt;/p&gt;
 
-
-&lt;/font&gt;
 </description>
                 <link>http://blog.kenyang.net/2016/09/14/remotely-open-door-using-raspberry-pi</link>
                 <guid>http://blog.kenyang.net/2016/09/14/remotely-open-door-using-raspberry-pi</guid>
@@ -1100,203 +1236,197 @@ pm2 restart index
         <item>
                 <title>How to create a Telegram Bot</title>
                 <description>
-&lt;font size=&quot;3&quot;&gt;
+&lt;p&gt;今天看到一個朋友寫了FacebookBot，還整了AWS Lambda、斷詞API，突然感到很興奮，&lt;br /&gt;
+但我沒打算花太多時間在Bot上，只打算做一個簡單的資訊查詢的bot，&lt;br /&gt;
+所以選擇了&lt;a href=&quot;https://core.telegram.org/bots/api&quot;&gt;Telegram Bot&lt;/a&gt;，原因是我們公司內部使用Telegram來溝通，&lt;br /&gt;
+所以就想做一個Bot讓公司的同事查詢一些公司資訊（ex: wifi, 統編）。&lt;/p&gt;
 
-今天看到一個朋友寫了FacebookBot，還整了AWS Lambda、斷詞API，突然感到很興奮，&amp;lt;/br&amp;gt;
-但我沒打算花太多時間在Bot上，只打算做一個簡單的資訊查詢的bot，&amp;lt;/br&amp;gt;
-所以選擇了[Telegram Bot](https://core.telegram.org/bots/api)，原因是我們公司內部使用Telegram來溝通，&amp;lt;/br&amp;gt;
-所以就想做一個Bot讓公司的同事查詢一些公司資訊（ex: wifi, 統編）。
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
 
+&lt;hr /&gt;
+&lt;h3 id=&quot;1-add-botfather-as-friend&quot;&gt;1. Add BotFather as friend&lt;/h3&gt;
+&lt;hr /&gt;
 
-&amp;lt;/br&amp;gt;
+&lt;p&gt;首先我們要使用telegram加&lt;code class=&quot;highlighter-rouge&quot;&gt;BotFather&lt;/code&gt;這個user，透過&lt;code class=&quot;highlighter-rouge&quot;&gt;BotFather&lt;/code&gt;去create bot。&lt;/p&gt;
 
----
-### 1. Add BotFather as friend
----
+&lt;p&gt;&lt;img src=&quot;http://localhost:4000/assets/2016-09-06-add-bot-father.png&quot; alt=&quot;Ticket&quot; /&gt;&lt;/p&gt;
 
-首先我們要使用telegram加`BotFather`這個user，透過`BotFather`去create bot。
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
 
-![Ticket](http://localhost:4000/assets/2016-09-06-add-bot-father.png)
+&lt;hr /&gt;
+&lt;h3 id=&quot;2-create-a-bot&quot;&gt;2. Create a bot&lt;/h3&gt;
+&lt;hr /&gt;
 
+&lt;p&gt;成功加入&lt;code class=&quot;highlighter-rouge&quot;&gt;BotFather&lt;/code&gt;以後，就可以透過指令&lt;code class=&quot;highlighter-rouge&quot;&gt;/newbot&lt;/code&gt;去create bot，&lt;br /&gt;
+整個過程會以對話的方式進行（如下圖），會先問你的bot名稱要叫什麼以及它的username（類似ID，用來被search），&lt;br /&gt;&lt;/p&gt;
 
-&amp;lt;/br&amp;gt;
+&lt;p&gt;&lt;img src=&quot;http://localhost:4000/assets/2016-09-06-create-bot.png&quot; alt=&quot;Ticket&quot; /&gt;&lt;/p&gt;
 
----
-### 2. Create a bot
----
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
 
-成功加入`BotFather`以後，就可以透過指令`/newbot`去create bot，&amp;lt;/br&amp;gt;
-整個過程會以對話的方式進行（如下圖），會先問你的bot名稱要叫什麼以及它的username（類似ID，用來被search），&amp;lt;/br&amp;gt;
+&lt;p&gt;建立成功以後，BotFather就會跟你說的你的bot token，這token很重要，是之後要用來request API用的。&lt;/p&gt;
 
-![Ticket](http://localhost:4000/assets/2016-09-06-create-bot.png)
-
-&amp;lt;/br&amp;gt;
-
-建立成功以後，BotFather就會跟你說的你的bot token，這token很重要，是之後要用來request API用的。
-
-```
-Use this token to access the HTTP API:
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Use this token to access the HTTP API:
 2X2X2XXX0:XXXXXXXXXXXXXXXXXXXXXXX
-```
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
 
-&amp;lt;/br&amp;gt;
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
 
 &lt;!--more--&gt;
 
+&lt;hr /&gt;
+&lt;h3 id=&quot;3-sendreceive-message-from-bot&quot;&gt;3. Send/Receive message from bot&lt;/h3&gt;
+&lt;hr /&gt;
 
----
-### 3. Send/Receive message from bot
----
-
-Telegram在receive訊息有二種方式，一種是透過RESTful API去要，但是被動的方式，得透過long-pulling的方式去拿，&amp;lt;/br&amp;gt;
-另外一種就是透過web hook，是主動的方式，有任何訊息給bot，Telegram會主動的去打我們的Server，&amp;lt;/br&amp;gt;
-這裡的案例是使用webhook，而在send and receive訊息之前，&amp;lt;/br&amp;gt;
-我們必須先建立一個**HTTPS** server，Telegram規定一定必須為HTTPS，&amp;lt;/br&amp;gt;
-不過是允許用self-signed的，但前提是你得把public key上傳至telegram，&amp;lt;/br&amp;gt;
+&lt;p&gt;Telegram在receive訊息有二種方式，一種是透過RESTful API去要，但是被動的方式，得透過long-pulling的方式去拿，&lt;br /&gt;
+另外一種就是透過web hook，是主動的方式，有任何訊息給bot，Telegram會主動的去打我們的Server，&lt;br /&gt;
+這裡的案例是使用webhook，而在send and receive訊息之前，&lt;br /&gt;
+我們必須先建立一個&lt;strong&gt;HTTPS&lt;/strong&gt; server，Telegram規定一定必須為HTTPS，&lt;br /&gt;
+不過是允許用self-signed的，但前提是你得把public key上傳至telegram，&lt;br /&gt;
 稍後都會說明如何上傳。
-這裡我選擇在ubuntu上，使用Node.js來建立HTTPS server，下面的步驟分為三個部分：&amp;lt;/br&amp;gt;
+這裡我選擇在ubuntu上，使用Node.js來建立HTTPS server，下面的步驟分為三個部分：&lt;br /&gt;&lt;/p&gt;
 
-1. Install Node.js
-2. Create web project
-3. Generate SSL certificate
+&lt;ol&gt;
+  &lt;li&gt;Install Node.js&lt;/li&gt;
+  &lt;li&gt;Create web project&lt;/li&gt;
+  &lt;li&gt;Generate SSL certificate&lt;/li&gt;
+&lt;/ol&gt;
 
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;# Install Node.js&lt;/span&gt;
+&lt;span class=&quot;gp&quot;&gt;$ &lt;/span&gt;wget https://nodejs.org/dist/v4.4.7/node-v4.4.7-linux-x64.tar.gz
+&lt;span class=&quot;gp&quot;&gt;$ &lt;/span&gt;tar -xvzf node-v4.4.7-linux-x64.tar.gz
+&lt;span class=&quot;gp&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;export &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;PATH&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;/home/ubuntu/node-v4.4.7-linux-x64/bin:&lt;span class=&quot;nv&quot;&gt;$PATH&lt;/span&gt;
 
-```bash
-# Install Node.js
-$ wget https://nodejs.org/dist/v4.4.7/node-v4.4.7-linux-x64.tar.gz
-$ tar -xvzf node-v4.4.7-linux-x64.tar.gz
-$ export PATH=/home/ubuntu/node-v4.4.7-linux-x64/bin:$PATH
+&lt;span class=&quot;c&quot;&gt;# Create bot web project&lt;/span&gt;
+&lt;span class=&quot;gp&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cd&lt;/span&gt; ~/
+&lt;span class=&quot;gp&quot;&gt;$ &lt;/span&gt;mkdir bot/
+&lt;span class=&quot;gp&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cd &lt;/span&gt;bot
+&lt;span class=&quot;gp&quot;&gt;$ &lt;/span&gt;npm init
+&lt;span class=&quot;gp&quot;&gt;$ &lt;/span&gt;npm install --save express
+&lt;span class=&quot;gp&quot;&gt;$ &lt;/span&gt;npm install --save body-parser
+&lt;span class=&quot;gp&quot;&gt;$ &lt;/span&gt;npm install --save request
+&lt;span class=&quot;gp&quot;&gt;$ &lt;/span&gt;npm install --save morgan
+&lt;span class=&quot;gp&quot;&gt;$ &lt;/span&gt;npm install -g pm2
+&lt;span class=&quot;gp&quot;&gt;$ &lt;/span&gt;mkdir ssl
+&lt;span class=&quot;gp&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cd &lt;/span&gt;ssl
 
-# Create bot web project
-$ cd ~/
-$ mkdir bot/
-$ cd bot
-$ npm init
-$ npm install --save express
-$ npm install --save body-parser
-$ npm install --save request
-$ npm install --save morgan
-$ npm install -g pm2
-$ mkdir ssl
-$ cd ssl
+&lt;span class=&quot;c&quot;&gt;# Generate SSL certificate&lt;/span&gt;
+&lt;span class=&quot;gp&quot;&gt;$ &lt;/span&gt;openssl req -newkey rsa:2048 -sha256 -nodes -keyout server.key -x509 -days 3650 -out server.pem -subj &lt;span class=&quot;s2&quot;&gt;&quot;/C=TW/ST=Taipei/L=Taipei/O=None/CN=bot.kenyang.net&quot;&lt;/span&gt;
+&lt;span class=&quot;gp&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cd&lt;/span&gt; ../
+&lt;span class=&quot;gp&quot;&gt;$ &lt;/span&gt;mkdir -p /var/log/bot/
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
 
-# Generate SSL certificate
-$ openssl req -newkey rsa:2048 -sha256 -nodes -keyout server.key -x509 -days 3650 -out server.pem -subj &quot;/C=TW/ST=Taipei/L=Taipei/O=None/CN=bot.kenyang.net&quot;
-$ cd ../
-$ mkdir -p /var/log/bot/
-```
+&lt;p&gt;&lt;br /&gt;
+接著來寫我們的主程式&lt;code class=&quot;highlighter-rouge&quot;&gt;index.js&lt;/code&gt;，記得把下面的&lt;code class=&quot;highlighter-rouge&quot;&gt;YOUR_TOKEN&lt;/code&gt;換成你自己的token，&lt;/p&gt;
 
-&amp;lt;/br&amp;gt;
-接著來寫我們的主程式`index.js`，記得把下面的`YOUR_TOKEN`換成你自己的token，
+&lt;div class=&quot;language-javascript highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kr&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;https&lt;/span&gt;     &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;require&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;https&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;kr&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;express&lt;/span&gt;   &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;require&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;express&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;kr&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;bodyParser&lt;/span&gt;    &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;require&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'body-parser'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;kr&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;logger&lt;/span&gt;        &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;require&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'morgan'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;kr&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;fs&lt;/span&gt;            &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;require&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'fs'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;kr&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;request&lt;/span&gt;     &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;require&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'request'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;kr&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;logStream&lt;/span&gt;     &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;fs&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;createWriteStream&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'/var/log/bot/access.log'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;flags&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'a'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;
 
-```javascript
-const https     = require(&quot;https&quot;);
-const express   = require(&quot;express&quot;);
-const bodyParser    = require('body-parser');
-const logger        = require('morgan');
-const fs            = require('fs');
-const request     = require('request');
-const logStream     = fs.createWriteStream('/var/log/bot/access.log', {flags: 'a'});
+&lt;span class=&quot;kr&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;SERVER_CONFIG&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;key&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;  &lt;span class=&quot;nx&quot;&gt;fs&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;readFileSync&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'./ssl/server.key'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;cert&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;fs&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;readFileSync&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'./ssl/server.pem'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;
 
-const SERVER_CONFIG = {
-    key:  fs.readFileSync('./ssl/server.key'),
-    cert: fs.readFileSync('./ssl/server.pem')
-};
+&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;app&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;express&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
 
-var app = express();
+&lt;span class=&quot;nx&quot;&gt;app&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;use&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;logger&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'combined'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;stream&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;logStream&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}));&lt;/span&gt;
+&lt;span class=&quot;nx&quot;&gt;app&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;use&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;logger&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'dev'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;));&lt;/span&gt;
+&lt;span class=&quot;nx&quot;&gt;app&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;use&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;bodyParser&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;json&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;());&lt;/span&gt;
 
-app.use(logger('combined', {stream: logStream}));
-app.use(logger('dev'));
-app.use(bodyParser.json());
+&lt;span class=&quot;nx&quot;&gt;app&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;post&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'/receive'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;req&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;resp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;nx&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;req&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;body&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;body&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;req&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;body&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;!&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;body&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;nx&quot;&gt;resp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;status&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;200&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;json&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;({&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;STATUS&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;No body&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
 
-app.post('/receive', function(req,resp) {
-    console.log(req.body);
-    var body = req.body;
-    if (!body) {
-        resp.status(200).json({&quot;STATUS&quot;:&quot;No body&quot;});
-        return;
-    }
+    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;!&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;body&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;message&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;nx&quot;&gt;resp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;status&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;200&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;json&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;({&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;STATUS&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;No message&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
 
-    if (!body.message) {
-        resp.status(200).json({&quot;STATUS&quot;:&quot;No message&quot;});
-        return;
-    }
-
-    var chatId = body.message.chat.id;
-    var cmd    = body.message.text;
-    cmd = cmd.toLowerCase();
+    &lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;chatId&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;body&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;message&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;chat&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;cmd&lt;/span&gt;    &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;body&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;message&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;text&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;nx&quot;&gt;cmd&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;cmd&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;toLowerCase&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
     
-    // 記得把YOUR_TOKEN換成你自己的
-    var options = {
-        url: 'https://api.telegram.org/botYOUR_TOKEN/sendMessage',
-        form : {
-            chat_id: chatId
-        }
-    };
+    &lt;span class=&quot;c1&quot;&gt;// 記得把YOUR_TOKEN換成你自己的&lt;/span&gt;
+    &lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;options&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;na&quot;&gt;url&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'https://api.telegram.org/botYOUR_TOKEN/sendMessage'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;na&quot;&gt;form&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+            &lt;span class=&quot;na&quot;&gt;chat_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;chatId&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;
 
-    if (cmd == '/wifi') {
-        options.form.text =  'Your Wi-Fi password is : !@#!$%^&amp;amp;*&amp;amp;$#';
-    } else if (cmd == '/address' || cmd == '/addr' || cmd == '/office') {
-        options.form.text =  '台北市信義區松X路XXX號XX樓';
-    } else if (cmd == '/統編') {
-        options.form.text =  'xxxxxxxxx';
-    } else if (cmd == '/ken') {
-        options.form.text =  'Ken is an engineer.';
-    } else {
-        options.form.text =  'I don\'t know what you are talking...';
-    }
+    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;cmd&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'/wifi'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;nx&quot;&gt;options&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;form&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;text&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;  &lt;span class=&quot;s1&quot;&gt;'Your Wi-Fi password is : !@#!$%^&amp;amp;*&amp;amp;$#'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;cmd&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'/address'&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;cmd&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'/addr'&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;cmd&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'/office'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;nx&quot;&gt;options&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;form&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;text&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;  &lt;span class=&quot;s1&quot;&gt;'台北市信義區松X路XXX號XX樓'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;cmd&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'/統編'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;nx&quot;&gt;options&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;form&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;text&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;  &lt;span class=&quot;s1&quot;&gt;'xxxxxxxxx'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;cmd&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'/ken'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;nx&quot;&gt;options&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;form&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;text&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;  &lt;span class=&quot;s1&quot;&gt;'Ken is an engineer.'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;nx&quot;&gt;options&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;form&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;text&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;  &lt;span class=&quot;s1&quot;&gt;'I don\'t know what you are talking...'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
 
-    request.post(options, function(err,httpResponse,body){
-        if (err) {
-            console.log('err' + err);
-            resp.status(200).json({&quot;STATUS&quot;:&quot;FAIL&quot;});
-            return;
-        }
-        console.log(body);
-        resp.status(200).json({&quot;STATUS&quot;:&quot;OK&quot;});
-    });
+    &lt;span class=&quot;nx&quot;&gt;request&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;post&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;options&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;err&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;httpResponse&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;body&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;){&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;err&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+            &lt;span class=&quot;nx&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'err'&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;err&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+            &lt;span class=&quot;nx&quot;&gt;resp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;status&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;200&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;json&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;({&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;STATUS&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;FAIL&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;
+            &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+        &lt;span class=&quot;nx&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;body&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+        &lt;span class=&quot;nx&quot;&gt;resp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;status&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;200&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;json&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;({&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;STATUS&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;OK&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;
 
-});
+&lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;
 
-https.createServer(SERVER_CONFIG, app)
-     .listen(443,function() { console.log(&quot;HTTPS sever started&quot;); }
-);
+&lt;span class=&quot;nx&quot;&gt;https&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;createServer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;SERVER_CONFIG&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;app&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+     &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;listen&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;443&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;HTTPS sever started&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
 
-```
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
 
-&amp;lt;/br&amp;gt;
-完成以後就用pm2把它run起來，
+&lt;p&gt;&lt;br /&gt;
+完成以後就用pm2把它run起來，&lt;/p&gt;
 
-```
-$ pm2 start index.js
-```
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ pm2 start index.js
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
 
-&amp;lt;/br&amp;gt;
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
 
----
-### 4. Set webhook
----
+&lt;hr /&gt;
+&lt;h3 id=&quot;4-set-webhook&quot;&gt;4. Set webhook&lt;/h3&gt;
+&lt;hr /&gt;
 
-接著我們得向Telegram註冊剛剛建立的API，讓bot收到訊息時，Telegram會主動通知我們，&amp;lt;/br&amp;gt;
-我們透過curl去註冊，同時會把剛剛create的certificate上傳上去Telegram，&amp;lt;/br&amp;gt;
-記得把下面參數換成你自己的。
+&lt;p&gt;接著我們得向Telegram註冊剛剛建立的API，讓bot收到訊息時，Telegram會主動通知我們，&lt;br /&gt;
+我們透過curl去註冊，同時會把剛剛create的certificate上傳上去Telegram，&lt;br /&gt;
+記得把下面參數換成你自己的。&lt;/p&gt;
 
-```
-$ curl -i -X POST -H &quot;Content-Type: multipart/form-data&quot; -F &quot;certificate=@server.pem&quot; -F &quot;url=https://YOUR_DOMAIN/receive&quot; https://api.telegram.org/botYOUR_TOKEN/setWebhook
-```
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ curl -i -X POST -H &quot;Content-Type: multipart/form-data&quot; -F &quot;certificate=@server.pem&quot; -F &quot;url=https://YOUR_DOMAIN/receive&quot; https://api.telegram.org/botYOUR_TOKEN/setWebhook
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
 
-&amp;lt;/br&amp;gt;
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
 
----
-### 5. Test
----
+&lt;hr /&gt;
+&lt;h3 id=&quot;5-test&quot;&gt;5. Test&lt;/h3&gt;
+&lt;hr /&gt;
 
-Set webhook成功以後，就可以跟你的bot進行互動測試了。
+&lt;p&gt;Set webhook成功以後，就可以跟你的bot進行互動測試了。&lt;/p&gt;
 
-![Ticket](http://localhost:4000/assets/2016-09-06-test.png)
+&lt;p&gt;&lt;img src=&quot;http://localhost:4000/assets/2016-09-06-test.png&quot; alt=&quot;Ticket&quot; /&gt;&lt;/p&gt;
 
-
-&lt;/font&gt;
 </description>
                 <link>http://blog.kenyang.net/2016/09/06/how-to-create-a-telegram-bot</link>
                 <guid>http://blog.kenyang.net/2016/09/06/how-to-create-a-telegram-bot</guid>
@@ -1306,154 +1436,170 @@ Set webhook成功以後，就可以跟你的bot進行互動測試了。
         <item>
                 <title>Android: App bar/Tool bar</title>
                 <description>
-&lt;font size=&quot;3&quot;&gt;
+&lt;p&gt;大概一年多沒有寫Android了，最近發現好多不一樣了，&lt;br /&gt;
+譬如說ActionBar變成AppBar..不過以前的ActionBar還能繼續用，&lt;br /&gt;
+但還是得學一下怎麼用App bar跟上潮流。&lt;/p&gt;
 
-大概一年多沒有寫Android了，最近發現好多不一樣了，&amp;lt;/br&amp;gt;
-譬如說ActionBar變成AppBar..不過以前的ActionBar還能繼續用，&amp;lt;/br&amp;gt;
-但還是得學一下怎麼用App bar跟上潮流。
+&lt;p&gt;[Example Code on Github] (https://github.com/Ken-Yang/AndroidAppBar)&lt;/p&gt;
 
-[Example Code on Github] (https://github.com/Ken-Yang/AndroidAppBar)
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
 
+&lt;hr /&gt;
+&lt;h3 id=&quot;1-create-new-project&quot;&gt;1. Create new project&lt;/h3&gt;
+&lt;hr /&gt;
 
-&amp;lt;/br&amp;gt;
+&lt;p&gt;首先先建立一個新的project，然後選擇Empty activity。&lt;/p&gt;
 
----
-### 1. Create new project
----
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
 
-首先先建立一個新的project，然後選擇Empty activity。
+&lt;hr /&gt;
+&lt;h3 id=&quot;2-add-dependency&quot;&gt;2. Add dependency&lt;/h3&gt;
+&lt;hr /&gt;
 
-&amp;lt;/br&amp;gt;
+&lt;p&gt;接著打開build.gradle，把appcompat加入dependency，&lt;br /&gt;
+不過如果你的Android Studio是新版的，就會自動幫你加入了。&lt;/p&gt;
 
----
-### 2. Add dependency
----
-
-接著打開build.gradle，把appcompat加入dependency，&amp;lt;/br&amp;gt;
-不過如果你的Android Studio是新版的，就會自動幫你加入了。
-
-```xml
-dependencies {
+&lt;div class=&quot;language-xml highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:23.1.1'
 }
-```
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
 
 &lt;!--more--&gt;
 
-&amp;lt;/br&amp;gt;
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
 
----
-### 3. Remove actionbar
----
+&lt;hr /&gt;
+&lt;h3 id=&quot;3-remove-actionbar&quot;&gt;3. Remove actionbar&lt;/h3&gt;
+&lt;hr /&gt;
 
-因為Default style會去繼承ActionBar Theme，所以我們要把它移除掉，&amp;lt;/br&amp;gt;
-打開`style.xml`，然後把parent改成`Theme.AppCompat.Light.NoActionBar`。
+&lt;p&gt;因為Default style會去繼承ActionBar Theme，所以我們要把它移除掉，&lt;br /&gt;
+打開&lt;code class=&quot;highlighter-rouge&quot;&gt;style.xml&lt;/code&gt;，然後把parent改成&lt;code class=&quot;highlighter-rouge&quot;&gt;Theme.AppCompat.Light.NoActionBar&lt;/code&gt;。&lt;/p&gt;
 
-```xml
-&lt;!-- Base application theme. --&gt;
-&lt;style name=&quot;AppTheme&quot; parent=&quot;Theme.AppCompat.Light.NoActionBar&quot;&gt;
-&lt;/style&gt;
-```
+&lt;div class=&quot;language-xml highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;&amp;lt;!-- Base application theme. --&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;style&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;AppTheme&quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;parent=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Theme.AppCompat.Light.NoActionBar&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;/style&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
 
-&amp;lt;/br&amp;gt;
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
 
----
-### 4. Color your App Bar
----
+&lt;hr /&gt;
+&lt;h3 id=&quot;4-color-your-app-bar&quot;&gt;4. Color your App Bar&lt;/h3&gt;
+&lt;hr /&gt;
 
-接著要去設定App Bar的顏色，AppBar主要有兩種顏色：
+&lt;p&gt;接著要去設定App Bar的顏色，AppBar主要有兩種顏色：&lt;/p&gt;
 
-1. **colorPrimary** : 以前ActionBar那條的背景顏色
-2. **colorPrimaryDark** : Status 那條的背景顏色
+&lt;ol&gt;
+  &lt;li&gt;&lt;strong&gt;colorPrimary&lt;/strong&gt; : 以前ActionBar那條的背景顏色&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;colorPrimaryDark&lt;/strong&gt; : Status 那條的背景顏色&lt;/li&gt;
+&lt;/ol&gt;
 
-&amp;lt;/br&amp;gt;
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
 
-首先要先在`color.xml`中，新增上述的二個顏色。
+&lt;p&gt;首先要先在&lt;code class=&quot;highlighter-rouge&quot;&gt;color.xml&lt;/code&gt;中，新增上述的二個顏色。&lt;/p&gt;
 
-```xml
-&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
-&lt;resources&gt;
-    &lt;color name=&quot;colorPrimary&quot;&gt;#FF5722&lt;/color&gt;
-    &lt;color name=&quot;colorPrimaryDark&quot;&gt;#E64A19&lt;/color&gt;
-&lt;/resources&gt;
-```
+&lt;div class=&quot;language-xml highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;cp&quot;&gt;&amp;lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;resources&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;&amp;lt;color&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;colorPrimary&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;#FF5722&lt;span class=&quot;nt&quot;&gt;&amp;lt;/color&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;&amp;lt;color&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;colorPrimaryDark&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;#E64A19&lt;span class=&quot;nt&quot;&gt;&amp;lt;/color&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;/resources&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
 
-接著在`style.xml`中指定上述的二個顏色。
+&lt;p&gt;接著在&lt;code class=&quot;highlighter-rouge&quot;&gt;style.xml&lt;/code&gt;中指定上述的二個顏色。&lt;/p&gt;
 
-```xml
-&lt;!-- Base application theme. --&gt;
-&lt;style name=&quot;AppTheme&quot; parent=&quot;Theme.AppCompat.Light.NoActionBar&quot;&gt;
-    &lt;!-- Customize your theme here. --&gt;
-    &lt;item name=&quot;colorPrimary&quot;&gt;@color/colorPrimary&lt;/item&gt;
-    &lt;item name=&quot;colorPrimaryDark&quot;&gt;@color/colorPrimaryDark&lt;/item&gt;
-&lt;/style&gt;
-```
+&lt;div class=&quot;language-xml highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;&amp;lt;!-- Base application theme. --&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;style&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;AppTheme&quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;parent=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Theme.AppCompat.Light.NoActionBar&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;c&quot;&gt;&amp;lt;!-- Customize your theme here. --&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;&amp;lt;item&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;colorPrimary&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;@color/colorPrimary&lt;span class=&quot;nt&quot;&gt;&amp;lt;/item&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;&amp;lt;item&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;colorPrimaryDark&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;@color/colorPrimaryDark&lt;span class=&quot;nt&quot;&gt;&amp;lt;/item&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;/style&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
 
-&amp;lt;/br&amp;gt;
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
 
----
-### 5. Create a toobar
----
+&lt;hr /&gt;
+&lt;h3 id=&quot;5-create-a-toobar&quot;&gt;5. Create a toobar&lt;/h3&gt;
+&lt;hr /&gt;
 
-接著去`res/layout`資料夾中，建立一個名稱為`too_bar.xml`的layout file，內容如下，有幾個需要說明的屬性為：
+&lt;p&gt;接著去&lt;code class=&quot;highlighter-rouge&quot;&gt;res/layout&lt;/code&gt;資料夾中，建立一個名稱為&lt;code class=&quot;highlighter-rouge&quot;&gt;too_bar.xml&lt;/code&gt;的layout file，內容如下，有幾個需要說明的屬性為：&lt;/p&gt;
 
-1. **theme**: 指定了Dark.ActionBar，是為了設定AppBar的一些style，譬如說字體顏色，Dark.ActionBar的字體顏色就是白色
-2. **popupTheme**: 當你點擊ActionItem時，會popup一個list，這個list的theme
-3. **background** : Toolbar的背景顏色
+&lt;ol&gt;
+  &lt;li&gt;&lt;strong&gt;theme&lt;/strong&gt;: 指定了Dark.ActionBar，是為了設定AppBar的一些style，譬如說字體顏色，Dark.ActionBar的字體顏色就是白色&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;popupTheme&lt;/strong&gt;: 當你點擊ActionItem時，會popup一個list，這個list的theme&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;background&lt;/strong&gt; : Toolbar的背景顏色&lt;/li&gt;
+&lt;/ol&gt;
 
-```xml
-&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
-&lt;android.support.v7.widget.Toolbar xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot; xmlns:app=&quot;http://schemas.android.com/apk/res-auto&quot; android:layout_width=&quot;match_parent&quot; android:layout_height=&quot;?attr/actionBarSize&quot; app:theme=&quot;@style/ThemeOverlay.AppCompat.Dark.ActionBar&quot; app:popupTheme=&quot;@style/ThemeOverlay.AppCompat.Light&quot; android:background=&quot;@color/colorPrimary&quot;&gt;
+&lt;div class=&quot;language-xml highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;cp&quot;&gt;&amp;lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;android.support.v7.widget.Toolbar&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;xmlns:android=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;http://schemas.android.com/apk/res/android&quot;&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;xmlns:app=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;http://schemas.android.com/apk/res-auto&quot;&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;android:layout_width=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;match_parent&quot;&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;android:layout_height=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;?attr/actionBarSize&quot;&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;app:theme=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;@style/ThemeOverlay.AppCompat.Dark.ActionBar&quot;&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;app:popupTheme=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;@style/ThemeOverlay.AppCompat.Light&quot;&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;android:background=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;@color/colorPrimary&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
 
-&lt;/android.support.v7.widget.Toolbar&gt;
-```
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;/android.support.v7.widget.Toolbar&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
 
-&amp;lt;/br&amp;gt;
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
 
----
-### 6. Add the toolbar into activity
----
+&lt;hr /&gt;
+&lt;h3 id=&quot;6-add-the-toolbar-into-activity&quot;&gt;6. Add the toolbar into activity&lt;/h3&gt;
+&lt;hr /&gt;
 
-然後要在主要的layout中，include上面的`tool_bar.xml`。
+&lt;p&gt;然後要在主要的layout中，include上面的&lt;code class=&quot;highlighter-rouge&quot;&gt;tool_bar.xml&lt;/code&gt;。&lt;/p&gt;
 
-```xml
-&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
-&lt;RelativeLayout xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot; xmlns:tools=&quot;http://schemas.android.com/tools&quot; android:layout_width=&quot;match_parent&quot; android:layout_height=&quot;match_parent&quot; tools:context=&quot;com.ag888.ams.LoginActivity&quot;&gt;
+&lt;div class=&quot;language-xml highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;cp&quot;&gt;&amp;lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;RelativeLayout&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;xmlns:android=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;http://schemas.android.com/apk/res/android&quot;&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;xmlns:tools=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;http://schemas.android.com/tools&quot;&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;android:layout_width=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;match_parent&quot;&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;android:layout_height=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;match_parent&quot;&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;tools:context=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;com.ag888.ams.LoginActivity&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
 
-    &lt;include android:id=&quot;@+id/tool_bar&quot; layout=&quot;@layout/tool_bar&quot; /&gt;
+    &lt;span class=&quot;nt&quot;&gt;&amp;lt;include&lt;/span&gt;
+        &lt;span class=&quot;na&quot;&gt;android:id=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;@+id/tool_bar&quot;&lt;/span&gt;
+        &lt;span class=&quot;na&quot;&gt;layout=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;@layout/tool_bar&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;/&amp;gt;&lt;/span&gt;
 
-    &lt;TextView android:layout_below=&quot;@+id/tool_bar&quot; android:layout_width=&quot;wrap_content&quot; android:layout_height=&quot;wrap_content&quot; android:text=&quot;Hello World!&quot; /&gt;
-&lt;/RelativeLayout&gt;
+    &lt;span class=&quot;nt&quot;&gt;&amp;lt;TextView&lt;/span&gt;
+        &lt;span class=&quot;na&quot;&gt;android:layout_below=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;@+id/tool_bar&quot;&lt;/span&gt;
+        &lt;span class=&quot;na&quot;&gt;android:layout_width=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;wrap_content&quot;&lt;/span&gt;
+        &lt;span class=&quot;na&quot;&gt;android:layout_height=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;wrap_content&quot;&lt;/span&gt;
+        &lt;span class=&quot;na&quot;&gt;android:text=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Hello World!&quot;&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;/&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;/RelativeLayout&amp;gt;&lt;/span&gt;
 
-```
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
 
-&amp;lt;/br&amp;gt;
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
 
----
-### 7. Setup toolbar as actionbar
----
+&lt;hr /&gt;
+&lt;h3 id=&quot;7-setup-toolbar-as-actionbar&quot;&gt;7. Setup toolbar as actionbar&lt;/h3&gt;
+&lt;hr /&gt;
 
-完成上面步驟以後，你可以試著run看看，但你會發現就只是簡單的一條bar而已，&amp;lt;/br&amp;gt;
-並沒有title或者action item之類的，所以接下要把toolbar設定成ActionBar，&amp;lt;/br&amp;gt;
-把`ToolBar`丟進去`setSupportActionBar()`就可以了。
+&lt;p&gt;完成上面步驟以後，你可以試著run看看，但你會發現就只是簡單的一條bar而已，&lt;br /&gt;
+並沒有title或者action item之類的，所以接下要把toolbar設定成ActionBar，&lt;br /&gt;
+把&lt;code class=&quot;highlighter-rouge&quot;&gt;ToolBar&lt;/code&gt;丟進去&lt;code class=&quot;highlighter-rouge&quot;&gt;setSupportActionBar()&lt;/code&gt;就可以了。&lt;/p&gt;
 
-```java
-@Override
-protected void onCreate(Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
-    setContentView(R.layout.activity_login);
+&lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nd&quot;&gt;@Override&lt;/span&gt;
+&lt;span class=&quot;kd&quot;&gt;protected&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;onCreate&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Bundle&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;savedInstanceState&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;kd&quot;&gt;super&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;onCreate&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;savedInstanceState&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;setContentView&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;R&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;layout&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;activity_login&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
 
-    toolbar = (Toolbar) findViewById(R.id.tool_bar);
-    setSupportActionBar(toolbar);
-}
-```
+    &lt;span class=&quot;n&quot;&gt;toolbar&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Toolbar&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;findViewById&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;R&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;id&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;tool_bar&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;setSupportActionBar&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;toolbar&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
 
-&amp;lt;/br&amp;gt;&amp;lt;/br&amp;gt;&amp;lt;/br&amp;gt;&amp;lt;/br&amp;gt;
+&lt;p&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;/p&gt;
 
-
-&lt;/font&gt;
 </description>
                 <link>http://blog.kenyang.net/2016/06/22/android-app-bartool-bar</link>
                 <guid>http://blog.kenyang.net/2016/06/22/android-app-bartool-bar</guid>
@@ -1463,19 +1609,17 @@ protected void onCreate(Bundle savedInstanceState) {
         <item>
                 <title>Setting up an HTTPS server with Node.js</title>
                 <description>
-&lt;p&gt;&amp;lt;font size=3&amp;gt;&lt;/p&gt;
+&lt;p&gt;這篇要講怎麼用Node.js建立一個HTTPS的server，如果你的certificate不是self-signed的，&lt;br /&gt;
+那設定HTTPS並不難，產生CSR給CA provider，然後就會有certificate，把它放進去就好，&lt;br /&gt;
+但如果是self-signed，那過程就有點麻煩，每次要弄的時候，都還是會有點忘記，所以乾脆把過程記錄下來好了。&lt;br /&gt;&lt;/p&gt;
 
-&lt;p&gt;這篇要講怎麼用Node.js建立一個HTTPS的server，如果你的certificate不是self-signed的，&amp;lt;/br&amp;gt;
-那設定HTTPS並不難，產生CSR給CA provider，然後就會有certificate，把它放進去就好，&amp;lt;/br&amp;gt;
-但如果是self-signed，那過程就有點麻煩，每次要弄的時候，都還是會有點忘記，所以乾脆把過程記錄下來好了。&amp;lt;/br&amp;gt;&lt;/p&gt;
-
-&lt;p&gt;&amp;lt;/br&amp;gt;&lt;/p&gt;
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
 
 &lt;hr /&gt;
 &lt;h3 id=&quot;1-creating-a-private-key-and-csr&quot;&gt;1. Creating a private key and CSR&lt;/h3&gt;
 &lt;hr /&gt;
 
-&lt;p&gt;在create certificate之前，必須要先有&lt;code class=&quot;highlighter-rouge&quot;&gt;private key&lt;/code&gt;以及&lt;code class=&quot;highlighter-rouge&quot;&gt;CSR&lt;/code&gt; (certificate signing request)，&amp;lt;/br&amp;gt;
+&lt;p&gt;在create certificate之前，必須要先有&lt;code class=&quot;highlighter-rouge&quot;&gt;private key&lt;/code&gt;以及&lt;code class=&quot;highlighter-rouge&quot;&gt;CSR&lt;/code&gt; (certificate signing request)，&lt;br /&gt;
 所以我們要先generate出private key以及CSR。&lt;/p&gt;
 
 &lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;# generate private key&lt;/span&gt;
@@ -1488,7 +1632,7 @@ protected void onCreate(Bundle savedInstanceState) {
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 
-&lt;p&gt;&amp;lt;/br&amp;gt;&lt;/p&gt;
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
 
 &lt;!--more--&gt;
 
@@ -1502,21 +1646,21 @@ protected void onCreate(Bundle savedInstanceState) {
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 
-&lt;p&gt;&amp;lt;/br&amp;gt;&lt;/p&gt;
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
 
 &lt;hr /&gt;
 &lt;h3 id=&quot;3-configuring-ssl-in-nodejs&quot;&gt;3. Configuring SSL in Node.js&lt;/h3&gt;
 &lt;hr /&gt;
 
-&lt;p&gt;有了certificate以後，就可以把它放在Node.js中使用，&amp;lt;/br&amp;gt;
-這裡我搭配的&lt;code class=&quot;highlighter-rouge&quot;&gt;express&lt;/code&gt;+&lt;code class=&quot;highlighter-rouge&quot;&gt;https&lt;/code&gt;這二個module，https這個module，default就有了，&amp;lt;/br&amp;gt;
+&lt;p&gt;有了certificate以後，就可以把它放在Node.js中使用，&lt;br /&gt;
+這裡我搭配的&lt;code class=&quot;highlighter-rouge&quot;&gt;express&lt;/code&gt;+&lt;code class=&quot;highlighter-rouge&quot;&gt;https&lt;/code&gt;這二個module，https這個module，default就有了，&lt;br /&gt;
 所以我們只需要安裝&lt;code class=&quot;highlighter-rouge&quot;&gt;express&lt;/code&gt;就好。&lt;/p&gt;
 
 &lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$ &lt;/span&gt;npm install --save express
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 
-&lt;p&gt;&amp;lt;/br&amp;gt;
+&lt;p&gt;&lt;br /&gt;
 接著就把下面的內容貼入到&lt;code class=&quot;highlighter-rouge&quot;&gt;index.js&lt;/code&gt;當中，&lt;/p&gt;
 
 &lt;div class=&quot;language-javascript highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kr&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;https&lt;/span&gt;     &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;require&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;https&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
@@ -1539,15 +1683,14 @@ protected void onCreate(Bundle savedInstanceState) {
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 
-&lt;p&gt;&amp;lt;/br&amp;gt;
-靠&lt;code class=&quot;highlighter-rouge&quot;&gt;fs&lt;/code&gt;去讀取certificate，然後再餵給&lt;code class=&quot;highlighter-rouge&quot;&gt;createServer&lt;/code&gt;，這樣就完成了https server。&amp;lt;/br&amp;gt;&lt;/p&gt;
+&lt;p&gt;&lt;br /&gt;
+靠&lt;code class=&quot;highlighter-rouge&quot;&gt;fs&lt;/code&gt;去讀取certificate，然後再餵給&lt;code class=&quot;highlighter-rouge&quot;&gt;createServer&lt;/code&gt;，這樣就完成了https server。&lt;br /&gt;&lt;/p&gt;
 
-&lt;p&gt;&amp;lt;/br&amp;gt;
-&amp;lt;/br&amp;gt;
-&amp;lt;/br&amp;gt;
-&amp;lt;/br&amp;gt;&lt;/p&gt;
+&lt;p&gt;&lt;br /&gt;
+&lt;br /&gt;
+&lt;br /&gt;
+&lt;br /&gt;&lt;/p&gt;
 
-&lt;p&gt;&amp;lt;/font&amp;gt;&lt;/p&gt;
 </description>
                 <link>http://blog.kenyang.net/2016/04/16/setting-up-an-https-server-with-nodejs</link>
                 <guid>http://blog.kenyang.net/2016/04/16/setting-up-an-https-server-with-nodejs</guid>
@@ -1557,13 +1700,11 @@ protected void onCreate(Bundle savedInstanceState) {
         <item>
                 <title>Getting started with Kubernetes</title>
                 <description>
-&lt;p&gt;&amp;lt;font size=3&amp;gt;&lt;/p&gt;
-
-&lt;p&gt;Docker玩了一陣子，總覺得沒有玩一些container management的service好像少了點什麼，&amp;lt;/br&amp;gt;
-剛好team裡用到&lt;a href=&quot;http://kubernetes.io/docs/&quot;&gt;Kubernetes&lt;/a&gt;，所以這裡就記錄一下怎麼使用&lt;a href=&quot;http://kubernetes.io/docs/&quot;&gt;Kubernetes&lt;/a&gt;。&amp;lt;/br&amp;gt;
+&lt;p&gt;Docker玩了一陣子，總覺得沒有玩一些container management的service好像少了點什麼，&lt;br /&gt;
+剛好team裡用到&lt;a href=&quot;http://kubernetes.io/docs/&quot;&gt;Kubernetes&lt;/a&gt;，所以這裡就記錄一下怎麼使用&lt;a href=&quot;http://kubernetes.io/docs/&quot;&gt;Kubernetes&lt;/a&gt;。&lt;br /&gt;
 然後這篇會把Kubernetes架在Google Cloud Platform上面，所以還得去安裝Google Cloud SDK。&lt;/p&gt;
 
-&lt;p&gt;&amp;lt;/br&amp;gt;&lt;/p&gt;
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
 
 &lt;hr /&gt;
 &lt;h3 id=&quot;1-downloading-kubernetes&quot;&gt;1. Downloading Kubernetes&lt;/h3&gt;
@@ -1581,7 +1722,7 @@ protected void onCreate(Bundle savedInstanceState) {
 
 &lt;p&gt;各個的詳細步驟可以去&lt;a href=&quot;http://kubernetes.io/docs/getting-started-guides/binary_release/&quot;&gt;Kubernetes安裝頁面&lt;/a&gt;看，我自己是選擇透過Google Cloud SDK來安裝，所以首先要先安裝Google Cloud SDK。&lt;/p&gt;
 
-&lt;p&gt;&amp;lt;/br&amp;gt;
+&lt;p&gt;&lt;br /&gt;
 &lt;strong&gt;安裝Google Cloud SDK&lt;/strong&gt;&lt;/p&gt;
 
 &lt;p&gt;Google Cloud SDK這個tool讓你可以對Google Cloud Platform進行操作。安裝指令如下，Default installation path會在你的home目錄底下，&lt;/p&gt;
@@ -1589,21 +1730,21 @@ protected void onCreate(Bundle savedInstanceState) {
 &lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$ &lt;/span&gt;curl https://sdk.cloud.google.com | bash
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
-&lt;p&gt;&amp;lt;/br&amp;gt;
+&lt;p&gt;&lt;br /&gt;
 接著要restart shell和設定gcloud environment，&lt;code class=&quot;highlighter-rouge&quot;&gt;gcloud init&lt;/code&gt;這個指令會彈出browser要你login，以及要你輸入default zone，我是選asia-east1-a。&lt;/p&gt;
 
 &lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;exec&lt;/span&gt; -l &lt;span class=&quot;nv&quot;&gt;$SHELL&lt;/span&gt;
 &lt;span class=&quot;gp&quot;&gt;$ &lt;/span&gt;gcloud init
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
-&lt;p&gt;&amp;lt;/br&amp;gt;
+&lt;p&gt;&lt;br /&gt;
 &lt;strong&gt;安裝kubectl&lt;/strong&gt;&lt;/p&gt;
 
 &lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$ &lt;/span&gt;gcloud components install kubectl
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 
-&lt;p&gt;&amp;lt;/br&amp;gt;&lt;/p&gt;
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
 
 &lt;!--more--&gt;
 
@@ -1620,39 +1761,39 @@ protected void onCreate(Bundle savedInstanceState) {
   &lt;li&gt;開啟Container Engine API.&lt;/li&gt;
 &lt;/ol&gt;
 
-&lt;p&gt;&amp;lt;/br&amp;gt;
+&lt;p&gt;&lt;br /&gt;
 &lt;strong&gt;Step 1. 註冊&lt;a href=&quot;https://console.cloud.google.com/&quot;&gt;Google Cloud&lt;/a&gt;&lt;/strong&gt;&lt;/p&gt;
 
-&lt;p&gt;點了上面的連結至console以後，就發現其實是以前的Google App Engine+Google APIs的後台，&amp;lt;/br&amp;gt;
+&lt;p&gt;點了上面的連結至console以後，就發現其實是以前的Google App Engine+Google APIs的後台，&lt;br /&gt;
 只不過好久沒用了，發現改版改好多..
-然後又發現新註冊的user有免費300美金的quota可以使用，&amp;lt;/br&amp;gt;
+然後又發現新註冊的user有免費300美金的quota可以使用，&lt;br /&gt;
 舊有的用戶還沒有這300美金可以用，所以建議可以乾脆註冊新帳號使用比較好。&lt;/p&gt;
 
-&lt;p&gt;&amp;lt;/br&amp;gt;
+&lt;p&gt;&lt;br /&gt;
 &lt;strong&gt;Step 2: Create project&lt;/strong&gt;&lt;/p&gt;
 
-&lt;p&gt;有了帳號以後，就去Create project，Create時的project名稱，&amp;lt;/br&amp;gt;
+&lt;p&gt;有了帳號以後，就去Create project，Create時的project名稱，&lt;br /&gt;
 如果project名稱沒有重複的話，應該就會是你的&lt;code class=&quot;highlighter-rouge&quot;&gt;PROJECT_ID&lt;/code&gt;。&lt;/p&gt;
 
-&lt;p&gt;&amp;lt;/br&amp;gt;
+&lt;p&gt;&lt;br /&gt;
 &lt;strong&gt;Step 3: 打開billing&lt;/strong&gt;&lt;/p&gt;
 
-&lt;p&gt;這一步驟就是&lt;a href=&quot;https://console.developers.google.com/billing&quot;&gt;點這個連結&lt;/a&gt;去打開Billing，進去以後要填寫信用卡資料，目的是將來要收費，&amp;lt;/br&amp;gt;不過如果你是新註冊的話，一開始先不用擔心這個問題，因為有300美金可以使用。&lt;/p&gt;
+&lt;p&gt;這一步驟就是&lt;a href=&quot;https://console.developers.google.com/billing&quot;&gt;點這個連結&lt;/a&gt;去打開Billing，進去以後要填寫信用卡資料，目的是將來要收費，&lt;br /&gt;不過如果你是新註冊的話，一開始先不用擔心這個問題，因為有300美金可以使用。&lt;/p&gt;
 
-&lt;p&gt;&amp;lt;/br&amp;gt;
+&lt;p&gt;&lt;br /&gt;
 &lt;strong&gt;Step 4: 開啟Container Engine API&lt;/strong&gt;&lt;/p&gt;
 
 &lt;p&gt;接著要去Enable Container Engine API，&lt;a href=&quot;https://console.cloud.google.com/project/_/kubernetes/list&quot;&gt;點這個連結&lt;/a&gt;去enable，進去以後就選取剛剛create的project，然後按下Continue。(如下圖)&lt;/p&gt;
 
 &lt;p&gt;&lt;img src=&quot;http://localhost:4000/assets/2016-04-08-enable-container-api.png&quot; alt=&quot;cmd&quot; /&gt;&lt;/p&gt;
 
-&lt;p&gt;&amp;lt;/br&amp;gt;&lt;/p&gt;
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
 
 &lt;hr /&gt;
 &lt;h3 id=&quot;3-create-your-nodejs-application&quot;&gt;3. Create your Node.js application&lt;/h3&gt;
 &lt;hr /&gt;
 
-&lt;p&gt;接著來寫一個簡單的Node.js application，等等會把這application包成docker image，&amp;lt;/br&amp;gt;
+&lt;p&gt;接著來寫一個簡單的Node.js application，等等會把這application包成docker image，&lt;br /&gt;
 先create一個folder，然後建立一個server.js，&lt;/p&gt;
 
 &lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$ &lt;/span&gt;mkdir hellonode-app
@@ -1660,7 +1801,7 @@ protected void onCreate(Bundle savedInstanceState) {
 &lt;span class=&quot;gp&quot;&gt;$ &lt;/span&gt;vim server.js
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
-&lt;p&gt;&amp;lt;/br&amp;gt;
+&lt;p&gt;&lt;br /&gt;
 再把下面的內容貼入到server.js當中，下面的內容就是建立一個http server，且listen在8080 port上，&lt;/p&gt;
 
 &lt;div class=&quot;language-javascript highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;http&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;require&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'http'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
@@ -1673,14 +1814,14 @@ protected void onCreate(Bundle savedInstanceState) {
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 
-&lt;p&gt;&amp;lt;/br&amp;gt;&lt;/p&gt;
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
 
 &lt;hr /&gt;
 &lt;h3 id=&quot;4-create-and-push-a-docker-container-image&quot;&gt;4. Create and Push a Docker container image&lt;/h3&gt;
 &lt;hr /&gt;
 
 &lt;p&gt;接著要把上面的application變成一個docker image以及把image push上去，所以首先要先建立一個&lt;code class=&quot;highlighter-rouge&quot;&gt;Dockerfile&lt;/code&gt;，Dockerfile作用在之前的&lt;a href=&quot;http://blog.kenyang.net/2015/11/30/how-to-use-nodejs-mongodb-with-docker&quot;&gt;文章&lt;/a&gt;就有解釋過了，
-&amp;lt;/br&amp;gt;
+&lt;br /&gt;
 簡單說就是用來定義這個image的資訊。&lt;/p&gt;
 
 &lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;FROM node:0.12
@@ -1689,14 +1830,14 @@ COPY server.js .
 CMD node server.js
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
-&lt;p&gt;&amp;lt;/br&amp;gt;
+&lt;p&gt;&lt;br /&gt;
 有了&lt;code class=&quot;highlighter-rouge&quot;&gt;Dockerfile&lt;/code&gt;以後，就可以來build image了，記得把下面的&lt;code class=&quot;highlighter-rouge&quot;&gt;ken-kubernetes-lab&lt;/code&gt;換成你們自己的project id，&lt;/p&gt;
 
 &lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$ &lt;/span&gt;docker build -t gcr.io/ken-kubernetes-lab/hello-node:v1 .
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 
-&lt;p&gt;&amp;lt;/br&amp;gt;
+&lt;p&gt;&lt;br /&gt;
 build完以後，可以在自己local測試看看，&lt;/p&gt;
 
 &lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$ &lt;/span&gt;docker run -d -p 8080:8080 gcr.io/ken-kubernetes-lab/hello-node:v1
@@ -1704,14 +1845,14 @@ build完以後，可以在自己local測試看看，&lt;/p&gt;
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 
-&lt;p&gt;&amp;lt;/br&amp;gt;
+&lt;p&gt;&lt;br /&gt;
 接著就可以把image push上去Google Container Registry，&lt;/p&gt;
 
 &lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$ &lt;/span&gt;gcloud docker push gcr.io/ken-kubernetes-lab/hello-node:v1
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 
-&lt;h2 id=&quot;br&quot;&gt;&amp;lt;/br&amp;gt;&lt;/h2&gt;
+&lt;h2&gt;&lt;br /&gt;&lt;/h2&gt;
 &lt;h3 id=&quot;5-create-a-cluster&quot;&gt;5. Create a cluster&lt;/h3&gt;
 &lt;hr /&gt;
 
@@ -1719,22 +1860,22 @@ build完以後，可以在自己local測試看看，&lt;/p&gt;
 
 &lt;p&gt;&lt;img src=&quot;http://localhost:4000/assets/2016-04-08-create-cluster.png&quot; alt=&quot;cmd&quot; /&gt;&lt;/p&gt;
 
-&lt;p&gt;&amp;lt;/br&amp;gt;
+&lt;p&gt;&lt;br /&gt;
 建完以後，就把cluster的info餵給kubectl，記得把&lt;code class=&quot;highlighter-rouge&quot;&gt;cluster-1&lt;/code&gt;改成你的cluster名稱。&lt;/p&gt;
 
 &lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$ &lt;/span&gt;gcloud container clusters get-credentials cluster-1
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 
-&lt;h2 id=&quot;br-1&quot;&gt;&amp;lt;/br&amp;gt;&lt;/h2&gt;
+&lt;h2 id=&quot;-1&quot;&gt;&lt;br /&gt;&lt;/h2&gt;
 &lt;h3 id=&quot;6-create-a-pod&quot;&gt;6. Create a pod&lt;/h3&gt;
 &lt;hr /&gt;
 
 &lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;pod&lt;/code&gt;在kubernetes的定義是&lt;code class=&quot;highlighter-rouge&quot;&gt;pods are the smallest deployable units of computing that can be created and managed in Kubernetes.&lt;/code&gt;，
-&amp;lt;/br&amp;gt;
-簡單說，如果你要在kubernetes的cluster裡面run起來&lt;code class=&quot;highlighter-rouge&quot;&gt;一組&lt;/code&gt;container，就得有一個pod，&amp;lt;/br&amp;gt;
+&lt;br /&gt;
+簡單說，如果你要在kubernetes的cluster裡面run起來&lt;code class=&quot;highlighter-rouge&quot;&gt;一組&lt;/code&gt;container，就得有一個pod，&lt;br /&gt;
 &lt;code class=&quot;highlighter-rouge&quot;&gt;一組&lt;/code&gt;container的意思是，這個pod裡面由一個以上的container所組成。
-&amp;lt;/br&amp;gt;&amp;lt;/br&amp;gt;
+&lt;br /&gt;&lt;br /&gt;
 用kubectl run來建立一個pod:&lt;/p&gt;
 
 &lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$ &lt;/span&gt;kubectl run hello-node --image&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;gcr.io/ken-kubernetes-lab/hello-node:v1 --port&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;8080
@@ -1750,7 +1891,7 @@ hello-node   1         1         1            1           3d
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 
-&lt;h2 id=&quot;br-2&quot;&gt;&amp;lt;/br&amp;gt;&lt;/h2&gt;
+&lt;h2 id=&quot;-2&quot;&gt;&lt;br /&gt;&lt;/h2&gt;
 &lt;h3 id=&quot;7-allow-external-traffic&quot;&gt;7. Allow external traffic&lt;/h3&gt;
 &lt;hr /&gt;
 
@@ -1760,7 +1901,7 @@ hello-node   1         1         1            1           3d
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 
-&lt;p&gt;你會發現上面的指令，我們是expose deployment這個object出來，而不是pod，&amp;lt;/br&amp;gt;
+&lt;p&gt;你會發現上面的指令，我們是expose deployment這個object出來，而不是pod，&lt;br /&gt;
 如上面所說，deployment可能會管理多個pods，所以可以透過deployment來當作load balancer。
 取得service ip的指令，請打:&lt;/p&gt;
 
@@ -1772,12 +1913,12 @@ hello-node   10.123.244.242   130.211.247.198   8080/TCP   3d
 
 &lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;EXTERNAL_IP&lt;/code&gt;可能需要一點點時間才會顯示出來，所以如果&lt;code class=&quot;highlighter-rouge&quot;&gt;EXTERNAL_IP&lt;/code&gt;一開始是空白的，請等一下再試一次。&lt;/p&gt;
 
-&lt;h2 id=&quot;br-3&quot;&gt;&amp;lt;/br&amp;gt;&lt;/h2&gt;
+&lt;h2 id=&quot;-3&quot;&gt;&lt;br /&gt;&lt;/h2&gt;
 &lt;h3 id=&quot;8-scale-up-your-website&quot;&gt;8. Scale up your website&lt;/h3&gt;
 &lt;hr /&gt;
 
 &lt;p&gt;Kubernetes其中最強大的一點就是可以很輕鬆的scale你的application，
-&amp;lt;/br&amp;gt;
+&lt;br /&gt;
 假設你的application突然需要更多的capacity，你可以簡單地叫&lt;code class=&quot;highlighter-rouge&quot;&gt;deployment&lt;/code&gt;去建立新的replica:&lt;/p&gt;
 
 &lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$ &lt;/span&gt;kubectl scale deployment hello-node --replicas&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;4
@@ -1801,11 +1942,11 @@ hello-node-3344141985-x3ycw   1/1       Running   0          2m
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 
-&lt;h2 id=&quot;br-4&quot;&gt;&amp;lt;/br&amp;gt;&lt;/h2&gt;
+&lt;h2 id=&quot;-4&quot;&gt;&lt;br /&gt;&lt;/h2&gt;
 &lt;h3 id=&quot;9-roll-out-an-upgrade-to-your-website&quot;&gt;9. Roll out an upgrade to your website&lt;/h3&gt;
 &lt;hr /&gt;
 
-&lt;p&gt;假設你的application有bug fixes，Kubernetes也可以輕易地幫助你deploy新版本上去。&amp;lt;/br&amp;gt;
+&lt;p&gt;假設你的application有bug fixes，Kubernetes也可以輕易地幫助你deploy新版本上去。&lt;br /&gt;
 首先，先來改剛剛的&lt;code class=&quot;highlighter-rouge&quot;&gt;server.js&lt;/code&gt;，修改response message:&lt;/p&gt;
 
 &lt;div class=&quot;language-javascript highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;  &lt;span class=&quot;nx&quot;&gt;response&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;end&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Hello Kubernetes World!&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
@@ -1820,8 +1961,8 @@ hello-node-3344141985-x3ycw   1/1       Running   0          2m
 &lt;/div&gt;
 
 &lt;p&gt;push完成以後，我們就有一個v2版本的image可以使用，接下來只要透過&lt;code class=&quot;highlighter-rouge&quot;&gt;kubectl edit&lt;/code&gt;指令就可以進行update，
-&amp;lt;/br&amp;gt;
-這個指令會打開一個text editor，內容是一個deployment的yaml config，&amp;lt;/br&amp;gt;
+&lt;br /&gt;
+這個指令會打開一個text editor，內容是一個deployment的yaml config，&lt;br /&gt;
 我們只需要把&lt;strong&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;gcr.io/ken-kubernetes-lab/hello-node:v1&lt;/code&gt;&lt;/strong&gt;改成&lt;strong&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;gcr.io/ken-kubernetes-lab/hello-node:v2&lt;/code&gt;&lt;/strong&gt;就好。&lt;/p&gt;
 
 &lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$ &lt;/span&gt;kubectl edit deployment hello-node
@@ -1845,11 +1986,11 @@ hello-node-3422850722-ria1t   1/1       Running       0          13s
 
 &lt;p&gt;從output中會發現，deployment建立新的pod，把舊版的pod關掉了。&lt;/p&gt;
 
-&lt;h2 id=&quot;br-5&quot;&gt;&amp;lt;/br&amp;gt;&lt;/h2&gt;
+&lt;h2 id=&quot;-5&quot;&gt;&lt;br /&gt;&lt;/h2&gt;
 &lt;h3 id=&quot;10-delete&quot;&gt;10. Delete&lt;/h3&gt;
 &lt;hr /&gt;
 
-&lt;p&gt;由於只有300美金啊，雖然我開了三天也才花費五塊美金，不過沒在用還是關掉吧！&amp;lt;/br&amp;gt;
+&lt;p&gt;由於只有300美金啊，雖然我開了三天也才花費五塊美金，不過沒在用還是關掉吧！&lt;br /&gt;
 刪除Deployment時，也會一併刪除pod；刪除service會刪除load balancer。&lt;/p&gt;
 
 &lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$ &lt;/span&gt;kubectl delete service,deployment hello-node
@@ -1862,13 +2003,12 @@ hello-node-3422850722-ria1t   1/1       Running       0          13s
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 
-&lt;p&gt;&amp;lt;/br&amp;gt;
-&amp;lt;/br&amp;gt;
-&amp;lt;/br&amp;gt;
-&amp;lt;/br&amp;gt;
-&amp;lt;/br&amp;gt;&lt;/p&gt;
+&lt;p&gt;&lt;br /&gt;
+&lt;br /&gt;
+&lt;br /&gt;
+&lt;br /&gt;
+&lt;br /&gt;&lt;/p&gt;
 
-&lt;p&gt;&amp;lt;/font&amp;gt;&lt;/p&gt;
 </description>
                 <link>http://blog.kenyang.net/2016/04/07/getting-started-with-kubernetes</link>
                 <guid>http://blog.kenyang.net/2016/04/07/getting-started-with-kubernetes</guid>
@@ -1878,12 +2018,10 @@ hello-node-3422850722-ria1t   1/1       Running       0          13s
         <item>
                 <title>Heroku Redis: Connecting in Python</title>
                 <description>
-&lt;p&gt;&amp;lt;font size=3&amp;gt;&lt;/p&gt;
-
 &lt;p&gt;這篇要講怎麼在Heroku上，使用它的&lt;a href=&quot;https://devcenter.heroku.com/articles/heroku-redis&quot;&gt;Heroku Redis&lt;/a&gt;，&lt;br /&gt;
 大致上分為三個步驟，分別為安裝，配置，寫code。&lt;/p&gt;
 
-&lt;p&gt;&amp;lt;/br&amp;gt;&lt;/p&gt;
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
 
 &lt;hr /&gt;
 &lt;h3 id=&quot;1-installing-cli&quot;&gt;1. Installing CLI&lt;/h3&gt;
@@ -1896,7 +2034,7 @@ hello-node-3422850722-ria1t   1/1       Running       0          13s
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 
-&lt;p&gt;&amp;lt;/br&amp;gt;&lt;/p&gt;
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
 
 &lt;hr /&gt;
 &lt;h3 id=&quot;2-provisioning-the-add-on&quot;&gt;2. Provisioning the add-on&lt;/h3&gt;
@@ -1913,7 +2051,7 @@ hello-node-3422850722-ria1t   1/1       Running       0          13s
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 
-&lt;p&gt;&amp;lt;/br&amp;gt;
+&lt;p&gt;&lt;br /&gt;
 當你成功配置一台redis以後，你可以透過下面的指令找到該台redis URL，&lt;/p&gt;
 
 &lt;!--more--&gt;
@@ -1922,7 +2060,7 @@ hello-node-3422850722-ria1t   1/1       Running       0          13s
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 
-&lt;p&gt;&amp;lt;/br&amp;gt;&lt;/p&gt;
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
 
 &lt;hr /&gt;
 &lt;h3 id=&quot;3-connecting-in-python&quot;&gt;3. Connecting in Python&lt;/h3&gt;
@@ -1934,7 +2072,7 @@ hello-node-3422850722-ria1t   1/1       Running       0          13s
 &lt;span class=&quot;gp&quot;&gt;$ &lt;/span&gt;pip freeze &amp;gt; requirements.txt
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
-&lt;p&gt;&amp;lt;/br&amp;gt;
+&lt;p&gt;&lt;br /&gt;
 接著就可以用這個&lt;code class=&quot;highlighter-rouge&quot;&gt;redis&lt;/code&gt;這個package連結至redis server，&lt;br /&gt;
 下面的example是用Flask這個framework來做示範，分別有&lt;code class=&quot;highlighter-rouge&quot;&gt;get&lt;/code&gt;和&lt;code class=&quot;highlighter-rouge&quot;&gt;set&lt;/code&gt;這二個URL。&lt;/p&gt;
 
@@ -1957,7 +2095,7 @@ hello-node-3422850722-ria1t   1/1       Running       0          13s
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 
-&lt;h2 id=&quot;br&quot;&gt;&amp;lt;/br&amp;gt;&lt;/h2&gt;
+&lt;h2&gt;&lt;br /&gt;&lt;/h2&gt;
 &lt;h3 id=&quot;4-testing-in-local-environment&quot;&gt;4. Testing in local environment&lt;/h3&gt;
 &lt;hr /&gt;
 
@@ -1968,7 +2106,6 @@ hello-node-3422850722-ria1t   1/1       Running       0          13s
 &lt;span class=&quot;gp&quot;&gt;$ &lt;/span&gt;heroku &lt;span class=&quot;nb&quot;&gt;local &lt;/span&gt;web
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
-&lt;p&gt;&amp;lt;/font&amp;gt;&lt;/p&gt;
 </description>
                 <link>http://blog.kenyang.net/2016/02/15/heroku-redis-connecting-in-python</link>
                 <guid>http://blog.kenyang.net/2016/02/15/heroku-redis-connecting-in-python</guid>
@@ -1978,12 +2115,10 @@ hello-node-3422850722-ria1t   1/1       Running       0          13s
         <item>
                 <title>Android Fingerprint API</title>
                 <description>
-&lt;p&gt;&amp;lt;font size=3&amp;gt;&lt;/p&gt;
-
 &lt;p&gt;Google在Android 6.0中，釋放了對[Fingerprint] (http://developer.android.com/intl/zh-tw/reference/android/hardware/fingerprint/FingerprintManager.html)操作的API，&lt;br /&gt;
 而最近剛好也買了Nexus 6P，因此有了機會來玩看看。&lt;/p&gt;
 
-&lt;p&gt;&amp;lt;/br&amp;gt;&lt;/p&gt;
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
 
 &lt;hr /&gt;
 &lt;h3 id=&quot;1-androidmanifestxml&quot;&gt;1. AndroidManifest.xml&lt;/h3&gt;
@@ -1995,7 +2130,7 @@ hello-node-3422850722-ria1t   1/1       Running       0          13s
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 
-&lt;p&gt;&amp;lt;/br&amp;gt;&lt;/p&gt;
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
 
 &lt;hr /&gt;
 &lt;h3 id=&quot;2-check-requirement&quot;&gt;2. Check Requirement&lt;/h3&gt;
@@ -2048,7 +2183,7 @@ hello-node-3422850722-ria1t   1/1       Running       0          13s
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 
-&lt;p&gt;&amp;lt;/br&amp;gt;&lt;/p&gt;
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
 
 &lt;hr /&gt;
 &lt;h3 id=&quot;3-authenticate&quot;&gt;3. Authenticate&lt;/h3&gt;
@@ -2079,7 +2214,7 @@ hello-node-3422850722-ria1t   1/1       Running       0          13s
   &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;Handler&lt;/code&gt; : optional的參數，如果有使用，FingerprintManager會透過它來傳遞訊息&lt;/li&gt;
 &lt;/ol&gt;
 
-&lt;p&gt;&amp;lt;/br&amp;gt;&lt;/p&gt;
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
 
 &lt;p&gt;了解參數以後就可以開始進行&lt;strong&gt;authenticate&lt;/strong&gt;，&lt;/p&gt;
 
@@ -2126,13 +2261,12 @@ hello-node-3422850722-ria1t   1/1       Running       0          13s
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 
-&lt;p&gt;&amp;lt;/br&amp;gt;&lt;/p&gt;
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
 
 &lt;p&gt;這樣就完成了一個簡單的example，但這example並沒有使用&lt;code class=&quot;highlighter-rouge&quot;&gt;CryptoObject&lt;/code&gt;，所以如果你想要更安全一點，記得請加上&lt;code class=&quot;highlighter-rouge&quot;&gt;CryptoObject&lt;/code&gt;。&lt;/p&gt;
 
-&lt;p&gt;&amp;lt;/br&amp;gt;&lt;/p&gt;
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
 
-&lt;p&gt;&amp;lt;/font&amp;gt;&lt;/p&gt;
 </description>
                 <link>http://blog.kenyang.net/2015/12/12/android-fingerprint-api</link>
                 <guid>http://blog.kenyang.net/2015/12/12/android-fingerprint-api</guid>
@@ -2142,12 +2276,10 @@ hello-node-3422850722-ria1t   1/1       Running       0          13s
         <item>
                 <title>Install zsh and oh-my-zsh on Mac</title>
                 <description>
-&lt;p&gt;&amp;lt;font size=3&amp;gt;&lt;/p&gt;
-
 &lt;p&gt;今天把mac上面的default shell換成&lt;code class=&quot;highlighter-rouge&quot;&gt;zsh&lt;/code&gt;，其實主要是看上了&lt;code class=&quot;highlighter-rouge&quot;&gt;oh-my-zsh&lt;/code&gt;，所以才想換成zsh。&lt;br /&gt;
 過程有點複雜，所以還是紀錄一下怎麼做。&lt;/p&gt;
 
-&lt;p&gt;&amp;lt;/br&amp;gt;&lt;/p&gt;
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
 
 &lt;hr /&gt;
 &lt;h3 id=&quot;1-install-oh-my-zsh&quot;&gt;1. Install oh-my-zsh&lt;/h3&gt;
@@ -2158,7 +2290,7 @@ hello-node-3422850722-ria1t   1/1       Running       0          13s
 &lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$ &lt;/span&gt;chsh -s /bin/zsh
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
-&lt;p&gt;&amp;lt;/br&amp;gt;
+&lt;p&gt;&lt;br /&gt;
 接著就安裝&lt;code class=&quot;highlighter-rouge&quot;&gt;oh-my-zsh&lt;/code&gt;，&lt;/p&gt;
 
 &lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$ &lt;/span&gt;curl -L https://github.com/robbyrussell/oh-my-zsh/raw/master/tools/install.sh | sh
@@ -2167,7 +2299,7 @@ hello-node-3422850722-ria1t   1/1       Running       0          13s
 
 &lt;!--more--&gt;
 
-&lt;p&gt;&amp;lt;/br&amp;gt;&lt;/p&gt;
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
 
 &lt;hr /&gt;
 &lt;h3 id=&quot;2-clone-cobalt2&quot;&gt;2. Clone cobalt2&lt;/h3&gt;
@@ -2186,7 +2318,7 @@ hello-node-3422850722-ria1t   1/1       Running       0          13s
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 
-&lt;p&gt;&amp;lt;/br&amp;gt;
+&lt;p&gt;&lt;br /&gt;
 然後打開iterm，&lt;/p&gt;
 
 &lt;ol&gt;
@@ -2201,7 +2333,7 @@ hello-node-3422850722-ria1t   1/1       Running       0          13s
   &lt;li&gt;選擇&lt;code class=&quot;highlighter-rouge&quot;&gt;Set as default&lt;/code&gt;&lt;/li&gt;
 &lt;/ol&gt;
 
-&lt;p&gt;&amp;lt;/br&amp;gt;&lt;/p&gt;
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
 
 &lt;hr /&gt;
 &lt;h3 id=&quot;3-install-font&quot;&gt;3. Install font&lt;/h3&gt;
@@ -2214,7 +2346,7 @@ hello-node-3422850722-ria1t   1/1       Running       0          13s
 &lt;span class=&quot;gp&quot;&gt;$ &lt;/span&gt;./install.sh
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
-&lt;p&gt;&amp;lt;/br&amp;gt;
+&lt;p&gt;&lt;br /&gt;
 接著一樣在打開iterm，&lt;/p&gt;
 
 &lt;ol&gt;
@@ -2225,7 +2357,7 @@ hello-node-3422850722-ria1t   1/1       Running       0          13s
   &lt;li&gt;選擇&lt;code class=&quot;highlighter-rouge&quot;&gt;inconsolata for powerline&lt;/code&gt;&lt;/li&gt;
 &lt;/ol&gt;
 
-&lt;p&gt;&amp;lt;/br&amp;gt;&lt;/p&gt;
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
 
 &lt;hr /&gt;
 &lt;h3 id=&quot;4-變更theme&quot;&gt;4. 變更Theme&lt;/h3&gt;
@@ -2237,7 +2369,7 @@ hello-node-3422850722-ria1t   1/1       Running       0          13s
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 
-&lt;p&gt;&amp;lt;/br&amp;gt;
+&lt;p&gt;&lt;br /&gt;
 然後把ZSH_THEME換成cobalt2&lt;/p&gt;
 
 &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;ZSH_THEME=&quot;cobalt2&quot;
@@ -2249,7 +2381,7 @@ hello-node-3422850722-ria1t   1/1       Running       0          13s
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 
-&lt;p&gt;&amp;lt;/br&amp;gt;&lt;/p&gt;
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
 
 &lt;hr /&gt;
 &lt;h3 id=&quot;5-客製化&quot;&gt;5. 客製化&lt;/h3&gt;
@@ -2275,7 +2407,6 @@ build_prompt&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot
 
 &lt;p&gt;可以看到我把&lt;code class=&quot;highlighter-rouge&quot;&gt;prompt_status&lt;/code&gt;就註解掉，因為我不想要prompt上有icon出現。&lt;/p&gt;
 
-&lt;p&gt;&amp;lt;/font&amp;gt;&lt;/p&gt;
 </description>
                 <link>http://blog.kenyang.net/2015/12/11/install-zsh-oh-my-zsh-on-mac</link>
                 <guid>http://blog.kenyang.net/2015/12/11/install-zsh-oh-my-zsh-on-mac</guid>
@@ -2285,8 +2416,6 @@ build_prompt&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot
         <item>
                 <title>JCConf Taiwan 2015   Day 2</title>
                 <description>
-&lt;p&gt;&amp;lt;font size=3&amp;gt;&lt;/p&gt;
-
 &lt;p&gt;這篇只是紀錄Java Community Conference 2015的第二天筆記，&lt;br /&gt;
 今天聽了以下幾個session，&lt;/p&gt;
 
@@ -2301,7 +2430,7 @@ build_prompt&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot
 
 &lt;!--more--&gt;
 
-&lt;p&gt;&amp;lt;/br&amp;gt;&lt;/p&gt;
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
 
 &lt;hr /&gt;
 &lt;h3 id=&quot;1-阿里-jvm-的工作方向&quot;&gt;1. 阿里 JVM 的工作方向&lt;/h3&gt;
@@ -2327,7 +2456,7 @@ build_prompt&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot
 
 &lt;p&gt;&lt;strong&gt;Java young generation, old generation&lt;/strong&gt;&lt;/p&gt;
 
-&lt;p&gt;&amp;lt;/br&amp;gt;&lt;/p&gt;
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
 
 &lt;hr /&gt;
 &lt;h3 id=&quot;2-universal-scala&quot;&gt;2. Universal Scala&lt;/h3&gt;
@@ -2381,7 +2510,7 @@ build_prompt&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot
   &lt;li&gt;[github] (https://github.com/weihsiu/universal.git)&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;p&gt;&amp;lt;/br&amp;gt;&lt;/p&gt;
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
 
 &lt;hr /&gt;
 &lt;h3 id=&quot;3-deploy-your-own-spark-cluster-in-4-minutes-using-sbt&quot;&gt;3. Deploy your own Spark cluster in 4 minutes using sbt.&lt;/h3&gt;
@@ -2479,7 +2608,7 @@ build_prompt&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot
   &lt;li&gt;AWS_ACCESS_KEY_ID&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;p&gt;&amp;lt;/br&amp;gt;&lt;/p&gt;
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
 
 &lt;hr /&gt;
 &lt;h3 id=&quot;4-immutable-infrastructure觀念與實作&quot;&gt;4. Immutable Infrastructure：觀念與實作&lt;/h3&gt;
@@ -2583,7 +2712,7 @@ prevent modifications of running images.&lt;/p&gt;
 
 &lt;p&gt;&lt;strong&gt;母體 =&amp;gt; 增生 =&amp;gt; 替換 =&amp;gt; 自動化&lt;/strong&gt;&lt;/p&gt;
 
-&lt;p&gt;&amp;lt;/br&amp;gt;&lt;/p&gt;
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
 
 &lt;hr /&gt;
 &lt;h3 id=&quot;5-jdk8-jit-行為和效能分析&quot;&gt;5. JDK8 JIT 行為和效能分析&lt;/h3&gt;
@@ -2649,7 +2778,7 @@ Jserv一樣講得很專業，但真的是不同領域，幾乎都聽不懂。&lt
 
 &lt;p&gt;&lt;strong&gt;匿名class本質上會生出另一個class，inner class，和lambda不一樣&lt;/strong&gt;&lt;/p&gt;
 
-&lt;p&gt;&amp;lt;/br&amp;gt;&lt;/p&gt;
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
 
 &lt;hr /&gt;
 &lt;h3 id=&quot;6-自己的jvm自己救---解救-oom-實務經驗談&quot;&gt;6. 自己的JVM自己救 - 解救 OOM 實務經驗談&lt;/h3&gt;
@@ -2662,7 +2791,7 @@ Jserv一樣講得很專業，但真的是不同領域，幾乎都聽不懂。&lt
 
 &lt;p&gt;&lt;strong&gt;Retained heap&lt;/strong&gt;&lt;/p&gt;
 
-&lt;p&gt;&amp;lt;/br&amp;gt;&lt;/p&gt;
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
 
 &lt;hr /&gt;
 &lt;h3 id=&quot;感想&quot;&gt;感想&lt;/h3&gt;
@@ -2675,7 +2804,6 @@ Jserv一樣講得很專業，但真的是不同領域，幾乎都聽不懂。&lt
 &lt;p&gt;還想推薦一下MySQL的speaker (Ivan Tu)，雖然沒有去聽他的talk，&lt;br /&gt;
 但在休息時間時，去到MySQL攤位，都會聽到他很熱情地講解。&lt;/p&gt;
 
-&lt;p&gt;&amp;lt;/font&amp;gt;&lt;/p&gt;
 </description>
                 <link>http://blog.kenyang.net/2015/12/05/jcconf-taiwan-2015-day-2</link>
                 <guid>http://blog.kenyang.net/2015/12/05/jcconf-taiwan-2015---day-2</guid>
@@ -2685,8 +2813,6 @@ Jserv一樣講得很專業，但真的是不同領域，幾乎都聽不懂。&lt
         <item>
                 <title>JCConf Taiwan 2015   Day 1</title>
                 <description>
-&lt;p&gt;&amp;lt;font size=3&amp;gt;&lt;/p&gt;
-
 &lt;p&gt;&lt;img src=&quot;http://localhost:4000/assets/2015-12-04-ticket.jpg&quot; alt=&quot;Ticket&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;這篇只是紀錄Java Community Conference 2015的第一天筆記，&lt;br /&gt;
@@ -2771,7 +2897,7 @@ Jserv一樣講得很專業，但真的是不同領域，幾乎都聽不懂。&lt
 &lt;p&gt;someone ask why not use standard ruby?
 author answer: hard to implement JIT.&lt;/p&gt;
 
-&lt;p&gt;&amp;lt;/br&amp;gt;&lt;/p&gt;
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
 
 &lt;hr /&gt;
 &lt;h3 id=&quot;2-asynchronous-and-non-blocking-in-scala&quot;&gt;2. Asynchronous and Non-blocking in Scala&lt;/h3&gt;
@@ -2804,7 +2930,7 @@ author answer: hard to implement JIT.&lt;/p&gt;
   &lt;li&gt;singleton in Java. there is no static in Scala.&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;p&gt;&amp;lt;/br&amp;gt;&lt;/p&gt;
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
 
 &lt;hr /&gt;
 &lt;h3 id=&quot;3-使用zookeeper打造軟體式負載平衡&quot;&gt;3. 使用zookeeper打造軟體式負載平衡&lt;/h3&gt;
@@ -2813,7 +2939,7 @@ author answer: hard to implement JIT.&lt;/p&gt;
 &lt;p&gt;這個session主要在介紹zookeeper，由於時間很短，只有15分鐘。&lt;br /&gt;
 所以都是講很high level，並沒有講到detail的實作。&lt;/p&gt;
 
-&lt;p&gt;&amp;lt;/br&amp;gt;&lt;/p&gt;
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
 
 &lt;hr /&gt;
 &lt;h3 id=&quot;4-workshop動手玩java專案建置工具以gradle與docker為例&quot;&gt;4. workshop動手玩Java專案建置工具：以Gradle與Docker為例&lt;/h3&gt;
@@ -2855,7 +2981,7 @@ author answer: hard to implement JIT.&lt;/p&gt;
   &lt;li&gt;functional test&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;p&gt;&amp;lt;/br&amp;gt;&lt;/p&gt;
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
 
 &lt;hr /&gt;
 &lt;h3 id=&quot;5-akka-cluster-in-java&quot;&gt;5. Akka Cluster in Java&lt;/h3&gt;
@@ -2863,7 +2989,7 @@ author answer: hard to implement JIT.&lt;/p&gt;
 
 &lt;p&gt;[Git repo for Akka cluster example] (https://github.com/jiayun/akka_samples)&lt;/p&gt;
 
-&lt;p&gt;&amp;lt;/br&amp;gt;&lt;/p&gt;
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
 
 &lt;hr /&gt;
 &lt;h3 id=&quot;6-使用java的futurepromise-api來撰寫非同步程式&quot;&gt;6. 使用Java的Future/Promise API來撰寫非同步程式&lt;/h3&gt;
@@ -2931,7 +3057,7 @@ author answer: hard to implement JIT.&lt;/p&gt;
   &lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;p&gt;&amp;lt;/br&amp;gt;&lt;/p&gt;
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
 
 &lt;hr /&gt;
 &lt;h3 id=&quot;7-other&quot;&gt;7. Other&lt;/h3&gt;
@@ -2998,7 +3124,6 @@ author answer: hard to implement JIT.&lt;/p&gt;
   &lt;li&gt;茶也是知名廠商&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;p&gt;&amp;lt;/font&amp;gt;&lt;/p&gt;
 </description>
                 <link>http://blog.kenyang.net/2015/12/04/jcconf-taiwan-2015-day-1</link>
                 <guid>http://blog.kenyang.net/2015/12/04/jcconf-taiwan-2015---day-1</guid>
@@ -3008,11 +3133,10 @@ author answer: hard to implement JIT.&lt;/p&gt;
         <item>
                 <title>Create a iSCSI target on Ubuntu</title>
                 <description>
-&lt;p&gt;&amp;lt;font size=3&amp;gt;
-這篇會介紹如何在Ubuntu上，建立一個iSCSI Target Server，&lt;br /&gt;
+&lt;p&gt;這篇會介紹如何在Ubuntu上，建立一個iSCSI Target Server，&lt;br /&gt;
 提供給別人測試使用。&lt;/p&gt;
 
-&lt;p&gt;&amp;lt;/br&amp;gt;&lt;/p&gt;
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
 &lt;h4 id=&quot;install-tgt&quot;&gt;Install tgt&lt;/h4&gt;
 &lt;hr /&gt;
 &lt;p&gt;首先要先安裝tgt這個package。&lt;/p&gt;
@@ -3021,7 +3145,7 @@ author answer: hard to implement JIT.&lt;/p&gt;
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 
-&lt;p&gt;&amp;lt;/br&amp;gt;&lt;/p&gt;
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
 &lt;h4 id=&quot;create-virtual-disks&quot;&gt;Create virtual disks&lt;/h4&gt;
 &lt;hr /&gt;
 
@@ -3033,7 +3157,7 @@ author answer: hard to implement JIT.&lt;/p&gt;
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 
-&lt;p&gt;&amp;lt;/br&amp;gt;&lt;/p&gt;
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
 &lt;h4 id=&quot;create-targets&quot;&gt;Create targets&lt;/h4&gt;
 &lt;hr /&gt;
 
@@ -3051,7 +3175,7 @@ author answer: hard to implement JIT.&lt;/p&gt;
 
 &lt;!--more--&gt;
 
-&lt;p&gt;&amp;lt;/br&amp;gt;&lt;/p&gt;
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
 &lt;h4 id=&quot;create-lun&quot;&gt;Create LUN&lt;/h4&gt;
 &lt;hr /&gt;
 
@@ -3062,7 +3186,7 @@ author answer: hard to implement JIT.&lt;/p&gt;
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 
-&lt;p&gt;&amp;lt;/br&amp;gt;&lt;/p&gt;
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
 &lt;h4 id=&quot;enable-the-target-to-accept-any-initiators&quot;&gt;Enable the target to accept any initiators&lt;/h4&gt;
 &lt;hr /&gt;
 
@@ -3075,7 +3199,7 @@ author answer: hard to implement JIT.&lt;/p&gt;
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 
-&lt;p&gt;&amp;lt;/br&amp;gt;&lt;/p&gt;
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
 &lt;h4 id=&quot;create-user&quot;&gt;Create user&lt;/h4&gt;
 &lt;hr /&gt;
 
@@ -3087,15 +3211,13 @@ author answer: hard to implement JIT.&lt;/p&gt;
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 
-&lt;p&gt;&amp;lt;/br&amp;gt;&lt;/p&gt;
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
 &lt;h4 id=&quot;show-configuration&quot;&gt;Show configuration&lt;/h4&gt;
 &lt;hr /&gt;
 
 &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ tgtadm --lld iscsi --mode target --op show
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
-
-&lt;p&gt;&amp;lt;/font&amp;gt;&lt;/p&gt;
 
 </description>
                 <link>http://blog.kenyang.net/2015/12/01/create-a-iscsi-target-on-ubuntu</link>
@@ -3106,8 +3228,6 @@ author answer: hard to implement JIT.&lt;/p&gt;
         <item>
                 <title>How to use NodeJS &amp; MongoDB with Docker?</title>
                 <description>
-&lt;p&gt;&amp;lt;font size=3&amp;gt;&lt;/p&gt;
-
 &lt;p&gt;這篇會講如何在Docker上部署一個NodeJS+MongoDB的application，&lt;br /&gt;
 所以會分二個部分來講，&lt;/p&gt;
 
@@ -3126,7 +3246,7 @@ author answer: hard to implement JIT.&lt;/p&gt;
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 
-&lt;p&gt;&amp;lt;/br&amp;gt;&lt;/p&gt;
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
 &lt;h4 id=&quot;create-a-container&quot;&gt;Create a container&lt;/h4&gt;
 &lt;hr /&gt;
 &lt;p&gt;接著就可以把MongoDB的image抓下來以及run。&lt;/p&gt;
@@ -3142,7 +3262,7 @@ author answer: hard to implement JIT.&lt;/p&gt;
 
 &lt;!--more--&gt;
 
-&lt;p&gt;&amp;lt;/br&amp;gt;&lt;/p&gt;
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
 &lt;h4 id=&quot;connect-to-a-container&quot;&gt;Connect to a container&lt;/h4&gt;
 &lt;hr /&gt;
 &lt;p&gt;那麼怎麼連進去這個MongoDB呢？&lt;br /&gt;
@@ -3166,7 +3286,7 @@ author answer: hard to implement JIT.&lt;/p&gt;
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 
-&lt;p&gt;&amp;lt;/br&amp;gt;&lt;/p&gt;
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
 &lt;h3 id=&quot;2-在docker上部署nodejsexpress&quot;&gt;2. 在Docker上部署NodeJS+Express&lt;/h3&gt;
 
 &lt;p&gt;首先先建立一個folder，用來放置source code以及json等檔案。&lt;/p&gt;
@@ -3176,7 +3296,7 @@ author answer: hard to implement JIT.&lt;/p&gt;
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 
-&lt;p&gt;&amp;lt;/br&amp;gt;&lt;/p&gt;
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
 &lt;h4 id=&quot;packagejson&quot;&gt;Package.json&lt;/h4&gt;
 &lt;hr /&gt;
 &lt;p&gt;接著在&lt;code class=&quot;highlighter-rouge&quot;&gt;test-app&lt;/code&gt;這個folder底下，建立一個&lt;code class=&quot;highlighter-rouge&quot;&gt;package.json&lt;/code&gt;，&lt;br /&gt;
@@ -3204,7 +3324,7 @@ author answer: hard to implement JIT.&lt;/p&gt;
   &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;mongoose&lt;/code&gt; : MongoDB client driver&lt;/li&gt;
 &lt;/ol&gt;
 
-&lt;p&gt;&amp;lt;/br&amp;gt;&lt;/p&gt;
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
 &lt;h4 id=&quot;schemajs&quot;&gt;Schema.js&lt;/h4&gt;
 &lt;hr /&gt;
 &lt;p&gt;接著一樣在&lt;code class=&quot;highlighter-rouge&quot;&gt;test-app&lt;/code&gt;底下，建立一個&lt;code class=&quot;highlighter-rouge&quot;&gt;Schema.js&lt;/code&gt;， &lt;br /&gt;
@@ -3222,7 +3342,7 @@ author answer: hard to implement JIT.&lt;/p&gt;
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 
-&lt;p&gt;&amp;lt;/br&amp;gt;&lt;/p&gt;
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
 &lt;h4 id=&quot;indexjs&quot;&gt;Index.js&lt;/h4&gt;
 &lt;hr /&gt;
 &lt;p&gt;接著一樣在&lt;code class=&quot;highlighter-rouge&quot;&gt;test-app&lt;/code&gt;底下，建立一個&lt;code class=&quot;highlighter-rouge&quot;&gt;index.js&lt;/code&gt;，&lt;br /&gt;
@@ -3271,7 +3391,7 @@ author answer: hard to implement JIT.&lt;/p&gt;
 是待會會透過&lt;code class=&quot;highlighter-rouge&quot;&gt;--link&lt;/code&gt;的指令指定的，&lt;br /&gt;
 一旦你指定了，就會在container中的&lt;code class=&quot;highlighter-rouge&quot;&gt;/etc/hosts&lt;/code&gt;裡面增加一筆record。&lt;/p&gt;
 
-&lt;p&gt;&amp;lt;/br&amp;gt;&lt;/p&gt;
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
 &lt;h4 id=&quot;dockerfile&quot;&gt;DockerFile&lt;/h4&gt;
 &lt;hr /&gt;
 
@@ -3302,7 +3422,7 @@ CMD [&quot;node&quot;, &quot;/src/index.js&quot;]
 這個是用來設置環境變數，因為我們設定了&lt;code class=&quot;highlighter-rouge&quot;&gt;dev&lt;/code&gt;，&lt;br /&gt;
 所以在&lt;code class=&quot;highlighter-rouge&quot;&gt;index.js&lt;/code&gt;中，才會去configure dev。&lt;/p&gt;
 
-&lt;p&gt;&amp;lt;/br&amp;gt;&lt;/p&gt;
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
 &lt;h4 id=&quot;build-image--run&quot;&gt;Build image &amp;amp; Run&lt;/h4&gt;
 &lt;hr /&gt;
 
@@ -3311,7 +3431,7 @@ CMD [&quot;node&quot;, &quot;/src/index.js&quot;]
 &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ docker build -t ken-yang/centos-nodejs:v1 .
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
-&lt;p&gt;&amp;lt;/br&amp;gt;
+&lt;p&gt;&lt;br /&gt;
 Build完以後，就可以用下面的指令去把container run起來。&lt;br /&gt;
 注意&lt;code class=&quot;highlighter-rouge&quot;&gt;--link ken-mongo:db&lt;/code&gt;，&lt;br /&gt;
 意思就是把現在正在running的&lt;code class=&quot;highlighter-rouge&quot;&gt;ken-mongo&lt;/code&gt;與現在這個新的container連起來。&lt;br /&gt;
@@ -3325,7 +3445,7 @@ Build完以後，就可以用下面的指令去把container run起來。&lt;br /
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 
-&lt;p&gt;&amp;lt;/br&amp;gt;&lt;/p&gt;
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
 &lt;h4 id=&quot;test&quot;&gt;Test&lt;/h4&gt;
 &lt;hr /&gt;
 
@@ -3343,7 +3463,6 @@ Build完以後，就可以用下面的指令去把container run起來。&lt;br /
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 
-&lt;p&gt;&amp;lt;/font&amp;gt;&lt;/p&gt;
 </description>
                 <link>http://blog.kenyang.net/2015/11/30/how-to-use-nodejs-mongodb-with-docker</link>
                 <guid>http://blog.kenyang.net/2015/11/30/how-to-use-nodejs--mongodb-with-docker</guid>
@@ -3353,8 +3472,6 @@ Build完以後，就可以用下面的指令去把container run起來。&lt;br /
         <item>
                 <title>How to resize a LVM partition?</title>
                 <description>
-&lt;p&gt;&amp;lt;font size=3&amp;gt;&lt;/p&gt;
-
 &lt;p&gt;這篇算是延續&lt;a href=&quot;http://blog.kenyang.net/2015/11/27/do-not-allocate-all-the-lvm-space-with-preseed/&quot;&gt;上一篇&lt;/a&gt;的主題，假設VG裡面還有free space尚未用到，&lt;br /&gt;
 那麼過一段時間以後，該怎麼把它拿出來用?&lt;br /&gt;
 所以這篇主要會講到下面2個主題：&lt;/p&gt;
@@ -3373,7 +3490,7 @@ Build完以後，就可以用下面的指令去把container run起來。&lt;br /
   &lt;li&gt;1-2. Extend from &lt;code class=&quot;highlighter-rouge&quot;&gt;new disk&lt;/code&gt;&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;p&gt;&amp;lt;/br&amp;gt;&lt;/p&gt;
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
 &lt;h4 id=&quot;1-1-extend-from-pv&quot;&gt;1-1. Extend from PV&lt;/h4&gt;
 &lt;hr /&gt;
 &lt;p&gt;第一種是延續&lt;a href=&quot;http://blog.kenyang.net/2015/11/27/do-not-allocate-all-the-lvm-space-with-preseed/&quot;&gt;上一篇&lt;/a&gt;，&lt;br /&gt;
@@ -3407,14 +3524,14 @@ $ lvs
   &lt;li&gt;resize2fs&lt;/li&gt;
 &lt;/ol&gt;
 
-&lt;p&gt;&amp;lt;/br&amp;gt;
+&lt;p&gt;&lt;br /&gt;
 使用方式如下，&lt;/p&gt;
 
 &lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$ &lt;/span&gt;lvresize -L +100G /dev/mapper/ubuntu--vg-tmp
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 
-&lt;p&gt;&amp;lt;/br&amp;gt;
+&lt;p&gt;&lt;br /&gt;
 完成上述指令以後，可以再透過&lt;code class=&quot;highlighter-rouge&quot;&gt;lvs&lt;/code&gt;來看一下tmp這個LV是否真的有加大100G。&lt;/p&gt;
 
 &lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$ &lt;/span&gt;lvs
@@ -3430,7 +3547,7 @@ Filesystem                  Size  Used Avail Use% Mounted on
 /dev/mapper/ubuntu--vg-tmp   19G   44M   18G   1% /tmp
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
-&lt;p&gt;&amp;lt;/br&amp;gt;
+&lt;p&gt;&lt;br /&gt;
 根據上面的output，你會發現&lt;code class=&quot;highlighter-rouge&quot;&gt;LV&lt;/code&gt;真的有加大100G，&lt;br /&gt;
 可是&lt;code class=&quot;highlighter-rouge&quot;&gt;df&lt;/code&gt;中的filesystem size並沒有變動，&lt;br /&gt;
 因為少用了&lt;code class=&quot;highlighter-rouge&quot;&gt;resize2fs&lt;/code&gt;。&lt;br /&gt;
@@ -3443,7 +3560,7 @@ Filesystem                  Size  Used Avail Use% Mounted on
 &lt;p&gt;最後一個是size的參數，其實可以不用加，&lt;br /&gt;
 如果不加，就是用整個LV可以用的空間。&lt;/p&gt;
 
-&lt;p&gt;&amp;lt;/br&amp;gt;&lt;/p&gt;
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
 &lt;h4 id=&quot;1-2-extend-from-new-disk&quot;&gt;1-2. Extend from new disk&lt;/h4&gt;
 &lt;hr /&gt;
 &lt;p&gt;第二種Extend的方法是把新disk來加入至lv中。&lt;br /&gt;
@@ -3466,7 +3583,7 @@ sda    8:0    0  1020G  0 disk
 sdb    8:16   0   200G  0 disk
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
-&lt;p&gt;&amp;lt;/br&amp;gt;&lt;/p&gt;
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
 
 &lt;p&gt;在新增一個&lt;code class=&quot;highlighter-rouge&quot;&gt;PV&lt;/code&gt;前，&lt;br /&gt;
 必須先format disk成LVM的格式。&lt;/p&gt;
@@ -3493,7 +3610,7 @@ sdb    8:16   0   200G  0 disk
 &lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$ &lt;/span&gt;fdisk -l /dev/sdb
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
-&lt;p&gt;&amp;lt;/br&amp;gt;
+&lt;p&gt;&lt;br /&gt;
 這時候就可以用&lt;code class=&quot;highlighter-rouge&quot;&gt;pvcreate &lt;/code&gt;來新增一個PV，&lt;br /&gt;
 然後再用&lt;code class=&quot;highlighter-rouge&quot;&gt;pvs&lt;/code&gt;看看是否有成功。&lt;/p&gt;
 
@@ -3505,18 +3622,18 @@ sdb    8:16   0   200G  0 disk
   /dev/sdb1            lvm2 a-    200.00g 200.00g
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
-&lt;p&gt;&amp;lt;/br&amp;gt;
+&lt;p&gt;&lt;br /&gt;
 接著就可以用&lt;code class=&quot;highlighter-rouge&quot;&gt;vgextend&lt;/code&gt;這個指令，&lt;br /&gt;
 把剛剛新增的&lt;code class=&quot;highlighter-rouge&quot;&gt;PV&lt;/code&gt;加入至原有的&lt;code class=&quot;highlighter-rouge&quot;&gt;ubuntu-vg&lt;/code&gt;當中，&lt;/p&gt;
 
 &lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$ &lt;/span&gt;vgextend ubuntu-vg /dev/sdb1
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
-&lt;p&gt;&amp;lt;/br&amp;gt;
+&lt;p&gt;&lt;br /&gt;
 然後一樣用&lt;code class=&quot;highlighter-rouge&quot;&gt;vgs&lt;/code&gt;去看看&lt;code class=&quot;highlighter-rouge&quot;&gt;Free PE&lt;/code&gt;，應該會多了200g。&lt;br /&gt;
 然後就可以用上面的&lt;code class=&quot;highlighter-rouge&quot;&gt;lvresize&lt;/code&gt;以及&lt;code class=&quot;highlighter-rouge&quot;&gt;resize2fs&lt;/code&gt;去Extend某個LV了。&lt;/p&gt;
 
-&lt;p&gt;&amp;lt;/br&amp;gt;&amp;lt;/br&amp;gt;&amp;lt;/br&amp;gt;&lt;/p&gt;
+&lt;p&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;/p&gt;
 
 &lt;h3 id=&quot;2-shrink&quot;&gt;2. Shrink&lt;/h3&gt;
 &lt;hr /&gt;
@@ -3535,14 +3652,14 @@ sdb    8:16   0   200G  0 disk
 &lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$ &lt;/span&gt;umount /tmp
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
-&lt;p&gt;&amp;lt;/br&amp;gt;
+&lt;p&gt;&lt;br /&gt;
 接著才可以shrink filesystem，&lt;br /&gt;
 透過&lt;code class=&quot;highlighter-rouge&quot;&gt;resize2fs&lt;/code&gt;去把&lt;code class=&quot;highlighter-rouge&quot;&gt;tmp&lt;/code&gt;縮到19G。&lt;/p&gt;
 
 &lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$ &lt;/span&gt;resize2fs /dev/mapper/ubuntu--vg-tmp 19G
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
-&lt;p&gt;&amp;lt;/br&amp;gt;&lt;/p&gt;
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
 
 &lt;p&gt;最後才是去shrink LV，一樣是用&lt;code class=&quot;highlighter-rouge&quot;&gt;lvresize&lt;/code&gt;去做，&lt;br /&gt;
 過程中會show warning，告訴你資料可能會遺失，是否真的要做shrink？&lt;br /&gt;
@@ -3556,7 +3673,7 @@ Do you really want to reduce tmp? &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;
   Logical volume tmp successfully resized
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
-&lt;p&gt;&amp;lt;/br&amp;gt;
+&lt;p&gt;&lt;br /&gt;
 最後在mount起來，以及用&lt;code class=&quot;highlighter-rouge&quot;&gt;df&lt;/code&gt;去看，&lt;br /&gt;
 應該會發現&lt;code class=&quot;highlighter-rouge&quot;&gt;tmp&lt;/code&gt;只剩下19G了！&lt;/p&gt;
 
@@ -3568,7 +3685,6 @@ Filesystem                  Size  Used Avail Use% Mounted on
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 
-&lt;p&gt;&amp;lt;/font&amp;gt;&lt;/p&gt;
 </description>
                 <link>http://blog.kenyang.net/2015/11/27/how-to-extendreduce-lvm</link>
                 <guid>http://blog.kenyang.net/2015/11/27/how-to-extendreduce-lvm</guid>
@@ -3578,8 +3694,7 @@ Filesystem                  Size  Used Avail Use% Mounted on
         <item>
                 <title>Do not allocate all the LVM space with preseed</title>
                 <description>
-&lt;p&gt;&amp;lt;font size=3&amp;gt;
-使用Preseed file分割LVM時，&lt;br /&gt;
+&lt;p&gt;使用Preseed file分割LVM時，&lt;br /&gt;
 並無法做到只使用某部分的VG就好，&lt;br /&gt;
 舉例來說，假設你有一個100G的硬碟，  &lt;br /&gt;
 然後preseed file如下，&lt;/p&gt;
@@ -3643,7 +3758,6 @@ sed -i &lt;span class=&quot;s1&quot;&gt;'/to_be_free/d'&lt;/span&gt; /target/etc
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 
-&lt;p&gt;&amp;lt;/font&amp;gt;&lt;/p&gt;
 </description>
                 <link>http://blog.kenyang.net/2015/11/27/do-not-allocate-all-the-lvm-space-with-preseed</link>
                 <guid>http://blog.kenyang.net/2015/11/27/do-not-allocate-all-the-lvm-space-with-preseed</guid>
@@ -3652,8 +3766,7 @@ sed -i &lt;span class=&quot;s1&quot;&gt;'/to_be_free/d'&lt;/span&gt; /target/etc
 
         <item>
                 <title>如何把Google Blogger搬到Github pages</title>
-                <description>&lt;p&gt;&amp;lt;font size=3&amp;gt;
-最近一直很想從Google Blogger中離家出走，因為在blogger寫筆記實在太麻煩了，&lt;br /&gt;
+                <description>&lt;p&gt;最近一直很想從Google Blogger中離家出走，因為在blogger寫筆記實在太麻煩了，&lt;br /&gt;
 每一個筆記的format每次都調得好累，&lt;br /&gt;
 且我很常在local寫一份markdown，&lt;br /&gt;
 這樣等於我要寫二次..&lt;/p&gt;
@@ -3681,7 +3794,7 @@ sed -i &lt;span class=&quot;s1&quot;&gt;'/to_be_free/d'&lt;/span&gt; /target/etc
 repo名稱為&lt;code class=&quot;highlighter-rouge&quot;&gt;your_name.github.io&lt;/code&gt;，&lt;br /&gt;
 所以我的就是&lt;code class=&quot;highlighter-rouge&quot;&gt;ken-yang.github.io&lt;/code&gt;。&lt;/p&gt;
 
-&lt;p&gt;&amp;lt;/br&amp;gt;&lt;/p&gt;
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
 
 &lt;h2 id=&quot;2-jekyll-bootstrap&quot;&gt;2. jekyll-bootstrap&lt;/h2&gt;
 
@@ -3699,7 +3812,7 @@ repo名稱為&lt;code class=&quot;highlighter-rouge&quot;&gt;your_name.github.io
 
 &lt;p&gt;接著你就可以去&lt;code class=&quot;highlighter-rouge&quot;&gt;USERNAME.github.io&lt;/code&gt;看看，應該會有default的index。&lt;/p&gt;
 
-&lt;p&gt;&amp;lt;/br&amp;gt;&lt;/p&gt;
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
 
 &lt;h2 id=&quot;3-jekyll-import-匯出與匯入&quot;&gt;3. jekyll-import （匯出與匯入）&lt;/h2&gt;
 
@@ -3738,7 +3851,7 @@ repo名稱為&lt;code class=&quot;highlighter-rouge&quot;&gt;your_name.github.io
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 
-&lt;p&gt;&amp;lt;/br&amp;gt;&lt;/p&gt;
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
 &lt;h2 id=&quot;4-安裝jekyll&quot;&gt;4. 安裝jekyll&lt;/h2&gt;
 
 &lt;p&gt;接著安裝&lt;a href=&quot;https://jekyllrb.com/&quot;&gt;jekyll&lt;/a&gt;，&lt;br /&gt;
@@ -3772,7 +3885,7 @@ jekyll主要功用為:&lt;/p&gt;
 &lt;/div&gt;
 &lt;p&gt;然後一樣去&lt;code class=&quot;highlighter-rouge&quot;&gt;USERNAME.github.io&lt;/code&gt;看看，會有原本在blogger上的posts了！&lt;/p&gt;
 
-&lt;p&gt;&amp;lt;/br&amp;gt;&lt;/p&gt;
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
 &lt;h2 id=&quot;5-安裝jekyll-paginate&quot;&gt;5. 安裝jekyll-paginate&lt;/h2&gt;
 
 &lt;p&gt;jekyll-paginate功用就是分頁，如果你不想要你的首頁就把所有的post通通列出來，&lt;br /&gt;
@@ -3835,7 +3948,7 @@ mv完成以後，接著打開&lt;code class=&quot;highlighter-rouge&quot;&gt;ind
 &lt;p&gt;完成以後，在&lt;code class=&quot;highlighter-rouge&quot;&gt;_site/blog/&lt;/code&gt;底下，就會有很多&lt;code class=&quot;highlighter-rouge&quot;&gt;pageX&lt;/code&gt;的資料夾，&lt;br /&gt;
 接著就可以通通在push回去github上。&lt;/p&gt;
 
-&lt;p&gt;&amp;lt;/br&amp;gt;&lt;/p&gt;
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
 &lt;h2 id=&quot;6-整合adsense&quot;&gt;6. 整合Adsense&lt;/h2&gt;
 
 &lt;p&gt;這裡用adsense當作廣告source，&lt;br /&gt;
@@ -3875,7 +3988,7 @@ mv完成以後，接著打開&lt;code class=&quot;highlighter-rouge&quot;&gt;ind
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 
-&lt;p&gt;&amp;lt;/br&amp;gt;&lt;/p&gt;
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
 &lt;h2 id=&quot;7-整合comment-system&quot;&gt;7. 整合Comment system&lt;/h2&gt;
 
 &lt;p&gt;jekyll裡面內建了很多的comment system，有disqus、facebook…etc.&lt;br /&gt;
@@ -3895,7 +4008,7 @@ mv完成以後，接著打開&lt;code class=&quot;highlighter-rouge&quot;&gt;ind
 
 &lt;p&gt;完成以後，一樣重新render就完成了。&lt;/p&gt;
 
-&lt;p&gt;&amp;lt;/br&amp;gt;&lt;/p&gt;
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
 &lt;h2 id=&quot;8-整合google-analytics&quot;&gt;8. 整合Google Analytics&lt;/h2&gt;
 
 &lt;p&gt;jekyll也有內建analytics的功能，其實跟上面的comment system差不多，&lt;br /&gt;
@@ -3927,20 +4040,10 @@ mv完成以後，接著打開&lt;code class=&quot;highlighter-rouge&quot;&gt;ind
 最後只要把你的cname指向username.github.io，&lt;br /&gt;
 以及在目錄底下建立一個名稱為&lt;code class=&quot;highlighter-rouge&quot;&gt;CNAME&lt;/code&gt;的file，填入你的domain就好了。&lt;/p&gt;
 
-&lt;p&gt;&amp;lt;/font&amp;gt;&lt;/p&gt;
-
 </description>
                 <link>http://blog.kenyang.net/2015/11/26/move-blogger-to-github</link>
                 <guid>http://blog.kenyang.net/2015/11/26/move-blogger-to-github</guid>
                 <pubDate>Thu, 26 Nov 2015 00:00:00 +0800</pubDate>
-        </item>
-
-        <item>
-                <title>Setup Linux Multipath in Ubuntu</title>
-                <description>&lt;div style=&quot;font-size: 15px; line-height: 22px;&quot;&gt;&lt;br /&gt;這篇要講Linux Multipath，&lt;br /&gt;為了使用Linux Multipath，所以用了multipath-tool這個package，&lt;br /&gt;multipath-tool提供了二個功能，&lt;br /&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;1. input/output fail-over&lt;br /&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;2. load balancing for block device&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;1. Prerequisite&lt;/span&gt;&lt;br /&gt;&lt;br /&gt;開始之前先，準備下面所需要的環境，&lt;br /&gt;1. 1台server上有2張網卡(eth0, eth1)&lt;br /&gt;2. iSCSI target x1&lt;br /&gt;理論上，server上的2張網卡應接在不同的swtich上，抑或在不同的網段上。&lt;br /&gt;目的在於某一條線路斷時，才不會影響另外一條。&lt;br /&gt;但為了測試可以先都放在同個網段上。&lt;br /&gt;&lt;br /&gt;假設，&lt;br /&gt;eth0 IP為172.16.131.134&lt;br /&gt;eth1 IP為172.16.131.135&lt;br /&gt;iSCSI IP為172.16.131.138&lt;br /&gt;&lt;br /&gt;整體的網路架構可以參考此張圖，&lt;br /&gt;&lt;div class=&quot;separator&quot; style=&quot;clear: both; text-align: center;&quot;&gt;&lt;a href=&quot;http://1.bp.blogspot.com/-ZfPX7UenJK4/Vcw-nyopwMI/AAAAAAAAFmo/_MV4SmjPRo8/s1600/Network%2BDiagram%2B-%2BPage%2B1%2B%25283%2529.png&quot; imageanchor=&quot;1&quot; style=&quot;margin-left: 1em; margin-right: 1em;&quot;&gt;&lt;img border=&quot;0&quot; height=&quot;400&quot; src=&quot;http://1.bp.blogspot.com/-ZfPX7UenJK4/Vcw-nyopwMI/AAAAAAAAFmo/_MV4SmjPRo8/s400/Network%2BDiagram%2B-%2BPage%2B1%2B%25283%2529.png&quot; width=&quot;263&quot; /&gt;&lt;/a&gt;&lt;/div&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;2. Installation&lt;/span&gt;&lt;br /&gt;&lt;br /&gt;接著安裝我們需要的package，&lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;apt-get install open-iscsi&lt;br /&gt;apt-get install multipath-tools&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;3. multipath configuration&lt;/span&gt;&lt;br /&gt;&lt;br /&gt;接著來設定multipah，先create一個config file，（你也可以從/usr/share/doc/multipath-tools/examples/multipath.conf.synthetic這裏複製至/etc/multipah.conf底下）&lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;$ vim /etc/multipath.conf&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;內容如下，參數的說明可以看這（&lt;a href=&quot;https://help.ubuntu.com/lts/serverguide/multipath-dm-multipath-config-file.html&quot;&gt;點我&lt;/a&gt;）&lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;defaults {&lt;br /&gt;     user_friendly_names yes&lt;br /&gt;}&lt;br /&gt;&lt;br /&gt;devices {&lt;br /&gt;     device {&lt;br /&gt;          polling_interval 5&lt;br /&gt;          path_selector &quot;round-robin 0&quot;&lt;br /&gt;          path_grouping_policy group_by_prio&lt;br /&gt;          prio rdac&lt;br /&gt;          path_checker rdac&lt;br /&gt;          hardware_handler &quot;1 rdac&quot;&lt;br /&gt;          failback immediate&lt;br /&gt;          features &quot;2 pg_init_retires 50&quot;&lt;br /&gt;          no_path_retry 30&lt;br /&gt;          rr_min_io 100&lt;br /&gt;     }&lt;br /&gt;}&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;4. iSCSI configuration&lt;/span&gt;&lt;br /&gt;&lt;br /&gt;接著我們要設定iSCSI，讓我們在login某target時，&lt;br /&gt;可以透過不同的NIC同時進行login，&lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;$ iscsiadm -m iface -I eth0 -o new&lt;br /&gt;$ iscsiadm -m iface -I eth1 -o new&lt;br /&gt;$ iscsiadm -m iface -I eth0 --op=update -n iface.net_ifacename -v eth0&lt;br /&gt;$ iscsiadm -m iface -I eth1 --op=update -n iface.net_ifacename -v eth1&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;接著要把reverse path filtering關掉，&lt;br /&gt;否則其中一張網卡登入target時的packet會被ignore，&lt;br /&gt;所以要去編輯/etc/sysctl.conf，&lt;br /&gt;加入下面兩行。&lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;net.ipv4.conf.eth0.rp_filter=2&lt;br /&gt;net.ipv4.conf.eth1.rp_filter=2&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;然後執行下面指令讓conf生效。&lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;$ sysctl -p&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;5. Login iSCSI&lt;/span&gt;&lt;br /&gt;&lt;br /&gt;首先先discovery該iSCSI，看該iSCSI上有哪些target，&lt;br /&gt;可以發現一模一樣的target卻顯示了2筆，這是因為剛剛前面我們設定了2張nic了！&lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;$ iscsiadm -m discovery -t st -p 172.16.131.138:3260&lt;br /&gt;172.16.131.138:3260,1 iqn.2015-07.net.kenyang:ken.iscsi&lt;br /&gt;172.16.131.138:3260,1 iqn.2015-07.net.kenyang:ken.iscsi&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;接著login該target，會發現login了二次，且這二次分別是透過eth0以及eth1去完成。&lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;$ iscsiadm -m node -T iqn.2015-07.net.kenyang:ken.iscsi --login&lt;br /&gt;&lt;br /&gt;Logging in to [iface: eth0, target: iqn.2015-07.net.kenyang:ken.iscsi, portal: 172.16.131.138,3260]&lt;br /&gt;Logging in to [iface: eth1, target: iqn.2015-07.net.kenyang:ken.iscsi, portal: 172.16.131.138,3260]&lt;br /&gt;Login to [iface: eth0, target: iqn.2015-07.net.kenyang:ken.iscsi, portal: 172.16.131.138,3260]: successful&lt;br /&gt;Login to [iface: eth1, target: iqn.2015-07.net.kenyang:ken.iscsi, portal: 172.16.131.138,3260]: successful&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;顯示multipath的topology，&lt;br /&gt;會發現有2個blcok device，&lt;br /&gt;因為我們登入了2次，所以該target在我們server上被視為2個block device，分別為sdb, sdc。&lt;br /&gt;然後再透過device mapper的概念去把它aggregate成一個/dev/mapper/mpath1。&lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;$ multipath -ll&lt;br /&gt;&lt;br /&gt;mpath1 (xxxxxxxxxxxxxxxxxxx) dm-6 EQLOGIC,100E-00&lt;br /&gt;size=60G features='0' hwhandler='0' wp=rw&lt;br /&gt;`-+- policy='round-robin 0' prio=1 status=active&lt;br /&gt; |- 7:0:0:0 sdb 8:16 active ready running&lt;br /&gt; `- 8:0:0:0 sdc 8:32 active ready running&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;&lt;span style=&quot;color: #e06666; font-size: 18px;&quot;&gt;6. Format block device&lt;/span&gt;&lt;br /&gt;&lt;br /&gt;最後一步就要把該block device mount起來使用，&lt;br /&gt;但mount之前要先fdisk以及mkfs，要注意我們的對象不是sdb,sdc，&lt;br /&gt;而是mpatch1。&lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;fdisk /dev/mapper/mpath1&lt;br /&gt;mkfs.ext4 /dev/mapper/mpath1&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;完成以後就可以mount起來使用看看。&lt;br /&gt;&lt;pre class=&quot;brush: bash&quot;&gt;mount /dev/mapper/mpath1 /storage/&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;&lt;br /&gt;&lt;/div&gt;</description>
-                <link>http://blog.kenyang.net/2015/08/13/setup-linux-multipath-in-ubuntu</link>
-                <guid>http://blog.kenyang.net/2015/08/13/setup-linux-multipath-in-ubuntu</guid>
-                <pubDate>Thu, 13 Aug 2015 15:07:00 +0800</pubDate>
         </item>
 
 

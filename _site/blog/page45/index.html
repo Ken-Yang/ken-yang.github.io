@@ -225,6 +225,8 @@
   
     
   
+    
+  
 
 
 
@@ -299,6 +301,34 @@
     </div>
     <!-- This loops through the paginated posts -->
     
+      <h1><a style="color: #F22430" href="/2010/11/06/apache">Apache 限制目錄瀏覽</a></h1>
+      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
+      <p class="author">
+      <div class="date">
+        <span>06 November 2010</span>
+      </div>
+      </p>
+      <div class="content" style="line-height: 28px;">
+        前天去看了社群網站<br /><br />片頭有講到哈佛裡面的有些宿舍網站的apache 沒有拿掉index，<br /><br />因此有目錄瀏覽的功能，這樣該目錄底下所有的檔案都會被使用者看見，<br /><br />那該怎麼關掉呢?<br /><br />打開httpd.conf<br /><br />找到這行<br /><b><br /></b><br /><b>Options Indexes FollowSymLinks</b><br /><br />然後把<b>Indexes </b>拿掉<br /><br />然後重開apache，該目錄底下的檔案就不會被顯示出來!<br /><br />且會response 403 Forbidden。<br /><br />如果你要有些特定目錄是允許使用者看見的，<br /><br />那麼就在該目錄底下，把index放上去即可。<br /><br />假設<br /><br />test1底下的/images是允許被看見的<br /><br />test2底下是不允許的<br /><br />那麼設置就如下<br /><br /><br /><br /><br /><pre class="brush: xml">&lt;Directory "D:/test1/images"&gt; <br />     .....<br />     # 可以被看見的<br />     Options Indexes FollowSymLinks<br />     .....<br />&lt;/Directory&gt;<br />&lt;Directory "D:/test2/images"&gt; <br />     .....<br />     # 不可以被看見的<br />     Options FollowSymLinks<br />     .....<br />&lt;/Directory&gt;<br /><br /></pre><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
+      </div>
+      <footer>
+        <p><a class="myButton" href="/2010/11/06/apache">read more &raquo;</a></p>
+        <div>
+          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- ken on github -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3783438370424072"
+     data-ad-slot="1516206098"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+        </div>
+      </footer>
+      <hr>
+    
       <h1><a style="color: #F22430" href="/2010/11/06/jsp-include">JSP 兩種include 的差別</a></h1>
       <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
       <p class="author">
@@ -355,41 +385,13 @@
       </footer>
       <hr>
     
-      <h1><a style="color: #F22430" href="/2010/11/01/android-detect-screen-on-and-screen-off">android detect screen on and screen off</a></h1>
-      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
-      <p class="author">
-      <div class="date">
-        <span>01 November 2010</span>
-      </div>
-      </p>
-      <div class="content" style="line-height: 28px;">
-        android detect screen on and screen off<br /><br />android偵測螢幕的關閉與開啟，<br /><br />和偵測sd card一樣，<br /><br />Intent.ACTION_SCREEN_OFF和Intent.ACTION_SCREEN_ON是不能在AndroidManifest.xml裡面宣告的<br /><br />如:<br /><br /><pre class="brush: xml">&lt;receiver android:name="receiverScreen"&gt; <br />    &lt;intent-filter&gt;  <br />        &lt;action android:name="android.intent.action.SCREEN_ON" /&gt;<br />        &lt;action android:name="android.intent.action.SCREEN_OFF" /&gt;<br />    &lt;/intent-filter&gt;  <br />&lt;/receiver&gt;  <br /></pre><br /><br />這樣子的宣告<span class="Apple-style-span" style="color: red;"><b>沒有用</b></span>，你永遠都receive不到任何action<br /><br />詳細原因我也不知道，但是可以透過registerReceiver去實作，<br /><br />這裡舉個例子，先啟動一個service，由這個service去registerReceiver<br /><br />由service啟動的好處是，service可以常駐，<br /><br />如果你用acitivity去registerReceiver<br /><br />這個acitivity關閉以後，你一樣receive不到任何action<br /><br />且如果你只是想偵測acitivity的關閉與否的話，可以直接利用onResume和onPause去偵測即可<br /><br />不用特地去registerReceiver<br /><br /><br />但是如果今天你有一個widget在桌面，<br /><br />且我們是無法透過widget去registerReceiver，<br /><br />會出現exception（ReceiverCallNotAllowedException）<br /><br />所以一定得透過service去啟動。<br /><br />service的code如下:<br /><br /><pre class="brush: java">public class serviceScreen extends Service {<br /><br /> @Override<br /> public IBinder onBind(Intent intent) {<br />  // TODO Auto-generated method stub<br />  return null;<br /> }<br /> <br /> @Override<br /> public void onStart(Intent intent, int startId) {<br />     super.onStart(intent, startId);<br />     try {<br />          IntentFilter filter = new IntentFilter(Intent.ACTION_SCREEN_ON);<br />    <br />          filter.addAction(Intent.ACTION_SCREEN_OFF);<br />    <br />          BroadcastReceiver mReceiver = new receiverScreen();<br />   <br />          registerReceiver(mReceiver, filter);<br />     } catch (Exception e) {<br />          Log.d("main",e.toString());<br />     }<br /> }<br /><br />}<br /><br /><br /></pre><br /><br />receiver的code如下：<br /><br /><pre class="brush: java">public class receiverScreen extends BroadcastReceiver {<br /><br /> @Override<br /> public void onReceive(Context context, Intent intent) {<br />  <br />     if (intent.getAction().equals(Intent.ACTION_SCREEN_ON)){<br />          //收到螢幕開啟的通知<br />     }else{<br />          //收到螢幕關閉的通知<br />     }<br />  <br /> }<br /><br />}<br /><br /><br /></pre><br /><br /><br />接著就是在widget中去startService<br /><br />如下：<br /><br /><pre class="brush: java">public class widgetSmall extends AppWidgetProvider {<br /> <br /><br /> @SuppressWarnings("static-access")<br /> @Override<br /> public void onUpdate(Context context, AppWidgetManager appWidgetManager,int[] appWidgetIds) {<br />     super.onUpdate(context, appWidgetManager, appWidgetIds);<br />            <br />    //啟動一個service<br />     context.startService(new Intent(context, serviceScreen.class));<br />  <br />  <br /> }<br /> <br /><br /> @SuppressWarnings("static-access")<br /> @Override<br /> public void onDeleted(Context context, int[] appWidgetIds) {<br />     super.onDeleted(context, appWidgetIds);<br /><br /><br />    //當這個widget被刪除時，就stopService<br />      context.stopService(new Intent(context, serviceScreen.class) );<br />   <br />      android.os.Process.killProcess(android.os.Process.myPid());<br />  <br /> <br /> }<br /> <br /><br />}<br /><br /><br /></pre><br /><br /><br /><br /><br /><br /><br />
-      </div>
-      <footer>
-        <p><a class="myButton" href="/2010/11/01/android-detect-screen-on-and-screen-off">read more &raquo;</a></p>
-        <div>
-          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<!-- ken on github -->
-<ins class="adsbygoogle"
-     style="display:block"
-     data-ad-client="ca-pub-3783438370424072"
-     data-ad-slot="1516206098"
-     data-ad-format="auto"></ins>
-<script>
-(adsbygoogle = window.adsbygoogle || []).push({});
-</script>
-
-        </div>
-      </footer>
-      <hr>
-    
 
     <!-- Pagination links -->
     <div class="pagination">
       
         <a href="/blog/page44" class="previous">Previous</a>
       
-      <span class="page_number ">Page: 45 of 59</span>
+      <span class="page_number ">Page: 45 of 60</span>
       
         <a href="/blog/page46" class="next">Next</a>
       

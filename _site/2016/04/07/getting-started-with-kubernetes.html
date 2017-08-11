@@ -225,6 +225,8 @@
   
     
   
+    
+  
 
 
 
@@ -523,7 +525,7 @@ build完以後，可以在自己local測試看看，</p>
 <br />
 簡單說，如果你要在kubernetes的cluster裡面run起來<code class="highlighter-rouge">一組</code>container，就得有一個pod，<br />
 <code class="highlighter-rouge">一組</code>container的意思是，這個pod裡面由一個以上的container所組成。
-<br />&lt;/br&gt;
+<br /><br />
 用kubectl run來建立一個pod:</p>
 
 <div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>kubectl run hello-node --image<span class="o">=</span>gcr.io/ken-kubernetes-lab/hello-node:v1 --port<span class="o">=</span>8080

@@ -225,6 +225,8 @@
   
     
   
+    
+  
 
 
 
@@ -299,6 +301,34 @@
     </div>
     <!-- This loops through the paginated posts -->
     
+      <h1><a style="color: #F22430" href="/2011/03/18/gaej-datastoreneedindexexception-no">GAE/J DatastoreNeedIndexException: no matching index found解決方式</a></h1>
+      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
+      <p class="author">
+      <div class="date">
+        <span>18 March 2011</span>
+      </div>
+      </p>
+      <div class="content" style="line-height: 28px;">
+        今天在實作一對多的relation，<br /><br />在部署上去以後，一直覺得出錯，<br /><br />錯誤訊息是：<b>com.google.appengine.api.datastore.DatastoreNeedIndexException: no matching index found..</b><br /><br />原因當然是因為沒有建立index，可是覺得很怪，<br /><br />因為之前記得會自動幫我建立index，<br /><br />找了一下solution，<br /><br />發現只要在local端run一次，就會自動幫我建立好index，<br /><br />並且會放在project_path\war\WEB-INF\appengine-generated資料夾底下，<br /><br />檔名為datastore-indexes-auto.xml<br /><br />裡面就是幫你建立相關的index語法。<br /><br />當然你也可以自己建立index。<br /><br /><br /><br /><br /><br />
+      </div>
+      <footer>
+        <p><a class="myButton" href="/2011/03/18/gaej-datastoreneedindexexception-no">read more &raquo;</a></p>
+        <div>
+          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- ken on github -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3783438370424072"
+     data-ad-slot="1516206098"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+        </div>
+      </footer>
+      <hr>
+    
       <h1><a style="color: #F22430" href="/2011/03/10/implement-yahoo-login-using-bbauth">Implement Yahoo Login (Using BBAuth)</a></h1>
       <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
       <p class="author">
@@ -355,41 +385,13 @@
       </footer>
       <hr>
     
-      <h1><a style="color: #F22430" href="/2011/02/08/implement-facebook-login">實作 Facebook Login【舊版】</a></h1>
-      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
-      <p class="author">
-      <div class="date">
-        <span>08 February 2011</span>
-      </div>
-      </p>
-      <div class="content" style="line-height: 28px;">
-        這篇主要是在GAE上整合Facebook Login。<br /><br />在整合之前得先做一些準備!<br /><br />先講解三個基本運作條件。<br /><ol><li>User Authentication. 首先Facebook會先去認證這個user，判斷它的帳密是否有誤。</li><li>App Authorization. 第二步Facebook會先去認證你的網站，這可以保證user給予的<b><u>基本</u></b>資訊是給你的網站，而不是其他的。</li><li>App Authentication. 第三步是可以保證user知道有那些較<b><u>詳細</u></b>的資料可以被你的網站挖掘。</li></ol>知道基本運作條件以後，<br /><br />請先至<a href="http://www.facebook.com/developers/">http://www.facebook.com/developers/</a>此網站，<br /><br />進去以後會看到下圖（圖一），並且點選圖中紅色方框中的按鈕<b>Set Up New App。</b><br /><br /><table align="center" cellpadding="0" cellspacing="0" class="tr-caption-container" style="margin-left: auto; margin-right: auto; text-align: center;"><tbody><tr><td style="text-align: center;"><a href="http://4.bp.blogspot.com/_6SxqtkJQECI/TVCjnQAGoHI/AAAAAAAAAQ8/OwvpFu4z9zQ/s1600/0.png" imageanchor="1" style="margin-left: auto; margin-right: auto;"><img border="0" height="304" src="http://4.bp.blogspot.com/_6SxqtkJQECI/TVCjnQAGoHI/AAAAAAAAAQ8/OwvpFu4z9zQ/s640/0.png" width="640" /></a></td></tr><tr><td class="tr-caption" style="text-align: center;">圖一</td></tr></tbody></table>點選以後， 如果先前並沒有開發過Facebook相關app的developer，<br /><br />會見到下圖（圖二），告知您並沒有驗證過，請透過mobile phone or credit card驗證。（免費的）<br /><br />這裡我們選擇moblie phone做驗證。<br /><br /><table align="center" cellpadding="0" cellspacing="0" class="tr-caption-container" style="margin-left: auto; margin-right: auto; text-align: center;"><tbody><tr><td style="text-align: center;"><a href="http://4.bp.blogspot.com/_6SxqtkJQECI/TVCjpmh7OEI/AAAAAAAAARE/UioJ7P0QYpU/s1600/2.png" imageanchor="1" style="margin-left: auto; margin-right: auto;"><img border="0" height="136" src="http://4.bp.blogspot.com/_6SxqtkJQECI/TVCjpmh7OEI/AAAAAAAAARE/UioJ7P0QYpU/s640/2.png" width="640" /></a></td></tr><tr><td class="tr-caption" style="text-align: center;">圖二</td></tr></tbody></table>&nbsp;點選圖二中的mobile phone以後，會見到下圖（圖三），會要求您輸入您的電話號碼，<br /><br />記得要選取為台灣的國籍碼886，還有一點很重要！！！！<br /><br />在Phone Number欄位中，填寫的手機號碼，記得把0拿掉！！！<br /><br />如：963123123（不要加上0）<br /><br /><br /><table align="center" cellpadding="0" cellspacing="0" class="tr-caption-container" style="margin-left: auto; margin-right: auto; text-align: center;"><tbody><tr><td style="text-align: center;"><a href="http://3.bp.blogspot.com/_6SxqtkJQECI/TVCjqCQF2JI/AAAAAAAAARI/v2YA5iFiRC0/s1600/3.png" imageanchor="1" style="margin-left: auto; margin-right: auto;"><img border="0" height="498" src="http://3.bp.blogspot.com/_6SxqtkJQECI/TVCjqCQF2JI/AAAAAAAAARI/v2YA5iFiRC0/s640/3.png" width="640" /></a></td></tr><tr><td class="tr-caption" style="text-align: center;">圖三</td></tr></tbody></table><br />點下圖三中的Confirm按鈕以後，Facebook會回傳一組verify code至您的手機，<br /><br />請將verify code輸入。並按下按鈕OK。驗證成功後會出現下圖（圖四）<br /><br /><table align="center" cellpadding="0" cellspacing="0" class="tr-caption-container" style="margin-left: auto; margin-right: auto; text-align: center;"><tbody><tr><td style="text-align: center;"><a href="http://3.bp.blogspot.com/_6SxqtkJQECI/TVCjqt16p4I/AAAAAAAAARM/xdXuA-Ixzbk/s1600/4.png" imageanchor="1" style="margin-left: auto; margin-right: auto;"><img border="0" height="490" src="http://3.bp.blogspot.com/_6SxqtkJQECI/TVCjqt16p4I/AAAAAAAAARM/xdXuA-Ixzbk/s640/4.png" width="640" /></a></td></tr><tr><td class="tr-caption" style="text-align: center;">圖四</td></tr></tbody></table>&nbsp;當驗證完成以後，再去點選圖一中紅色方框中的按鈕<b>Set Up New App。</b><br /><b><br /></b><br />並且輸入App名稱，然後再點選圖五中的按鈕Create App。<br /><b><br /></b><br /><table align="center" cellpadding="0" cellspacing="0" class="tr-caption-container" style="margin-left: auto; margin-right: auto; text-align: center;"><tbody><tr><td style="text-align: center;"><a href="http://4.bp.blogspot.com/_6SxqtkJQECI/TVCjq3MipXI/AAAAAAAAARQ/4STQTHXX5js/s1600/5.png" imageanchor="1" style="margin-left: auto; margin-right: auto;"><img border="0" height="306" src="http://4.bp.blogspot.com/_6SxqtkJQECI/TVCjq3MipXI/AAAAAAAAARQ/4STQTHXX5js/s640/5.png" width="640" /></a></td></tr><tr><td class="tr-caption" style="text-align: center;">圖五</td></tr></tbody></table>完成以後，Facebook 會給予你這個app一些基本資訊（App ID、API Key、App Secret....etc）<br /><br />接著得做一些設定，點選圖六中的方框中的連結<b>Edit Settings</b><br /><br /><table align="center" cellpadding="0" cellspacing="0" class="tr-caption-container" style="margin-left: auto; margin-right: auto; text-align: center;"><tbody><tr><td style="text-align: center;"><a href="http://2.bp.blogspot.com/_6SxqtkJQECI/TVCjrb8GEFI/AAAAAAAAARU/QOU3IqlhIcY/s1600/6.png" imageanchor="1" style="margin-left: auto; margin-right: auto;"><img border="0" height="396" src="http://2.bp.blogspot.com/_6SxqtkJQECI/TVCjrb8GEFI/AAAAAAAAARU/QOU3IqlhIcY/s640/6.png" width="640" /></a></td></tr><tr><td class="tr-caption" style="text-align: center;">圖六</td></tr></tbody></table>點選以後，會進到如下圖(圖七)的畫面，請先點選左方的Web Site ，接著就輸入一些相關資訊！<br /><br /><br /><ol><li>Site URL：輸入您的網址（如：www.google.com）</li><li>Site Domain：輸入您的domain（如：google.com）</li></ol><br /><br /><table align="center" cellpadding="0" cellspacing="0" class="tr-caption-container" style="margin-left: auto; margin-right: auto; text-align: center;"><tbody><tr><td style="text-align: center;"><a href="http://1.bp.blogspot.com/_6SxqtkJQECI/TVCjrw869kI/AAAAAAAAARY/SAYS614DJZg/s1600/7.png" imageanchor="1" style="margin-left: auto; margin-right: auto;"><img border="0" height="340" src="http://1.bp.blogspot.com/_6SxqtkJQECI/TVCjrw869kI/AAAAAAAAARY/SAYS614DJZg/s640/7.png" width="640" /></a></td></tr><tr><td class="tr-caption" style="text-align: center;">圖七</td></tr></tbody></table><br />完成上述設定步驟以後，就可以來寫code了喔！！！<br /><br /><span style="color: red; font-size: x-large;">注意!!! 底下的code已經不能使用了! 因為FB改版了!</span><br /><span style="color: red; font-size: x-large;">所以請至<a href="http://blog.kenyang.net/2012/01/facebook-login.html">另一篇來看如何實作</a>!</span><br /><br />首先，請在你的加入facebook的script。<br /><br />如底下：<br /><br /><pre class="brush: html">&lt;script src="http://connect.facebook.net/en_US/all.js"&gt;&lt;/script&gt;<br /></pre><br /><br /><br />接著就輸入下段code！<br /><br /><pre class="brush: javascript">&lt;script&gt;<br /> //先做init的動作，輸入自己的app id<br /> FB.init({ <br />  appId:'你自己的app id', <br />  cookie:true, <br />  status:true, <br />  xfbml:true <br /> });<br /> <br /> //接著去subscribe一個event，就是去監聽一個event<br /> //這邊去監聽有關login的event。（也就是說login成功以後，會接收到訊息）<br /> FB.Event.subscribe('auth.login', function(response) {<br />  if (response.session) {<br />   alert('login success');//登入成功 <br />  } else {<br />   alert('login fail');<br />  }<br /> });<br />&lt;/script&gt;<br /></pre><br /><br /><br />完成以後就在你的頁面上，xfbml語法放置一個Facebook登入的button<br /><br />如下：<br /><br /><pre class="brush: html">&lt;fb:login-button&gt;Login with Facebook&lt;/fb:login-button&gt;<br /></pre><br /><br /><br />這樣就大功告成了！！！<br /><br /><br /><br /><br /><br /><br /><br />
-      </div>
-      <footer>
-        <p><a class="myButton" href="/2011/02/08/implement-facebook-login">read more &raquo;</a></p>
-        <div>
-          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<!-- ken on github -->
-<ins class="adsbygoogle"
-     style="display:block"
-     data-ad-client="ca-pub-3783438370424072"
-     data-ad-slot="1516206098"
-     data-ad-format="auto"></ins>
-<script>
-(adsbygoogle = window.adsbygoogle || []).push({});
-</script>
-
-        </div>
-      </footer>
-      <hr>
-    
 
     <!-- Pagination links -->
     <div class="pagination">
       
         <a href="/blog/page38" class="previous">Previous</a>
       
-      <span class="page_number ">Page: 39 of 59</span>
+      <span class="page_number ">Page: 39 of 60</span>
       
         <a href="/blog/page40" class="next">Next</a>
       

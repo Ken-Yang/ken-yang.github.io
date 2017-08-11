@@ -225,6 +225,8 @@
   
     
   
+    
+  
 
 
 
@@ -299,6 +301,34 @@
     </div>
     <!-- This loops through the paginated posts -->
     
+      <h1><a style="color: #F22430" href="/2010/06/04/android">android 判斷是否有網路</a></h1>
+      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
+      <p class="author">
+      <div class="date">
+        <span>04 June 2010</span>
+      </div>
+      </p>
+      <div class="content" style="line-height: 28px;">
+        很多android app都和網路脫不了關係!<br /><br />但是也很多設計不良的app，本身是需要網路連線，但他卻沒有做判斷。<br /><br />這是app就會出現error!<br /><br />下面是判斷有無網路的code...<br /><br />但是要先加入一個permission...如下!<br /><br /><br /><br /><pre class="brush: xml">&lt;uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"&gt;&lt;/uses-permission&gt;</pre><br /><br /><br />這邊就是判斷的code了<br /><br /><br /><pre class="brush: java">ConnectivityManager conManager = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);//先取得此service<br /><br />NetworkInfo networInfo = conManager.getActiveNetworkInfo();       //在取得相關資訊<br /><br />if (networInfo == null || !networInfo.isAvailable()){ //判斷是否有網路<br /><br /> new AlertDialog.Builder(main.this)<br /> .setMessage("沒")<br /> .show();<br /><br />}else{<br /><br /> new AlertDialog.Builder(main.this)<br /> .setMessage("有")<br /> .show();<br /><br />}</pre><br /><br /><br /><br />
+      </div>
+      <footer>
+        <p><a class="myButton" href="/2010/06/04/android">read more &raquo;</a></p>
+        <div>
+          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- ken on github -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3783438370424072"
+     data-ad-slot="1516206098"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+        </div>
+      </footer>
+      <hr>
+    
       <h1><a style="color: #F22430" href="/2010/05/31/gaejgoogle-authsub">GAE 使用 Google Calendar (使用AuthSub認證)</a></h1>
       <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
       <p class="author">
@@ -355,41 +385,13 @@
       </footer>
       <hr>
     
-      <h1><a style="color: #F22430" href="/2010/05/21/dfdfd">android button background 效果</a></h1>
-      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
-      <p class="author">
-      <div class="date">
-        <span>21 May 2010</span>
-      </div>
-      </p>
-      <div class="content" style="line-height: 28px;">
-        <br /><br />如果想在android製作不同的button效果！<br /><br />要先建立一個<span class="Apple-style-span" style="color: red;">自己取檔名.xml（這裡暫取</span><span class="Apple-style-span" style="color: blue;">button_style</span><span class="Apple-style-span" style="color: red;">)檔</span>！放在drawable底下！<br /><br />並且準備三張button的圖片！<br /><br />建議使用9-patch產生的圖片！這樣比較不會失真！<br /><br />至於如何用9-patch就看之前的教學文章吧！<br /><br />這三張圖片一樣放在drawable底下！<br /><br /><br /><br /><span class="Apple-style-span" style="color: blue;">button_style</span><span class="Apple-style-span" style="color: red;">.xmll</span>格式如下<br /><br /><br /><pre class="brush: xml;"><br />&lt;?xml version="1.0" encoding="utf-8"?&gt; &nbsp; &nbsp;<br />&lt;selector xmlns:android="http://schemas.android.com/apk/res/android"&gt;<br /><br />&nbsp;&nbsp; &nbsp;&lt;item  android:state_pressed="true"android:drawable="@drawable/button_pressed" /&gt;<br /><br />&nbsp;&nbsp; &nbsp;&lt;item android:state_focused="true" android:drawable="@drawable/button_focused" /&gt;<br /><br />&nbsp;&nbsp; &nbsp;&lt;item android:state_focused="false" android:state_pressed="false" android:drawable="@drawable/button_normal" /&gt;<br /><br />&lt;/selector&gt;<br /><br /></pre><br /><br /><span class="Apple-style-span" style="color: red;"><span class="Apple-style-span" style="font-size: x-large;">android:state_focused="false" android:state_pressed="false"</span></span><br />意思是button預設的樣子！既沒有受到焦點、也沒有被按的狀態下的樣子！<br /><br /><span class="Apple-style-span" style="color: red;"><span class="Apple-style-span" style="font-size: x-large;">android:state_focused="true"</span></span><br />意思是當button被焦點時的樣子！<br /><br /><span class="Apple-style-span" style="color: red;"><span class="Apple-style-span" style="font-size: x-large;">android:state_pressed="true"</span></span><br />意思是當button被按下時的樣子！<br /><br /><br />接著在main.xml中的button的屬性裡加入一個屬性！<br />把button的background設為我們剛剛為它特別設計的樣式！<br /><br />這樣就可以為你的BUTTON設置特別的效果喔! <pre class="brush: java;"><br />android:background="@drawable/button_style"<br /></pre><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
-      </div>
-      <footer>
-        <p><a class="myButton" href="/2010/05/21/dfdfd">read more &raquo;</a></p>
-        <div>
-          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<!-- ken on github -->
-<ins class="adsbygoogle"
-     style="display:block"
-     data-ad-client="ca-pub-3783438370424072"
-     data-ad-slot="1516206098"
-     data-ad-format="auto"></ins>
-<script>
-(adsbygoogle = window.adsbygoogle || []).push({});
-</script>
-
-        </div>
-      </footer>
-      <hr>
-    
 
     <!-- Pagination links -->
     <div class="pagination">
       
         <a href="/blog/page55" class="previous">Previous</a>
       
-      <span class="page_number ">Page: 56 of 59</span>
+      <span class="page_number ">Page: 56 of 60</span>
       
         <a href="/blog/page57" class="next">Next</a>
       
