@@ -6,7 +6,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-    <title>Android Fingerprint API</title>
+    <title>Nginx: Block traffic by country and bypass traffic for whitelist</title>
     <meta name="description" content="">
     <meta name="author" content="Ken Yang">
 
@@ -316,7 +316,7 @@
 
 
 <div class="page-header">
-  <h1>Android Fingerprint API </h1>
+  <h1>Nginx: Block traffic by country and bypass traffic for whitelist </h1>
 </div>
 
 <div class="row post-full">
@@ -346,185 +346,114 @@
 
   <div class="col-xs-12">
     <div class="date">
-      <span>12 December 2015</span>
+      <span>21 August 2017</span>
     </div>
     <div class="content" style="line-height: 28px;">
       
-<p>Google在Android 6.0中，釋放了對[Fingerprint] (http://developer.android.com/intl/zh-tw/reference/android/hardware/fingerprint/FingerprintManager.html)操作的API，<br />
-而最近剛好也買了Nexus 6P，因此有了機會來玩看看。</p>
+<p>由於我們的服務都是由n台API Server + 各個client (Android, iOS, HTML5)所組成，然後我們的服務在某些國家是不開放的，所以勢必得做到block by country，然後又要有白名單機制；做法有很多種，但都大同小異，譬如說用iptables, nginx，然後搭配一些IP to country module（<a href="https://www.ip2location.com/">ip2location</a>, <a href="http://geolite.maxmind.com/download/geoip/database/GeoLiteCountry/GeoIP.dat.gz">GeoIP</a>）去阻擋，這篇就會使用Nginx + <a href="http://geolite.maxmind.com/download/geoip/database/GeoLiteCountry/GeoIP.dat.gz">GeoIP</a>來阻擋。</p>
 
 <p><br /></p>
 
 <hr />
-<h3 id="1-androidmanifestxml">1. AndroidManifest.xml</h3>
+<h3 id="1-check-nginx-version">1. Check Nginx version</h3>
 <hr />
 
-<p>首先要在<code class="highlighter-rouge">AndroidManifest.xml</code>中設定permission，</p>
+<p>首先先看看你安裝的Nginx是否有支援<code class="highlighter-rouge">geoip</code>這功能，如果有<code class="highlighter-rouge">grep</code>東西出來就代表有支援。</p>
 
-<div class="language-xml highlighter-rouge"><pre class="highlight"><code><span class="nt">&lt;uses-permission</span> <span class="na">android:name=</span><span class="s">"android.permission.USE_FINGERPRINT"</span> <span class="nt">/&gt;</span>
+<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>nginx -V 2&gt;&amp;1 | tr <span class="s1">' '</span> <span class="s1">'\n'</span> | grep geoip
+--with-http_geoip_module
 </code></pre>
 </div>
 
 <p><br /></p>
-
-<hr />
-<h3 id="2-check-requirement">2. Check Requirement</h3>
-<hr />
-
-<p>接著要檢查device上，是否有fingerprint reader，以及是否有設置了至少一枚fingerprint。下面這段code，主要檢查了三件事情：</p>
-
-<ol>
-  <li><strong>isKeyguardSecure</strong> : 是否有設定screen lock</li>
-  <li><strong>isHardwareDetected</strong> : device是否有fingerprint reader</li>
-  <li><strong>hasEnrolledFingerprints</strong> : 是否有設定至少一枚指紋</li>
-</ol>
 
 <!--more-->
 
-<div class="language-java highlighter-rouge"><pre class="highlight"><code><span class="kd">private</span> <span class="n">KeyguardManager</span> <span class="n">km</span><span class="o">;</span>
-<span class="kd">private</span> <span class="n">FingerprintManager</span> <span class="n">fm</span><span class="o">;</span>
-<span class="kd">private</span> <span class="n">CancellationSignal</span> <span class="n">cancellationSignal</span><span class="o">;</span>
+<hr />
+<h3 id="2-download-geoip">2. Download GeoIP</h3>
+<hr />
 
-<span class="nd">@Override</span>
-<span class="kd">protected</span> <span class="kt">void</span> <span class="nf">onCreate</span><span class="o">(</span><span class="n">Bundle</span> <span class="n">savedInstanceState</span><span class="o">)</span> <span class="o">{</span>
-    <span class="kd">super</span><span class="o">.</span><span class="na">onCreate</span><span class="o">(</span><span class="n">savedInstanceState</span><span class="o">);</span>
-    <span class="n">setContentView</span><span class="o">(</span><span class="n">R</span><span class="o">.</span><span class="na">layout</span><span class="o">.</span><span class="na">activity_main</span><span class="o">);</span>
+<p>如果Nginx有支援<code class="highlighter-rouge">geoip</code>，那就去下載GeoIP的gz檔下來，然後再解壓縮至<code class="highlighter-rouge">/etc/nginx</code>底下。</p>
 
-    <span class="n">km</span> <span class="o">=</span> <span class="o">(</span><span class="n">KeyguardManager</span><span class="o">)</span><span class="n">getSystemService</span><span class="o">(</span><span class="n">Activity</span><span class="o">.</span><span class="na">KEYGUARD_SERVICE</span><span class="o">);</span>
-    <span class="n">fm</span> <span class="o">=</span> <span class="n">getSystemService</span><span class="o">(</span><span class="n">FingerprintManager</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
-
-    <span class="k">if</span> <span class="o">(!</span><span class="n">km</span><span class="o">.</span><span class="na">isKeyguardSecure</span><span class="o">())</span> <span class="o">{</span>
-       <span class="n">Toast</span><span class="o">.</span><span class="na">makeText</span><span class="o">(</span><span class="k">this</span><span class="o">,</span>
-                <span class="s">"Secure lock screen hasn't set up.\n"</span>
-                <span class="o">+</span> <span class="s">"Go to 'Settings -&gt; Security -&gt; Fingerprint' to set up a fingerprint"</span><span class="o">,</span>
-                <span class="n">Toast</span><span class="o">.</span><span class="na">LENGTH_LONG</span><span class="o">).</span><span class="na">show</span><span class="o">();</span>
-        <span class="k">return</span><span class="o">;</span>
-    <span class="o">}</span>
-
-    <span class="k">if</span> <span class="o">(!</span><span class="n">isHardwareDetected</span><span class="o">())</span> <span class="o">{</span>
-        <span class="n">Toast</span><span class="o">.</span><span class="na">makeText</span><span class="o">(</span><span class="k">this</span><span class="o">,</span>
-                <span class="s">"No Fingerprint reader"</span><span class="o">,</span>
-                <span class="n">Toast</span><span class="o">.</span><span class="na">LENGTH_LONG</span><span class="o">).</span><span class="na">show</span><span class="o">();</span>
-        <span class="k">return</span><span class="o">;</span>
-    <span class="o">}</span>
-
-    <span class="k">if</span> <span class="o">(!</span><span class="n">fm</span><span class="o">.</span><span class="na">hasEnrolledFingerprints</span><span class="o">())</span> <span class="o">{</span>
-        <span class="n">Toast</span><span class="o">.</span><span class="na">makeText</span><span class="o">(</span><span class="k">this</span><span class="o">,</span>
-                <span class="s">"Go to 'Settings -&gt; Security -&gt; Fingerprint' and register at least one fingerprint"</span><span class="o">,</span>
-                <span class="n">Toast</span><span class="o">.</span><span class="na">LENGTH_LONG</span><span class="o">).</span><span class="na">show</span><span class="o">();</span>
-        <span class="k">return</span><span class="o">;</span>
-    <span class="o">}</span>
-<span class="o">}</span>
+<div class="language-bash highlighter-rouge"><pre class="highlight"><code>wget http://geolite.maxmind.com/download/geoip/database/GeoLiteCountry/GeoIP.dat.gz | gzip -d - &gt; /etc/nginx/GeoIP2.dat
 </code></pre>
 </div>
 
 <p><br /></p>
 
 <hr />
-<h3 id="3-authenticate">3. Authenticate</h3>
+<h3 id="3-configure-nginxconf--default-configuration-file">3. Configure nginx.conf &amp; default configuration file</h3>
 <hr />
 
-<p>如果通過上述的檢查之後，就可以透過<code class="highlighter-rouge">FingerprintManager</code>進行<code class="highlighter-rouge">Authenticate</code>的動作，method call為：</p>
+<p>這步驟要來設定<code class="highlighter-rouge">nginx.conf</code>和<code class="highlighter-rouge">default</code>這二個檔案，首先先設定nginx.conf，在http的block中加入下面的設定，
+一個是geoip的地址，另一個是白名單的IP，以下面的example來說，<code class="highlighter-rouge">8.8.8.8</code>是白名單，所以就把value設成1。
+然後如果你nginx前面是有掛proxy或者CDN的，記得不要使用<code class="highlighter-rouge">remote_addr</code>，要拿<code class="highlighter-rouge">XFF</code>或者拿CDN提供的Client IP（每個CDN提供的header不同）。</p>
 
-<div class="language-java highlighter-rouge"><pre class="highlight"><code><span class="kd">public</span> <span class="kt">void</span> <span class="nf">authenticate</span> <span class="o">(</span><span class="n">FingerprintManager</span><span class="o">.</span><span class="na">CryptoObject</span> <span class="n">crypto</span><span class="o">,</span> 
-                          <span class="n">CancellationSignal</span> <span class="n">cancel</span><span class="o">,</span> 
-                          <span class="kt">int</span> <span class="n">flags</span><span class="o">,</span> 
-                          <span class="n">FingerprintManager</span><span class="o">.</span><span class="na">AuthenticationCallback</span> <span class="n">callback</span><span class="o">,</span> 
-                          <span class="n">Handler</span> <span class="n">handler</span><span class="o">)</span>
+<h4 id="1-etcnginxnginxconf"><code class="highlighter-rouge">1. /etc/nginx/nginx.conf</code></h4>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>http {
+    geoip_country /etc/nginx/GeoIP.dat;
+    geo $remote_addr $ip_whitelist {
+        default 0;
+        8.8.8.8 1;
+    }
+    ....
+}
 </code></pre>
 </div>
-<p>一共要帶入5個參數，分別為：</p>
+<p><br /></p>
 
-<ol>
-  <li><code class="highlighter-rouge">CryptoObject</code> : Android 6.0中crypto objects的wrapper class，可以透過它讓authenticate過程更為secure，但也可以不使用。</li>
-  <li><code class="highlighter-rouge">CancellationSignal</code> : 用來Cancel <em>authenticate</em>的object</li>
-  <li><code class="highlighter-rouge">flags</code> : 只是一個flag，且目前只能代入0</li>
-  <li><code class="highlighter-rouge">AuthenticationCallback</code> : callback來接受authenticate成功與否，有三個callback method，
-    <ul>
-      <li>onAuthenticationError</li>
-      <li>onAuthenticationFailed</li>
-      <li>onAuthenticationSucceeded</li>
-    </ul>
-  </li>
-  <li><code class="highlighter-rouge">Handler</code> : optional的參數，如果有使用，FingerprintManager會透過它來傳遞訊息</li>
-</ol>
+<p>接著就來設定default這個檔案，在這檔案中的location block加入下面的判斷，因為nginx的config沒辦法吃if-else和nested if，他只能吃單一if，所以變成寫法很醜，下面的判斷先去看我們自己的IP是不是在白名單裡面，如果是就直接break；如果不是的話就會繼續往下看來源的國家是不是在<code class="highlighter-rouge">HK, TW, PH, US</code>這幾個地區，如果是這幾個地區就直接回404給用戶。</p>
+
+<h4 id="2-etcnginxsites-availabledefault"><code class="highlighter-rouge">2. /etc/nginx/sites-available/default</code></h4>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>location / {
+    if ($ip_whitelist = 1) {
+        break;
+    }
+
+    if ($geoip_country_code ~ "(HK|TW|PH|US)") {
+        return 404;
+    }
+    ...
+}
+</code></pre>
+</div>
+<p><br /></p>
+
+<p>最後就restart nginx，就可以進行verify。</p>
 
 <p><br /></p>
 
-<p>了解參數以後就可以開始進行<strong>authenticate</strong>，</p>
+<hr />
+<h3 id="4-advanced-topic-cdn">4. Advanced topic: CDN</h3>
+<hr />
 
-<div class="language-java highlighter-rouge"><pre class="highlight"><code>
-<span class="nd">@Override</span>
-<span class="kd">protected</span> <span class="kt">void</span> <span class="nf">onCreate</span><span class="o">(</span><span class="n">Bundle</span> <span class="n">savedInstanceState</span><span class="o">)</span> <span class="o">{</span>
-	<span class="o">....</span> <span class="n">ignore</span> <span class="o">...</span>
-	<span class="n">startListening</span><span class="o">();</span>
-<span class="o">}</span>
+<p>剛好因為我們前面有掛CloudFlare CDN，其實我們不用整合<code class="highlighter-rouge">geoip</code>就可以達到上述的效果，因為CloudFlare會帶上<code class="highlighter-rouge">HTTP_CF_IPCOUNTRY</code>這個header給我們的source(nginx)；因此如果前面有CDN的話，就不需要上面的第二步驟（下載GeoIP）以及第三步驟的    <code class="highlighter-rouge">geoip_country /etc/nginx/GeoIP.dat</code>，只需要把<code class="highlighter-rouge">default</code>配置改成下面的方式就可以了。</p>
 
-<span class="kd">private</span> <span class="kt">void</span> <span class="nf">startListening</span><span class="o">()</span> <span class="o">{</span>
+<div class="highlighter-rouge"><pre class="highlight"><code>
+location / {
+    if ($ip_whitelist = 1) {
+        break;
+    }
 
-    <span class="n">cancellationSignal</span> <span class="o">=</span> <span class="k">new</span> <span class="n">CancellationSignal</span><span class="o">();</span>
-
-    <span class="n">fm</span><span class="o">.</span><span class="na">authenticate</span><span class="o">(</span><span class="kc">null</span><span class="o">,</span>
-                    <span class="n">cancellationSignal</span><span class="o">,</span>
-                    <span class="mi">0</span><span class="o">,</span>
-                    <span class="k">new</span> <span class="n">FingerprintManager</span><span class="o">.</span><span class="na">AuthenticationCallback</span><span class="o">()</span> <span class="o">{</span>
-                        <span class="nd">@Override</span>
-                        <span class="kd">public</span> <span class="kt">void</span> <span class="nf">onAuthenticationError</span><span class="o">(</span><span class="kt">int</span> <span class="n">errorCode</span><span class="o">,</span> <span class="n">CharSequence</span> <span class="n">errString</span><span class="o">)</span> <span class="o">{</span>
-                            <span class="n">Log</span><span class="o">.</span><span class="na">e</span><span class="o">(</span><span class="s">""</span><span class="o">,</span> <span class="s">"error "</span> <span class="o">+</span> <span class="n">errorCode</span> <span class="o">+</span> <span class="s">" "</span> <span class="o">+</span> <span class="n">errString</span><span class="o">);</span>
-                        <span class="o">}</span>
-
-                        <span class="nd">@Override</span>
-                        <span class="kd">public</span> <span class="kt">void</span> <span class="nf">onAuthenticationFailed</span><span class="o">()</span> <span class="o">{</span>
-                            <span class="n">Log</span><span class="o">.</span><span class="na">e</span><span class="o">(</span><span class="s">""</span><span class="o">,</span> <span class="s">"onAuthenticationFailed"</span><span class="o">);</span>
-                        <span class="o">}</span>
-
-                        <span class="nd">@Override</span>
-                        <span class="kd">public</span> <span class="kt">void</span> <span class="nf">onAuthenticationSucceeded</span><span class="o">(</span><span class="n">FingerprintManager</span><span class="o">.</span><span class="na">AuthenticationResult</span> <span class="n">result</span><span class="o">)</span> <span class="o">{</span>
-                            <span class="n">Log</span><span class="o">.</span><span class="na">i</span><span class="o">(</span><span class="s">""</span><span class="o">,</span> <span class="s">"onAuthenticationSucceeded"</span><span class="o">);</span>
-                        <span class="o">}</span>
-                    <span class="o">},</span>
-                    <span class="kc">null</span><span class="o">);</span>
-
-<span class="o">}</span>
-
-<span class="nd">@Override</span>
-<span class="kd">public</span> <span class="kt">void</span> <span class="nf">onPause</span><span class="o">()</span> <span class="o">{</span>
-    <span class="kd">super</span><span class="o">.</span><span class="na">onPause</span><span class="o">();</span>
-    <span class="n">cancellationSignal</span><span class="o">.</span><span class="na">cancel</span><span class="o">();</span>
-    <span class="n">cancellationSignal</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
-<span class="o">}</span>
+    if ($http_cf_ipcountry ~ "(HK|TW|PH|US)") {
+        return 404;
+    }
+    ...
+}
 </code></pre>
 </div>
 
-<p><br /></p>
-
-<p>這樣就完成了一個簡單的example，但這example並沒有使用<code class="highlighter-rouge">CryptoObject</code>，所以如果你想要更安全一點，記得請加上<code class="highlighter-rouge">CryptoObject</code>。</p>
-
-<p><br /></p>
+<p><br />
+<br />
+<br /></p>
 
 
     </div>
 
     
 
-  
-    <ul class="tag_box inline">
-      <li><i class="glyphicon glyphicon-tags"></i></li>
-      
-      
-
-
-  
-     
-    	<li><a href="/tags.html#android-ref">android <span>65</span></a></li>
-     
-    	<li><a href="/tags.html#fingerprint-ref">fingerprint <span>1</span></a></li>
-    
-  
-
-
-
-    </ul>
     
   <div>
     <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
@@ -542,11 +471,11 @@
     <hr>
     <ul class="pagination">
     
-      <li class="prev"><a href="/2015/12/11/install-zsh-oh-my-zsh-on-mac" title="Install zsh and oh-my-zsh on Mac">&laquo; Previous</a></li>
+      <li class="prev"><a href="/2017/08/08/fluentd-amazon-s3-installation" title="fluentd + Amazon S3 installation">&laquo; Previous</a></li>
     
       <li><a href="/archive.html">Archive</a></li>
     
-      <li class="next"><a href="/2016/02/15/heroku-redis-connecting-in-python" title="Heroku Redis: Connecting in Python">Next &raquo;</a></li>
+      <li class="next disabled"><a>Next &rarr;</a>
     
     </ul>
     <hr>

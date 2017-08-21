@@ -301,6 +301,34 @@
     </div>
     <!-- This loops through the paginated posts -->
     
+      <h1><a style="color: #F22430" href="/2012/01/09/java">Java 物件複製的問題</a></h1>
+      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
+      <p class="author">
+      <div class="date">
+        <span>09 January 2012</span>
+      </div>
+      </p>
+      <div class="content" style="line-height: 28px;">
+        不知道大家有沒有發現，<br />把物件A，設值給B，<br />當B的值改，A也會改!?!?!?!?!?<br /><br />如下：<br /><pre class="brush: java">ArrayList&lt;String&gt; A = new ArrayList&lt;String&gt;();<br />A.add("KenYang");<br />ArrayList&lt;String&gt; B= A;<br /><br /><br /></pre><br />這時候如果我們去印出B的長度，<br /><pre class="brush: java">System.out.println(B.size());<br /></pre>那會是甚麼？<br />答案會是1，這無庸置疑，很基本的常識。<br /><br /><br />可是如果我把B的第0項刪除，在印出B的長度呢?<br /><pre class="brush: java">B.remove(0);<br /></pre>不用想，一定變成0。<br /><br /><br />那這時候，A的長度呢? 一般人可能會以為是1，<br />在C++的觀念，的確如此，的確會是1，<br />但在java不是...<br />可以印出來看看!<br /><pre class="brush: java">System.out.println(A.size());<br /></pre>答案會是0!<br /><br /><br />這是為什麼呢? 為什麼只是修改了B的值，<br />A也變了??<br /><br />這是因為，在java中，非primitive的資料型態，<br />都屬於物件，都是參考!!! (<a href="http://blog.kenyang.net/2011/11/c-reference.html">甚麼是參考? 可以去我先前PO的文章看看</a>)<br />簡單的說就是別名。<br />但Java的參考概念就很像C++的pointer!!! (記錄著該物件的位址)<br /><br /><br />下面用圖片來解釋，上面code的行為，<br />下面圖一的行為就是，<br /><br />先宣告A，再設值進去。<br />我們可以從圖發現，A是去參考記憶體位址為0000的物件!!!!<br /><br /><table cellpadding="0" cellspacing="0" class="tr-caption-container" style="margin-left: auto; margin-right: auto; text-align: center;"><tbody><tr><td style="text-align: center;"><a href="http://1.bp.blogspot.com/-U2_4ISSIT8I/TwnkV2GNi6I/AAAAAAAAAlA/LHK5y-mMxcU/s1600/1.png" imageanchor="1" style="clear: left; margin-bottom: 1em; margin-left: auto; margin-right: auto;"><img border="0" height="320" src="http://1.bp.blogspot.com/-U2_4ISSIT8I/TwnkV2GNi6I/AAAAAAAAAlA/LHK5y-mMxcU/s320/1.png" width="310" /></a></td></tr><tr><td class="tr-caption" style="text-align: center;">圖一</td></tr></tbody></table><br /><br />那麼這時候，把A的值丟給B呢?<br />在記憶體中的表現會是怎樣?<br />A=B;<br />如圖二。<br />會發現B，也是去參考記憶體位址為0000的物件!!!<br />A和B都是記錄著該物件的記憶體位址!!!<br /><br /><table align="center" cellpadding="0" cellspacing="0" class="tr-caption-container" style="margin-left: auto; margin-right: auto; text-align: center;"><tbody><tr><td style="text-align: center;"><a href="http://1.bp.blogspot.com/-MEHF6mbBeSo/TwnkWXT0s5I/AAAAAAAAAlE/6fMbQ6iVgwQ/s1600/2.png" imageanchor="1" style="margin-left: auto; margin-right: auto;"><img border="0" height="357" src="http://1.bp.blogspot.com/-MEHF6mbBeSo/TwnkWXT0s5I/AAAAAAAAAlE/6fMbQ6iVgwQ/s400/2.png" width="400" /></a></td></tr><tr><td class="tr-caption" style="text-align: center;">圖二</td></tr></tbody></table><br /><br />所以從圖中應該可以了解上面的行為了吧?<br />為什麼B把第0項刪除，<br />結果A也變了呢?<br />就是因為在JAVA非primitive都是參考的關係!!!<br /><br />嗯! 那有人可能會疑問!!!<br />咦? String 也是非primitive的資料型態阿<br />可是為什麼下面的例子，B改，A卻沒改呢?<br /><br /><br />這就要用到先前某篇講解<a href="http://blog.kenyang.net/2012/01/java-unboxingboxing.html">java拆箱(unboxing)、裝箱(boxing)</a>的概念了!<br />那關java拆箱(unboxing)、裝箱(boxing)的甚麼事呢?<br />還是不了解為什麼兩個都是String的物件，怎麼B改，A卻沒改呢?<br />來看下面的小例子，<br /><pre class="brush: java">String A = "ken";<br />String B = A;<br />B = "yang";<br />System.out.println(A);<br /></pre>為什麼不是印出yang呢?<br />都是primitive阿，<br />原因就是自動裝箱(auto-boxing)，<br />上面的行為，在Compiler中，<br />B="yang" <br />會被轉換成<br />B = new String("yang");<br />這時候他就是全新的物件了!<br />因此不會改到原本的值!!!!!<br /><br /><br /><br />在Java中的複製，<br />想要做到真正的複製，<br />得靠clone了。<br />clone有機會再說吧!<br /><br /><br /><br /><br /><br /><br /><br /><br />
+      </div>
+      <footer>
+        <p><a class="myButton" href="/2012/01/09/java">read more &raquo;</a></p>
+        <div>
+          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- ken on github -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3783438370424072"
+     data-ad-slot="1516206098"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+        </div>
+      </footer>
+      <hr>
+    
       <h1><a style="color: #F22430" href="/2012/01/09/java-unboxingboxing">Java 拆箱(unboxing)、裝箱(boxing)</a></h1>
       <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
       <p class="author">
@@ -341,34 +369,6 @@
       </div>
       <footer>
         <p><a class="myButton" href="/2012/01/08/androidfacebook-login-api">read more &raquo;</a></p>
-        <div>
-          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<!-- ken on github -->
-<ins class="adsbygoogle"
-     style="display:block"
-     data-ad-client="ca-pub-3783438370424072"
-     data-ad-slot="1516206098"
-     data-ad-format="auto"></ins>
-<script>
-(adsbygoogle = window.adsbygoogle || []).push({});
-</script>
-
-        </div>
-      </footer>
-      <hr>
-    
-      <h1><a style="color: #F22430" href="/2012/01/07/android-edittext-remove-focus">Android EditText remove focus</a></h1>
-      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
-      <p class="author">
-      <div class="date">
-        <span>07 January 2012</span>
-      </div>
-      </p>
-      <div class="content" style="line-height: 28px;">
-        只要頁面中有用到EditText&nbsp;<edittext>的，</edittext><br />只要跑到那個頁面，一定會被自動focus，也就是說鍵盤會自動彈開!<br />要取消focus，只要在你layout中的root element加上下面兩個屬性，<br />(root element就是最外圍的那個element，預設都是LinearLayout）<br /><br /><br />android:focusable="true"<br />android:focusableInTouchMode="true"<br /><br /><br /><br /><br /><br />
-      </div>
-      <footer>
-        <p><a class="myButton" href="/2012/01/07/android-edittext-remove-focus">read more &raquo;</a></p>
         <div>
           <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 <!-- ken on github -->

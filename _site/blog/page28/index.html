@@ -301,6 +301,34 @@
     </div>
     <!-- This loops through the paginated posts -->
     
+      <h1><a style="color: #F22430" href="/2012/03/23/android-c2dm-sever">Android C2DM (三)：實作之Sever篇</a></h1>
+      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
+      <p class="author">
+      <div class="date">
+        <span>23 March 2012</span>
+      </div>
+      </p>
+      <div class="content" style="line-height: 28px;">
+        <span style="color: red; font-size: large;">這篇是舊版的，已經被deprecated，新版為GCM，新版的實作請看</span><br /><a href="http://blog.kenyang.net/2013/07/android-gcm-google-cloud.html"><span style="color: blue; font-size: large;">新版的Server篇</span></a><br /><br /><br /><br /><br /><br />最後一篇進入到了Android C2DM的coding了!!<br />哈! 這篇存在草稿也三個月了..........<br />今天終於有一點點時間來修改!<br /><br /><br /><span style="font-size: large;"><b>第一篇在講<a href="http://blog.kenyang.net/2011/12/android-c2dm.html">參數說明</a></b></span><br /><span style="font-size: large;"><b>第二篇在講<a href="http://blog.kenyang.net/2011/12/android-c2dm_22.html">流程說明</a></b></span><br /><span style="font-size: large;"><b>這篇專注於server端的實作</b></span><br /><span style="font-size: large;"><b>下一篇才會專注於<a href="http://blog.kenyang.net/2012/03/android-c2dm-android.html">android端的實作</a></b></span><br /><br /><br /><br /><br />OK，<br />在coding之前，請先去<a href="http://code.google.com/android/c2dm/signup.html">Google官網註冊你的app</a>，<br />比較要注意的是下面兩項<br /><div><ol><li><span style="background-color: white; font-family: Arial, sans-serif; font-size: 13px; font-weight: bold;">Package name of your Android app&nbsp;</span><span class="ss-required-asterisk" style="background-color: white; color: #c43b1d; font-family: Arial, sans-serif; font-size: 13px; font-weight: bold;">*</span></li><li><span style="background-color: white; font-family: Arial, sans-serif; font-size: 13px; font-weight: bold;">Role (sender) account email&nbsp;</span><span class="ss-required-asterisk" style="background-color: white; color: #c43b1d; font-family: Arial, sans-serif; font-size: 13px; font-weight: bold;">*</span></li></ol></div>第1項，是指你的Android app的package name，這裡一定要填對，不然C2DM Server不知道送到哪個app去。<br />第2項，是指用來傳遞訊息的帳號，也就是開發者的帳號，這裡的建議是不要用個人帳號，建議新申請另一個帳號來使用。<br /><br />完成上面註冊動作以後，就可以開始coding了!<br />網路上的code教學都是拿<a href="http://code.google.com/android/c2dm/index.html#Examples">Google官網上面放的範例（JumpNote）</a>，<br />我覺得這樣不太native，畢竟這是別人寫的app！<br />所以我直接講最基本的流程！<br /><br /><br />接下來的code大概會分成下面幾種：<br /><br /><ol><li>實作Server端：使用Google Client Login API取得Auth token，並且存起來。</li><li>實作Server端：Sending Message to C2DM Server。</li><li>Android端：基本的設定。</li><li>Android端：向C2DM 註冊，並且取得registration id。</li><li>Android端：傳送 Registration Id 到我們的Server</li></ol><br />因為其實有點多，所以就分成兩篇來打，<br />一篇為Sever篇，就是此篇！<br />另一篇為Android篇，就是下篇！<br /><br /><span style="font-size: large;"><b>【1.&nbsp; 使用<a href="https://developers.google.com/accounts/docs/AuthForInstalledApps">Google Client Login API</a>取得Auth token&nbsp;】</b></span><br /><br />因為得把token傳至C2DM Server，<br />C2DM Sever才知道你有登入，且是合格的。<br /><br />至於Google Client Login API的流程在這就不贅述，<br />就直接實做! 但大家可以去<a href="https://developers.google.com/accounts/docs/AuthForInstalledApps">Google Client Login API官網</a>看!!!<br /><br />這裡我是架在<a href="http://code.google.com/intl/zh-TW/appengine/">Google App Engine</a>上，把<a href="http://code.google.com/intl/zh-TW/appengine/">GAE</a>當作我們的Sever。<br />由於auth token可以重複使用，<br />所以我們可能可以每段時間去執行ClientLogin，<br />並取得auth token!<br />這時候就可以用GAE的cron，可能設定每天去登入一次以取得token。<br /><br />而Client Login的code如下：<br /><pre class="brush: java">String strClientLoginUrl = "https://www.google.com/accounts/ClientLogin"; // client login的url<br />String strAccountType = "accountType=HOSTED_OR_GOOGLE&amp;";// 你要登入的帳號型態，這裡就輸入HOSTED_OR_GOOGLE<br />String strEmail = "Email=test@gmail.com&amp;";     // 你的email!!<br />String strPasswd= "Passwd=123456&amp;";            // 你的密碼<br />String strService= "service=ac2dm&amp;";           // 你登入以後，要拿這token存取Google哪個Service，這裡是ac2dm<br />String strSource= "source=KenYang-AndroidC2DM-1.0";// 這個只是用來identify你的application，格式要companyName-applicationName-versionID<br /><br /><br />HttpURLConnection conn = (HttpURLConnection) new URL(strClientLoginUrl).openConnection();<br />conn.setDoOutput(true);  <br />conn.setUseCaches(false);  <br />conn.setRequestMethod("POST");  // 設定request Method為POST<br />conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");  <br /><br /><br />// 送出資料<br />OutputStream out = conn.getOutputStream();  <br />String strPostData = strAccountType+strEmail+strPasswd+strService+strSource;<br />out.write(strPostData.getBytes());  <br />out.close();  <br /><br />// 取得response code，成功的話就是200<br />resp.getWriter().println(conn.getResponseCode()+ "&lt;/br&gt;");<br /><br />// 把資料讀進來並且印出來<br />BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream(),"utf-8"));<br />String strLine = "";<br />while((strLine=reader.readLine())!=null){<br /> resp.getWriter().println(strLine+"&lt;/br&gt;");<br />}<br /><br /><br /><br /></pre><br />正常來說，如果你帳號沒有問題，<br />或者密碼沒有輸入錯誤，<br />或者的確有這帳號存在！<br />那麼response code會是200!<br />就代表登入成功!<br />此時就要取得auth token。<br /><br />印出來的資料如下：<br /><pre class="brush: java">SID=DQAAAGgA...7Zg8CTN<br />LSID=DQAAAGsA...lk8BBbG<br />Auth=DQAAAGgA...dk3fA5N<br /></pre><br />這時候，只要取得最後那一行資料即可！<br />就是Auth那一行！！！<br />然後把Auth存起來！<br />這裡我是先存在GAE的datastore！<br />以利待會使用!<br /><br /><br /><br /><br /><span style="font-size: large;"><b>【2.&nbsp;&nbsp;傳送資料至C2DM Server&nbsp;】</b></span><br /><br />至於傳送甚麼資料，可以來這<a href="http://%E3%80%901.%20%20%E4%BD%BF%E7%94%A8google%20client%20login%20api%E5%8F%96%E5%BE%97auth%20token%20%E3%80%91%20%20%E5%9B%A0%E7%82%BA%E5%BE%97%E6%8A%8Atoken%E5%82%B3%E8%87%B3c2dm%20server%EF%BC%8C/">官網</a>看詳細參數說明!<br />這邊就簡單地說明幾種"必需"的參數!<br /><br /><ol><li><span style="background-color: white; color: #007000; font-family: monospace; font-size: 14px; line-height: 17px; text-align: left;">registration_id</span>&nbsp;：android 裝置的id，一定要傳這資料給C2DM Server，C2DM才知道訊息要傳給誰，至於這個值，是來自android device的!</li><li><span style="background-color: white; color: #007000; font-family: monospace; font-size: 14px; line-height: 17px; text-align: left;">collapse_key</span>&nbsp;：這個value可以是隨意的值，這個參數的用意是怕android device的狀態是離線狀態，一旦狀態恢復為連線，避免使用者突然收到大量訊息!(這個參數可以每次都不一樣，也可以每次都一樣)</li><li><span style="background-color: white; color: #007000; font-family: monospace; font-size: 14px; line-height: 17px; text-align: left;">data.&lt;key&gt;</span>&nbsp;：這個參數就是你要傳給android device的訊息了! 型態為key-value。如data.keyName=value</li><li><span style="background-color: white; color: #007000; font-family: monospace; font-size: 14px; line-height: 17px; text-align: left;">GoogleLogin auth</span>&nbsp;：這個不是要post的參數，而是要送出的header值! 而值就是上面存在datastore裡面的Auth!</li></ol><br /><br /><br />實際的code如下：<br /><pre class="brush: java">String strSendUrl = "https://android.apis.google.com/c2dm/send";  // c2dm的url<br />String strRegistrationId = "registration_id="+req.getParameter("device_token")+"&amp;"; // 接收來自android傳來的參數<br />String strCollapse= "collapse_key=1&amp;";    // 這個參數上面說明了<br />String strAuth = "xxxxxx";                 // 從datastore撈出來的值，這裡就不寫有關datastore的操作了<br />String strData  = "data.keyHello=fromKen";    // 你要送的訊息<br /><br />String strPostData = strRegistrationId+strCollapse+strData;<br /><br />HttpURLConnection conn = (HttpURLConnection) new URL(strSendUrl).openConnection();<br />conn.setDoOutput(true);  <br />conn.setUseCaches(false);  <br />conn.setRequestMethod("POST");  <br />conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");  <br />conn.setRequestProperty("Authorization", "GoogleLogin auth=" + strAuth);  // 設定header<br />conn.setRequestProperty("Content-Length", Integer.toString(strPostData.getBytes().length)); // 告訴c2dm要傳送的資料長度<br /><br />// 送出資料<br />OutputStream out = conn.getOutputStream();  <br />out.write(strPostData.getBytes());  <br />out.close();  <br /><br />// 看response code, 200為OK<br />resp.getWriter().println(conn.getResponseCode()+ "&lt;/br&gt;&lt;/br&gt;"); <br /><br /></pre><br /><br /><br /><br />完成上面的步驟，server端就完成了！<br />但還要完成android端，才能真正收到訊息！<br />下一篇會專注於android端的實作<br /><br /><br /><br /><br /><br /><br />
+      </div>
+      <footer>
+        <p><a class="myButton" href="/2012/03/23/android-c2dm-sever">read more &raquo;</a></p>
+        <div>
+          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- ken on github -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3783438370424072"
+     data-ad-slot="1516206098"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+        </div>
+      </footer>
+      <hr>
+    
       <h1><a style="color: #F22430" href="/2012/03/04/c-webcam-using-emgu">C# 控制 Webcam 【using Emgu】</a></h1>
       <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
       <p class="author">
@@ -341,34 +369,6 @@
       </div>
       <footer>
         <p><a class="myButton" href="/2012/02/20/android-out-of-memory-oom">read more &raquo;</a></p>
-        <div>
-          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<!-- ken on github -->
-<ins class="adsbygoogle"
-     style="display:block"
-     data-ad-client="ca-pub-3783438370424072"
-     data-ad-slot="1516206098"
-     data-ad-format="auto"></ins>
-<script>
-(adsbygoogle = window.adsbygoogle || []).push({});
-</script>
-
-        </div>
-      </footer>
-      <hr>
-    
-      <h1><a style="color: #F22430" href="/2012/01/09/java">Java 物件複製的問題</a></h1>
-      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
-      <p class="author">
-      <div class="date">
-        <span>09 January 2012</span>
-      </div>
-      </p>
-      <div class="content" style="line-height: 28px;">
-        不知道大家有沒有發現，<br />把物件A，設值給B，<br />當B的值改，A也會改!?!?!?!?!?<br /><br />如下：<br /><pre class="brush: java">ArrayList&lt;String&gt; A = new ArrayList&lt;String&gt;();<br />A.add("KenYang");<br />ArrayList&lt;String&gt; B= A;<br /><br /><br /></pre><br />這時候如果我們去印出B的長度，<br /><pre class="brush: java">System.out.println(B.size());<br /></pre>那會是甚麼？<br />答案會是1，這無庸置疑，很基本的常識。<br /><br /><br />可是如果我把B的第0項刪除，在印出B的長度呢?<br /><pre class="brush: java">B.remove(0);<br /></pre>不用想，一定變成0。<br /><br /><br />那這時候，A的長度呢? 一般人可能會以為是1，<br />在C++的觀念，的確如此，的確會是1，<br />但在java不是...<br />可以印出來看看!<br /><pre class="brush: java">System.out.println(A.size());<br /></pre>答案會是0!<br /><br /><br />這是為什麼呢? 為什麼只是修改了B的值，<br />A也變了??<br /><br />這是因為，在java中，非primitive的資料型態，<br />都屬於物件，都是參考!!! (<a href="http://blog.kenyang.net/2011/11/c-reference.html">甚麼是參考? 可以去我先前PO的文章看看</a>)<br />簡單的說就是別名。<br />但Java的參考概念就很像C++的pointer!!! (記錄著該物件的位址)<br /><br /><br />下面用圖片來解釋，上面code的行為，<br />下面圖一的行為就是，<br /><br />先宣告A，再設值進去。<br />我們可以從圖發現，A是去參考記憶體位址為0000的物件!!!!<br /><br /><table cellpadding="0" cellspacing="0" class="tr-caption-container" style="margin-left: auto; margin-right: auto; text-align: center;"><tbody><tr><td style="text-align: center;"><a href="http://1.bp.blogspot.com/-U2_4ISSIT8I/TwnkV2GNi6I/AAAAAAAAAlA/LHK5y-mMxcU/s1600/1.png" imageanchor="1" style="clear: left; margin-bottom: 1em; margin-left: auto; margin-right: auto;"><img border="0" height="320" src="http://1.bp.blogspot.com/-U2_4ISSIT8I/TwnkV2GNi6I/AAAAAAAAAlA/LHK5y-mMxcU/s320/1.png" width="310" /></a></td></tr><tr><td class="tr-caption" style="text-align: center;">圖一</td></tr></tbody></table><br /><br />那麼這時候，把A的值丟給B呢?<br />在記憶體中的表現會是怎樣?<br />A=B;<br />如圖二。<br />會發現B，也是去參考記憶體位址為0000的物件!!!<br />A和B都是記錄著該物件的記憶體位址!!!<br /><br /><table align="center" cellpadding="0" cellspacing="0" class="tr-caption-container" style="margin-left: auto; margin-right: auto; text-align: center;"><tbody><tr><td style="text-align: center;"><a href="http://1.bp.blogspot.com/-MEHF6mbBeSo/TwnkWXT0s5I/AAAAAAAAAlE/6fMbQ6iVgwQ/s1600/2.png" imageanchor="1" style="margin-left: auto; margin-right: auto;"><img border="0" height="357" src="http://1.bp.blogspot.com/-MEHF6mbBeSo/TwnkWXT0s5I/AAAAAAAAAlE/6fMbQ6iVgwQ/s400/2.png" width="400" /></a></td></tr><tr><td class="tr-caption" style="text-align: center;">圖二</td></tr></tbody></table><br /><br />所以從圖中應該可以了解上面的行為了吧?<br />為什麼B把第0項刪除，<br />結果A也變了呢?<br />就是因為在JAVA非primitive都是參考的關係!!!<br /><br />嗯! 那有人可能會疑問!!!<br />咦? String 也是非primitive的資料型態阿<br />可是為什麼下面的例子，B改，A卻沒改呢?<br /><br /><br />這就要用到先前某篇講解<a href="http://blog.kenyang.net/2012/01/java-unboxingboxing.html">java拆箱(unboxing)、裝箱(boxing)</a>的概念了!<br />那關java拆箱(unboxing)、裝箱(boxing)的甚麼事呢?<br />還是不了解為什麼兩個都是String的物件，怎麼B改，A卻沒改呢?<br />來看下面的小例子，<br /><pre class="brush: java">String A = "ken";<br />String B = A;<br />B = "yang";<br />System.out.println(A);<br /></pre>為什麼不是印出yang呢?<br />都是primitive阿，<br />原因就是自動裝箱(auto-boxing)，<br />上面的行為，在Compiler中，<br />B="yang" <br />會被轉換成<br />B = new String("yang");<br />這時候他就是全新的物件了!<br />因此不會改到原本的值!!!!!<br /><br /><br /><br />在Java中的複製，<br />想要做到真正的複製，<br />得靠clone了。<br />clone有機會再說吧!<br /><br /><br /><br /><br /><br /><br /><br /><br />
-      </div>
-      <footer>
-        <p><a class="myButton" href="/2012/01/09/java">read more &raquo;</a></p>
         <div>
           <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 <!-- ken on github -->
