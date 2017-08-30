@@ -301,6 +301,58 @@
     </div>
     <!-- This loops through the paginated posts -->
     
+      <h1><a style="color: #F22430" href="/2017/02/07/getting-started-with-kafka-in-nodejs">Getting started with Kafka in Node.js</a></h1>
+      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
+      <p class="author">
+      <div class="date">
+        <span>07 February 2017</span>
+      </div>
+      </p>
+      <div class="content" style="line-height: 28px;">
+        
+<p>之前有講過<a href="http://blog.kenyang.net/2015/06/25/apache-kafka-distributed-messaging">Kafka的用途以及如何安裝</a>，這篇會講如何用<code class="highlighter-rouge">Node.js</code>去連結<code class="highlighter-rouge">Kafka</code>，至於安裝Kafka的部分就請去<a href="http://blog.kenyang.net/2015/06/25/apache-kafka-distributed-messaging">上一篇</a>來看。</p>
+
+<p><br /></p>
+
+<hr />
+<h3 id="1-create-a-topic">1. Create a topic</h3>
+<hr />
+
+<p>首先，先用CLI去建立一個topic，這topic等等會被Node.js subcribe。</p>
+
+<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span><span class="nb">cd</span> <span class="nv">$YOUR_PATH</span>/kafka_2.11-0.10.1.0
+<span class="gp">$ </span>bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic open
+</code></pre>
+</div>
+
+<p>可以用下面的指令去看topic是否建立成功：</p>
+
+<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>bin/kafka-topics.sh --list --zookeeper localhost:2181
+</code></pre>
+</div>
+
+<p><br /></p>
+
+
+      </div>
+      <footer>
+        <p><a class="myButton" href="/2017/02/07/getting-started-with-kafka-in-nodejs">read more &raquo;</a></p>
+        <div>
+          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- ken on github -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3783438370424072"
+     data-ad-slot="1516206098"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+        </div>
+      </footer>
+      <hr>
+    
       <h1><a style="color: #F22430" href="/2016/09/14/remotely-open-door-using-raspberry-pi">Remotely open door using Raspberry Pi</a></h1>
       <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
       <p class="author">
@@ -405,66 +457,6 @@
       </div>
       <footer>
         <p><a class="myButton" href="/2016/09/06/how-to-create-a-telegram-bot">read more &raquo;</a></p>
-        <div>
-          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<!-- ken on github -->
-<ins class="adsbygoogle"
-     style="display:block"
-     data-ad-client="ca-pub-3783438370424072"
-     data-ad-slot="1516206098"
-     data-ad-format="auto"></ins>
-<script>
-(adsbygoogle = window.adsbygoogle || []).push({});
-</script>
-
-        </div>
-      </footer>
-      <hr>
-    
-      <h1><a style="color: #F22430" href="/2016/06/22/android-app-bartool-bar">Android: App bar/Tool bar</a></h1>
-      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
-      <p class="author">
-      <div class="date">
-        <span>22 June 2016</span>
-      </div>
-      </p>
-      <div class="content" style="line-height: 28px;">
-        
-<p>大概一年多沒有寫Android了，最近發現好多不一樣了，<br />
-譬如說ActionBar變成AppBar..不過以前的ActionBar還能繼續用，<br />
-但還是得學一下怎麼用App bar跟上潮流。</p>
-
-<p>[Example Code on Github] (https://github.com/Ken-Yang/AndroidAppBar)</p>
-
-<p><br /></p>
-
-<hr />
-<h3 id="1-create-new-project">1. Create new project</h3>
-<hr />
-
-<p>首先先建立一個新的project，然後選擇Empty activity。</p>
-
-<p><br /></p>
-
-<hr />
-<h3 id="2-add-dependency">2. Add dependency</h3>
-<hr />
-
-<p>接著打開build.gradle，把appcompat加入dependency，<br />
-不過如果你的Android Studio是新版的，就會自動幫你加入了。</p>
-
-<div class="language-xml highlighter-rouge"><pre class="highlight"><code>dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    testCompile 'junit:junit:4.12'
-    compile 'com.android.support:appcompat-v7:23.1.1'
-}
-</code></pre>
-</div>
-
-
-      </div>
-      <footer>
-        <p><a class="myButton" href="/2016/06/22/android-app-bartool-bar">read more &raquo;</a></p>
         <div>
           <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 <!-- ken on github -->

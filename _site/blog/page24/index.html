@@ -301,6 +301,34 @@
     </div>
     <!-- This loops through the paginated posts -->
     
+      <h1><a style="color: #F22430" href="/2012/09/18/nginxapachephp">Nginx+Apache+PHP</a></h1>
+      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
+      <p class="author">
+      <div class="date">
+        <span>18 September 2012</span>
+      </div>
+      </p>
+      <div class="content" style="line-height: 28px;">
+        <br />大部分在架設網站的人都會採用<a href="http://en.wikipedia.org/wiki/LAMP_(software_bundle)">LAMP</a>的方式!<br />就是傳統的Linux+Apache+MySQL+PHP。<br />但由於這種方式對一般人來說已經是過於簡單了，<br />甚至已經有一鍵包...只要一直按"下一步"就可以完成安裝...<br />所以在這就不多做介紹。<br /><br /><br />在這要介紹一個比較特別的架構叫做L<b><span style="color: red;">N</span></b>AMP，<br />LNAMP和之前的差不多，但多了一個<a href="http://en.wikipedia.org/wiki/Nginx">Nginx</a>。<br />Nginx和Apache一樣是web server，<br />但在這邊我們將在我們的Linux Server上同時安裝二個Web Server(Nginx、Apache)。<br />然後利用<a href="http://en.wikipedia.org/wiki/Reverse_proxy">reverse proxy</a>的概念來結合這二個Web Server，<br /><br /><br />由於Nginx在處理靜態網頁、文件的效能較好，<br />而Apache一直以來都算是一個穩定的Web Server，但Apache很耗CPU、memory。<br />但是Nginx並不支援PHP，因此我們可以結合這兩個Web Server的特性來架設我們的網站!<br /><br /><br /><br />首先先看到下面那張圖，這張圖是我們網站的架構!<br />我們可以看到圖中的兩個粉紅色區塊，<br />這兩個區塊都是web server。<br />而在這邊我會把Nginx的port設為80，<br />Apache的port改為8080。<br /><br />當User request <span style="color: red; font-weight: bold;">http://www.example.com/index.</span><b style="color: blue;"><span style="font-size: large;">html&nbsp;</span></b>的時候，<br />我們就會透過Nginx response給User! &nbsp;(就是下圖中左邊的區塊)<br />但是當User request&nbsp;&nbsp;<span style="color: red; font-weight: bold;">http://www.example.com/index.</span><b style="color: blue;"><span style="font-size: large;">php&nbsp;</span></b>的時候，<br />我們一樣一開始會透過Nginx，可是Nginx會透過reverse proxy的機制，<br />reverse給Apache進行處理!!! &nbsp;(就是下圖中右邊的區塊)<br /><br /><div class="separator" style="clear: both; text-align: center;"><a href="http://4.bp.blogspot.com/-M0aRrq3UJB4/UFfWndIaGNI/AAAAAAAAA3s/wGHyUqa4gF4/s1600/UntitledDocument.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="448" src="http://4.bp.blogspot.com/-M0aRrq3UJB4/UFfWndIaGNI/AAAAAAAAA3s/wGHyUqa4gF4/s640/UntitledDocument.png" width="640" /></a></div><br /><br />透過上圖中的機制可以有效的快速response user，<br />也可以減輕Server的負擔!<br />甚至可以減輕MySQL的負擔!<br />記得以前在某公司當intern的時候，<br />由於該公司的某項服務在當時似乎是國內前幾大的，<br />然後他們某項服務就是利用rewrite的概念，盡量不會有Dynamic Page，<br />他們系統每一陣子會把Dynamic Page的內容rewite成一個Static Page，<br />這樣他們的User都會去request 該Static Page，<br />而不會去request Dynamic Page，同時也減輕了DB的負擔!<br /><br /><br />講完架構以後，<br />接著要教大家怎麼把Nginx+Apache同時架起來!<br />我的環境是Ubuntu，<br />在這我就不教大家怎麼install Apahce和PHP了...應該是common sense!<br /><br />進行說明設定Nginx之前，<br />如果你已經將Apache安裝起來了，那請先把你的Apache port改成8080。<br />因為Nginx等等會使用80。<br /><br /><br />完成上述步驟，就來安裝Nginx，<br /><div><pre class="brush: java">sudo apt-get install nginx<br /></pre></div><br />安裝完成以後，如果你去request自己網站底下的某隻.php<br />例如：www.example.com/index.php<br />那麼是跑不起來的，因為Nginx並不支援任何的Dynamic Language（php, perl, jsp...etc)<br />所以要把有關Dynamic Page的任何request reverse proxy至apache去！<br /><br /><br />所以就要進行設定，首先要把nginx的port改為80<br /><pre class="brush: java">cd /etc/nginx/sites-available  #先切換至nginx的設定目錄底下<br />sudo vim default #修改設定檔<br /></pre><br />打開設定檔以後，記得在Server{}裡面加入下面的設定，<br /><br /><pre class="brush: java">listen 80 #預設是mark起來的，把最前面的#號拿掉就好，如果沒有這行就自己加吧!<br /><br /># 下面這段的意思是，當遇到.php檔名的就把它轉向至8080<br />location ~ \.php$ {<br />    proxy_pass  http://127.0.0.1:8080;<br />}<br /></pre><br />上面的設定主要就是過濾掉.php，<br />把php通通交給apache進行處理，<br />當然你也可以做更細部的過濾設定，<br />例如.jpg、.css、.js等等之類的靜態檔案都cached起來，<br />不要進行不必要的request。<br />例如<br /><pre class="brush: java">location ~* \.(jpg|png)$ {<br />    expires  30d;  # cached 30天的意思<br />}<br /></pre><br /><br />完成上面的設定以後，<br />就將Nginx重開吧!<br /><pre class="brush: java">sudo /etc/init.d/nginx restart<br /></pre><br /><br /><br />基本上重開以後，應該就完成LNAMP的架構了!<br /><br /><br /><br /><div class="separator" style="clear: both; text-align: center;"></div><div class="separator" style="clear: both; text-align: center;"><br /></div><br />
+      </div>
+      <footer>
+        <p><a class="myButton" href="/2012/09/18/nginxapachephp">read more &raquo;</a></p>
+        <div>
+          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- ken on github -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3783438370424072"
+     data-ad-slot="1516206098"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+        </div>
+      </footer>
+      <hr>
+    
       <h1><a style="color: #F22430" href="/2012/09/15/google-oauth-20-google-api">使用Google OAuth 2.0 存取Google API</a></h1>
       <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
       <p class="author">
@@ -341,34 +369,6 @@
       </div>
       <footer>
         <p><a class="myButton" href="/2012/07/28/arduino">read more &raquo;</a></p>
-        <div>
-          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<!-- ken on github -->
-<ins class="adsbygoogle"
-     style="display:block"
-     data-ad-client="ca-pub-3783438370424072"
-     data-ad-slot="1516206098"
-     data-ad-format="auto"></ins>
-<script>
-(adsbygoogle = window.adsbygoogle || []).push({});
-</script>
-
-        </div>
-      </footer>
-      <hr>
-    
-      <h1><a style="color: #F22430" href="/2012/07/28/android-bluetooth-api">Android Bluetooth API</a></h1>
-      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
-      <p class="author">
-      <div class="date">
-        <span>28 July 2012</span>
-      </div>
-      </p>
-      <div class="content" style="line-height: 28px;">
-        這篇主要教大家怎麼用Bluetooth API去<br /><br /><ol><li><span style="background-color: white;">搜尋裝置</span></li><li><span style="background-color: white;">連結</span><span style="background-color: white;">裝置</span></li><li><span style="background-color: white;">傳送指令至裝置上</span></li></ol><br /><span style="background-color: white;"><br /></span><br /><span style="background-color: white;">首先要先宣告下列三個物件與常數，</span><br /><pre class="brush: java">private static BluetoothAdapter mBluetoothAdapter = null; // 用來搜尋、管理藍芽裝置<br />private static BluetoothSocket mBluetoothSocket = null; // 用來連結藍芽裝置、以及傳送指令<br />private static final UUID MY_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB"); // 一定要是這組<br />private static  OutputStream mOutputStream = null;<br />private final int REQUEST_ENABLE_BT=1;<br /></pre><br />第一個物件是用來判斷android的藍芽是否有開啟，<br />或者可不可以用，以及利用該物件去搜尋裝置。<br />第二個物件是用來連結藍芽裝置的，<br />第三個常數是固定的，因為連線是用serial port，所以固定用這組。<br />第四個是等等用來傳指令的outputStream<br /><br /><br />接著下面的code，是用來做init的動作<br /><pre class="brush: java">mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();<br />if (mBluetoothAdapter == null) {<br />    // 如果裝置不支援藍芽<br />    Toast.makeText(this, "Device doesn't support bluetooth", Toast.LENGTH_SHORT).show();<br />    return;<br />}<br />        <br />// 如果藍芽沒有開啟<br />if (!mBluetoothAdapter.isEnabled()) {<br />    // 發出一個intent去開啟藍芽，<br />        Intent mIntentOpenBT = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);<br />        startActivityForResult(mIntentOpenBT, REQUEST_ENABLE_BT);<br />}<br /></pre><br />上段的第二個if當中，如果你手機的藍芽未開啟，<br />會進到if，進到if以後就會發出一個intent request去開啟藍芽，<br />基本上會看到下面的畫面，會詢問你是否要開啟藍芽。<br />如果按下Yes，接著會在onActivityResult接收到。<br />這裡就不多做說明。<br />這裡假設手機的藍芽已經開啟。<br /><div class="separator" style="clear: both; text-align: center;"><a href="http://1.bp.blogspot.com/-6t-85UEG1tk/UBLP9Y52t2I/AAAAAAAAAxs/LrjonTfTQB0/s1600/Screenshot_2012-07-28-01-26-28.png" imageanchor="1" style="clear: left; float: left; margin-bottom: 1em; margin-right: 1em;"><img border="0" height="400" src="http://1.bp.blogspot.com/-6t-85UEG1tk/UBLP9Y52t2I/AAAAAAAAAxs/LrjonTfTQB0/s400/Screenshot_2012-07-28-01-26-28.png" width="225" /></a></div><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />接著下段code是去判斷這台手機裡面，<br />是否有已經配對過的藍芽裝置，<br />當然，你也可以在for迴圈中判斷是否有你要連結的裝置名稱，<br />有的話，就可以直接在這裡連結至裝置。<br />但這裡假設我們要連結的裝置還沒有配對過<br /><pre class="brush: java">// 取得目前已經配對過的裝置<br />Set&lt;bluetoothdevice&gt; setPairedDevices = mBluetoothAdapter.getBondedDevices();<br />        <br />// 如果已經有配對過的裝置<br />if (setPairedDevices.size() &gt; 0) {<br />    // 把裝置名稱以及MAC Address印出來<br />    for (BluetoothDevice device : setPairedDevices) {<br />        mArrayAdapter.add(device.getName() + "\n" + device.getAddress());<br />    }<br />}</pre><br /><br /><br />接下來我們要註冊一個BroadcastReceiver，主要是用來接收【搜尋到附近藍芽裝置】的訊息<br /><pre class="brush: java">// 註冊一個BroadcastReceiver，等等會用來接收搜尋到裝置的消息<br />IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);<br />registerReceiver(mReceiver, filter); <br />mBluetoothAdapter.startDiscovery(); //開始搜尋裝置<br /></pre><br /><br /><br /><br />接著要宣告上段code使用到的BroadcastReceiver，<br /><pre class="brush: java">private final BroadcastReceiver mReceiver = new BroadcastReceiver() {<br />        public void onReceive(Context context, Intent intent) {<br />            // 當收尋到裝置時<br />            if (BluetoothDevice.ACTION_FOUND.equals(intent.getAction())) {<br />                // 取得藍芽裝置這個物件<br />                BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);<br />                <br />                // 判斷那個裝置是不是你要連結的裝置，根據藍芽裝置名稱判斷<br />                if (device.getName().equals("MY_DEVICE_ID")){<br />                    try {<br />                        // 一進來一定要停止搜尋<br />                        mBluetoothAdapter.cancelDiscovery(); <br />             <br />                        // 連結到該裝置<br />                        mBluetoothSocket = device.createInsecureRfcommSocketToServiceRecord(MY_UUID);<br />                        mBluetoothSocket.connect();<br />             <br />                        // 取得outputstream<br />                        mOutputStream = mBluetoothSocket.getOutputStream();<br />             <br />                        // 送出訊息<br />                        String message = "hello";<br />                        mOutputStream.write(message.getBytes());<br />             <br />                        } catch (IOException e) {<br />      <br />                        }<br />                }<br />           <br />            }<br />       }<br />};</pre><br /><br /><br />在上段code中的連結到該裝置的code，基本上會看到下圖，<br />要你輸入配置碼，輸入以後，就可以連結到該裝置，<br />並且可以傳送訊息到你的藍芽裝置上去了。<br /><div class="separator" style="clear: both; text-align: center;"></div><div class="separator" style="clear: both; text-align: center;"><a href="http://3.bp.blogspot.com/-WVTTM4fboYw/UBLTl693CnI/AAAAAAAAAyI/Dt1_NfeKrxg/s1600/Screenshot_2012-07-28-01-34-31.png" imageanchor="1" style="clear: left; float: left; margin-bottom: 1em; margin-right: 1em;"><img border="0" height="400" src="http://3.bp.blogspot.com/-WVTTM4fboYw/UBLTl693CnI/AAAAAAAAAyI/Dt1_NfeKrxg/s400/Screenshot_2012-07-28-01-34-31.png" width="225" /></a></div><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />最後，記得要在關閉程式，或者暫停時，<br />把連線關掉!<br /><pre class="brush: java">@Override<br />protected void onPause() {<br />    super.onPause();<br />    try {<br />        if (mBluetoothSocket.isConnected()){<br />            mBluetoothSocket.close();<br />        }<br />        unregisterReceiver(mReceiver);<br />    } catch (IOException e) {<br />        e.printStackTrace();<br />    }<br />}<br /></pre><br /><br /><br /><br />恩，下一篇會教學大家怎麼用Android透過藍芽連結到Arduino電路板上去。
-      </div>
-      <footer>
-        <p><a class="myButton" href="/2012/07/28/android-bluetooth-api">read more &raquo;</a></p>
         <div>
           <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 <!-- ken on github -->

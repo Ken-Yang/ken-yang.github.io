@@ -301,6 +301,34 @@
     </div>
     <!-- This loops through the paginated posts -->
     
+      <h1><a style="color: #F22430" href="/2012/02/20/android-out-of-memory-oom">Android Out of Memory (OOM)</a></h1>
+      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
+      <p class="author">
+      <div class="date">
+        <span>20 February 2012</span>
+      </div>
+      </p>
+      <div class="content" style="line-height: 28px;">
+        呼，這篇文章放在我的草稿已經有兩個月了，<br />一直遲遲沒有完成，<br />一來是家裡太忙，<br />一來也是因為最近都在搞Kinect和Nxt Robot的應用(千百個不願意)<br />今天決定花點時間把這篇文章修完，<br />其實有很多篇都在草稿，有十幾篇要寫完，但先挑選這篇，<br />畢竟OOM是個很嚴重的問題。<br /><br /><b style="font-size: x-large;">【</b><span style="font-size: large;"><b>何謂OOM呢?</b></span><b style="font-size: x-large;">】</b><br />OOM (Out of Memory)，就是溢存的意思，<br />白話點就是超出記憶體大小了，<br />每個APP，都會有配置一定大小的heap size，<br />但這個heap size在每支設備上都不同，<br />像在Nexus one就是24mb，HTC Sensation只有16mb，<br />大小都不一定的，所以我們在寫app時，<br />必須做好記憶體的控管，<br /><br />有些人可能會納悶，不是用JAVA寫的嗎?<br />JAVA無法對記憶體有更進一步的操作(配置、釋放)阿，<br />怎麼做好記憶體的控管呢?<br />恩，沒有錯。<br /><br /><span style="font-size: large;"><b>【那OOM的問題會發生在哪?】</b></span><br />就是在圖片的使用!!!!!!<br />你每調用一張圖片，在android上都會做到auto scale的動作，<br />在做auto scale的動作是用C去配置記憶體的，<br />因此就會占用記憶體，<br />如果沒有做好控管，就會發生溢存!<br />那怎麼做好控管呢?<br /><br /><br />你們有時會發現有些APP好大喔，<br />有部分原因可能是引用其他外部的lib，<br />很少是因為程式碼寫太多....<br />大部分的問題就是在圖片太多，且太大，<br />沒有好好善用draw9patch，<a href="http://blog.kenyang.net/2010/05/draw-9-patch.html">何謂draw9patch可以來這看</a><br />當然draw9patch並不適用所有的案例，<br />甚至連根據dpi的不同，放圖片在不同的資料夾，<br />這方法我也覺得不適用所有案例，<br />我大多都還是去取得螢幕大小，自己去做到裁切圖片的動作，<br />個人覺得這樣是最精準的(畢竟android device實在太多..................)。<br /><br /><br />網路上有些解法是，<br />在做重新裁切或者取得圖片的動作時，<br />把圖片品質設小一點。<br />當然這也是一種解法啦。<br />但個人看法，認為這解法治標不治本，<br />怎麼說呢? 畢竟如果圖片一多，<br />OOM的問題還是會發生。<br /><br /><br />所以最根本的解法在於recycle!<br />但是recycle的時機很重要，<br />畢竟如果圖片還在使用中就進行recycle的話，<br />可是會發生crash的。<br /><br />我的建議是在Android Life Cycle中的onDestroy中進行recycle，<br />此時最為保險。當然如果你能保證你的圖片用不到了，就可以進行recycle了。<br />不一定要照我的建議而做。<br /><br /><br />這裡有個情境，假設我有4個畫面，A,B,C,D。<br />A有按鈕跳到B<br />B有按鈕跳到C<br />C有按鈕跳到D<br />每個畫面都有一張不同的背景圖，<br />怎麼設背景圖呢?<br />大部分人會在layout.xml中去做設定，<br />或者會在程式中設定，<br />如下：<br /><pre class="brush: java">linearLayout.setBackgroundDrawable(getResources().getDrawable(R.drawable.bg_normal));<br /></pre>這樣看似沒有甚麼問題，<br />但如果ABCD畫面換來換去，經過多次換來換去以後，<br />這時候heapSize就會越來越小....<br />最後就會發生OOM!<br /><br />所以較好的做法就是在lifecycle中的onCreate中，<br />去做init的動作，<br />先宣告二個全域的變數<br />一個是用來存圖片的BitmapDrawable<br />一個是放置圖片的LinearLayout，如下：<br /><pre class="brush: java">private LinearLayout llBackgroundPanel = null;<br />private BitmapDrawable bmpDrawImg  = null;<br /><br /></pre><br />接著在onCreate中去呼叫一個自己寫好的函數（fnSetBackground)<br />這個函數就是用來設背景圖片的，如下:<br /><pre class="brush: java">@Override<br />public void onCreate(Bundle savedInstanceState) {<br />    super.onCreate(savedInstanceState);<br />    setContentView(R.layout.a);<br />    fnSetBackground(); // 呼叫函數<br />}<br /><br /></pre><br />而函數內容如下：<br /><pre class="brush: java">public void fnSetBackground(){<br />    // 先取得LinearLayout<br />    llBackgroundPanel = (LinearLayout) findViewById(R.id.llBackgroundPanelChangePwd);<br />    // 取得該張圖片，並放置在變數bmpDrawImg中<br />    bmpDrawImg = new BitmapDrawable(getResources().openRawResource(R.drawable.bg_normal));<br />    // 最後就是設定圖片<br />    llBackgroundPanel.setBackgroundDrawable(bmpDrawImg);<br />}<br /></pre><br />完成上面步驟，只是設置圖片而已，<br />還是無法解決OOM的問題，下面才是解決的方式，<br />在lifecycle中的onDestroy中去進行清空，<br /><pre class="brush: java">@Override<br />protected void onDestroy() {<br />    super.onDestroy();<br />    // 每個Drawable被加到VIEW上面都會產生一個callback，所以在recycle圖片之前，必須先把callback設成null<br />    // 設成null以後，背景圖片自然就會不見，就會變成黑的背景。bmpDrawImg的狀態就會是沒有被使用中。<br />    llBackgroundPanel.getBackground().setCallback(null); <br /> <br />    // 先判斷bmpDrawImg 是否為null，如果不是null，且bmpDrawImg 還沒有被recycle的話就進行recycle<br />    if (null != bmpDrawImg &amp;&amp; !bmpDrawImg.getBitmap().isRecycled()){<br />        bmpDrawImg.getBitmap().recycle();<br />    }<br />    System.gc();<br />}<br /></pre><br /><br />照著上面的方法實作就能避免掉OOM的問題，<br />我寫在destroy的原因在於，<br />android lifecycle的特性，<br />當你A按下按鈕到B，<br />這時候在B畫面中按下返回按鈕(back)，<br />是不是就回到A了呢?<br />第一次按下返回按鈕，B會去調用onDestroy這個method，<br />如果這時候沒有進行recycle，那麼那塊記憶體空間就不會被釋放，<br />就會被占用著....<br />如果沒有進行RECYCLE，<br />久而久之，你持續返回A，又跳到B，重複著這動作好幾次，<br />圖片就被產生好幾次，<br />很快就會發生OOM，至於多快，就視你的圖片大小瞜!<br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
+      </div>
+      <footer>
+        <p><a class="myButton" href="/2012/02/20/android-out-of-memory-oom">read more &raquo;</a></p>
+        <div>
+          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- ken on github -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3783438370424072"
+     data-ad-slot="1516206098"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+        </div>
+      </footer>
+      <hr>
+    
       <h1><a style="color: #F22430" href="/2012/01/09/java">Java 物件複製的問題</a></h1>
       <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
       <p class="author">
@@ -341,34 +369,6 @@
       </div>
       <footer>
         <p><a class="myButton" href="/2012/01/09/java-unboxingboxing">read more &raquo;</a></p>
-        <div>
-          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<!-- ken on github -->
-<ins class="adsbygoogle"
-     style="display:block"
-     data-ad-client="ca-pub-3783438370424072"
-     data-ad-slot="1516206098"
-     data-ad-format="auto"></ins>
-<script>
-(adsbygoogle = window.adsbygoogle || []).push({});
-</script>
-
-        </div>
-      </footer>
-      <hr>
-    
-      <h1><a style="color: #F22430" href="/2012/01/08/androidfacebook-login-api">Android：Facebook Login API  (v2.0)</a></h1>
-      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
-      <p class="author">
-      <div class="date">
-        <span>08 January 2012</span>
-      </div>
-      </p>
-      <div class="content" style="line-height: 28px;">
-        <span style="color: red; font-size: large;"><u>(此篇為舊版的2.0 SDK，不建議使用了！<a href="http://blog.kenyang.net/2013/02/android-facebook-login-v30.html">請看這篇使用最新的3.0 SDK</a>)</u></span><br /><br /><br />前面有介紹過怎麼在<a href="http://blog.kenyang.net/2012/01/facebook-login.html">網站上，導入Facebook Login</a>，<br /><div>這篇要介紹如何在Android 裝置上，實作Facebook Login!!</div><div><b><br /></b></div><div><span style="font-size: large;">【<b>第一步】</b></span></div><div>首先先來到<a href="https://developers.facebook.com/apps">FB Developer後台</a>，並點選Create New App(右上角)，</div><div><br /></div><div><b><span style="font-size: large;">【第二步】</span></b></div><div><a href="https://github.com/facebook/facebook-android-sdk/downloads">下載Facebook SDK</a></div><div><br /></div><div><b><span style="font-size: large;">【第三步】</span></b></div><div>這步驟主要是在你的project中，include Facebook的lib，這裡大概分兩種方式，</div><div>第一種，就是在你已經create好的project上，點右鍵→點properties→選擇Android，</div><div>然後最下方有一個Library，然後就可以點選add，再去第二步驟下載的Facebook SDK中找到lib即可。</div><div>第二種就是在第二步驟下載的SDK中，</div><div>找到 &nbsp;SDK\\facebook\src，</div><div>底下應該有一個com資料夾，把資料夾拉進去你的project即可，</div><div>（我比較喜歡第二種）</div><div>第二種的，你拉進去以後，會看到下面的畫面！（圖一）<br /><br /><div class="separator" style="clear: both; text-align: center;"><a href="http://2.bp.blogspot.com/-vFuxNuVQx6g/TwmBkQlhEXI/AAAAAAAAAk0/K2yBv6TaRjw/s1600/Capture.JPG" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="335" src="http://2.bp.blogspot.com/-vFuxNuVQx6g/TwmBkQlhEXI/AAAAAAAAAk0/K2yBv6TaRjw/s400/Capture.JPG" width="400" /></a></div><br /><br /><br /><br /></div><div><br /></div><div><b><span style="font-size: large;">【第四步】</span></b> </div><div>先去下載<a href="http://sourceforge.net/projects/gnuwin32/files/openssl/0.9.8h-1/">OpenSSL</a>，因為待會會用到它來encode hash key，</div><div>下載以後解壓縮出來。</div><div><br /></div><div><b><span style="font-size: large;">【第五步】</span></b></div><div>記得之前有教過大家，怎麼用keytool產生key吧?(在<a href="http://blog.kenyang.net/2010/05/android-map-key.html">教學map</a>的時候有講到)</div><div>這裡一樣得利用keytool工具，</div><div>大家先打開cmd，</div><div>並且切換目錄至你的java sdk資料夾底下的bin!!! (是java sdk唷)</div><div>底下就會有一個keytool.exe</div><div><br /></div><div><br /></div><div><b><span style="font-size: large;">【第六步】 </span></b></div><div>先看到下面的指令範例以及說明，</div><div><br /></div><div>指令範例：</div><div>keytool -exportcert -alias <span style="color: red;">your_key_alias</span> -keystore<span style="color: red;">&nbsp;path_of_keystore</span>&nbsp;| <span style="color: red;">path_of_OpenSSL</span>&nbsp;sha1 -binary |&nbsp; <span style="color: red;">path_of_OpenSSL</span>&nbsp;&nbsp;base64 </div><div><br /></div><div>指令說明：</div><div><div><span style="color: red;">your_key_alias</span>&nbsp;：是你key的alias</div><div><span style="color: red;">path_of_keystore</span>&nbsp;：是你keystore的位置，如果這裡你是用.android底下預設的debug.keystore，那如果你Export Sign一個Android App時，是用另一把keystore，到時候如果上傳至market，你的FB登入可能就不能使用，所以必須用同一把，以Android App為主。</div><div>(但是!!!! 如果你是在本機開發測試，尚未上傳至market之前，大部分人應該都是直接點選eclipse上的綠色箭頭，然後部屬到Android裝置上吧? 如果是這樣，你的key，還是得用.android底下的預設keystore，因為按下Eclipse上的綠色箭頭，就是用預設的keystore打包的!!! 也就是說你得有兩把keysotre，一把是測試用，一把是正式上線用)</div><div><span style="color: red;">path_of_OpenSSL</span>&nbsp;：剛剛下載的OpenSSL位置</div></div><div><br /></div><div><br /></div><div>真實指令（這是我的喔，你複製貼上是沒用的，要改成自己的）</div><div>keytool -exportcert -alias <span style="color: red;">helloKen</span> -keystore <span style="color: red;">E:\myProject\M@C\key.keystore</span> | <span style="color: red;">C:\openssl-0.9.8h-1-bin\bin\openssl</span> sha1 -binary | <span style="color: red;">C:\openssl-0.9.8h-1-bin\bin\openssl</span> base64</div><div><br /></div><div>完成上面以後，你應該會得到2個key，一個是測試用，一個是正式上線時用的！</div><div><br /></div><div><br /></div><div><br /></div><div><br /></div><div><b><span style="font-size: large;">【第七步】</span></b> </div><div>去Facebook Developer後台，輸入上面的2把key，</div><div>如下圖中的紅色框框，請於Native Android App中填入喔（圖二）</div><div><div class="separator" style="clear: both; text-align: center;"><a href="http://3.bp.blogspot.com/-TZRDzSaDacc/TwmBj-0c62I/AAAAAAAAAkw/tMRZeBopk-4/s1600/Captur2e.JPG" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="515" src="http://3.bp.blogspot.com/-TZRDzSaDacc/TwmBj-0c62I/AAAAAAAAAkw/tMRZeBopk-4/s640/Captur2e.JPG" width="640" /></a></div><br /></div><div><br /></div><div><br /></div><div><br /></div><div><b><span style="font-size: large;">【第八步】</span></b> </div><div>開始寫程式了!!</div><div>首先必須加入一個permission，</div><div>如下</div><div><pre class="brush: xml">&lt;uses-permission android:name="android.permission.INTERNET"/&gt;<br /></pre></div><div><br /></div><div>接著宣告一個Facebook的物件!<br />且必須是global的喔!<br />如下：<br /><pre class="brush: java">Facebook facebook = new Facebook("YOUR_APP_ID");<br /></pre><br /><br />下面就是登入的code，看你要寫在哪，例如：按下按鈕去登入（btn.setOnClickListener)，或者一進畫面就登入（onCreate）<br /><pre class="brush: java">facebook.authorize(this, new DialogListener() {  <br />       @Override<br />       public void onComplete(Bundle values) {} //登入成功會返回至此method<br /><br />       @Override<br />       public void onFacebookError(FacebookError error) {}<br /><br />       @Override<br />       public void onError(DialogError e) {}<br /><br />       @Override<br />       public void onCancel() {}<br />});<br /><br /></pre><br /><br /><br /><br />最後還有一個步驟！因為上面的code會去trigger一個視窗出來，也就是換畫面，<br />執行完，還會再返回，所以在原本的Actitivy中的onActivityResult中，必須加入下段code，<br /><br /><pre class="brush: java">@Override<br />    public void onActivityResult(int requestCode, int resultCode, Intent data) {<br />        super.onActivityResult(requestCode, resultCode, data);<br /><br />        facebook.authorizeCallback(requestCode, resultCode, data);<br />    }<br /><br /></pre><br /><br /></div><div><br /></div><div><br /></div><div>這樣就完成了一個在Android上實作Facebook Login！</div><div><br /></div><div><br /></div><div><br /></div><div><br /></div><div><br /></div><div><br /></div><div><br /></div><div><br /></div><div><br /></div><div><br /></div><div><br /></div><div><br /></div><div><br /></div><div><br /></div><div><br /></div><div><br /><br /></div>
-      </div>
-      <footer>
-        <p><a class="myButton" href="/2012/01/08/androidfacebook-login-api">read more &raquo;</a></p>
         <div>
           <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 <!-- ken on github -->

@@ -1,0 +1,614 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>Firebase Realtime Database (Web)</title>
+    <meta name="description" content="">
+    <meta name="author" content="Ken Yang">
+
+    <!-- Enable responsive viewport -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Bootstrap styles -->
+    <link href="/assets/themes/bootstrap-3/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Optional theme -->
+    <link href="/assets/themes/bootstrap-3/bootstrap/css/bootstrap-theme.min.css" rel="stylesheet">
+    <!-- Sticky Footer -->
+    <link href="/assets/themes/bootstrap-3/bootstrap/css/bs-sticky-footer.css" rel="stylesheet">
+    
+    <!-- Custom styles -->
+    <link href="/assets/themes/bootstrap-3/css/style.css?body=1" rel="stylesheet" type="text/css" media="all">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Fav and touch icons -->
+    <!-- Update these with your own images
+      <link rel="shortcut icon" href="images/favicon.ico">
+      <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+      <link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-72x72.png">
+      <link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png">
+    -->
+
+    <!-- atom & rss feed -->
+    <link href="/atom.xml" type="application/atom+xml" rel="alternate" title="Sitewide ATOM Feed">
+    <link href="/rss.xml" type="application/rss+xml" rel="alternate" title="Sitewide RSS Feed">
+
+  </head>
+
+  <body>
+    <div id="wrap">
+      <nav class="navbar navbar-default" role="navigation">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#jb-navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/">Ken Yang筆記</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="jb-navbar-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+            
+
+
+  
+    
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/about">About Ken Yang</a></li>
+      	
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/archive">Archive</a></li>
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+  
+    
+      
+    
+  
+    
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/tags">Tags</a></li>
+      	
+      
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+
+
+
+          </ul>
+          <form method="get" class="navbar-form navbar-right" role="search" action="https://www.google.com/search">
+            <div class="form-group">
+              <input name="q" id="search-value" type="text" class="form-control" placeholder="Search">
+              <input style="display: none" name="as_sitesearch" id="search-value" type="text" class="form-control" value="blog.kenyang.net">
+            </div>
+            <button type="submit" class="btn btn-default">Submit</button>
+          </form>
+        </div><!-- /.navbar-collapse -->
+      </nav>
+
+      <div class="container">
+        <style>
+/* Adjusted to give override background and text colour */
+.highlight pre, pre, .highlight .hll {
+    background-color: #49483E;
+    border: 1px solid #ccc;
+    padding: 6px 10px;
+    border-radius: 3px;
+    color: #FFFFFF;
+}
+/* Highlights taken from https://gist.github.com/asaaki/1007420  for Monokai theme */
+.c                 { color: #75715e }               /* Comment                     */
+.err               { color: #960050;
+                     background-color: #1e0010 }    /* Error                       */
+.k                 { color: #66d9ef }               /* Keyword                     */
+.l                 { color: #ae81ff }               /* Literal                     */
+.n                 { color: #f8f8f2 }               /* Name                        */
+.o                 { color: #f92672 }               /* Operator                    */
+.p                 { color: #f8f8f2 }               /* Punctuation                 */
+.cm                { color: #75715e }               /* Comment.Multiline           */
+.cp                { color: #75715e }               /* Comment.Preproc             */
+.c1                { color: #75715e }               /* Comment.Single              */
+.cs                { color: #75715e }               /* Comment.Special             */
+.ge                { font-style: italic }           /* Generic.Emph                */
+.gs                { font-weight: bold }            /* Generic.Strong              */
+.kc                { color: #66d9ef }               /* Keyword.Constant            */
+.kd                { color: #66d9ef }               /* Keyword.Declaration         */
+.kn                { color: #f92672 }               /* Keyword.Namespace           */
+.kp                { color: #66d9ef }               /* Keyword.Pseudo              */
+.kr                { color: #66d9ef }               /* Keyword.Reserved            */
+.kt                { color: #66d9ef }               /* Keyword.Type                */
+.ld                { color: #e6db74 }               /* Literal.Date                */
+.m                 { color: #ae81ff }               /* Literal.Number              */
+.s                 { color: #e6db74 }               /* Literal.String              */
+.na                { color: #a6e22e }               /* Name.Attribute              */
+.nb                { color: #f8f8f2 }               /* Name.Builtin                */
+.nc                { color: #a6e22e }               /* Name.Class                  */
+.no                { color: #66d9ef }               /* Name.Constant               */
+.nd                { color: #a6e22e }               /* Name.Decorator              */
+.ni                { color: #f8f8f2 }               /* Name.Entity                 */
+.ne                { color: #a6e22e }               /* Name.Exception              */
+.nf                { color: #a6e22e }               /* Name.Function               */
+.nl                { color: #f8f8f2 }               /* Name.Label                  */
+.nn                { color: #f8f8f2 }               /* Name.Namespace              */
+.nx                { color: #a6e22e }               /* Name.Other                  */
+.py                { color: #f8f8f2 }               /* Name.Property               */
+.nt                { color: #f92672 }               /* Name.Tag                    */
+.nv                { color: #f8f8f2 }               /* Name.Variable               */
+.ow                { color: #f92672 }               /* Operator.Word               */
+.w                 { color: #f8f8f2 }               /* Text.Whitespace             */
+.mf                { color: #ae81ff }               /* Literal.Number.Float        */
+.mh                { color: #ae81ff }               /* Literal.Number.Hex          */
+.mi                { color: #ae81ff }               /* Literal.Number.Integer      */
+.mo                { color: #ae81ff }               /* Literal.Number.Oct          */
+.sb                { color: #e6db74 }               /* Literal.String.Backtick     */
+.sc                { color: #e6db74 }               /* Literal.String.Char         */
+.sd                { color: #e6db74 }               /* Literal.String.Doc          */
+.s2                { color: #e6db74 }               /* Literal.String.Double       */
+.se                { color: #ae81ff }               /* Literal.String.Escape       */
+.sh                { color: #e6db74 }               /* Literal.String.Heredoc      */
+.si                { color: #e6db74 }               /* Literal.String.Interpol     */
+.sx                { color: #e6db74 }               /* Literal.String.Other        */
+.sr                { color: #e6db74 }               /* Literal.String.Regex        */
+.s1                { color: #e6db74 }               /* Literal.String.Single       */
+.ss                { color: #e6db74 }               /* Literal.String.Symbol       */
+.bp                { color: #f8f8f2 }               /* Name.Builtin.Pseudo         */
+.vc                { color: #f8f8f2 }               /* Name.Variable.Class         */
+.vg                { color: #f8f8f2 }               /* Name.Variable.Global        */
+.vi                { color: #f8f8f2 }               /* Name.Variable.Instance      */
+.il                { color: #ae81ff }               /* Literal.Number.Integer.Long */
+</style>
+
+
+
+<div class="page-header">
+  <h1>Firebase Realtime Database (Web) </h1>
+</div>
+
+<div class="row post-full">
+  <div>
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- ken on github -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3783438370424072"
+     data-ad-slot="1516206098"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+  </div>
+  <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-70705007-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+
+  <div class="col-xs-12">
+    <div class="date">
+      <span>25 August 2017</span>
+    </div>
+    <div class="content" style="line-height: 28px;">
+      
+<p style="font-size: 16px;">最近要替我們的服務加一個類似公告的服務，想了好幾個solution，譬如說在我們既有的API Server上加一隻API，讓前端獲取目前最新的公告，
+但這麼做的缺點就是前端得用pulling or long pulling的方式，不管哪個方式對Server來說都是一種負擔，再加上把公告的獲取放在API Server的話，又得處理zero downtime的問題，基於以上的原因，所以打算使用<a href="https://firebase.google.cn/docs/database/">Firebase realtime database</a>。 <br />
+<a href="https://firebase.google.cn/docs/database/">Firebase realtime database</a>是一個即時的資料庫，當你更改任一個在database的值時，會立即的同步到各個已經連結到資料庫上的client上面，傳統作法是得讓client自己定期去DB query，而Firebase會主動的讓各個client知道，然後目前已經支援非常多種client了，像是普遍的iOS, Android，而我這篇是選擇使用<a href="https://firebase.google.com/docs/database/web/start">Web</a>，我可以在前端頁面上，使用JavaScript與Firebase realtime database做一個連結。</p>
+
+<p><br /></p>
+
+<!--more-->
+
+<hr />
+<h3 id="1-add-firebase-to-your-javascript-project">1. Add Firebase to your JavaScript Project</h3>
+<hr />
+
+<p style="font-size: 16px;">要將Firebase加入至我們的App之前，要先完成下面的步驟</p>
+
+<ol style="font-size: 16px;">
+  <li>先去<a href="https://console.firebase.google.com/">Firebase後台</a>建立一個project.</li>
+  <li>點擊 <code class="highlighter-rouge">Add Firebase to your web app</code>.</li>
+  <li>畫面會出現類似下方的code snippet，不過由於我會使用webpack，所以下方的只有config對這篇是有意義的.</li>
+</ol>
+
+<div class="language-java highlighter-rouge"><pre class="highlight"><code><span class="o">&lt;</span><span class="n">script</span> <span class="n">src</span><span class="o">=</span><span class="s">"https://www.gstatic.com/firebasejs/4.3.0/firebase.js"</span><span class="o">&gt;&lt;/</span><span class="n">script</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="n">script</span><span class="o">&gt;</span>
+  <span class="c1">// Initialize Firebase</span>
+  <span class="n">var</span> <span class="n">config</span> <span class="o">=</span> <span class="o">{</span>
+    <span class="nl">apiKey:</span> <span class="s">"&lt;API_KEY&gt;"</span><span class="o">,</span>
+    <span class="nl">authDomain:</span> <span class="s">"&lt;PROJECT_ID&gt;.firebaseapp.com"</span><span class="o">,</span>
+    <span class="nl">databaseURL:</span> <span class="s">"https://&lt;DATABASE_NAME&gt;.firebaseio.com"</span><span class="o">,</span>
+    <span class="nl">projectId:</span> <span class="s">"xxxxxxxxxx"</span><span class="o">,</span>
+    <span class="nl">storageBucket:</span> <span class="s">"&lt;BUCKET&gt;.appspot.com"</span><span class="o">,</span>
+    <span class="nl">messagingSenderId:</span> <span class="s">"&lt;SENDER_ID&gt;"</span>
+  <span class="o">};</span>
+  <span class="n">firebase</span><span class="o">.</span><span class="na">initializeApp</span><span class="o">(</span><span class="n">config</span><span class="o">);</span>
+<span class="o">&lt;/</span><span class="n">script</span><span class="o">&gt;</span>
+</code></pre>
+</div>
+
+<p><br /></p>
+
+<hr />
+<h3 id="2-initialize-the-realtime-database-javascript-sdk">2. Initialize the Realtime Database JavaScript SDK</h3>
+<hr />
+
+<p style="font-size: 16px;">initial我們的project以後，接著就要在我們的project中加入JavaScript SDK，由於我的project中有使用webpack，所以可以使用npm的方式進行install SDK。</p>
+
+<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>npm install --save firebase
+</code></pre>
+</div>
+
+<p style="font-size: 16px;">安裝完以後，就可以在project中import Firebase SDK，記得將下面的參數替換成自己project中的參數。</p>
+
+<div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="kr">import</span> <span class="nx">firebase</span> <span class="nx">from</span> <span class="s1">'firebase/app'</span><span class="p">;</span>
+<span class="kr">import</span> <span class="s1">'firebase/database'</span><span class="p">;</span>
+<span class="kr">import</span> <span class="s1">'firebase/auth'</span><span class="p">;</span>
+<span class="kr">const</span> <span class="nx">config</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="na">apiKey</span><span class="p">:</span> <span class="s2">"&lt;API_KEY&gt;"</span><span class="p">,</span>
+    <span class="na">authDomain</span><span class="p">:</span> <span class="s2">"&lt;PROJECT_ID&gt;.firebaseapp.com"</span><span class="p">,</span>
+    <span class="na">databaseURL</span><span class="p">:</span> <span class="s2">"https://&lt;DATABASE_NAME&gt;.firebaseio.com"</span><span class="p">,</span>
+    <span class="na">projectId</span><span class="p">:</span> <span class="s2">"xxxxxxxxxx"</span><span class="p">,</span>
+<span class="p">};</span>
+<span class="nx">firebase</span><span class="p">.</span><span class="nx">initializeApp</span><span class="p">(</span><span class="nx">config</span><span class="p">);</span>
+
+</code></pre>
+</div>
+
+<p><br /></p>
+
+<hr />
+<h3 id="3-setup-database-authentication-rule">3. Setup Database authentication rule</h3>
+<hr />
+
+<p style="font-size: 16px;">接著要去後台設定Database的權限，意思是說讀/寫時，是否需要authentication，又或者authentication的方式是什麼。這篇會將讀的權限設為全部都可以讀，不需要authentication;但寫就必須要有權限。</p>
+
+<div class="language-json highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"rules"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nt">".read"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w">
+    </span><span class="nt">".write"</span><span class="p">:</span><span class="w"> </span><span class="s2">"auth != null"</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+</div>
+
+<p><br /></p>
+
+<p style="font-size: 16px;">有了rule以後，就要去<code class="highlighter-rouge">Authentication</code>中設定<code class="highlighter-rouge">誰</code>可以去寫database，在<code class="highlighter-rouge">Authentication</code>中可以使用很多種方式進行身份的驗證，像是Google Login的等等之類的，我這裡選擇比較簡單的<code class="highlighter-rouge">Email</code>的方式，如下圖中，我建立了二個Email待會用來做身份驗證所使用的。</p>
+
+<p><img src="http://localhost:4000/assets/2017-08-28-1.png" alt="Ticket" /></p>
+
+<p><br /></p>
+
+<hr />
+<h3 id="4-sign-in-with-email">4. Sign In With Email</h3>
+<hr />
+
+<p style="font-size: 16px;">有了Email以後，接著我們就可以用來登入，如果登入</p>
+
+<div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="kd">let</span> <span class="nx">isLogin</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+<span class="nx">firebase</span><span class="p">.</span><span class="nx">auth</span><span class="p">().</span><span class="nx">signInWithEmailAndPassword</span><span class="p">(</span><span class="s1">'&lt;EMAIL&gt;'</span><span class="p">,</span> <span class="s1">'&lt;PWD&gt;'</span><span class="p">).</span><span class="k">catch</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">error</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">error</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">isLogin</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">});</span>
+</code></pre>
+</div>
+
+<p><br /></p>
+
+<hr />
+<h3 id="5-write-and-read-data">5. Write and Read Data</h3>
+<hr />
+
+<p style="font-size: 16px;">完成了上面的身份驗證，就可以對Firebase Realtime Database進行讀寫資料了，如果沒有進行上面的身份驗證，你在write的時候，console會吐<code class="highlighter-rouge">PERMISSION_DENIED</code>，下面的例子就是在announcement底下寫一個title是<code class="highlighter-rouge">Hello World</code>的公告。我用的是<code class="highlighter-rouge">set</code>這方法，要注意一點，用<code class="highlighter-rouge">set</code>可是會去overwrite掉底下node所有的資料，所以如果你想更新部分資料的話，就要用<code class="highlighter-rouge">update</code>。</p>
+
+<div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="kr">const</span> <span class="nx">database</span> <span class="o">=</span> <span class="nx">firebase</span><span class="p">.</span><span class="nx">database</span><span class="p">();</span>
+<span class="nx">firebase</span><span class="p">.</span><span class="nx">database</span><span class="p">().</span><span class="nx">ref</span><span class="p">(</span><span class="s1">'announcement/latest'</span><span class="p">).</span><span class="nx">set</span><span class="p">({</span>
+    <span class="s1">'title'</span><span class="p">:</span> <span class="s1">'Hello World'</span>
+<span class="p">});</span>
+</code></pre>
+</div>
+
+<p><br /></p>
+
+<p style="font-size: 16px;">成功以後，你就可以去後台看，會看到下面的JSON結構。</p>
+
+<div class="language-json highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"announcement"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nt">"latest"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nt">"title"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"Hello World"</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+</div>
+
+<p><br /></p>
+
+<p style="font-size: 16px;">要去Read Firebase Realtime Database上的資料有兩種方式，</p>
+
+<ol style="font-size: 16px;">
+  <li><code class="highlighter-rouge">on</code>：用on的話，一旦只要data變更了，client都會馬上收到通知</li>
+  <li><code class="highlighter-rouge">once</code>：once則相反，只會拿到一次，之後有變更都不會收到通知</li>
+</ol>
+
+<div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="kr">const</span> <span class="nx">announcement</span> <span class="o">=</span> <span class="nx">database</span><span class="p">.</span><span class="nx">ref</span><span class="p">(</span><span class="s1">'announcement/latest'</span><span class="p">);</span>
+<span class="nx">announcement</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">'value'</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">snapshot</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">snapshot</span><span class="p">.</span><span class="nx">val</span><span class="p">().</span><span class="nx">title</span><span class="p">);</span>
+<span class="p">});</span>
+</code></pre>
+</div>
+
+<p style="font-size: 16px;">你就會在console看到<code class="highlighter-rouge">Hello World</code>，如果直接在Realtime Database後台更改value，console又會即時印出更改過後的value。</p>
+
+<p><br />
+<br />
+<br /></p>
+
+
+    </div>
+
+    
+
+  
+    <ul class="tag_box inline">
+      <li><i class="glyphicon glyphicon-tags"></i></li>
+      
+      
+
+
+  
+     
+    	<li><a href="/tags.html#firebase-ref">firebase <span>1</span></a></li>
+     
+    	<li><a href="/tags.html#realtime-ref">realtime <span>1</span></a></li>
+     
+    	<li><a href="/tags.html#database-ref">database <span>1</span></a></li>
+     
+    	<li><a href="/tags.html#web-ref">web <span>1</span></a></li>
+     
+    	<li><a href="/tags.html#javascript-ref">javascript <span>1</span></a></li>
+    
+  
+
+
+
+    </ul>
+    
+  <div>
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <!-- ken on github -->
+    <ins class="adsbygoogle"
+         style="display:block"
+         data-ad-client="ca-pub-3783438370424072"
+         data-ad-slot="1516206098"
+         data-ad-format="auto"></ins>
+    <script>
+    (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+  </div>
+  
+    <hr>
+    <ul class="pagination">
+    
+      <li class="prev"><a href="/2017/08/21/nginx-block-traffic-by-country-and-bypass-traffic-for-whitelist" title="Nginx: Block traffic by country and bypass traffic for whitelist">&laquo; Previous</a></li>
+    
+      <li><a href="/archive.html">Archive</a></li>
+    
+      <li class="next disabled"><a>Next &rarr;</a>
+    
+    </ul>
+    <hr>
+    
+
+
+  <div id="disqus_thread"></div>
+<script type="text/javascript">
+    
+    var disqus_developer = 1;
+    var disqus_shortname = 'ken-yang'; // required: replace example with your forum shortname
+    
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+
+
+
+  </div>
+</div>
+
+
+      </div>
+
+    </div>
+
+    <div id="footer">
+      <div class="container">
+        <p>&copy; 2017 Ken Yang
+          with help from <a href="http://jekyllbootstrap.com" target="_blank" title="The Definitive Jekyll Blogging Framework">Jekyll Bootstrap</a>
+          and <a href="http://getbootstrap.com" target="_blank">Bootstrap</a>
+        </p>
+      </div>
+    </div>
+
+    
+
+
+
+
+
+    <!-- Latest compiled and minified JavaScript, requires jQuery 1.x (2.x not supported in IE8) -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="/assets/themes/bootstrap-3/bootstrap/js/bootstrap.min.js"></script>
+  </body>
+</html>
+

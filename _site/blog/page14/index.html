@@ -301,6 +301,34 @@
     </div>
     <!-- This loops through the paginated posts -->
     
+      <h1><a style="color: #F22430" href="/2014/02/06/how-to-backup-and-restore-your-mongodb">How to Backup and Restore your MongoDB database?</a></h1>
+      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
+      <p class="author">
+      <div class="date">
+        <span>06 February 2014</span>
+      </div>
+      </p>
+      <div class="content" style="line-height: 28px;">
+        <div style="font-size: 15px; line-height: 22px;">這篇要講如何Backup和Restore MongoDB，<br />MongoDB本身提供了2種不同的backup/restore solutions，<br /><br /><ul><li>mongoexport/mongoimport</li><li>mongodump/mongorestore</li></ul><br />還有一些進階的，像是<a href="https://mms.mongodb.com/?pk_campaign=MongoDB-Org&amp;pk_kwd=Backup-Docs" target="_blank">MongoDB Management Service (MMS)</a>，<br />但這裡只介紹這2種比較基本的solutions，<br />那麼這兩種的差異在哪呢？<br />第一種的mongoexport/mongoimport其實不太算是backup/restore solution，<br />因為它只能用來backup collection中的data（collection可以想成relational database的table），<br />它無法backup整個db的狀態，<br />在官網中也說明了，<br />mongoexport/mongoimport在保存<a href="http://docs.mongodb.org/v2.2/reference/glossary/#term-bson" target="_blank">BSON</a>上是不可靠的，<br />所以mongoexport/mongoimport比較適合用在保存簡單的data，<br />但也可以勉強算是比較簡易型的backup/restore solution，<br />但儘量別拿來作為backup/restore的方式．原因前面說過了，<br />把它方法當作data的export和import就好．<br />如果想要備份較完整的db，那麼就要靠第二種mongodump/mongorestore，<br />下面分別是這兩種的使用方式．<br /><br /><span style="color: #e06666; font-size: 18px;">1. mongoexport/mongoimport</span><br /><br /><span style="color: #e06666; font-size: 16px;">1-1.Backup</span><br /><pre class="brush: java">mongoexport -h &lt;Host:Port&gt; -d &lt;DB_Name&gt; -c &lt;Collection_Name&gt; -u &lt;DB_User&gt; -p &lt;DB_Password&gt; -o &lt;Output_File_Name&gt;<br /></pre><br />-h：你的db uri和port number<br />-d：你要備份的database名稱<br />-c：要備份哪一個collection(table)<br />-u：db帳號<br />-p：db密碼<br />-o：要備份出來的檔案名稱<br /><br /><span style="color: #e06666; font-size: 16px;">1-2. Restore</span><br />備份成功以後，你可以試著drop那個collection，<br />接著在輸入下面的command，應該就會recover成功．<br /><pre class="brush: java">mongoimport -h &lt;Host:Port&gt; -d &lt;DB_Name&gt; -c &lt;Collection_Name&gt; -u &lt;DB_User&gt; -p &lt;DB_Password&gt; --file &lt;File_Name&gt;<br /></pre><br />參數大部分和backup一樣，<br />只有--file不同，<br />--file要接的是剛剛備份出來的檔案名稱，<br />輸入以後，看到下圖就代表recover成功了<br /><div class="separator" style="clear: both; text-align: center;"></div><br /><div class="separator" style="clear: both; text-align: center;"><a href="http://1.bp.blogspot.com/-c9hAXACpEJQ/UvOcUq3HNFI/AAAAAAAAFI4/YbP5amWS_7k/s1600/Screen+Shot+2014-02-06+at+10.29.31+PM.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="http://1.bp.blogspot.com/-c9hAXACpEJQ/UvOcUq3HNFI/AAAAAAAAFI4/YbP5amWS_7k/s1600/Screen+Shot+2014-02-06+at+10.29.31+PM.png" /></a></div><br /><br /><br /><span style="color: #e06666; font-size: 18px;">2. mongodump/mongorestore</span><br /><br /><span style="color: #e06666; font-size: 16px;">2-1.Backup</span><br /><pre class="brush: java">mongodump -h &lt;Host:Port&gt; -d &lt;DB_Name&gt; -c &lt;Collection_Name&gt; -u &lt;DB_User&gt; -p &lt;DB_Password&gt; -o &lt;Directory&gt;<br /></pre><br />參數也和上面一樣，<br />但-o是要接目錄位置，mongodump會在該目錄底下建立一個folder來存backup的檔案，<br /><br /><span style="color: #e06666; font-size: 16px;">2-2. Restore</span><br /><pre class="brush: java">mongorestore -h &lt;Host:Port&gt; -d &lt;DB_Name&gt; -c &lt;Collection_Name&gt; -u &lt;DB_User&gt; -p &lt;DB_Password&gt; &lt;Directory&gt;<br /></pre><br />參數也一樣，<br />但少了-o，<br />請在後面直接接上存放backup db的directory．<br />輸入以後，<br />你會發現mongorestore不只會幫你recover data，連該collection原有的index也會幫你建好．<br /><br /><br /><br />結論，<br />第一種儘量別拿來做backup/restore，其實就連MongoDB官網也沒有把mongoimport/mongoexport歸類在backup/restore的類別下，<br />就把第一種當作data的export吧！<br />第二種就是完整的backup/restore solution，就像mysqldump一樣！<br /><br /><br /><br /></div><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
+      </div>
+      <footer>
+        <p><a class="myButton" href="/2014/02/06/how-to-backup-and-restore-your-mongodb">read more &raquo;</a></p>
+        <div>
+          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- ken on github -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3783438370424072"
+     data-ad-slot="1516206098"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+        </div>
+      </footer>
+      <hr>
+    
       <h1><a style="color: #F22430" href="/2014/01/27/handle-long-running-operations-in-nodejs">Handle long-running operations in Node.js</a></h1>
       <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
       <p class="author">
@@ -341,34 +369,6 @@
       </div>
       <footer>
         <p><a class="myButton" href="/2014/01/22/heroku-getting-started-with-mongodb-and">read more &raquo;</a></p>
-        <div>
-          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<!-- ken on github -->
-<ins class="adsbygoogle"
-     style="display:block"
-     data-ad-client="ca-pub-3783438370424072"
-     data-ad-slot="1516206098"
-     data-ad-format="auto"></ins>
-<script>
-(adsbygoogle = window.adsbygoogle || []).push({});
-</script>
-
-        </div>
-      </footer>
-      <hr>
-    
-      <h1><a style="color: #F22430" href="/2014/01/19/deploying-nodejs-application-to-heroku">Deploying a Node.js application to Heroku</a></h1>
-      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
-      <p class="author">
-      <div class="date">
-        <span>19 January 2014</span>
-      </div>
-      </p>
-      <div class="content" style="line-height: 28px;">
-        <div style="font-size: 15px;line-height: 22px;">Node.js是近來很夯的一個javascript framework，<br />優點有even-driven, non-blocking IO...etc，<br />這裡就不贅述了，直接進入主題吧！<br /><br /><br />這篇假設大家已經有heroku帳號了，<br />就不教大家怎麼註冊，或者說明每個command了，<br />不會的可以去看<a href="http://blog.kenyang.net/2013/11/herokudeploy-python-applicaion.html">上一篇</a>．<br /><br />這篇主要教如何建立一個基本的node.js application，<br />下一篇會教如何結合mongodb，<br />而這篇會使用到:<br />&nbsp; &nbsp; &nbsp;1. npm (node.js的package manager)<br />&nbsp; &nbsp; &nbsp;2. express.js (web framework，你可以想像成flask, django, springmvc）<br /><ul></ul><br /><br /><br />進入正題吧！<br /><br /><span style="color: #e06666; font-size: 18px;">1. init</span><br /><br />先建立我們需要的環境，<br /><pre class="brush: java">mkdir test-app<br />cd test-app<br />git init <br />heroku create your-app-name<br /></pre><br /><span style="color: #e06666; font-size: 18px;">2. install express.js</span><br /><br />express.js需要透過npm來安裝，<br />那npm怎麼取得呢？現在只要你安裝node.js，<br />基本上就會幫你把npm裝好了，所以不用特別去裝！<br />使用npm安裝package有一個好處，<br />npm就像是virtualenv一樣，<br />它會為每個application建立一個獨立的環境，<br />每一個node.js application使用的package都是獨立的，彼此不會互相干擾！<br /><br />安裝指令：<br /><pre class="brush: java">npm install express.js<br /></pre><br /><span style="color: #e06666; font-size: 18px;">3. development</span><br /><br />先建立index.js這個檔案<br /><br /><pre class="brush: java">vim index.js<br /></pre><br />內容如下：<br /><pre class="brush: js">// include express module<br />var express = require("express");<br /><br />var app = express();<br />app.use(express.logger());<br /><br />app.get('/', function(req, resp) {<br />    resp.send("hello world");<br />});<br /><br />var port = process.env.PORT || 5000;<br />app.listen(port, function() {<br />    console.log("Listening on " + port);<br />});<br /><br /></pre><br /><span style="color: #e06666; font-size: 18px;">4. deployment</span><br /><br />首先要先建立一個檔案名為Procfile，<br />這檔案是讓node.js知道此process type，<br /><pre class="brush: java">vim Procfile<br /></pre><br />內容如下：<br /><pre class="brush: js">web: node index.js<br /></pre><br />接著建立一個package.json<br />這個檔案是記錄著你的application要用到哪些package，<br />但你不需要自己建立這個檔案，你可以透過npm來幫你generate這個file，<br />指令如下，<br /><pre class="brush: java">npm init<br /></pre><br />準備完上述兩個檔案後，就可以上傳至heroku了！<br /><pre class="brush: java">git add . <br />git commit -m 'first commit'<br />git push heroku master<br /></pre><br />完成以後就可以到你的application去看，（http://your-app-name.herokuapp.com/）<br />應該就會看到hello world字樣了．<br />在下一篇會講如何在heroku上整合mongodb．<br /><br /><br /></div><br /><br /><br /><br /><br />
-      </div>
-      <footer>
-        <p><a class="myButton" href="/2014/01/19/deploying-nodejs-application-to-heroku">read more &raquo;</a></p>
         <div>
           <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 <!-- ken on github -->

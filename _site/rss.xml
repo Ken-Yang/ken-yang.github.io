@@ -5,10 +5,174 @@
         <description>Ken Yang筆記 - Ken Yang</description>
         <link>http://blog.kenyang.net</link>
         <atom:link href="http://blog.kenyang.net/rss.xml" rel="self" type="application/rss+xml" />
-        <lastBuildDate>Mon, 21 Aug 2017 15:53:23 +0800</lastBuildDate>
-        <pubDate>Mon, 21 Aug 2017 15:53:23 +0800</pubDate>
+        <lastBuildDate>Wed, 30 Aug 2017 13:16:12 +0800</lastBuildDate>
+        <pubDate>Wed, 30 Aug 2017 13:16:12 +0800</pubDate>
         <ttl>60</ttl>
 
+
+        <item>
+                <title>Firebase Realtime Database (Web)</title>
+                <description>
+&lt;p style=&quot;font-size: 16px;&quot;&gt;最近要替我們的服務加一個類似公告的服務，想了好幾個solution，譬如說在我們既有的API Server上加一隻API，讓前端獲取目前最新的公告，
+但這麼做的缺點就是前端得用pulling or long pulling的方式，不管哪個方式對Server來說都是一種負擔，再加上把公告的獲取放在API Server的話，又得處理zero downtime的問題，基於以上的原因，所以打算使用&lt;a href=&quot;https://firebase.google.cn/docs/database/&quot;&gt;Firebase realtime database&lt;/a&gt;。 &lt;br /&gt;
+&lt;a href=&quot;https://firebase.google.cn/docs/database/&quot;&gt;Firebase realtime database&lt;/a&gt;是一個即時的資料庫，當你更改任一個在database的值時，會立即的同步到各個已經連結到資料庫上的client上面，傳統作法是得讓client自己定期去DB query，而Firebase會主動的讓各個client知道，然後目前已經支援非常多種client了，像是普遍的iOS, Android，而我這篇是選擇使用&lt;a href=&quot;https://firebase.google.com/docs/database/web/start&quot;&gt;Web&lt;/a&gt;，我可以在前端頁面上，使用JavaScript與Firebase realtime database做一個連結。&lt;/p&gt;
+
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
+
+&lt;!--more--&gt;
+
+&lt;hr /&gt;
+&lt;h3 id=&quot;1-add-firebase-to-your-javascript-project&quot;&gt;1. Add Firebase to your JavaScript Project&lt;/h3&gt;
+&lt;hr /&gt;
+
+&lt;p style=&quot;font-size: 16px;&quot;&gt;要將Firebase加入至我們的App之前，要先完成下面的步驟&lt;/p&gt;
+
+&lt;ol style=&quot;font-size: 16px;&quot;&gt;
+  &lt;li&gt;先去&lt;a href=&quot;https://console.firebase.google.com/&quot;&gt;Firebase後台&lt;/a&gt;建立一個project.&lt;/li&gt;
+  &lt;li&gt;點擊 &lt;code class=&quot;highlighter-rouge&quot;&gt;Add Firebase to your web app&lt;/code&gt;.&lt;/li&gt;
+  &lt;li&gt;畫面會出現類似下方的code snippet，不過由於我會使用webpack，所以下方的只有config對這篇是有意義的.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;script&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;src&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;https://www.gstatic.com/firebasejs/4.3.0/firebase.js&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;lt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;script&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;script&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;
+  &lt;span class=&quot;c1&quot;&gt;// Initialize Firebase&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;config&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;nl&quot;&gt;apiKey:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;&amp;lt;API_KEY&amp;gt;&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;nl&quot;&gt;authDomain:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;&amp;lt;PROJECT_ID&amp;gt;.firebaseapp.com&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;nl&quot;&gt;databaseURL:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;https://&amp;lt;DATABASE_NAME&amp;gt;.firebaseio.com&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;nl&quot;&gt;projectId:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;xxxxxxxxxx&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;nl&quot;&gt;storageBucket:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;&amp;lt;BUCKET&amp;gt;.appspot.com&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;nl&quot;&gt;messagingSenderId:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;&amp;lt;SENDER_ID&amp;gt;&quot;&lt;/span&gt;
+  &lt;span class=&quot;o&quot;&gt;};&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;firebase&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;initializeApp&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;config&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;&amp;lt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;script&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
+
+&lt;hr /&gt;
+&lt;h3 id=&quot;2-initialize-the-realtime-database-javascript-sdk&quot;&gt;2. Initialize the Realtime Database JavaScript SDK&lt;/h3&gt;
+&lt;hr /&gt;
+
+&lt;p style=&quot;font-size: 16px;&quot;&gt;initial我們的project以後，接著就要在我們的project中加入JavaScript SDK，由於我的project中有使用webpack，所以可以使用npm的方式進行install SDK。&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$ &lt;/span&gt;npm install --save firebase
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p style=&quot;font-size: 16px;&quot;&gt;安裝完以後，就可以在project中import Firebase SDK，記得將下面的參數替換成自己project中的參數。&lt;/p&gt;
+
+&lt;div class=&quot;language-javascript highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kr&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;firebase&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'firebase/app'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;kr&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'firebase/database'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;kr&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'firebase/auth'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;kr&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;config&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;apiKey&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&amp;lt;API_KEY&amp;gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;authDomain&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&amp;lt;PROJECT_ID&amp;gt;.firebaseapp.com&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;databaseURL&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;https://&amp;lt;DATABASE_NAME&amp;gt;.firebaseio.com&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;projectId&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;xxxxxxxxxx&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;
+&lt;span class=&quot;nx&quot;&gt;firebase&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;initializeApp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;config&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
+
+&lt;hr /&gt;
+&lt;h3 id=&quot;3-setup-database-authentication-rule&quot;&gt;3. Setup Database authentication rule&lt;/h3&gt;
+&lt;hr /&gt;
+
+&lt;p style=&quot;font-size: 16px;&quot;&gt;接著要去後台設定Database的權限，意思是說讀/寫時，是否需要authentication，又或者authentication的方式是什麼。這篇會將讀的權限設為全部都可以讀，不需要authentication;但寫就必須要有權限。&lt;/p&gt;
+
+&lt;div class=&quot;language-json highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&quot;rules&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+    &lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&quot;.read&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;kc&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+    &lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&quot;.write&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;auth != null&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
+
+&lt;p style=&quot;font-size: 16px;&quot;&gt;有了rule以後，就要去&lt;code class=&quot;highlighter-rouge&quot;&gt;Authentication&lt;/code&gt;中設定&lt;code class=&quot;highlighter-rouge&quot;&gt;誰&lt;/code&gt;可以去寫database，在&lt;code class=&quot;highlighter-rouge&quot;&gt;Authentication&lt;/code&gt;中可以使用很多種方式進行身份的驗證，像是Google Login的等等之類的，我這裡選擇比較簡單的&lt;code class=&quot;highlighter-rouge&quot;&gt;Email&lt;/code&gt;的方式，如下圖中，我建立了二個Email待會用來做身份驗證所使用的。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://localhost:4000/assets/2017-08-28-1.png&quot; alt=&quot;Ticket&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
+
+&lt;hr /&gt;
+&lt;h3 id=&quot;4-sign-in-with-email&quot;&gt;4. Sign In With Email&lt;/h3&gt;
+&lt;hr /&gt;
+
+&lt;p style=&quot;font-size: 16px;&quot;&gt;有了Email以後，接著我們就可以用來登入，如果登入&lt;/p&gt;
+
+&lt;div class=&quot;language-javascript highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kd&quot;&gt;let&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;isLogin&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;nx&quot;&gt;firebase&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;auth&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;().&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;signInWithEmailAndPassword&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'&amp;lt;EMAIL&amp;gt;'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'&amp;lt;PWD&amp;gt;'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;catch&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;error&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;error&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;nx&quot;&gt;isLogin&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;false&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
+
+&lt;hr /&gt;
+&lt;h3 id=&quot;5-write-and-read-data&quot;&gt;5. Write and Read Data&lt;/h3&gt;
+&lt;hr /&gt;
+
+&lt;p style=&quot;font-size: 16px;&quot;&gt;完成了上面的身份驗證，就可以對Firebase Realtime Database進行讀寫資料了，如果沒有進行上面的身份驗證，你在write的時候，console會吐&lt;code class=&quot;highlighter-rouge&quot;&gt;PERMISSION_DENIED&lt;/code&gt;，下面的例子就是在announcement底下寫一個title是&lt;code class=&quot;highlighter-rouge&quot;&gt;Hello World&lt;/code&gt;的公告。我用的是&lt;code class=&quot;highlighter-rouge&quot;&gt;set&lt;/code&gt;這方法，要注意一點，用&lt;code class=&quot;highlighter-rouge&quot;&gt;set&lt;/code&gt;可是會去overwrite掉底下node所有的資料，所以如果你想更新部分資料的話，就要用&lt;code class=&quot;highlighter-rouge&quot;&gt;update&lt;/code&gt;。&lt;/p&gt;
+
+&lt;div class=&quot;language-javascript highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kr&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;database&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;firebase&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;database&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
+&lt;span class=&quot;nx&quot;&gt;firebase&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;database&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;().&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;ref&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'announcement/latest'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;set&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;({&lt;/span&gt;
+    &lt;span class=&quot;s1&quot;&gt;'title'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'Hello World'&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
+
+&lt;p style=&quot;font-size: 16px;&quot;&gt;成功以後，你就可以去後台看，會看到下面的JSON結構。&lt;/p&gt;
+
+&lt;div class=&quot;language-json highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&quot;announcement&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+    &lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&quot;latest&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+      &lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&quot;title&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Hello World&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+    &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
+
+&lt;p style=&quot;font-size: 16px;&quot;&gt;要去Read Firebase Realtime Database上的資料有兩種方式，&lt;/p&gt;
+
+&lt;ol style=&quot;font-size: 16px;&quot;&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;on&lt;/code&gt;：用on的話，一旦只要data變更了，client都會馬上收到通知&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;once&lt;/code&gt;：once則相反，只會拿到一次，之後有變更都不會收到通知&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;div class=&quot;language-javascript highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kr&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;announcement&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;database&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;ref&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'announcement/latest'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;nx&quot;&gt;announcement&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;on&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'value'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;snapshot&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;nx&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;snapshot&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;val&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;().&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;title&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p style=&quot;font-size: 16px;&quot;&gt;你就會在console看到&lt;code class=&quot;highlighter-rouge&quot;&gt;Hello World&lt;/code&gt;，如果直接在Realtime Database後台更改value，console又會即時印出更改過後的value。&lt;/p&gt;
+
+&lt;p&gt;&lt;br /&gt;
+&lt;br /&gt;
+&lt;br /&gt;&lt;/p&gt;
+
+</description>
+                <link>http://blog.kenyang.net/2017/08/25/firebase-realtime-database-web</link>
+                <guid>http://blog.kenyang.net/2017/08/25/firebase-realtime-database-web</guid>
+                <pubDate>Fri, 25 Aug 2017 00:00:00 +0800</pubDate>
+        </item>
 
         <item>
                 <title>Nginx: Block traffic by country and bypass traffic for whitelist</title>
@@ -3796,79 +3960,6 @@ Filesystem                  Size  Used Avail Use% Mounted on
 </description>
                 <link>http://blog.kenyang.net/2015/11/27/how-to-extendreduce-lvm</link>
                 <guid>http://blog.kenyang.net/2015/11/27/how-to-extendreduce-lvm</guid>
-                <pubDate>Fri, 27 Nov 2015 00:00:00 +0800</pubDate>
-        </item>
-
-        <item>
-                <title>Do not allocate all the LVM space with preseed</title>
-                <description>
-&lt;p&gt;使用Preseed file分割LVM時，&lt;br /&gt;
-並無法做到只使用某部分的VG就好，&lt;br /&gt;
-舉例來說，假設你有一個100G的硬碟，  &lt;br /&gt;
-然後preseed file如下，&lt;/p&gt;
-
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;d-i partman-auto/expert_recipe string  &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
-      boot-root ::                                                  &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
-              20480 10 20480 ext4                                   &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
-                      &lt;span class=&quot;nv&quot;&gt;$lvmok&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;{}&lt;/span&gt; lv_name&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt; root &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$defaultignore&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;    &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
-                      method&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt; format &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt; format&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;                    &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
-                      use_filesystem&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt; filesystem&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt; ext4 &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;          &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
-                      mountpoint&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt; / &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;                               &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
-              .                                                     &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
-              20480 10 20480 ext4                                   &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
-                      &lt;span class=&quot;nv&quot;&gt;$lvmok&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt; lv_name&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt; log &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$defaultignore&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;    &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
-                      method&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt; format &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt; format&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;                    &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
-                      use_filesystem&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt; filesystem&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt; ext4 &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;          &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
-                      mountpoint&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt; /var/log &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;                        &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;我們分別給每個lv的大小為：&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;root&lt;/code&gt; : 20G&lt;/li&gt;
-  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;log&lt;/code&gt;  : 20G&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;你可能會以為，剩下的60G不會被加到LV裡面，&lt;br /&gt;
-但其實剩下的60G會通通被放到log裡面去。&lt;/p&gt;
-
-&lt;p&gt;不過有比較tricky的解法，可以參考下面的Preseed file，&lt;br /&gt;
-我們多增加了一個LV，叫做&lt;code class=&quot;highlighter-rouge&quot;&gt;to_be_free&lt;/code&gt;，&lt;br /&gt;
-然後把所有的free space都指派給&lt;code class=&quot;highlighter-rouge&quot;&gt;to_be_free&lt;/code&gt;，&lt;br /&gt;
-最後在&lt;code class=&quot;highlighter-rouge&quot;&gt;late_command&lt;/code&gt;裡，用&lt;code class=&quot;highlighter-rouge&quot;&gt;lvremove&lt;/code&gt;把&lt;code class=&quot;highlighter-rouge&quot;&gt;to_be_free&lt;/code&gt;砍掉，&lt;br /&gt;
-這樣就可以做到把某部分space歸還了。&lt;/p&gt;
-
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;d-i partman-auto/expert_recipe string  &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
-      boot-root ::                                                  &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
-              20480 10 20480 ext4                                   &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
-                      &lt;span class=&quot;nv&quot;&gt;$lvmok&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;{}&lt;/span&gt; lv_name&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt; root &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$defaultignore&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;    &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
-                      method&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt; format &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt; format&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;                    &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
-                      use_filesystem&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt; filesystem&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt; ext4 &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;          &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
-                      mountpoint&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt; / &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;                               &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
-              .                                                     &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
-              20480 10 20480 ext4                                   &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
-                      &lt;span class=&quot;nv&quot;&gt;$lvmok&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt; lv_name&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt; log &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$defaultignore&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;    &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
-                      method&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt; format &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt; format&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;                    &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
-                      use_filesystem&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt; filesystem&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt; ext4 &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;          &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
-                      mountpoint&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt; /var/log &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;                        &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
-              .                                                     &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
-              1 10 -1 ext4                                          &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
-                      &lt;span class=&quot;nv&quot;&gt;$lvmok&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt; lv_name&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt; to_be_free &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$defaultignore&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;    &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
-                      method&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt; format &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt; format&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;                    &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
-                      use_filesystem&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt; filesystem&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt; ext4 &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;          &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
-                      mountpoint&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt; /to_be_free &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;                     &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
-                      
-d-i preseed/late_command string &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
-umount /target/to_be_free/ ; &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
-lvremove -f /dev/&lt;span class=&quot;k&quot;&gt;*&lt;/span&gt;/&lt;span class=&quot;k&quot;&gt;*&lt;/span&gt;to_be_free &amp;gt; /dev/null 2&amp;gt;&amp;amp;1 ; &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
-sed -i &lt;span class=&quot;s1&quot;&gt;'/to_be_free/d'&lt;/span&gt; /target/etc/fstab ; &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-</description>
-                <link>http://blog.kenyang.net/2015/11/27/do-not-allocate-all-the-lvm-space-with-preseed</link>
-                <guid>http://blog.kenyang.net/2015/11/27/do-not-allocate-all-the-lvm-space-with-preseed</guid>
                 <pubDate>Fri, 27 Nov 2015 00:00:00 +0800</pubDate>
         </item>
 

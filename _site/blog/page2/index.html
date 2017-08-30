@@ -301,6 +301,53 @@
     </div>
     <!-- This loops through the paginated posts -->
     
+      <h1><a style="color: #F22430" href="/2017/06/11/whats-mysql-partition">What's MySQL partition</a></h1>
+      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
+      <p class="author">
+      <div class="date">
+        <span>11 June 2017</span>
+      </div>
+      </p>
+      <div class="content" style="line-height: 28px;">
+        
+<p>最近在面試幾個candidate，都說自己有MySQL tuning的經驗，
+但進一步問下去，發現連MySQL怎麼用BTree放index，或者怎麼使用partition or sharding都不了解，所以打算來寫一系列的MySQL文章，這篇就先挑簡單的partition來寫。</p>
+
+<hr />
+<h3 id="1-whats-partition-and-why">1. What’s Partition and Why?</h3>
+<hr />
+
+<p>簡單說，Partition是將你的table，根據你的配置去divide成好幾個part；最重要的是，資料都是在同一個DB裡面，這對application來說，可以無感的使用它，卻又享有它的優點。<br /></p>
+
+<p>那麼為何要用partition呢？partition的優點在於：</p>
+
+<ul>
+  <li><code class="highlighter-rouge">Partition Pruning</code>：基於已經知道資料在哪個partition的條件下，讓你的SQL operation變快，這包含了<code class="highlighter-rouge">select, insert, update ,delete</code></li>
+  <li><code class="highlighter-rouge">刪除資料</code>：當你的table很大時，刪除是非常耗時的一件工作，有了partition以後，你可以直接drop該partition，且時間上可以快上非常多。</li>
+</ul>
+
+<p><br /></p>
+
+
+      </div>
+      <footer>
+        <p><a class="myButton" href="/2017/06/11/whats-mysql-partition">read more &raquo;</a></p>
+        <div>
+          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- ken on github -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3783438370424072"
+     data-ad-slot="1516206098"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+        </div>
+      </footer>
+      <hr>
+    
       <h1><a style="color: #F22430" href="/2017/02/18/getting-started-with-webpack">Getting started with webpack</a></h1>
       <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
       <p class="author">
@@ -376,58 +423,6 @@
       </div>
       <footer>
         <p><a class="myButton" href="/2017/02/07/update-nodejs-version">read more &raquo;</a></p>
-        <div>
-          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<!-- ken on github -->
-<ins class="adsbygoogle"
-     style="display:block"
-     data-ad-client="ca-pub-3783438370424072"
-     data-ad-slot="1516206098"
-     data-ad-format="auto"></ins>
-<script>
-(adsbygoogle = window.adsbygoogle || []).push({});
-</script>
-
-        </div>
-      </footer>
-      <hr>
-    
-      <h1><a style="color: #F22430" href="/2017/02/07/getting-started-with-kafka-in-nodejs">Getting started with Kafka in Node.js</a></h1>
-      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
-      <p class="author">
-      <div class="date">
-        <span>07 February 2017</span>
-      </div>
-      </p>
-      <div class="content" style="line-height: 28px;">
-        
-<p>之前有講過<a href="http://blog.kenyang.net/2015/06/25/apache-kafka-distributed-messaging">Kafka的用途以及如何安裝</a>，這篇會講如何用<code class="highlighter-rouge">Node.js</code>去連結<code class="highlighter-rouge">Kafka</code>，至於安裝Kafka的部分就請去<a href="http://blog.kenyang.net/2015/06/25/apache-kafka-distributed-messaging">上一篇</a>來看。</p>
-
-<p><br /></p>
-
-<hr />
-<h3 id="1-create-a-topic">1. Create a topic</h3>
-<hr />
-
-<p>首先，先用CLI去建立一個topic，這topic等等會被Node.js subcribe。</p>
-
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span><span class="nb">cd</span> <span class="nv">$YOUR_PATH</span>/kafka_2.11-0.10.1.0
-<span class="gp">$ </span>bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic open
-</code></pre>
-</div>
-
-<p>可以用下面的指令去看topic是否建立成功：</p>
-
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>bin/kafka-topics.sh --list --zookeeper localhost:2181
-</code></pre>
-</div>
-
-<p><br /></p>
-
-
-      </div>
-      <footer>
-        <p><a class="myButton" href="/2017/02/07/getting-started-with-kafka-in-nodejs">read more &raquo;</a></p>
         <div>
           <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 <!-- ken on github -->
