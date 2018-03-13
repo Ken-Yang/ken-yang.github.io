@@ -5,10 +5,22 @@
         <description>Ken Yang筆記 - Ken Yang</description>
         <link>http://blog.kenyang.net</link>
         <atom:link href="http://blog.kenyang.net/rss.xml" rel="self" type="application/rss+xml" />
-        <lastBuildDate>Wed, 30 Aug 2017 13:16:12 +0800</lastBuildDate>
-        <pubDate>Wed, 30 Aug 2017 13:16:12 +0800</pubDate>
+        <lastBuildDate>Tue, 13 Mar 2018 15:06:22 +0800</lastBuildDate>
+        <pubDate>Tue, 13 Mar 2018 15:06:22 +0800</pubDate>
         <ttl>60</ttl>
 
+
+        <item>
+                <title>Using AWS Lambda with Amazon S3</title>
+                <description>
+&lt;p style=&quot;font-size: 16px;&quot;&gt;AWS Lambda提供serverless的運算服務，且是透過&lt;code class=&quot;highlighter-rouge&quot;&gt;Event&lt;/code&gt;來驅動你的function，&lt;/p&gt;
+
+&lt;!--more--&gt;
+</description>
+                <link>http://blog.kenyang.net/2018/03/13/using-aws-lambda-with-amazon-s3</link>
+                <guid>http://blog.kenyang.net/2018/03/13/using-aws-lambda-with-amazon-s3</guid>
+                <pubDate>Tue, 13 Mar 2018 00:00:00 +0800</pubDate>
+        </item>
 
         <item>
                 <title>Firebase Realtime Database (Web)</title>
@@ -3739,228 +3751,6 @@ Build完以後，就可以用下面的指令去把container run起來。&lt;br /
                 <link>http://blog.kenyang.net/2015/11/30/how-to-use-nodejs-mongodb-with-docker</link>
                 <guid>http://blog.kenyang.net/2015/11/30/how-to-use-nodejs--mongodb-with-docker</guid>
                 <pubDate>Mon, 30 Nov 2015 00:00:00 +0800</pubDate>
-        </item>
-
-        <item>
-                <title>How to resize a LVM partition?</title>
-                <description>
-&lt;p&gt;這篇算是延續&lt;a href=&quot;http://blog.kenyang.net/2015/11/27/do-not-allocate-all-the-lvm-space-with-preseed/&quot;&gt;上一篇&lt;/a&gt;的主題，假設VG裡面還有free space尚未用到，&lt;br /&gt;
-那麼過一段時間以後，該怎麼把它拿出來用?&lt;br /&gt;
-所以這篇主要會講到下面2個主題：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;Extend&lt;/li&gt;
-  &lt;li&gt;Shrink&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;h3 id=&quot;1-extend&quot;&gt;1. Extend&lt;/h3&gt;
-&lt;hr /&gt;
-&lt;p&gt;Extend會講二種方法，分別為，&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;1-1. Extend from &lt;code class=&quot;highlighter-rouge&quot;&gt;VG&lt;/code&gt;&lt;/li&gt;
-  &lt;li&gt;1-2. Extend from &lt;code class=&quot;highlighter-rouge&quot;&gt;new disk&lt;/code&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
-&lt;h4 id=&quot;1-1-extend-from-pv&quot;&gt;1-1. Extend from PV&lt;/h4&gt;
-&lt;hr /&gt;
-&lt;p&gt;第一種是延續&lt;a href=&quot;http://blog.kenyang.net/2015/11/27/do-not-allocate-all-the-lvm-space-with-preseed/&quot;&gt;上一篇&lt;/a&gt;，&lt;br /&gt;
-從既有的VG中，把Free PE加入到LV中，&lt;br /&gt;
-以&lt;a href=&quot;http://blog.kenyang.net/2015/11/27/do-not-allocate-all-the-lvm-space-with-preseed/&quot;&gt;上一篇&lt;/a&gt;來看，你的VG應該還會剩下60GB。&lt;br /&gt;
-可以用下面的指令&lt;code class=&quot;highlighter-rouge&quot;&gt;vgs&lt;/code&gt;去看VG中剩下多少free PE，&lt;br /&gt;
-最後一欄的&lt;code class=&quot;highlighter-rouge&quot;&gt;VFree&lt;/code&gt;就是指剩下的free PE，&lt;br /&gt;
-以我的機器為範例，裡面還有829.99G，&lt;br /&gt;
-以及我有5個LV。&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ vgs
-  VG        #PV #LV #SN Attr   VSize    VFree
-  ubuntu-vg   1   5   0 wz--n- 1019.76g 829.99g
-  
-$ lvs
-  LV     VG        Attr   LSize   Origin Snap%  Move Log Copy%  Convert
-  db     ubuntu-vg -wi-ao  83.92g
-  log    ubuntu-vg -wi-ao  19.07g
-  root   ubuntu-vg -wi-ao  66.75g
-  swap_1 ubuntu-vg -wi-ao 976.00m
-  tmp    ubuntu-vg -wi-ao  19.07g
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;!--more--&gt;
-
-&lt;p&gt;假設我要讓&lt;code class=&quot;highlighter-rouge&quot;&gt;tmp&lt;/code&gt;這個LV加大100G，我們可以透過以下二個指令完成，&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;lvresize&lt;/li&gt;
-  &lt;li&gt;resize2fs&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;&lt;br /&gt;
-使用方式如下，&lt;/p&gt;
-
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$ &lt;/span&gt;lvresize -L +100G /dev/mapper/ubuntu--vg-tmp
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;&lt;br /&gt;
-完成上述指令以後，可以再透過&lt;code class=&quot;highlighter-rouge&quot;&gt;lvs&lt;/code&gt;來看一下tmp這個LV是否真的有加大100G。&lt;/p&gt;
-
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$ &lt;/span&gt;lvs
-  LV     VG        Attr   LSize   Origin Snap%  Move Log Copy%  Convert
-  db     ubuntu-vg -wi-ao  83.92g
-  log    ubuntu-vg -wi-ao  19.07g
-  root   ubuntu-vg -wi-ao  66.75g
-  swap_1 ubuntu-vg -wi-ao 976.00m
-  tmp    ubuntu-vg -wi-ao 119.07g
-  
-&lt;span class=&quot;gp&quot;&gt;$ &lt;/span&gt;df -h /tmp/
-Filesystem                  Size  Used Avail Use% Mounted on
-/dev/mapper/ubuntu--vg-tmp   19G   44M   18G   1% /tmp
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;p&gt;&lt;br /&gt;
-根據上面的output，你會發現&lt;code class=&quot;highlighter-rouge&quot;&gt;LV&lt;/code&gt;真的有加大100G，&lt;br /&gt;
-可是&lt;code class=&quot;highlighter-rouge&quot;&gt;df&lt;/code&gt;中的filesystem size並沒有變動，&lt;br /&gt;
-因為少用了&lt;code class=&quot;highlighter-rouge&quot;&gt;resize2fs&lt;/code&gt;。&lt;br /&gt;
-&lt;code class=&quot;highlighter-rouge&quot;&gt;resize2fs&lt;/code&gt;作用就是把filesystem變大。&lt;/p&gt;
-
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$ &lt;/span&gt;resize2fs /dev/mapper/ubuntu--vg-tmp &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;119G]
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;最後一個是size的參數，其實可以不用加，&lt;br /&gt;
-如果不加，就是用整個LV可以用的空間。&lt;/p&gt;
-
-&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
-&lt;h4 id=&quot;1-2-extend-from-new-disk&quot;&gt;1-2. Extend from new disk&lt;/h4&gt;
-&lt;hr /&gt;
-&lt;p&gt;第二種Extend的方法是把新disk來加入至lv中。&lt;br /&gt;
-其實步驟跟上述差不多，只是多了一些準備作業，&lt;br /&gt;
-準備作業如下：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;新增 &lt;code class=&quot;highlighter-rouge&quot;&gt;PV&lt;/code&gt;&lt;/li&gt;
-  &lt;li&gt;把&lt;code class=&quot;highlighter-rouge&quot;&gt;新PV&lt;/code&gt; 加入至 &lt;code class=&quot;highlighter-rouge&quot;&gt;VG&lt;/code&gt;&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;首先你要有一顆硬碟，&lt;br /&gt;
-然後用&lt;code class=&quot;highlighter-rouge&quot;&gt;lsblk&lt;/code&gt;找到該block device的名稱，&lt;br /&gt;
-我機器上的新硬碟就是sdb。&lt;/p&gt;
-
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$ &lt;/span&gt;lsblk -d
-NAME MAJ:MIN RM   SIZE RO TYPE MOUNTPOINT
-fd0    2:0    1     4K  0 disk
-sda    8:0    0  1020G  0 disk
-sdb    8:16   0   200G  0 disk
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
-
-&lt;p&gt;在新增一個&lt;code class=&quot;highlighter-rouge&quot;&gt;PV&lt;/code&gt;前，&lt;br /&gt;
-必須先format disk成LVM的格式。&lt;/p&gt;
-
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$ &lt;/span&gt;fdsik /dev/sdb
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;然後請按照下面的步驟去create，&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;按下&lt;code class=&quot;highlighter-rouge&quot;&gt;n&lt;/code&gt;以建立新的partition&lt;/li&gt;
-  &lt;li&gt;按下&lt;code class=&quot;highlighter-rouge&quot;&gt;p&lt;/code&gt;選擇primary partition&lt;/li&gt;
-  &lt;li&gt;按下&lt;code class=&quot;highlighter-rouge&quot;&gt;1&lt;/code&gt;選擇partition number&lt;/li&gt;
-  &lt;li&gt;按下&lt;code class=&quot;highlighter-rouge&quot;&gt;enter&lt;/code&gt;選擇Default first sector&lt;/li&gt;
-  &lt;li&gt;按下&lt;code class=&quot;highlighter-rouge&quot;&gt;enter&lt;/code&gt;選擇Default last sector&lt;/li&gt;
-  &lt;li&gt;按下&lt;code class=&quot;highlighter-rouge&quot;&gt;t&lt;/code&gt;改變partition type&lt;/li&gt;
-  &lt;li&gt;輸入&lt;code class=&quot;highlighter-rouge&quot;&gt;8e&lt;/code&gt;, 8e為LVM的代碼&lt;/li&gt;
-  &lt;li&gt;按下&lt;code class=&quot;highlighter-rouge&quot;&gt;w&lt;/code&gt;儲存寫入&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;完成以後你就有一個新的partition了，名稱應該為&lt;code class=&quot;highlighter-rouge&quot;&gt;sdb1&lt;/code&gt;，&lt;/p&gt;
-
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$ &lt;/span&gt;fdisk -l /dev/sdb
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;p&gt;&lt;br /&gt;
-這時候就可以用&lt;code class=&quot;highlighter-rouge&quot;&gt;pvcreate &lt;/code&gt;來新增一個PV，&lt;br /&gt;
-然後再用&lt;code class=&quot;highlighter-rouge&quot;&gt;pvs&lt;/code&gt;看看是否有成功。&lt;/p&gt;
-
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$  &lt;/span&gt;pvcreate /dev/sdb1
-
-&lt;span class=&quot;gp&quot;&gt;$ &lt;/span&gt;pvs
-  PV         VG        Fmt  Attr PSize    PFree
-  /dev/sda5  ubuntu-vg lvm2 a-   1019.76g 629.99g
-  /dev/sdb1            lvm2 a-    200.00g 200.00g
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;p&gt;&lt;br /&gt;
-接著就可以用&lt;code class=&quot;highlighter-rouge&quot;&gt;vgextend&lt;/code&gt;這個指令，&lt;br /&gt;
-把剛剛新增的&lt;code class=&quot;highlighter-rouge&quot;&gt;PV&lt;/code&gt;加入至原有的&lt;code class=&quot;highlighter-rouge&quot;&gt;ubuntu-vg&lt;/code&gt;當中，&lt;/p&gt;
-
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$ &lt;/span&gt;vgextend ubuntu-vg /dev/sdb1
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;p&gt;&lt;br /&gt;
-然後一樣用&lt;code class=&quot;highlighter-rouge&quot;&gt;vgs&lt;/code&gt;去看看&lt;code class=&quot;highlighter-rouge&quot;&gt;Free PE&lt;/code&gt;，應該會多了200g。&lt;br /&gt;
-然後就可以用上面的&lt;code class=&quot;highlighter-rouge&quot;&gt;lvresize&lt;/code&gt;以及&lt;code class=&quot;highlighter-rouge&quot;&gt;resize2fs&lt;/code&gt;去Extend某個LV了。&lt;/p&gt;
-
-&lt;p&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;/p&gt;
-
-&lt;h3 id=&quot;2-shrink&quot;&gt;2. Shrink&lt;/h3&gt;
-&lt;hr /&gt;
-&lt;p&gt;接著要來講Shrink的部分，&lt;br /&gt;
-其實Shrink也是透過&lt;code class=&quot;highlighter-rouge&quot;&gt;lvresize&lt;/code&gt;以及&lt;code class=&quot;highlighter-rouge&quot;&gt;resize2fs&lt;/code&gt;來完成。&lt;br /&gt;
-但Shrink和Extend有以下幾點的差別：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;不能online shrinking&lt;/li&gt;
-  &lt;li&gt;要先縮filesytem，再縮LVM&lt;/li&gt;
-  &lt;li&gt;Data有可能會遺失&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;那因為不能online shrinking，所以我們要先umount，&lt;/p&gt;
-
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$ &lt;/span&gt;umount /tmp
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;p&gt;&lt;br /&gt;
-接著才可以shrink filesystem，&lt;br /&gt;
-透過&lt;code class=&quot;highlighter-rouge&quot;&gt;resize2fs&lt;/code&gt;去把&lt;code class=&quot;highlighter-rouge&quot;&gt;tmp&lt;/code&gt;縮到19G。&lt;/p&gt;
-
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$ &lt;/span&gt;resize2fs /dev/mapper/ubuntu--vg-tmp 19G
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
-
-&lt;p&gt;最後才是去shrink LV，一樣是用&lt;code class=&quot;highlighter-rouge&quot;&gt;lvresize&lt;/code&gt;去做，&lt;br /&gt;
-過程中會show warning，告訴你資料可能會遺失，是否真的要做shrink？&lt;br /&gt;
-如果沒有什麼疑慮，就按下&lt;code class=&quot;highlighter-rouge&quot;&gt;y&lt;/code&gt;吧！&lt;/p&gt;
-
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$ &lt;/span&gt;lvresize -L -100G /dev/mapper/ubuntu--vg-tmp
-  WARNING: Reducing active logical volume to 19.07 GiB
-  THIS MAY DESTROY YOUR DATA &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;filesystem etc.&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
-Do you really want to reduce tmp? &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;y/n]: y
-  Reducing logical volume tmp to 19.07 GiB
-  Logical volume tmp successfully resized
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;p&gt;&lt;br /&gt;
-最後在mount起來，以及用&lt;code class=&quot;highlighter-rouge&quot;&gt;df&lt;/code&gt;去看，&lt;br /&gt;
-應該會發現&lt;code class=&quot;highlighter-rouge&quot;&gt;tmp&lt;/code&gt;只剩下19G了！&lt;/p&gt;
-
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$ &lt;/span&gt;mount /tmp
-
-&lt;span class=&quot;gp&quot;&gt;$ &lt;/span&gt;df -h /tmp
-Filesystem                  Size  Used Avail Use% Mounted on
-/dev/mapper/ubuntu--vg-tmp   19G   44M   18G   1% /tmp
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-</description>
-                <link>http://blog.kenyang.net/2015/11/27/how-to-extendreduce-lvm</link>
-                <guid>http://blog.kenyang.net/2015/11/27/how-to-extendreduce-lvm</guid>
-                <pubDate>Fri, 27 Nov 2015 00:00:00 +0800</pubDate>
         </item>
 
 

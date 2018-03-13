@@ -1,0 +1,811 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>Using AWS Lambda with Amazon S3 (Node.js)</title>
+    <meta name="description" content="">
+    <meta name="author" content="Ken Yang">
+
+    <!-- Enable responsive viewport -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Bootstrap styles -->
+    <link href="/assets/themes/bootstrap-3/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Optional theme -->
+    <link href="/assets/themes/bootstrap-3/bootstrap/css/bootstrap-theme.min.css" rel="stylesheet">
+    <!-- Sticky Footer -->
+    <link href="/assets/themes/bootstrap-3/bootstrap/css/bs-sticky-footer.css" rel="stylesheet">
+    
+    <!-- Custom styles -->
+    <link href="/assets/themes/bootstrap-3/css/style.css?body=1" rel="stylesheet" type="text/css" media="all">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Fav and touch icons -->
+    <!-- Update these with your own images
+      <link rel="shortcut icon" href="images/favicon.ico">
+      <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+      <link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-72x72.png">
+      <link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png">
+    -->
+
+    <!-- atom & rss feed -->
+    <link href="/atom.xml" type="application/atom+xml" rel="alternate" title="Sitewide ATOM Feed">
+    <link href="/rss.xml" type="application/rss+xml" rel="alternate" title="Sitewide RSS Feed">
+
+  </head>
+
+  <body>
+    <div id="wrap">
+      <nav class="navbar navbar-default" role="navigation">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#jb-navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/">Ken Yang筆記</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="jb-navbar-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+            
+
+
+  
+    
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/about">About Ken Yang</a></li>
+      	
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/archive">Archive</a></li>
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+  
+    
+      
+    
+  
+    
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/tags">Tags</a></li>
+      	
+      
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+
+
+
+          </ul>
+          <form method="get" class="navbar-form navbar-right" role="search" action="https://www.google.com/search">
+            <div class="form-group">
+              <input name="q" id="search-value" type="text" class="form-control" placeholder="Search">
+              <input style="display: none" name="as_sitesearch" id="search-value" type="text" class="form-control" value="blog.kenyang.net">
+            </div>
+            <button type="submit" class="btn btn-default">Submit</button>
+          </form>
+        </div><!-- /.navbar-collapse -->
+      </nav>
+
+      <div class="container">
+        <style>
+/* Adjusted to give override background and text colour */
+.highlight pre, pre, .highlight .hll {
+    background-color: #49483E;
+    border: 1px solid #ccc;
+    padding: 6px 10px;
+    border-radius: 3px;
+    color: #FFFFFF;
+}
+/* Highlights taken from https://gist.github.com/asaaki/1007420  for Monokai theme */
+.c                 { color: #75715e }               /* Comment                     */
+.err               { color: #960050;
+                     background-color: #1e0010 }    /* Error                       */
+.k                 { color: #66d9ef }               /* Keyword                     */
+.l                 { color: #ae81ff }               /* Literal                     */
+.n                 { color: #f8f8f2 }               /* Name                        */
+.o                 { color: #f92672 }               /* Operator                    */
+.p                 { color: #f8f8f2 }               /* Punctuation                 */
+.cm                { color: #75715e }               /* Comment.Multiline           */
+.cp                { color: #75715e }               /* Comment.Preproc             */
+.c1                { color: #75715e }               /* Comment.Single              */
+.cs                { color: #75715e }               /* Comment.Special             */
+.ge                { font-style: italic }           /* Generic.Emph                */
+.gs                { font-weight: bold }            /* Generic.Strong              */
+.kc                { color: #66d9ef }               /* Keyword.Constant            */
+.kd                { color: #66d9ef }               /* Keyword.Declaration         */
+.kn                { color: #f92672 }               /* Keyword.Namespace           */
+.kp                { color: #66d9ef }               /* Keyword.Pseudo              */
+.kr                { color: #66d9ef }               /* Keyword.Reserved            */
+.kt                { color: #66d9ef }               /* Keyword.Type                */
+.ld                { color: #e6db74 }               /* Literal.Date                */
+.m                 { color: #ae81ff }               /* Literal.Number              */
+.s                 { color: #e6db74 }               /* Literal.String              */
+.na                { color: #a6e22e }               /* Name.Attribute              */
+.nb                { color: #f8f8f2 }               /* Name.Builtin                */
+.nc                { color: #a6e22e }               /* Name.Class                  */
+.no                { color: #66d9ef }               /* Name.Constant               */
+.nd                { color: #a6e22e }               /* Name.Decorator              */
+.ni                { color: #f8f8f2 }               /* Name.Entity                 */
+.ne                { color: #a6e22e }               /* Name.Exception              */
+.nf                { color: #a6e22e }               /* Name.Function               */
+.nl                { color: #f8f8f2 }               /* Name.Label                  */
+.nn                { color: #f8f8f2 }               /* Name.Namespace              */
+.nx                { color: #a6e22e }               /* Name.Other                  */
+.py                { color: #f8f8f2 }               /* Name.Property               */
+.nt                { color: #f92672 }               /* Name.Tag                    */
+.nv                { color: #f8f8f2 }               /* Name.Variable               */
+.ow                { color: #f92672 }               /* Operator.Word               */
+.w                 { color: #f8f8f2 }               /* Text.Whitespace             */
+.mf                { color: #ae81ff }               /* Literal.Number.Float        */
+.mh                { color: #ae81ff }               /* Literal.Number.Hex          */
+.mi                { color: #ae81ff }               /* Literal.Number.Integer      */
+.mo                { color: #ae81ff }               /* Literal.Number.Oct          */
+.sb                { color: #e6db74 }               /* Literal.String.Backtick     */
+.sc                { color: #e6db74 }               /* Literal.String.Char         */
+.sd                { color: #e6db74 }               /* Literal.String.Doc          */
+.s2                { color: #e6db74 }               /* Literal.String.Double       */
+.se                { color: #ae81ff }               /* Literal.String.Escape       */
+.sh                { color: #e6db74 }               /* Literal.String.Heredoc      */
+.si                { color: #e6db74 }               /* Literal.String.Interpol     */
+.sx                { color: #e6db74 }               /* Literal.String.Other        */
+.sr                { color: #e6db74 }               /* Literal.String.Regex        */
+.s1                { color: #e6db74 }               /* Literal.String.Single       */
+.ss                { color: #e6db74 }               /* Literal.String.Symbol       */
+.bp                { color: #f8f8f2 }               /* Name.Builtin.Pseudo         */
+.vc                { color: #f8f8f2 }               /* Name.Variable.Class         */
+.vg                { color: #f8f8f2 }               /* Name.Variable.Global        */
+.vi                { color: #f8f8f2 }               /* Name.Variable.Instance      */
+.il                { color: #ae81ff }               /* Literal.Number.Integer.Long */
+</style>
+
+
+
+<div class="page-header">
+  <h1>Using AWS Lambda with Amazon S3 (Node.js) </h1>
+</div>
+
+<div class="row post-full">
+  <div>
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- ken on github -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3783438370424072"
+     data-ad-slot="1516206098"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+  </div>
+  <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-70705007-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+
+  <div class="col-xs-12">
+    <div class="date">
+      <span>13 March 2018</span>
+    </div>
+    <div class="content" style="line-height: 28px;">
+      
+<p style="font-size: 16px;line-height: 2;">AWS Lambda提供serverless的運算服務，serverless意思是開發者不需要管server的任何資源，也就是說你不需要創建一個EC2 instance，然後還要煩惱auto scaling, HA等設定，AWS Lambda替開發者解決這些問題，它會自動scale。<br />
+開發者只需要專心在code就好，你的code會透過<code class="highlighter-rouge">Event</code>來驅動，
+這個<code class="highlighter-rouge">Event</code>可以來自於AWS上的服務，例如S3, API Gateway等服務，舉例來說你可以設定，當上傳檔案至S3時，S3會發送一個<code class="highlighter-rouge">Event</code>給你的code來回應這個<code class="highlighter-rouge">Event</code>。這篇文章就會以AWS上<a href="https://docs.aws.amazon.com/lambda/latest/dg/with-s3.html">建立縮圖的example</a>來說明。 <br />
+而AWS Lambda的費用是取決於你的code執行時間，也就是說當沒有任何Event去trigger你的code時，是不需要收費的，在某些應用情況來說，是比EC2來得優惠。但AWS Lambda還是有它的缺點，因為你不需要也無法管server的任何設定/資源，在某些應用情況來說，替開發者帶來了些限制，所以當想要更有彈性，或者喜歡hands-on架構的開發者，或許就可以考慮EC2。</p>
+
+<!--more-->
+
+<hr />
+<h3 id="1-prerequisite">1. Prerequisite</h3>
+<hr />
+
+<p style="font-size: 16px;line-height: 1.6;">開始之前，請先去下載並且安裝AWS CLI，安裝及設置文件可以參考<a href="https://docs.aws.amazon.com/cli/latest/userguide/awscli-install-bundle.html">這篇文章</a>。</p>
+
+<p><br /></p>
+
+<hr />
+<h3 id="2-創建2個bueckts並且上傳一個測試檔案">2. 創建2個Bueckts，並且上傳一個測試檔案</h3>
+<hr />
+
+<p style="font-size: 16px;line-height: 1.6;">首先先在S3上創建2個buckets，2個的名稱請自己取，但記得第2個名稱結尾一定要是resized，這篇的example分別為</p>
+
+<ul style="font-size: 16px;line-height: 1.6;">
+  <li>kenyang-image</li>
+  <li>kenyang-imageresized</li>
+</ul>
+
+<p style="font-size: 16px;line-height: 1.6;">創建完成以後，在<code class="highlighter-rouge">kenyang-image</code>裡上傳一張圖片。</p>
+
+<p><br /></p>
+
+<hr />
+<h3 id="3-創建deployment-package">3. 創建Deployment Package</h3>
+<hr />
+
+<p style="font-size: 16px;line-height: 1.6;">在這一步驟要創建一個<code class="highlighter-rouge">Deployment package</code>，它是一個zip檔案，而這zip檔案裡面包含了Lambda code + dependencies。</p>
+
+<p style="font-size: 16px;line-height: 1.6;">首先先安裝2個packages:</p>
+
+<ul style="font-size: 16px;line-height: 1.6;">
+  <li>aysnc: Async utility module</li>
+  <li>gm: GraphicsMagick用來轉圖</li>
+</ul>
+
+<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span><span class="nb">cd test</span>-lambda-s3
+<span class="gp">$ </span>npm install async gm
+</code></pre>
+</div>
+
+<p style="font-size: 16px;line-height: 1.6;">安裝完以後，創建一個<code class="highlighter-rouge">CreateThumbnail.js</code>，並把下面的code貼入。這份code是利用async去依序完成三個工作:</p>
+
+<ol style="font-size: 16px;line-height: 1.6;">
+  <li>從S3下載檔案至buffer</li>
+  <li>轉檔案</li>
+  <li>上傳檔案至S3</li>
+</ol>
+
+<div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="c1">// dependencies</span>
+<span class="kd">var</span> <span class="nx">async</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'async'</span><span class="p">);</span>
+<span class="kd">var</span> <span class="nx">AWS</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'aws-sdk'</span><span class="p">);</span>
+<span class="kd">var</span> <span class="nx">gm</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'gm'</span><span class="p">)</span>
+            <span class="p">.</span><span class="nx">subClass</span><span class="p">({</span> <span class="na">imageMagick</span><span class="p">:</span> <span class="kc">true</span> <span class="p">});</span> <span class="c1">// Enable ImageMagick integration.</span>
+<span class="kd">var</span> <span class="nx">util</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'util'</span><span class="p">);</span>
+
+<span class="c1">// constants</span>
+<span class="kd">var</span> <span class="nx">MAX_WIDTH</span>  <span class="o">=</span> <span class="mi">100</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">MAX_HEIGHT</span> <span class="o">=</span> <span class="mi">100</span><span class="p">;</span>
+
+<span class="c1">// get reference to S3 client </span>
+<span class="kd">var</span> <span class="nx">s3</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">AWS</span><span class="p">.</span><span class="nx">S3</span><span class="p">();</span>
+ 
+<span class="nx">exports</span><span class="p">.</span><span class="nx">handler</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">event</span><span class="p">,</span> <span class="nx">context</span><span class="p">,</span> <span class="nx">callback</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// Read options from the event.</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">"Reading options from event:\n"</span><span class="p">,</span> <span class="nx">util</span><span class="p">.</span><span class="nx">inspect</span><span class="p">(</span><span class="nx">event</span><span class="p">,</span> <span class="p">{</span><span class="na">depth</span><span class="p">:</span> <span class="mi">5</span><span class="p">}));</span>
+    <span class="kd">var</span> <span class="nx">srcBucket</span> <span class="o">=</span> <span class="nx">event</span><span class="p">.</span><span class="nx">Records</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">s3</span><span class="p">.</span><span class="nx">bucket</span><span class="p">.</span><span class="nx">name</span><span class="p">;</span>
+    <span class="c1">// Object key may have spaces or unicode non-ASCII characters.</span>
+    <span class="kd">var</span> <span class="nx">srcKey</span>    <span class="o">=</span>
+    <span class="nb">decodeURIComponent</span><span class="p">(</span><span class="nx">event</span><span class="p">.</span><span class="nx">Records</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">s3</span><span class="p">.</span><span class="nx">object</span><span class="p">.</span><span class="nx">key</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="sr">/</span><span class="se">\+</span><span class="sr">/g</span><span class="p">,</span> <span class="s2">" "</span><span class="p">));</span>  
+    <span class="kd">var</span> <span class="nx">dstBucket</span> <span class="o">=</span> <span class="nx">srcBucket</span> <span class="o">+</span> <span class="s2">"resized"</span><span class="p">;</span>
+    <span class="kd">var</span> <span class="nx">dstKey</span>    <span class="o">=</span> <span class="s2">"resized-"</span> <span class="o">+</span> <span class="nx">srcKey</span><span class="p">;</span>
+
+    <span class="c1">// Sanity check: validate that source and destination are different buckets.</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">srcBucket</span> <span class="o">==</span> <span class="nx">dstBucket</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">callback</span><span class="p">(</span><span class="s2">"Source and destination buckets are the same."</span><span class="p">);</span>
+        <span class="k">return</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="c1">// Infer the image type.</span>
+    <span class="kd">var</span> <span class="nx">typeMatch</span> <span class="o">=</span> <span class="nx">srcKey</span><span class="p">.</span><span class="nx">match</span><span class="p">(</span><span class="sr">/</span><span class="se">\.([^</span><span class="sr">.</span><span class="se">]</span><span class="sr">*</span><span class="se">)</span><span class="sr">$/</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">typeMatch</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">callback</span><span class="p">(</span><span class="s2">"Could not determine the image type."</span><span class="p">);</span>
+        <span class="k">return</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="kd">var</span> <span class="nx">imageType</span> <span class="o">=</span> <span class="nx">typeMatch</span><span class="p">[</span><span class="mi">1</span><span class="p">];</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">imageType</span> <span class="o">!=</span> <span class="s2">"jpg"</span> <span class="o">&amp;&amp;</span> <span class="nx">imageType</span> <span class="o">!=</span> <span class="s2">"png"</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">callback</span><span class="p">(</span><span class="s1">'Unsupported image type: ${imageType}'</span><span class="p">);</span>
+        <span class="k">return</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="c1">// Download the image from S3, transform, and upload to a different S3 bucket.</span>
+    <span class="nx">async</span><span class="p">.</span><span class="nx">waterfall</span><span class="p">([</span>
+        <span class="kd">function</span> <span class="nx">download</span><span class="p">(</span><span class="nx">next</span><span class="p">)</span> <span class="p">{</span>
+            <span class="c1">// Download the image from S3 into a buffer.</span>
+            <span class="nx">s3</span><span class="p">.</span><span class="nx">getObject</span><span class="p">({</span>
+                    <span class="na">Bucket</span><span class="p">:</span> <span class="nx">srcBucket</span><span class="p">,</span>
+                    <span class="na">Key</span><span class="p">:</span> <span class="nx">srcKey</span>
+                <span class="p">},</span>
+                <span class="nx">next</span><span class="p">);</span>
+        <span class="p">},</span>
+        <span class="kd">function</span> <span class="nx">transform</span><span class="p">(</span><span class="nx">response</span><span class="p">,</span> <span class="nx">next</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nx">gm</span><span class="p">(</span><span class="nx">response</span><span class="p">.</span><span class="nx">Body</span><span class="p">).</span><span class="nx">size</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">size</span><span class="p">)</span> <span class="p">{</span>
+                <span class="c1">// Infer the scaling factor to avoid stretching the image unnaturally.</span>
+                <span class="kd">var</span> <span class="nx">scalingFactor</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">min</span><span class="p">(</span>
+                    <span class="nx">MAX_WIDTH</span> <span class="o">/</span> <span class="nx">size</span><span class="p">.</span><span class="nx">width</span><span class="p">,</span>
+                    <span class="nx">MAX_HEIGHT</span> <span class="o">/</span> <span class="nx">size</span><span class="p">.</span><span class="nx">height</span>
+                <span class="p">);</span>
+                <span class="kd">var</span> <span class="nx">width</span>  <span class="o">=</span> <span class="nx">scalingFactor</span> <span class="o">*</span> <span class="nx">size</span><span class="p">.</span><span class="nx">width</span><span class="p">;</span>
+                <span class="kd">var</span> <span class="nx">height</span> <span class="o">=</span> <span class="nx">scalingFactor</span> <span class="o">*</span> <span class="nx">size</span><span class="p">.</span><span class="nx">height</span><span class="p">;</span>
+
+                <span class="c1">// Transform the image buffer in memory.</span>
+                <span class="k">this</span><span class="p">.</span><span class="nx">resize</span><span class="p">(</span><span class="nx">width</span><span class="p">,</span> <span class="nx">height</span><span class="p">)</span>
+                    <span class="p">.</span><span class="nx">toBuffer</span><span class="p">(</span><span class="nx">imageType</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">buffer</span><span class="p">)</span> <span class="p">{</span>
+                        <span class="k">if</span> <span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="p">{</span>
+                            <span class="nx">next</span><span class="p">(</span><span class="nx">err</span><span class="p">);</span>
+                        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+                            <span class="nx">next</span><span class="p">(</span><span class="kc">null</span><span class="p">,</span> <span class="nx">response</span><span class="p">.</span><span class="nx">ContentType</span><span class="p">,</span> <span class="nx">buffer</span><span class="p">);</span>
+                        <span class="p">}</span>
+                    <span class="p">});</span>
+            <span class="p">});</span>
+        <span class="p">},</span>
+        <span class="kd">function</span> <span class="nx">upload</span><span class="p">(</span><span class="nx">contentType</span><span class="p">,</span> <span class="nx">data</span><span class="p">,</span> <span class="nx">next</span><span class="p">)</span> <span class="p">{</span>
+            <span class="c1">// Stream the transformed image to a different S3 bucket.</span>
+            <span class="nx">s3</span><span class="p">.</span><span class="nx">putObject</span><span class="p">({</span>
+                    <span class="na">Bucket</span><span class="p">:</span> <span class="nx">dstBucket</span><span class="p">,</span>
+                    <span class="na">Key</span><span class="p">:</span> <span class="nx">dstKey</span><span class="p">,</span>
+                    <span class="na">Body</span><span class="p">:</span> <span class="nx">data</span><span class="p">,</span>
+                    <span class="na">ContentType</span><span class="p">:</span> <span class="nx">contentType</span>
+                <span class="p">},</span>
+                <span class="nx">next</span><span class="p">);</span>
+            <span class="p">}</span>
+        <span class="p">],</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="p">{</span>
+                <span class="nx">console</span><span class="p">.</span><span class="nx">error</span><span class="p">(</span>
+                    <span class="s1">'Unable to resize '</span> <span class="o">+</span> <span class="nx">srcBucket</span> <span class="o">+</span> <span class="s1">'/'</span> <span class="o">+</span> <span class="nx">srcKey</span> <span class="o">+</span>
+                    <span class="s1">' and upload to '</span> <span class="o">+</span> <span class="nx">dstBucket</span> <span class="o">+</span> <span class="s1">'/'</span> <span class="o">+</span> <span class="nx">dstKey</span> <span class="o">+</span>
+                    <span class="s1">' due to an error: '</span> <span class="o">+</span> <span class="nx">err</span>
+                <span class="p">);</span>
+            <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+                <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span>
+                    <span class="s1">'Successfully resized '</span> <span class="o">+</span> <span class="nx">srcBucket</span> <span class="o">+</span> <span class="s1">'/'</span> <span class="o">+</span> <span class="nx">srcKey</span> <span class="o">+</span>
+                    <span class="s1">' and uploaded to '</span> <span class="o">+</span> <span class="nx">dstBucket</span> <span class="o">+</span> <span class="s1">'/'</span> <span class="o">+</span> <span class="nx">dstKey</span>
+                <span class="p">);</span>
+            <span class="p">}</span>
+
+            <span class="nx">callback</span><span class="p">(</span><span class="kc">null</span><span class="p">,</span> <span class="s2">"message"</span><span class="p">);</span>
+        <span class="p">}</span>
+    <span class="p">);</span>
+<span class="p">};</span>
+</code></pre>
+</div>
+
+<p style="font-size: 16px;line-height: 1.6;">接著就把所有檔案zip起來，</p>
+
+<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="gp">$  </span>zip -r9 ~/create-thumbnail.zip <span class="k">*</span>
+</code></pre>
+</div>
+
+<p><br /></p>
+
+<hr />
+<h3 id="4-替lambda-function建立一個iam-role">4. 替Lambda Function建立一個IAM Role</h3>
+<hr />
+
+<p style="font-size: 16px;line-height: 1.6;">在這一步驟要創建一個IAM Role專門去執行我們的lambda function，</p>
+
+<p style="font-size: 16px;line-height: 2;">[1] 打開IAM console <a href="https://console.aws.amazon.com/iam/">https://console.aws.amazon.com/iam/</a>. <br />
+[2] 選擇【Create role】<br />
+[3] 在【Select type of trusted entity】中，請選擇AWS service, 然後選Lambda，並點擊【Next Permissions】。（如下圖）
+<img src="http://localhost:4000/assets/2018-03-13-1.png" alt="trusted entity" /></p>
+
+<p style="font-size: 16px;line-height: 2;">[4] 在【Filter: 】中輸入【AWSLambdaExecute】，並點擊【Next: Review】（如下圖）
+<img src="http://localhost:4000/assets/2018-03-13-2.png" alt="trusted entity" /></p>
+
+<p style="font-size: 16px;line-height: 2;">[5] 在【Role name】中輸入想要的角色名稱，並且點擊【Create role】<br />
+[6] 接著點擊打開剛剛創建的角色<br />
+[7] 點擊右下角的【Add inline policy】<br />
+[8] 在Service，點擊【Choose a service】，並且選擇【S3】<br />
+[9] 在Actions，點擊【Select actions】，接著把【Write】展開，找到【PutObject】並且打勾<br />
+[10] 在Resources，把右下角的【Any】checkbox勾起來<br />
+[11] 點擊【Choose Review policy】，接著輸入Name，並且點擊【Create policy】<br />
+[12] 在Summary的頁面中，記下Role ARN，待會我們會用到（如下圖）
+<img src="http://localhost:4000/assets/2018-03-13-3.png" alt="trusted entity" /></p>
+
+<p><br /></p>
+
+<hr />
+<h3 id="5-上傳deployment-package">5. 上傳Deployment Package</h3>
+<hr />
+
+<p style="font-size: 16px;line-height: 2;">執行下面的指令把剛剛的Deployment package上傳上去，請修改幾個參數：</p>
+
+<ol style="font-size: 16px;line-height: 2;">
+  <li>region: 這篇使用ap-northeast-1</li>
+  <li>role-arn:上面第三步驟所創建的role arn</li>
+  <li>runtime: 這篇使用nodejs6.10</li>
+  <li>zip-file: 你的zip檔案路徑</li>
+</ol>
+
+<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>aws lambda create-function <span class="se">\</span>
+--region ap-northeast-1 <span class="se">\</span>
+--function-name CreateThumbnail <span class="se">\</span>
+--zip-file fileb://file-path/CreateThumbnail.zip <span class="se">\</span>
+--role role-arn <span class="se">\</span>
+--handler CreateThumbnail.handler <span class="se">\</span>
+--runtime nodejs6.10 <span class="se">\</span>
+--timeout 30 <span class="se">\</span>
+--memory-size 1024
+</code></pre>
+</div>
+
+<p style="font-size: 16px;line-height: 2;">成功的話會回傳一串JSON回來，請把FunctionArn記下來，待會會用到</p>
+
+<p><br /></p>
+
+<hr />
+<h3 id="6-手動調用lambda-function">6. 手動調用Lambda Function</h3>
+<hr />
+
+<p style="font-size: 16px;line-height: 2;">上傳上去以後，就可以來進行<code class="highlighter-rouge">手動</code>測試，先創建一個<code class="highlighter-rouge">input.txt</code>，並把下面的內容貼進去，需修改</p>
+
+<ul style="font-size: 16px;line-height: 2;">
+  <li>awsRegion: 這篇使用ap-northeast-1</li>
+  <li>name: 改成上面我們創建的bucket名稱，這篇是kenyang-image</li>
+  <li>arn: 把後面的kenyang-image改成你的bucket名稱，這篇是kenyang-image</li>
+  <li>key: 上傳上去的測試檔名</li>
+</ul>
+
+<div class="language-json highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w">  
+   </span><span class="nt">"Records"</span><span class="p">:[</span><span class="w">  
+      </span><span class="p">{</span><span class="w">  
+         </span><span class="nt">"eventVersion"</span><span class="p">:</span><span class="s2">"2.0"</span><span class="p">,</span><span class="w">
+         </span><span class="nt">"eventSource"</span><span class="p">:</span><span class="s2">"aws:s3"</span><span class="p">,</span><span class="w">
+         </span><span class="nt">"awsRegion"</span><span class="p">:</span><span class="s2">"ap-northeast-1"</span><span class="p">,</span><span class="w">
+         </span><span class="nt">"eventTime"</span><span class="p">:</span><span class="s2">"1970-01-01T00:00:00.000Z"</span><span class="p">,</span><span class="w">
+         </span><span class="nt">"eventName"</span><span class="p">:</span><span class="s2">"ObjectCreated:Put"</span><span class="p">,</span><span class="w">
+         </span><span class="nt">"userIdentity"</span><span class="p">:{</span><span class="w">  
+            </span><span class="nt">"principalId"</span><span class="p">:</span><span class="s2">"AIDAJDPLRKLG7UEXAMPLE"</span><span class="w">
+         </span><span class="p">},</span><span class="w">
+         </span><span class="nt">"requestParameters"</span><span class="p">:{</span><span class="w">  
+            </span><span class="nt">"sourceIPAddress"</span><span class="p">:</span><span class="s2">"127.0.0.1"</span><span class="w">
+         </span><span class="p">},</span><span class="w">
+         </span><span class="nt">"responseElements"</span><span class="p">:{</span><span class="w">  
+            </span><span class="nt">"x-amz-request-id"</span><span class="p">:</span><span class="s2">"C3D13FE58DE4C810"</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"x-amz-id-2"</span><span class="p">:</span><span class="s2">"FMyUVURIY8/IgAtTv8xRjskZQpcIZ9KG4V5Wp6S7S/JRWeUWerMUE5JgHvANOjpD"</span><span class="w">
+         </span><span class="p">},</span><span class="w">
+         </span><span class="nt">"s3"</span><span class="p">:{</span><span class="w">  
+            </span><span class="nt">"s3SchemaVersion"</span><span class="p">:</span><span class="s2">"1.0"</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"configurationId"</span><span class="p">:</span><span class="s2">"testConfigRule"</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"bucket"</span><span class="p">:{</span><span class="w">  
+               </span><span class="nt">"name"</span><span class="p">:</span><span class="s2">"kenyang-image"</span><span class="p">,</span><span class="w">
+               </span><span class="nt">"ownerIdentity"</span><span class="p">:{</span><span class="w">  
+                  </span><span class="nt">"principalId"</span><span class="p">:</span><span class="s2">"A3NL1KOZZKExample"</span><span class="w">
+               </span><span class="p">},</span><span class="w">
+               </span><span class="nt">"arn"</span><span class="p">:</span><span class="s2">"arn:aws:s3:::kenyang-image"</span><span class="w">
+            </span><span class="p">},</span><span class="w">
+            </span><span class="nt">"object"</span><span class="p">:{</span><span class="w">  
+               </span><span class="nt">"key"</span><span class="p">:</span><span class="s2">"test.jpg"</span><span class="p">,</span><span class="w">
+               </span><span class="nt">"size"</span><span class="p">:</span><span class="mi">1024</span><span class="p">,</span><span class="w">
+               </span><span class="nt">"eTag"</span><span class="p">:</span><span class="s2">"d41d8cd98f00b204e9800998ecf8427e"</span><span class="p">,</span><span class="w">
+               </span><span class="nt">"versionId"</span><span class="p">:</span><span class="s2">"096fKKXTRTtl3on89fVO.nfljtsv6qko"</span><span class="w">
+            </span><span class="p">}</span><span class="w">
+         </span><span class="p">}</span><span class="w">
+      </span><span class="p">}</span><span class="w">
+   </span><span class="p">]</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+</div>
+
+<p style="font-size: 16px;line-height: 2;">接著就可以執行下面的指令進行測試，一樣要修改</p>
+
+<ul style="font-size: 16px;line-height: 2;">
+  <li>region: 這篇是使用ap-northeast-1</li>
+  <li>payload: input.txt路徑</li>
+</ul>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>$ aws lambda invoke \
+--invocation-type Event \
+--function-name CreateThumbnail \
+--region ap-northeast-1 \
+--payload file:///file-path/input.txt \
+outputfile.txt
+</code></pre>
+</div>
+
+<p style="font-size: 16px;line-height: 2;">然後就可以去bucket <code class="highlighter-rouge">kenyang-imageresized</code>看看有沒有產生縮圖。</p>
+
+<p><br /></p>
+
+<hr />
+<h3 id="7-設定amazon-s3-發送events給lambda">7. 設定Amazon S3 發送Events給Lambda</h3>
+<hr />
+
+<h4 id="7-1-替s3設定invokefunction的權限">7-1. 替S3設定InvokeFunction的權限</h4>
+
+<p style="font-size: 16px;line-height: 2;">這步驟是給予S3去調用Function的權限，且只有在下列個二個條件下才會去調用function:</p>
+
+<ol style="font-size: 16px;line-height: 2;">
+  <li>檔案被創建在你指定的bucket下</li>
+  <li>且這bucket是由該lambda account所創建的，話句話說，如果把此bucket刪除，接著別的帳號用戶去創建相同名稱的bucket，並且上傳檔案，此時並不會去調用function.</li>
+</ol>
+
+<p style="font-size: 16px;line-height: 2;">執行下方的指令即可給予S3此權限，請替換下列參數：</p>
+
+<ul style="font-size: 16px;line-height: 2;">
+  <li>region: 這篇是使用ap-northeast-1</li>
+  <li>staement-id: unique的ID即可</li>
+  <li>source-arn: 把kenyang-image改為你的bucket名稱</li>
+</ul>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>$ aws lambda add-permission \
+--function-name CreateThumbnail \
+--region ap-northeast-1 \
+--statement-id 1234 \
+--action "lambda:InvokeFunction" \
+--principal s3.amazonaws.com \
+--source-arn arn:aws:s3:::kenyang-image
+</code></pre>
+</div>
+
+<p><br /></p>
+
+<h4 id="7-2-設置s3-notification">7-2. 設置S3 notification</h4>
+
+<p style="font-size: 16px;line-height: 2;">在這步驟要設定當上傳檔案至此bucket時，要發送notification，以及收到notification時，要去調用上面創建的AWS Lambda Function。</p>
+
+<p style="font-size: 16px;line-height: 2;">[1] 點擊該Bucket<br />
+[2] 點擊【Properties】<br />
+[3] 找到【Advanced settings】<br />
+[4] 點擊【Events】<br />
+[5] 點擊【Add notification】<br />
+[6] 勾選【ObjectCreate (All)】<br />
+[7] 在【Send to】中選擇【Lambda Function】<br />
+[8] 在【Lambda】中找到創建的function【CreateThumbnail】<br />
+[9] 點擊【Save】<br /></p>
+
+<p><br /></p>
+
+<h4 id="7-3-測試">7-3. 測試</h4>
+
+<p style="font-size: 16px;line-height: 2;">完成上述步驟以後，此時就可以進行測試，上傳檔案至指定的bucket裡面，然後去另外一個對應的bucket中看看thumbnail是否有被創建。</p>
+
+<p><br />
+<br />
+<br /></p>
+
+
+    </div>
+
+    
+
+  
+    <ul class="tag_box inline">
+      <li><i class="glyphicon glyphicon-tags"></i></li>
+      
+      
+
+
+  
+     
+    	<li><a href="/tags.html#AWS-ref">AWS <span>1</span></a></li>
+     
+    	<li><a href="/tags.html#Lambda-ref">Lambda <span>1</span></a></li>
+     
+    	<li><a href="/tags.html#S3-ref">S3 <span>1</span></a></li>
+    
+  
+
+
+
+    </ul>
+    
+  <div>
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <!-- ken on github -->
+    <ins class="adsbygoogle"
+         style="display:block"
+         data-ad-client="ca-pub-3783438370424072"
+         data-ad-slot="1516206098"
+         data-ad-format="auto"></ins>
+    <script>
+    (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+  </div>
+  
+    <hr>
+    <ul class="pagination">
+    
+      <li class="prev"><a href="/2017/08/25/firebase-realtime-database-web" title="Firebase Realtime Database (Web)">&laquo; Previous</a></li>
+    
+      <li><a href="/archive.html">Archive</a></li>
+    
+      <li class="next disabled"><a>Next &rarr;</a>
+    
+    </ul>
+    <hr>
+    
+
+
+  <div id="disqus_thread"></div>
+<script type="text/javascript">
+    
+    var disqus_developer = 1;
+    var disqus_shortname = 'ken-yang'; // required: replace example with your forum shortname
+    
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+
+
+
+  </div>
+</div>
+
+
+      </div>
+
+    </div>
+
+    <div id="footer">
+      <div class="container">
+        <p>&copy; 2018 Ken Yang
+          with help from <a href="http://jekyllbootstrap.com" target="_blank" title="The Definitive Jekyll Blogging Framework">Jekyll Bootstrap</a>
+          and <a href="http://getbootstrap.com" target="_blank">Bootstrap</a>
+        </p>
+      </div>
+    </div>
+
+    
+
+
+
+
+
+    <!-- Latest compiled and minified JavaScript, requires jQuery 1.x (2.x not supported in IE8) -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="/assets/themes/bootstrap-3/bootstrap/js/bootstrap.min.js"></script>
+  </body>
+</html>
+

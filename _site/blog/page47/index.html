@@ -227,6 +227,8 @@
   
     
   
+    
+  
 
 
 
@@ -301,6 +303,34 @@
     </div>
     <!-- This loops through the paginated posts -->
     
+      <h1><a style="color: #F22430" href="/2010/11/01/android-detect-screen-on-and-screen-off">android detect screen on and screen off</a></h1>
+      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
+      <p class="author">
+      <div class="date">
+        <span>01 November 2010</span>
+      </div>
+      </p>
+      <div class="content" style="line-height: 28px;">
+        android detect screen on and screen off<br /><br />android偵測螢幕的關閉與開啟，<br /><br />和偵測sd card一樣，<br /><br />Intent.ACTION_SCREEN_OFF和Intent.ACTION_SCREEN_ON是不能在AndroidManifest.xml裡面宣告的<br /><br />如:<br /><br /><pre class="brush: xml">&lt;receiver android:name="receiverScreen"&gt; <br />    &lt;intent-filter&gt;  <br />        &lt;action android:name="android.intent.action.SCREEN_ON" /&gt;<br />        &lt;action android:name="android.intent.action.SCREEN_OFF" /&gt;<br />    &lt;/intent-filter&gt;  <br />&lt;/receiver&gt;  <br /></pre><br /><br />這樣子的宣告<span class="Apple-style-span" style="color: red;"><b>沒有用</b></span>，你永遠都receive不到任何action<br /><br />詳細原因我也不知道，但是可以透過registerReceiver去實作，<br /><br />這裡舉個例子，先啟動一個service，由這個service去registerReceiver<br /><br />由service啟動的好處是，service可以常駐，<br /><br />如果你用acitivity去registerReceiver<br /><br />這個acitivity關閉以後，你一樣receive不到任何action<br /><br />且如果你只是想偵測acitivity的關閉與否的話，可以直接利用onResume和onPause去偵測即可<br /><br />不用特地去registerReceiver<br /><br /><br />但是如果今天你有一個widget在桌面，<br /><br />且我們是無法透過widget去registerReceiver，<br /><br />會出現exception（ReceiverCallNotAllowedException）<br /><br />所以一定得透過service去啟動。<br /><br />service的code如下:<br /><br /><pre class="brush: java">public class serviceScreen extends Service {<br /><br /> @Override<br /> public IBinder onBind(Intent intent) {<br />  // TODO Auto-generated method stub<br />  return null;<br /> }<br /> <br /> @Override<br /> public void onStart(Intent intent, int startId) {<br />     super.onStart(intent, startId);<br />     try {<br />          IntentFilter filter = new IntentFilter(Intent.ACTION_SCREEN_ON);<br />    <br />          filter.addAction(Intent.ACTION_SCREEN_OFF);<br />    <br />          BroadcastReceiver mReceiver = new receiverScreen();<br />   <br />          registerReceiver(mReceiver, filter);<br />     } catch (Exception e) {<br />          Log.d("main",e.toString());<br />     }<br /> }<br /><br />}<br /><br /><br /></pre><br /><br />receiver的code如下：<br /><br /><pre class="brush: java">public class receiverScreen extends BroadcastReceiver {<br /><br /> @Override<br /> public void onReceive(Context context, Intent intent) {<br />  <br />     if (intent.getAction().equals(Intent.ACTION_SCREEN_ON)){<br />          //收到螢幕開啟的通知<br />     }else{<br />          //收到螢幕關閉的通知<br />     }<br />  <br /> }<br /><br />}<br /><br /><br /></pre><br /><br /><br />接著就是在widget中去startService<br /><br />如下：<br /><br /><pre class="brush: java">public class widgetSmall extends AppWidgetProvider {<br /> <br /><br /> @SuppressWarnings("static-access")<br /> @Override<br /> public void onUpdate(Context context, AppWidgetManager appWidgetManager,int[] appWidgetIds) {<br />     super.onUpdate(context, appWidgetManager, appWidgetIds);<br />            <br />    //啟動一個service<br />     context.startService(new Intent(context, serviceScreen.class));<br />  <br />  <br /> }<br /> <br /><br /> @SuppressWarnings("static-access")<br /> @Override<br /> public void onDeleted(Context context, int[] appWidgetIds) {<br />     super.onDeleted(context, appWidgetIds);<br /><br /><br />    //當這個widget被刪除時，就stopService<br />      context.stopService(new Intent(context, serviceScreen.class) );<br />   <br />      android.os.Process.killProcess(android.os.Process.myPid());<br />  <br /> <br /> }<br /> <br /><br />}<br /><br /><br /></pre><br /><br /><br /><br /><br /><br /><br />
+      </div>
+      <footer>
+        <p><a class="myButton" href="/2010/11/01/android-detect-screen-on-and-screen-off">read more &raquo;</a></p>
+        <div>
+          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- ken on github -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3783438370424072"
+     data-ad-slot="1516206098"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+        </div>
+      </footer>
+      <hr>
+    
       <h1><a style="color: #F22430" href="/2010/10/28/ftp">主動式與被動式FTP 差別</a></h1>
       <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
       <p class="author">
@@ -357,41 +387,13 @@
       </footer>
       <hr>
     
-      <h1><a style="color: #F22430" href="/2010/10/26/drawable-hdpildpimdpi">Drawable (hdpi,ldpi,mdpi) 的分別</a></h1>
-      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
-      <p class="author">
-      <div class="date">
-        <span>26 October 2010</span>
-      </div>
-      </p>
-      <div class="content" style="line-height: 28px;">
-        <br />Drawable (hdpi,ldpi,mdpi)的分別。<br /><br />自從android 2.0.1版以後，只要新增project，<br /><br />你會發現res/drawable資料夾變成!<br /><br />/res/drawable-hdpi &nbsp; 【WVGA (480x800),FWVGA (480x854)】<br />/res/drawable-mdpi &nbsp;【HVGA (320x480)】<br />/res/drawable-ldpi &nbsp; &nbsp;【QVGA (240x320)】<br /><br />大概知道是用來做mutilple screen的，但是沒有太care，<br /><br />我通常都會把這三個通通刪掉，然後改成員先的/res/drawable（壞習慣，別學）<br /><br />結果剛剛發現如果同張圖分別放在三個不同的資料夾<br /><br />你會發現讀進來的圖檔大小都會不一樣喔！！！<br /><br />太讓我surpriesed!!<br /><br />我以為還要定義一個<span class="Apple-style-span" style="color: #000088; font-family: monospace; font-size: 13px; white-space: pre;">supports-screens</span>的xml檔案<br /><br />這些資料夾名稱的設置才會有用！<br /><br /><br /><br /><br /><br /><br />btw如果你跟我做法一樣，是三個刪掉，變成一個，<br /><br />那麼預設值讀進來的圖大小會是以/res/drawable-mdpi為主<br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
-      </div>
-      <footer>
-        <p><a class="myButton" href="/2010/10/26/drawable-hdpildpimdpi">read more &raquo;</a></p>
-        <div>
-          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<!-- ken on github -->
-<ins class="adsbygoogle"
-     style="display:block"
-     data-ad-client="ca-pub-3783438370424072"
-     data-ad-slot="1516206098"
-     data-ad-format="auto"></ins>
-<script>
-(adsbygoogle = window.adsbygoogle || []).push({});
-</script>
-
-        </div>
-      </footer>
-      <hr>
-    
 
     <!-- Pagination links -->
     <div class="pagination">
       
         <a href="/blog/page46" class="previous">Previous</a>
       
-      <span class="page_number ">Page: 47 of 60</span>
+      <span class="page_number ">Page: 47 of 61</span>
       
         <a href="/blog/page48" class="next">Next</a>
       
@@ -429,7 +431,7 @@
 
     <div id="footer">
       <div class="container">
-        <p>&copy; 2017 Ken Yang
+        <p>&copy; 2018 Ken Yang
           with help from <a href="http://jekyllbootstrap.com" target="_blank" title="The Definitive Jekyll Blogging Framework">Jekyll Bootstrap</a>
           and <a href="http://getbootstrap.com" target="_blank">Bootstrap</a>
         </p>
