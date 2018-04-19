@@ -303,7 +303,45 @@
     </div>
     <!-- This loops through the paginated posts -->
     
-      <h1><a style="color: #F22430" href="/2018/03/13/using-aws-lambda-with-amazon-s3">Using AWS Lambda with Amazon S3</a></h1>
+      <h1><a style="color: #F22430" href="/2018/04/19/setup-https-on-nginx">Setup HTTPS and HTTP/2 on Nginx</a></h1>
+      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
+      <p class="author">
+      <div class="date">
+        <span>19 April 2018</span>
+      </div>
+      </p>
+      <div class="content" style="line-height: 28px;">
+        
+<p style="font-size: 16px;line-height: 2;">最近發現某台提供HTTPS的server，在Android手機瀏覽器上訪問，常常被提示說不安全的憑證，<br />於是就去<a href="https://www.ssllabs.com/ssltest/analyze.html">這個檢測網站 https://www.ssllabs.com/ssltest/analyze.html</a>做檢測，發現結果是分數是B，且有chain issue。
+之後去server上檢查Nginx confg，發現我忘記放intermediate cert了，於是就把intermediate cert和cert合併再一起就解決。因此這篇筆記會紀錄：</p>
+
+<ul>
+  <li>為了避免忘記所以決定紀錄一下設定HTTPS的步驟，</li>
+  <li>如何讓HTTPS評分為A+。</li>
+  <li>設置HTTP2</li>
+</ul>
+
+
+      </div>
+      <footer>
+        <p><a class="myButton" href="/2018/04/19/setup-https-on-nginx">read more &raquo;</a></p>
+        <div>
+          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- ken on github -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3783438370424072"
+     data-ad-slot="1516206098"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+        </div>
+      </footer>
+      <hr>
+    
+      <h1><a style="color: #F22430" href="/2018/03/13/using-aws-lambda-with-amazon-s3">Using AWS Lambda with Amazon S3 (Node.js)</a></h1>
       <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
       <p class="author">
       <div class="date">
@@ -312,7 +350,10 @@
       </p>
       <div class="content" style="line-height: 28px;">
         
-<p style="font-size: 16px;">AWS Lambda提供serverless的運算服務，且是透過<code class="highlighter-rouge">Event</code>來驅動你的function，</p>
+<p style="font-size: 16px;line-height: 2;">AWS Lambda提供serverless的運算服務，serverless意思是開發者不需要管server的任何資源，也就是說你不需要創建一個EC2 instance，然後還要煩惱auto scaling, HA等設定，AWS Lambda替開發者解決這些問題，它會自動scale。<br />
+開發者只需要專心在code就好，你的code會透過<code class="highlighter-rouge">Event</code>來驅動，
+這個<code class="highlighter-rouge">Event</code>可以來自於AWS上的服務，例如S3, API Gateway等服務，舉例來說你可以設定，當上傳檔案至S3時，S3會發送一個<code class="highlighter-rouge">Event</code>給你的code來回應這個<code class="highlighter-rouge">Event</code>。這篇文章就會以AWS上<a href="https://docs.aws.amazon.com/lambda/latest/dg/with-s3.html">建立縮圖的example</a>來說明。 <br />
+而AWS Lambda的費用是取決於你的code執行時間，也就是說當沒有任何Event去trigger你的code時，是不需要收費的，在某些應用情況來說，是比EC2來得優惠。但AWS Lambda還是有它的缺點，因為你不需要也無法管server的任何設定/資源，在某些應用情況來說，替開發者帶來了些限制，所以當想要更有彈性，或者喜歡hands-on架構的開發者，或許就可以考慮EC2。</p>
 
 
       </div>
@@ -353,52 +394,6 @@
       </div>
       <footer>
         <p><a class="myButton" href="/2017/08/25/firebase-realtime-database-web">read more &raquo;</a></p>
-        <div>
-          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<!-- ken on github -->
-<ins class="adsbygoogle"
-     style="display:block"
-     data-ad-client="ca-pub-3783438370424072"
-     data-ad-slot="1516206098"
-     data-ad-format="auto"></ins>
-<script>
-(adsbygoogle = window.adsbygoogle || []).push({});
-</script>
-
-        </div>
-      </footer>
-      <hr>
-    
-      <h1><a style="color: #F22430" href="/2017/08/21/nginx-block-traffic-by-country-and-bypass-traffic-for-whitelist">Nginx: Block traffic by country and bypass traffic for whitelist</a></h1>
-      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
-      <p class="author">
-      <div class="date">
-        <span>21 August 2017</span>
-      </div>
-      </p>
-      <div class="content" style="line-height: 28px;">
-        
-<p>由於我們的服務都是由n台API Server + 各個client (Android, iOS, HTML5)所組成，然後我們的服務在某些國家是不開放的，所以勢必得做到block by country，然後又要有白名單機制；做法有很多種，但都大同小異，譬如說用iptables, nginx，然後搭配一些IP to country module（<a href="https://www.ip2location.com/">ip2location</a>, <a href="http://geolite.maxmind.com/download/geoip/database/GeoLiteCountry/GeoIP.dat.gz">GeoIP</a>）去阻擋，這篇就會使用Nginx + <a href="http://geolite.maxmind.com/download/geoip/database/GeoLiteCountry/GeoIP.dat.gz">GeoIP</a>來阻擋。</p>
-
-<p><br /></p>
-
-<hr />
-<h3 id="1-check-nginx-version">1. Check Nginx version</h3>
-<hr />
-
-<p>首先先看看你安裝的Nginx是否有支援<code class="highlighter-rouge">geoip</code>這功能，如果有<code class="highlighter-rouge">grep</code>東西出來就代表有支援。</p>
-
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>nginx -V 2&gt;&amp;1 | tr <span class="s1">' '</span> <span class="s1">'\n'</span> | grep geoip
---with-http_geoip_module
-</code></pre>
-</div>
-
-<p><br /></p>
-
-
-      </div>
-      <footer>
-        <p><a class="myButton" href="/2017/08/21/nginx-block-traffic-by-country-and-bypass-traffic-for-whitelist">read more &raquo;</a></p>
         <div>
           <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 <!-- ken on github -->

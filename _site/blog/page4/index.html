@@ -303,6 +303,60 @@
     </div>
     <!-- This loops through the paginated posts -->
     
+      <h1><a style="color: #F22430" href="/2016/09/14/remotely-open-door-using-raspberry-pi">Remotely open door using Raspberry Pi</a></h1>
+      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
+      <p class="author">
+      <div class="date">
+        <span>14 September 2016</span>
+      </div>
+      </p>
+      <div class="content" style="line-height: 28px;">
+        
+<p>由於上一篇寫了一個Telegram Bot，最近就在幫它加feature，</p>
+
+<ol>
+  <li>出build時會通知</li>
+  <li>開會時會通知</li>
+  <li>11:30提醒要吃飯了</li>
+</ol>
+
+<p>總覺得少了點什麼，於是就想說來做個機器人自動開門。<br />
+在開始之前，先準備以下材料：</p>
+
+<ol>
+  <li>Raspberry Pi 3: 1台</li>
+  <li>杜邦線: 至少4條</li>
+  <li>麵包板: 1塊</li>
+  <li>漆包線: 可有可無</li>
+  <li>一顆勇敢的心（因為你可能用壞，導致整個公司的人被反鎖）</li>
+</ol>
+
+<p>下圖為完成品，</p>
+
+<p><img src="http://localhost:4000/assets/2016-09-14-finish.jpg" alt="Ticket" /></p>
+
+<p><br /></p>
+
+
+      </div>
+      <footer>
+        <p><a class="myButton" href="/2016/09/14/remotely-open-door-using-raspberry-pi">read more &raquo;</a></p>
+        <div>
+          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- ken on github -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3783438370424072"
+     data-ad-slot="1516206098"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+        </div>
+      </footer>
+      <hr>
+    
       <h1><a style="color: #F22430" href="/2016/09/06/how-to-create-a-telegram-bot">How to create a Telegram Bot</a></h1>
       <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
       <p class="author">
@@ -413,60 +467,6 @@
       </div>
       <footer>
         <p><a class="myButton" href="/2016/06/22/android-app-bartool-bar">read more &raquo;</a></p>
-        <div>
-          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<!-- ken on github -->
-<ins class="adsbygoogle"
-     style="display:block"
-     data-ad-client="ca-pub-3783438370424072"
-     data-ad-slot="1516206098"
-     data-ad-format="auto"></ins>
-<script>
-(adsbygoogle = window.adsbygoogle || []).push({});
-</script>
-
-        </div>
-      </footer>
-      <hr>
-    
-      <h1><a style="color: #F22430" href="/2016/04/16/setting-up-an-https-server-with-nodejs">Setting up an HTTPS server with Node.js</a></h1>
-      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
-      <p class="author">
-      <div class="date">
-        <span>16 April 2016</span>
-      </div>
-      </p>
-      <div class="content" style="line-height: 28px;">
-        
-<p>這篇要講怎麼用Node.js建立一個HTTPS的server，如果你的certificate不是self-signed的，<br />
-那設定HTTPS並不難，產生CSR給CA provider，然後就會有certificate，把它放進去就好，<br />
-但如果是self-signed，那過程就有點麻煩，每次要弄的時候，都還是會有點忘記，所以乾脆把過程記錄下來好了。<br /></p>
-
-<p><br /></p>
-
-<hr />
-<h3 id="1-creating-a-private-key-and-csr">1. Creating a private key and CSR</h3>
-<hr />
-
-<p>在create certificate之前，必須要先有<code class="highlighter-rouge">private key</code>以及<code class="highlighter-rouge">CSR</code> (certificate signing request)，<br />
-所以我們要先generate出private key以及CSR。</p>
-
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="c"># generate private key</span>
-<span class="gp">$ </span>openssl genrsa -des3 -passout pass:kenyang -out server.pass.key 2048
-<span class="gp">$ </span>openssl rsa -passin pass:kenyang -in server.pass.key -out server.key
-<span class="gp">$ </span>rm server.pass.key
-
-<span class="c"># generate csr</span>
-<span class="gp">$ </span>openssl req -new -key server.key -out server.csr
-</code></pre>
-</div>
-
-<p><br /></p>
-
-
-      </div>
-      <footer>
-        <p><a class="myButton" href="/2016/04/16/setting-up-an-https-server-with-nodejs">read more &raquo;</a></p>
         <div>
           <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 <!-- ken on github -->

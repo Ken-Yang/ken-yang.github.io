@@ -303,6 +303,34 @@
     </div>
     <!-- This loops through the paginated posts -->
     
+      <h1><a style="color: #F22430" href="/2013/09/02/using-raspberry-pi-as-wireless-ap">Using Raspberry PI as Wireless AP</a></h1>
+      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
+      <p class="author">
+      <div class="date">
+        <span>02 September 2013</span>
+      </div>
+      </p>
+      <div class="content" style="line-height: 28px;">
+        <br />Before we start, please make sure your system requirements.<br /><br /><b>What's do you need?</b><br /><ol><li>A Raspberry PI</li><li>A boot SD card with default Raspberry PI image iso (Raspbian "wheezy")</li><li>A USB WiFi device which support "Access Point" mode and the driver is rtl8192cu</li></ol><br /><br /><b>1. Install the necessary packages </b><br /><pre class="brush: java">sudo apt-get install hostapd bridge-utils<br /></pre><br /><b>2. Configure </b><br /><pre class="brush: java">sudo vim /etc/default/hostapd<br /></pre>Add the following line to the bottom of the file.<br /><pre class="brush: java">DAEMON_CONF="/etc/hostapd/hostapd.conf"<br /></pre><br /><br />Modified the config file<br /><pre class="brush: java">sudo vim /etc/hostapd/hostapd.conf<br /></pre>Add the following lines to the file. <br />You can change the "ssid", "wpa_passphrase".<br />Most the others examples use nl80211 as their driver, but Raspberry PI don't have the driver (default).<br />Therefore I can't start the service hostapd.<br />However I found some people use rtl871xdrv and they have the related hostapd binary file that supports rtl driver.<br />So... I use rtl871xdrv.<br /><pre class="brush: java">interface=wlan0                                                                                                                 <br />driver=rtl871xdrv<br />ssid=KenRaspberryPiAP<br />hw_mode=g<br />channel=6<br />macaddr_acl=0<br />auth_algs=1<br />ignore_broadcast_ssid=0<br />wpa=2<br />wpa_passphrase=safesync<br />wpa_key_mgmt=WPA-PSK<br />wpa_pairwise=TKIP<br />rsn_pairwise=CCMP<br /></pre><br /><br /><br /><b>3. Change network interface setting </b><br /><pre class="brush: java">sudo vim /etc/network/interfaces<br /></pre><br /><br /><pre class="brush: java">auto lo<br />auto br0 <br />iface lo inet loopback<br />iface br0 inet dhcp<br />        bridge_fd 1<br />        bridge_hello 3<br />        bridge_maxage 10<br />        bridge_stp off <br />        bridge_ports eth0 wlan0<br /><br />allow-hotplug eth0<br />iface eth0 inet manual<br />allow-hotplug wlan0<br />iface wlan0 inet manual  <br /></pre><br /><br /><br /><b>4. Replace the hostappd binary</b><br /><br />Download<br /><pre class="brush: java">cd /usr/sbin<br />rm -f hostapd<br />wget http://dl.dropboxusercontent.com/u/13846584/hostapd<br /></pre><br />Change Permission<br /><pre class="brush: java">sudo chown root:root hostapd<br />sudo chmod 755 hostapd<br /></pre><br /><br /><br /><b>5. Reboot</b><br /><pre class="brush: java">sudo reboot now<br /></pre><br /><br />After reboot, you should see your own Raspberry PI Access Point(AP).<br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
+      </div>
+      <footer>
+        <p><a class="myButton" href="/2013/09/02/using-raspberry-pi-as-wireless-ap">read more &raquo;</a></p>
+        <div>
+          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- ken on github -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3783438370424072"
+     data-ad-slot="1516206098"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+        </div>
+      </footer>
+      <hr>
+    
       <h1><a style="color: #F22430" href="/2013/07/01/android-gcm-google-cloud_1">Android GCM (Google Cloud Messaging)：Android Client Side</a></h1>
       <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
       <p class="author">
@@ -343,34 +371,6 @@
       </div>
       <footer>
         <p><a class="myButton" href="/2013/07/01/android-gcm-google-cloud">read more &raquo;</a></p>
-        <div>
-          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<!-- ken on github -->
-<ins class="adsbygoogle"
-     style="display:block"
-     data-ad-client="ca-pub-3783438370424072"
-     data-ad-slot="1516206098"
-     data-ad-format="auto"></ins>
-<script>
-(adsbygoogle = window.adsbygoogle || []).push({});
-</script>
-
-        </div>
-      </footer>
-      <hr>
-    
-      <h1><a style="color: #F22430" href="/2013/06/18/android-datepicker-scroll-problem">Android DatePicker scroll problem.</a></h1>
-      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
-      <p class="author">
-      <div class="date">
-        <span>18 June 2013</span>
-      </div>
-      </p>
-      <div class="content" style="line-height: 28px;">
-        在Android 4.0.4機器上的&nbsp;DatePicker<b><span style="font-size: large;">一定</span></b>會發生scroll的小問題，<br />（但是4.2.3不會發生！而我推測或許3.x以上～4.0.4以下的device都會發生）<br /><br /><br />如下圖，<br />你會發現經過scrolling以後，在年/月/日的三個欄位，位置都怪怪的<br />原因是因為在做position時，那個event是被parent截取到！<br />但理應上應該是DatePicker截取到才對！<br /><br /><div class="separator" style="clear: both; text-align: center;"><a href="http://4.bp.blogspot.com/-2NithchKCw8/Ub_SFw-EClI/AAAAAAAAEy4/BDCPKYAElb8/s1600/Screenshot_2013-06-18-11-18-47.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="640" src="http://4.bp.blogspot.com/-2NithchKCw8/Ub_SFw-EClI/AAAAAAAAEy4/BDCPKYAElb8/s640/Screenshot_2013-06-18-11-18-47.png" width="360" /></a></div><br /><br />所以workaround就是，自己定義一個class，以及extend DatePicker！<br />然後去取消parent截取event！<br /><br /><pre class="brush: java">public class CustomDatePicker extends DatePicker {<br />    <br />    public CustomDatePicker(Context context, AttributeSet attrs) {<br />        super(context, attrs);<br />    }<br /><br />    public CustomDatePicker(Context context) {<br />        super(context);<br />    }<br /><br />    @SuppressLint("NewApi")<br />    @Override<br />    public boolean onInterceptTouchEvent(MotionEvent ev) {<br />        /*<br />         * Prevent parent component intercept touch event.<br />         * because only happened on Android 3.x ~ 4.0.4, so we need to check the current os version.<br />         */<br />        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB){<br />            if (ev.getActionMasked() == MotionEvent.ACTION_DOWN) {<br />                ViewParent p = getParent();<br />                if (p != null){<br />                    // disallow its parent intercept touch event.<br />                    p.requestDisallowInterceptTouchEvent(true);<br />                }<br />            }<br />        }<br /><br />        return false;<br />    }<br /><br />}<br /></pre><br /><br />而使用方式就是在你的layout.xml中指定我們上方定義的class，<br /><pre class="brush: xml">&lt;view android:id="@+id/share_expires" <br />     android:layout_width="fill_parent" <br />     android:visibility="gone"<br />     android:layout_height="wrap_content" <br />     class="net.kenyang.util.CustomDatePicker" &gt;<br /> &lt;/view&gt;  <br /></pre><br /><br />這樣就能解決scrolling的問題！<br /><br />
-      </div>
-      <footer>
-        <p><a class="myButton" href="/2013/06/18/android-datepicker-scroll-problem">read more &raquo;</a></p>
         <div>
           <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 <!-- ken on github -->
