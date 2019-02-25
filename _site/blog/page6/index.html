@@ -303,6 +303,71 @@
     </div>
     <!-- This loops through the paginated posts -->
     
+      <h1><a style="color: #F22430" href="/2016/02/15/heroku-redis-connecting-in-python">Heroku Redis: Connecting in Python</a></h1>
+      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
+      <p class="author">
+      <div class="date">
+        <span>15 February 2016</span>
+      </div>
+      </p>
+      <div class="content" style="line-height: 28px;">
+        
+<p>這篇要講怎麼在Heroku上，使用它的<a href="https://devcenter.heroku.com/articles/heroku-redis">Heroku Redis</a>，<br />
+大致上分為三個步驟，分別為安裝，配置，寫code。</p>
+
+<p><br /></p>
+
+<hr />
+<h3 id="1-installing-cli">1. Installing CLI</h3>
+<hr />
+
+<p>第一步驟是要先安裝heroku-redis的command line tools，
+但如果你不想要用command line，你也可以至heroku的後台裡面的Add-ons加一台redis。</p>
+
+<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>heroku plugins:install heroku-redis
+</code></pre>
+</div>
+
+<p><br /></p>
+
+<hr />
+<h3 id="2-provisioning-the-add-on">2. Provisioning the add-on</h3>
+<hr />
+
+<p>接著要配置一台Redis server，有二個比較特別的參數，</p>
+
+<ol>
+  <li>hobby-dev: 這個是這台server的<a href="http://elements.heroku.com/addons/heroku-redis">Plan &amp; Pricing</a>，hobby-dev是免費的。</li>
+  <li>sushi: 你的heroku app name</li>
+</ol>
+
+<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>heroku addons:create heroku-redis:hobby-dev -a sushi
+</code></pre>
+</div>
+
+<p><br />
+當你成功配置一台redis以後，你可以透過下面的指令找到該台redis URL，</p>
+
+
+      </div>
+      <footer>
+        <p><a class="myButton" href="/2016/02/15/heroku-redis-connecting-in-python">read more &raquo;</a></p>
+        <div>
+          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- ken on github -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3783438370424072"
+     data-ad-slot="1516206098"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+        </div>
+      </footer>
+      <hr>
+    
       <h1><a style="color: #F22430" href="/2015/12/12/android-fingerprint-api">Android Fingerprint API</a></h1>
       <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
       <p class="author">
@@ -411,47 +476,6 @@
       </footer>
       <hr>
     
-      <h1><a style="color: #F22430" href="/2015/12/05/jcconf-taiwan-2015-day-2">JCConf Taiwan 2015   Day 2</a></h1>
-      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
-      <p class="author">
-      <div class="date">
-        <span>05 December 2015</span>
-      </div>
-      </p>
-      <div class="content" style="line-height: 28px;">
-        
-<p>這篇只是紀錄Java Community Conference 2015的第二天筆記，<br />
-今天聽了以下幾個session，</p>
-
-<ol>
-  <li>阿里 JVM 的工作方向</li>
-  <li>Universal Scala</li>
-  <li>Deploy your own Spark cluster in 4 minutes using sbt</li>
-  <li>Immutable Infrastructure：觀念與實作</li>
-  <li>JDK8 JIT 行為和效能分析</li>
-  <li>自己的JVM自己救 - 解救 OOM 實務經驗談</li>
-</ol>
-
-
-      </div>
-      <footer>
-        <p><a class="myButton" href="/2015/12/05/jcconf-taiwan-2015-day-2">read more &raquo;</a></p>
-        <div>
-          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<!-- ken on github -->
-<ins class="adsbygoogle"
-     style="display:block"
-     data-ad-client="ca-pub-3783438370424072"
-     data-ad-slot="1516206098"
-     data-ad-format="auto"></ins>
-<script>
-(adsbygoogle = window.adsbygoogle || []).push({});
-</script>
-
-        </div>
-      </footer>
-      <hr>
-    
 
     <!-- Pagination links -->
     <div class="pagination">
@@ -496,7 +520,7 @@
 
     <div id="footer">
       <div class="container">
-        <p>&copy; 2018 Ken Yang
+        <p>&copy; 2019 Ken Yang
           with help from <a href="http://jekyllbootstrap.com" target="_blank" title="The Definitive Jekyll Blogging Framework">Jekyll Bootstrap</a>
           and <a href="http://getbootstrap.com" target="_blank">Bootstrap</a>
         </p>

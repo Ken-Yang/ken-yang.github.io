@@ -303,6 +303,34 @@
     </div>
     <!-- This loops through the paginated posts -->
     
+      <h1><a style="color: #F22430" href="/2010/11/06/jsp-include">JSP 兩種include 的差別</a></h1>
+      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
+      <p class="author">
+      <div class="date">
+        <span>06 November 2010</span>
+      </div>
+      </p>
+      <div class="content" style="line-height: 28px;">
+        在JSP中，<br /><br />include有分兩種<br /><br /><pre class="brush: xml">&lt;%@include file="/footer.jsp" %&gt;&lt;!-- 第一種 --&gt;<br /><br /><br />&lt;jsp:include page="/footer.jsp"&gt;&lt;/jsp:include&gt;&lt;!-- 第二種 --&gt;<br /><br /><br /><br /></pre><br /><br />第一種稱為<span class="Apple-style-span" style="color: red;">指令元素</span><br /><br />第二種稱為<span class="Apple-style-span" style="color: red;">動作元素</span><br /><br />差別在於<br /><br />第一種的include會在編譯時期（轉換成servlet）就將file include進來，<br /><br />而第二種在編譯時期並不會被編譯，是在client request時，才會動態的去載入在去編譯。<br /><br /><br />且第一種最後只會有一個.class檔案，<br /><br />因為他會在被轉換成servlet之前就把include的file融合至原本的內容中<br /><br />最後才轉換成servlet，故只有一個.class檔案<br /><br />而第二種就會有兩種。<br /><br /><br />總結<br /><br />第一種是在編譯時期就去include<br /><br />第二種是在run time時期去include（這個效能似乎較差一點點，但較靈活）<br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
+      </div>
+      <footer>
+        <p><a class="myButton" href="/2010/11/06/jsp-include">read more &raquo;</a></p>
+        <div>
+          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- ken on github -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3783438370424072"
+     data-ad-slot="1516206098"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+        </div>
+      </footer>
+      <hr>
+    
       <h1><a style="color: #F22430" href="/2010/11/04/imac">非常不專業之iMAC開箱文</a></h1>
       <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
       <p class="author">
@@ -343,34 +371,6 @@
       </div>
       <footer>
         <p><a class="myButton" href="/2010/11/01/android-detect-screen-on-and-screen-off">read more &raquo;</a></p>
-        <div>
-          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<!-- ken on github -->
-<ins class="adsbygoogle"
-     style="display:block"
-     data-ad-client="ca-pub-3783438370424072"
-     data-ad-slot="1516206098"
-     data-ad-format="auto"></ins>
-<script>
-(adsbygoogle = window.adsbygoogle || []).push({});
-</script>
-
-        </div>
-      </footer>
-      <hr>
-    
-      <h1><a style="color: #F22430" href="/2010/10/28/ftp">主動式與被動式FTP 差別</a></h1>
-      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
-      <p class="author">
-      <div class="date">
-        <span>28 October 2010</span>
-      </div>
-      </p>
-      <div class="content" style="line-height: 28px;">
-        FTP是一個特殊的protocol之一，<br /><br />其他的protocol，如:http、pop3、....等等之類的，<br /><br />都只需要1個connection、1個port。<br /><br />但是FTP則不是，FTP需要2個connection、2個port。<br /><br />一個是Command connection / port，用來傳遞client與FTP Server之間的command。(通常設在port 21)<br /><br />另一個是Data&nbsp;connection /&nbsp;port，是用來傳遞資料的。(通常設在port 20)<br /><br /><br />一般的人都會認為關掉20、21port，FTP Server就會無法運作，<br /><br />從某種角度來說，這樣的觀念是正確的，但是其實是錯誤的觀念！！<br /><br />但這是在傳統式模式FTP的條件下，這樣的觀念才是正確的。<br /><br />FTP主要分成兩種模式：<br /><span class="Apple-style-span" style="color: red;"><b>1.主動式（POST）</b></span><br /><span class="Apple-style-span" style="color: red;"><b>2.被動式</b></span><span class="Apple-style-span" style="color: red;"><b>（PASV）</b></span><br /><br />傳統的FTP是採用主動式的模式進行連線，<br /><br />底下為主動式FTP運作圖<br /><br /><div class="separator" style="clear: both; text-align: center;"><a href="http://1.bp.blogspot.com/_6SxqtkJQECI/TMjo0nS6Y0I/AAAAAAAAALI/hEnR6232wkg/s1600/%E4%B8%BB%E5%8B%95%E5%BC%8F.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="295" src="http://1.bp.blogspot.com/_6SxqtkJQECI/TMjo0nS6Y0I/AAAAAAAAALI/hEnR6232wkg/s400/%E4%B8%BB%E5%8B%95%E5%BC%8F.png" width="400" /></a></div><br /><br /><span class="Apple-style-span" style="color: red;">1. client端會開啟一個大於</span><span class="Apple-style-span" style="color: red;">1024</span><span class="Apple-style-span" style="color: red;">的</span><span class="Apple-style-span" style="color: red;">port&nbsp;</span>( port x )<span class="Apple-style-span" style="color: red;">對FTP Server的port 21進行connection</span><br /><br /><span class="Apple-style-span" style="color: red;">2. FTP Server會回應client端的connection，告知Client端收到連線了</span><br /><br /><span class="Apple-style-span" style="color: blue;">3. FTP Server的port 20會主動和 Client端的port 1025</span>(port x+1)<span class="Apple-style-span" style="color: blue;">進行連線(進行資料傳輸)</span><br /><span class="Apple-style-span" style="color: blue;"><br /></span><br /><span class="Apple-style-span" style="color: blue;">4. Client會回應Server端的連線。</span><br /><br />看完步驟說明，大家會發現一個問題，<br /><br />一開始client端會開啟兩個port，<br /><br />port x (connection port)和port x+1 (data port)<br /><br />在connection port沒有甚麼問題存在，<br /><br />問題出在data port，<br /><br />因為client端並不是自己建立一個connection，而是自行開啟一個port等待FTP Server連線進來<br /><br />這很有可能被Client端的防火牆過濾掉<br /><br /><br /><br />因此為了解決FTP連線到Client端被過濾掉的問題，所以發展出另一種連線模式<br /><br />就是被動式模式<br /><br />被動式模式不管是command &nbsp;connection或是data connection都是由client端建立的<br /><br />底下為運作圖<br /><br /><div class="separator" style="clear: both; text-align: center;"><a href="http://2.bp.blogspot.com/_6SxqtkJQECI/TMjugUmILnI/AAAAAAAAALM/tu85ED5r1KA/s1600/%E8%A2%AB%E5%8B%95%E5%BC%8F.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="296" src="http://2.bp.blogspot.com/_6SxqtkJQECI/TMjugUmILnI/AAAAAAAAALM/tu85ED5r1KA/s400/%E8%A2%AB%E5%8B%95%E5%BC%8F.png" width="400" /></a></div><br /><br /><div style="margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px;"><span class="Apple-style-span" style="color: red;">1. 首先，client端會開啟一個大於</span><span class="Apple-style-span" style="color: red;">1024</span><span class="Apple-style-span" style="color: red;">的</span><span class="Apple-style-span" style="color: red;">port&nbsp;</span>( port x )<span class="Apple-style-span" style="color: red;">對FTP Server的port 21進行connection</span></div><div style="margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px;"><br /></div><div style="margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px;"><span class="Apple-style-span" style="color: red;">2. FTP Server會回應client端的connection，並告知Client端，Server開啟了port 1200等待資料連線</span></div><br /><div style="margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px;"><span class="Apple-style-span" style="color: blue;">3. Client端的port 1026會和</span><span class="Apple-style-span" style="color: blue;">FTP Server的port 1200</span><span class="Apple-style-span" style="color: blue;">進行資料連線</span></div><div style="margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px;"><span class="Apple-style-span" style="color: blue;"><br /></span></div><div style="margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px;"><span class="Apple-style-span" style="color: blue;">4.&nbsp;Server會回應Client端的連線。</span></div><br /><br /><br /><br />使用了被動模式，解決了client端的問題，<br /><br />可是相反的，也把這些問題帶給了server。<br /><br /><br /><br /><br /><br />至於要用哪種模式，是由client端決定的，<br /><br />client端會在command connection時發出POST或PASV的命令<br /><br />但是server可以決定是否支援這些模式。<br /><br /><br /><br />
-      </div>
-      <footer>
-        <p><a class="myButton" href="/2010/10/28/ftp">read more &raquo;</a></p>
         <div>
           <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 <!-- ken on github -->
@@ -431,7 +431,7 @@
 
     <div id="footer">
       <div class="container">
-        <p>&copy; 2018 Ken Yang
+        <p>&copy; 2019 Ken Yang
           with help from <a href="http://jekyllbootstrap.com" target="_blank" title="The Definitive Jekyll Blogging Framework">Jekyll Bootstrap</a>
           and <a href="http://getbootstrap.com" target="_blank">Bootstrap</a>
         </p>

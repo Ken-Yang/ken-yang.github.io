@@ -5,10 +5,69 @@
         <description>Ken Yang筆記 - Ken Yang</description>
         <link>http://blog.kenyang.net</link>
         <atom:link href="http://blog.kenyang.net/rss.xml" rel="self" type="application/rss+xml" />
-        <lastBuildDate>Thu, 19 Apr 2018 14:03:23 +0800</lastBuildDate>
-        <pubDate>Thu, 19 Apr 2018 14:03:23 +0800</pubDate>
+        <lastBuildDate>Tue, 26 Feb 2019 00:25:22 +0800</lastBuildDate>
+        <pubDate>Tue, 26 Feb 2019 00:25:22 +0800</pubDate>
         <ttl>60</ttl>
 
+
+        <item>
+                <title>Upgrade NGINX to latest version on CentOS</title>
+                <description>
+&lt;p style=&quot;font-size: 16px;line-height: 2;&quot;&gt;這篇主要是要說明如何在centos7把NGINX升級至latest stable version。&lt;/p&gt;
+
+&lt;hr /&gt;
+&lt;h3 id=&quot;1-add-nginx-yum-repository&quot;&gt;1. Add NGINX yum repository&lt;/h3&gt;
+&lt;hr /&gt;
+
+&lt;p style=&quot;font-size: 16px;line-height: 1.6;&quot;&gt;首先，先建立一個名稱為&lt;code class=&quot;highlighter-rouge&quot;&gt;/etc/yum.repos.d/nginx.repo&lt;/code&gt;的檔案，並且把下列的設置貼上:&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;nginx]
+&lt;span class=&quot;nv&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;nginx repo
+&lt;span class=&quot;nv&quot;&gt;baseurl&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;http://nginx.org/packages/centos/7/&lt;span class=&quot;nv&quot;&gt;$basearch&lt;/span&gt;/
+&lt;span class=&quot;nv&quot;&gt;gpgcheck&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;0
+&lt;span class=&quot;nv&quot;&gt;enabled&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;1
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;接著就執行&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$ &lt;/span&gt;yum update
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
+
+&lt;hr /&gt;
+&lt;h3 id=&quot;2-install-nginx&quot;&gt;2. Install NGINX&lt;/h3&gt;
+&lt;hr /&gt;
+
+&lt;p&gt;完成上述的設置，就可以安裝最新版本NGINX，安裝前可以檢查下版本。&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$ &lt;/span&gt;yum list nginx
+Loaded plugins: fastestmirror, post-transaction-actions, rpm-warm-cache, versionlock
+Loading mirror speeds from cached hostfile
+ &lt;span class=&quot;k&quot;&gt;*&lt;/span&gt; fasttrack: mirrors.aliyun.com
+Available Packages
+nginx.x86_64                                       1:1.14.2-1.el7_4.ngx                                       nginx
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;如果確認版本為當時最新的，那麼就可以直接安裝了。&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$ &lt;/span&gt;yum install nginx
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;br /&gt;
+&lt;br /&gt;&lt;/p&gt;
+
+</description>
+                <link>http://blog.kenyang.net/2019/02/26/upgrade-nginx-to-latest-version-on-centos</link>
+                <guid>http://blog.kenyang.net/2019/02/26/upgrade-nginx-to-latest-version-on-centos</guid>
+                <pubDate>Tue, 26 Feb 2019 00:00:00 +0800</pubDate>
+        </item>
 
         <item>
                 <title>Setup HTTPS and HTTP/2 on Nginx</title>
@@ -3963,101 +4022,6 @@ author answer: hard to implement JIT.&lt;/p&gt;
                 <link>http://blog.kenyang.net/2015/12/04/jcconf-taiwan-2015-day-1</link>
                 <guid>http://blog.kenyang.net/2015/12/04/jcconf-taiwan-2015---day-1</guid>
                 <pubDate>Fri, 04 Dec 2015 00:00:00 +0800</pubDate>
-        </item>
-
-        <item>
-                <title>Create a iSCSI target on Ubuntu</title>
-                <description>
-&lt;p&gt;這篇會介紹如何在Ubuntu上，建立一個iSCSI Target Server，&lt;br /&gt;
-提供給別人測試使用。&lt;/p&gt;
-
-&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
-&lt;h4 id=&quot;install-tgt&quot;&gt;Install tgt&lt;/h4&gt;
-&lt;hr /&gt;
-&lt;p&gt;首先要先安裝tgt這個package。&lt;/p&gt;
-
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$ &lt;/span&gt;apt-get install tgt
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
-&lt;h4 id=&quot;create-virtual-disks&quot;&gt;Create virtual disks&lt;/h4&gt;
-&lt;hr /&gt;
-
-&lt;p&gt;這裡會用&lt;code class=&quot;highlighter-rouge&quot;&gt;dd&lt;/code&gt;來建立幾個假的block device，&lt;br /&gt;
-待會就把devices加入到iSCSI中。&lt;/p&gt;
-
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$ &lt;/span&gt;dd &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;/dev/zero &lt;span class=&quot;nv&quot;&gt;of&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;/var/tmp/iscsi-disk1 &lt;span class=&quot;nv&quot;&gt;bs&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;1M &lt;span class=&quot;nv&quot;&gt;count&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;100
-&lt;span class=&quot;gp&quot;&gt;$ &lt;/span&gt;dd &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;/dev/zero &lt;span class=&quot;nv&quot;&gt;of&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;/var/tmp/iscsi-disk2 &lt;span class=&quot;nv&quot;&gt;bs&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;1M &lt;span class=&quot;nv&quot;&gt;count&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;100
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
-&lt;h4 id=&quot;create-targets&quot;&gt;Create targets&lt;/h4&gt;
-&lt;hr /&gt;
-
-&lt;p&gt;這裡建立了2個target，分別為，&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;iqn.2015-07.net.kenyang:ken.iscsi.1&lt;/li&gt;
-  &lt;li&gt;iqn.2015-07.net.kenyang:ken.iscsi.2&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$ &lt;/span&gt;tgtadm --lld iscsi --op new --mode target --tid 1 -T iqn.2015-07.net.kenyang:ken.iscsi.1
-&lt;span class=&quot;gp&quot;&gt;$ &lt;/span&gt;tgtadm --lld iscsi --op new --mode target --tid 2 -T iqn.2015-07.net.kenyang:ken.iscsi.2
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;!--more--&gt;
-
-&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
-&lt;h4 id=&quot;create-lun&quot;&gt;Create LUN&lt;/h4&gt;
-&lt;hr /&gt;
-
-&lt;p&gt;然後替上面的2個target各加入一個LUN。&lt;/p&gt;
-
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$ &lt;/span&gt;tgtadm --lld iscsi --mode logicalunit --op new --tid 1 --lun 1 -b /var/tmp/iscsi-disk1
-&lt;span class=&quot;gp&quot;&gt;$ &lt;/span&gt;tgtadm --lld iscsi --mode logicalunit --op new --tid 2 --lun 1 -b /var/tmp/iscsi-disk2
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
-&lt;h4 id=&quot;enable-the-target-to-accept-any-initiators&quot;&gt;Enable the target to accept any initiators&lt;/h4&gt;
-&lt;hr /&gt;
-
-&lt;p&gt;如果你想要讓你的target，&lt;br /&gt;
-可以讓任何人連，不需要密碼，&lt;br /&gt;
-就可以用下面的指令。&lt;/p&gt;
-
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$ &lt;/span&gt;tgtadm --lld iscsi --op &lt;span class=&quot;nb&quot;&gt;bind&lt;/span&gt; --mode target --tid 1 -I ALL
-&lt;span class=&quot;gp&quot;&gt;$ &lt;/span&gt;tgtadm --lld iscsi --op &lt;span class=&quot;nb&quot;&gt;bind&lt;/span&gt; --mode target --tid 2 -I ALL
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
-&lt;h4 id=&quot;create-user&quot;&gt;Create user&lt;/h4&gt;
-&lt;hr /&gt;
-
-&lt;p&gt;如果你想要讓你的target，有credential才能連，&lt;br /&gt;
-那就要create user，以及把user bind在某個target上。&lt;/p&gt;
-
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$ &lt;/span&gt;tgtadm --mode account --op new --user safesync --password safesync
-&lt;span class=&quot;gp&quot;&gt;$ &lt;/span&gt;tgtadm --mode account --op &lt;span class=&quot;nb&quot;&gt;bind&lt;/span&gt; --tid 1 --user safesync
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
-&lt;h4 id=&quot;show-configuration&quot;&gt;Show configuration&lt;/h4&gt;
-&lt;hr /&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ tgtadm --lld iscsi --mode target --op show
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-</description>
-                <link>http://blog.kenyang.net/2015/12/01/create-a-iscsi-target-on-ubuntu</link>
-                <guid>http://blog.kenyang.net/2015/12/01/create-a-iscsi-target-on-ubuntu</guid>
-                <pubDate>Tue, 01 Dec 2015 00:00:00 +0800</pubDate>
         </item>
 
 

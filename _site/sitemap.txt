@@ -68,6 +68,7 @@ http://blog.kenyang.net/blog/page59/
 http://blog.kenyang.net/blog/page60/
 http://blog.kenyang.net/blog/page61/
 
+http://blog.kenyang.net/2019/02/26/upgrade-nginx-to-latest-version-on-centos
 http://blog.kenyang.net/2018/04/19/setup-https-on-nginx
 http://blog.kenyang.net/2018/03/13/using-aws-lambda-with-amazon-s3
 http://blog.kenyang.net/2017/08/25/firebase-realtime-database-web

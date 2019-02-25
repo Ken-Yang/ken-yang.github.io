@@ -303,6 +303,34 @@
     </div>
     <!-- This loops through the paginated posts -->
     
+      <h1><a style="color: #F22430" href="/2012/04/08/amazon-simpledb-java">Amazon SimpleDB 操作 (Java)</a></h1>
+      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
+      <p class="author">
+      <div class="date">
+        <span>08 April 2012</span>
+      </div>
+      </p>
+      <div class="content" style="line-height: 28px;">
+        <a href="http://aws.amazon.com/simpledb/">SimpleDB </a>是Amazon提供的一種NoSQL DATABASE!<br />詳細說明去官網看吧!<br /><br /><br />這篇主要會教大家如何<br />建立一張table，<br />新增資料<br />刪除資料<br />查詢資料<br /><br /><br />首先要先宣告一些必備的參數，<br /><pre class="brush: java">// 你的table name(在Relational Database叫做table，這裡叫做domain)<br />  final String DOMAIN_NAME = "member";<br />  <br />  // 取得憑證，這檔案預設在/src底下<br />  AWSCredentials credentials = new PropertiesCredentials(getClass().getClassLoader().getResourceAsStream("AwsCredentials.properties"));<br />  <br />  // 宣告一個SimpleDB<br />  AmazonSimpleDB sdb = new AmazonSimpleDBClient(credentials);<br />     <br /></pre><br />接著就建立一個table，<br /><pre class="brush: java">// 建立一個table(在Relational Database叫做table，這裡叫做domain)<br />  sdb.createDomain(new CreateDomainRequest(DOMAIN_NAME));<br /></pre><br /><br />在SimpleDB的新增分成兩種方式!<br />一種是一筆一筆的新增，<br />另一種是批次的新增!(一次新增多筆)<br />有玩過GAE的大概知道，其實GAE也是這樣!<br />多筆的話就是用一個list存放資料!<br /><br />在這邊先介紹一次新增多筆的!<br /><pre class="brush: java">// 先宣告一個List，List擺放的型態為ReplaceableItem，這型態意思是如果table裡面已經有一筆Ken的資料，那麼就取代掉那筆，不會多一筆<br />  List&lt;ReplaceableItem&gt; listAddData = new ArrayList&lt;ReplaceableItem&gt;();<br /><br /><br />  // 第一筆資料<br />  // 先new一個Item，Item Name是Ken，然後這個item有四個attribute!分別是Sex, Tel, Mail, Nickname<br />  listAddData.add(new ReplaceableItem("Ken").withAttributes(<br />       new ReplaceableAttribute("Sex", "boy", true),<br />       new ReplaceableAttribute("Tel", "09123456", true),<br />       new ReplaceableAttribute("Mail", "xxx@kenyang.net", true),<br />       new ReplaceableAttribute("Nickname", "KenYang", true)));<br /> <br />  // 第二筆<br />  listAddData.add(new ReplaceableItem("Sam").withAttributes(<br />       new ReplaceableAttribute("Sex", "boy", true),<br />       new ReplaceableAttribute("Tel", "09123456", true),<br />       new ReplaceableAttribute("Mail", "xxx@kenyang.net", true),<br />       new ReplaceableAttribute("Nickname", "SamYang", true)));<br /><br /><br />  // 接著就新增吧!記得要指定Domain name!<br />  sdb.batchPutAttributes(new BatchPutAttributesRequest(DOMAIN_NAME, listAddData));<br /><br /></pre><br /><br /><br />接著要介紹新增一筆的! 其實大同小異，只是要宣告一個PutAttributesRequest來擺放資料!<br />一個PutAttributeRequest就代表一筆資料!<br /><pre class="brush: java">PutAttributesRequest dataAttribute = new PutAttributesRequest().withDomainName(DOMAIN_NAME).withItemName("John"); <br />     <br />  dataAttribute.getAttributes().add(        <br />       new ReplaceableAttribute()<br />           .withName("Sex")<br />           .withValue("girl")<br />           .withReplace(true));<br />     <br />  dataAttribute.getAttributes().add(        <br />       new ReplaceableAttribute()<br />           .withName("Tel")<br />           .withValue("0987123")<br />           .withReplace(true));<br />  <br />  dataAttribute.getAttributes().add(        <br />       new ReplaceableAttribute()<br />           .withName("Mail")<br />           .withValue("xxx@gmail.com")<br />           .withReplace(true));<br />     <br />  dataAttribute.getAttributes().add(        <br />       new ReplaceableAttribute()<br />           .withName("Nickname")<br />           .withValue("JohnYang")<br />           .withReplace(true));     <br />     <br />  sdb.putAttributes(dataAttribute);     <br /><br /></pre><br /><br /><br />接下來要介紹刪除! 這邊是介紹一次刪除多筆的!<br />一樣是用一個List去存放要刪除的Item Name!<br />至於刪除單筆，也跟上述方法一樣! 這裡就不多作介紹!<br /><pre class="brush: java">List&lt;DeletableItem&gt; listDeleteData = new ArrayList&lt;DeletableItem&gt;();<br />  listDeleteData.add(new DeletableItem().withName("Ken"));<br />  listDeleteData.add(new DeletableItem().withName("Sam"));<br />  // 所以Ken和Sam這兩筆資料會被刪除<br />  sdb.batchDeleteAttributes(new BatchDeleteAttributesRequest(DOMAIN_NAME,listDeleteData));<br /><br /></pre><br /><br />最後要介紹查詢了!<br /><pre class="brush: java">// 注意，傳統的SQL指令，都是用單引號(')，但是這裡要用(`)<br />     String selectExpression = "select * from `" + DOMAIN_NAME + "` ";<br />     SelectRequest selectRequest = new SelectRequest(selectExpression);<br />     SelectResult sr = sdb.select(selectRequest);<br />  <br />     for (Item item : sr.getItems()) {<br />          response.getWriter().println(item.getName());<br />          response.getWriter().println(item.getAttributes().get(0).getValue());<br />     }<br /><br /></pre><br /><br /><br /><br /><br />
+      </div>
+      <footer>
+        <p><a class="myButton" href="/2012/04/08/amazon-simpledb-java">read more &raquo;</a></p>
+        <div>
+          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- ken on github -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3783438370424072"
+     data-ad-slot="1516206098"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+        </div>
+      </footer>
+      <hr>
+    
       <h1><a style="color: #F22430" href="/2012/04/07/amazon-elasticbeanstalk-health-check">Amazon ElasticBeanstalk Health Check URL</a></h1>
       <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
       <p class="author">
@@ -343,34 +371,6 @@
       </div>
       <footer>
         <p><a class="myButton" href="/2012/04/06/sshkeyamazon-ec2">read more &raquo;</a></p>
-        <div>
-          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<!-- ken on github -->
-<ins class="adsbygoogle"
-     style="display:block"
-     data-ad-client="ca-pub-3783438370424072"
-     data-ad-slot="1516206098"
-     data-ad-format="auto"></ins>
-<script>
-(adsbygoogle = window.adsbygoogle || []).push({});
-</script>
-
-        </div>
-      </footer>
-      <hr>
-    
-      <h1><a style="color: #F22430" href="/2012/04/06/puttyamazon-ec2">使用PuTTY連線至Amazon EC2</a></h1>
-      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
-      <p class="author">
-      <div class="date">
-        <span>06 April 2012</span>
-      </div>
-      </p>
-      <div class="content" style="line-height: 28px;">
-        其實在講這篇之前，<br />似乎應該先教大家怎麼在EC2上建立一個Instance，<br />不過其實建立Instance沒有太大的難度，<br />所以這裡就省略了!<br /><br /><br />不過在建立一個Instance時，<br />需注意下列幾點<br />1. 將ssh開啟!<br />2. 將EC2給我們的key-pair下載下來! &nbsp;(例如：kenyang.pem）<br />3. 記下我們instance的public DNS！（例如：ec2-xxxx-xxx-xxx-xxx.compute-1.amazonaws.com）<br /><br />如果你是用linux，可以直用command去連線！<br />如下：<br /><pre class="brush: java">ssh -i kenyang.pem ubuntu@ec2-xxxx-xxx-xxx-xxx.compute-1.amazonaws.com<br /></pre><br /><br />在window上就可以利用<a href="http://www.chiark.greenend.org.uk/~sgtatham/putty/download.html">putty</a>進行ssh連線！<br />所以請先去下載<a href="http://www.chiark.greenend.org.uk/~sgtatham/putty/download.html">putty</a>!<br />以及也一併下載<span style="background-color: white;">PuTTYgen，</span><span style="background-color: white;">PuTTYgen是用來將.pem檔轉換成.ppk！</span><br /><span style="background-color: white;">putty只吃這個格式！</span><br /><span style="background-color: white;"><br /></span><br /><span style="background-color: white;">下載完成PuTTY以及PuTTYgen以後</span><br />請先開啟<span style="background-color: white;">PuTTYgen這個軟體!</span><br />開啟以後，請點選conversations-&gt;Import Key<br />如下圖!<br /><br /><div class="separator" style="clear: both; text-align: center;"><a href="http://2.bp.blogspot.com/-IfgB1X_iVBA/T356N8RG-FI/AAAAAAAAAn0/rt5E9D2dIFg/s1600/7.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="386" src="http://2.bp.blogspot.com/-IfgB1X_iVBA/T356N8RG-FI/AAAAAAAAAn0/rt5E9D2dIFg/s400/7.png" width="400" /></a></div><div class="separator" style="clear: both; text-align: center;"><br /></div><div class="separator" style="clear: both; text-align: center;"><br /></div><div class="separator" style="clear: both; text-align: left;">Import完以後，畫面會像下圖一樣!</div><div class="separator" style="clear: both; text-align: left;">接著就按下下圖中的按鈕(Save private key)</div><div class="separator" style="clear: both; text-align: center;"><br /></div><br /><div class="separator" style="clear: both; text-align: center;"><a href="http://2.bp.blogspot.com/-pLecpQwJjo8/T356Or0Nj_I/AAAAAAAAAn8/DzY1esC9cuI/s1600/8.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="391" src="http://2.bp.blogspot.com/-pLecpQwJjo8/T356Or0Nj_I/AAAAAAAAAn8/DzY1esC9cuI/s400/8.png" width="400" /></a></div><br /><span style="background-color: white;"><br /></span><br /><span style="background-color: white;"><br /></span><br /><span style="background-color: white;">接著就可以打開</span><span style="background-color: white;">PuTTY!</span><br /><span style="background-color: white;">然後把我們的DNS輸入到Host Name!</span><br /><span style="background-color: white;">然後再點選左邊的SSH，把它點開!</span><br /><span style="background-color: white;">如下圖!</span><br /><div class="separator" style="clear: both; text-align: center;"><a href="http://1.bp.blogspot.com/-4MCL2gBF-i4/T356MLFp2eI/AAAAAAAAAno/MzCCSW5RTSE/s1600/5.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="382" src="http://1.bp.blogspot.com/-4MCL2gBF-i4/T356MLFp2eI/AAAAAAAAAno/MzCCSW5RTSE/s400/5.png" width="400" /></a></div><div class="separator" style="clear: both; text-align: center;"><br /></div><div class="separator" style="clear: both; text-align: center;"><br /></div><div class="separator" style="clear: both; text-align: left;">點開以後，點選Auth，再點選Browse，找到我們剛剛儲存的.ppk檔以後，</div><div class="separator" style="clear: both; text-align: left;">就點選Open，就能進行連線了!</div><div class="separator" style="clear: both; text-align: left;">如下圖!</div><br /><div class="separator" style="clear: both; text-align: center;"><a href="http://1.bp.blogspot.com/-wwUxc0Gmsdo/T356NFY_4oI/AAAAAAAAAns/I5dURUTtbXQ/s1600/6.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" height="388" src="http://1.bp.blogspot.com/-wwUxc0Gmsdo/T356NFY_4oI/AAAAAAAAAns/I5dURUTtbXQ/s400/6.png" width="400" /></a></div><span style="background-color: white;"><br /></span><br /><span style="background-color: white;"><br /></span><br /><span style="background-color: white;"><br /></span><br /><span style="background-color: white;"><br /></span><br /><span style="background-color: white;"><br /></span><br /><span style="background-color: white;"><br /></span><br /><span style="background-color: white;"><br /></span>
-      </div>
-      <footer>
-        <p><a class="myButton" href="/2012/04/06/puttyamazon-ec2">read more &raquo;</a></p>
         <div>
           <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 <!-- ken on github -->
@@ -431,7 +431,7 @@
 
     <div id="footer">
       <div class="container">
-        <p>&copy; 2018 Ken Yang
+        <p>&copy; 2019 Ken Yang
           with help from <a href="http://jekyllbootstrap.com" target="_blank" title="The Definitive Jekyll Blogging Framework">Jekyll Bootstrap</a>
           and <a href="http://getbootstrap.com" target="_blank">Bootstrap</a>
         </p>

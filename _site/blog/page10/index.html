@@ -303,6 +303,34 @@
     </div>
     <!-- This loops through the paginated posts -->
     
+      <h1><a style="color: #F22430" href="/2015/06/17/how-to-run-simple-apache-spark">How to run a simple Apache Spark application? (Ubuntu 12.04)</a></h1>
+      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
+      <p class="author">
+      <div class="date">
+        <span>17 June 2015</span>
+      </div>
+      </p>
+      <div class="content" style="line-height: 28px;">
+        <div style="font-size: 15px; line-height: 22px;">因緣際會下，得稍微摸一下Apache Spark，<br />說實在，在粗淺地摸完Spark以後，我還是想不太出他的應用面。<br />Anyway，這篇主要分為3個section，<br /><br /><ul><li>如何安裝Spark</li><li>如何使用</li><li>如何寫個Spark application</li></ul><br /><br /><span style="color: #e06666; font-size: 18px;">1. Install JDK</span><br /><br />首先要先講安裝，<br />安裝spark之前，要先安裝java+scala，<br /><pre class="brush: bash">apt-add-repository ppa:webupd8team/java<br />apt-get update<br />apt-get install oracle-java7-installer<br /></pre><br /><span style="color: #e06666; font-size: 18px;">2. Install scala</span><br /><br />接著要安裝scala，這裡安裝的版本是2.11.6。<br /><pre class="brush: bash">wget http://www.scala-lang.org/files/archive/scala-2.11.6.tgz<br />mkdir /usr/local/src/scala<br />tar xvf scala-2.11.6.tgz -C /usr/local/src/scala/<br /></pre><br />安裝完以後，要把scala的路徑加入到PATH環境變數中<br /><pre class="brush: bash">echo "export SCALA_HOME=/usr/local/src/scala/scala-2.11.6" >> .bashrc<br />echo "export PATH=\$SCALA_HOME/bin:\$PATH" >> .bashrc<br />. .bashrc<br /></pre><br /><span style="color: #e06666; font-size: 18px;">3. Install Spark</span><br /><br />最後就安裝spark，安裝會需要一段時間。<br /><pre class="brush: bash">wget http://www.apache.org/dist/spark/spark-1.4.0/spark-1.4.0.tgz<br />tar xvf spark-1.4.0.tgz<br />cd spark-1.4.0<br />sbt/sbt assembly<br /></pre><br /><span style="color: #e06666; font-size: 18px;">4. Spark Interactive Shell</span><br /><br />安裝完以後，可以進入spark的interactive shell模式做個簡單的測試，<br />進入interactive mode，<br /><pre class="brush: bash">./bin/spark-shell<br /></pre><br />大概會花個10秒做init，進入以後，<br />會看到scala的prompt字樣，這裏就可以對spark進行操作了。<br />下面有二個例子，都是對README.md去做操作，<br />分別為找出含"apache"的句子，<br />以及找出有幾個"apache"的字。<br /><pre class="brush: bash">scala> val textFile = sc.textFile("README.md")<br />scala> textFile.count()<br />scala> val results = textFile.filter(line => line.contains("apache")) // search apache<br />scala> results.count()<br />scala> results.collect()  // find out those lines contain apache<br /></pre><br /><span style="color: #e06666; font-size: 18px;">5. Start a Spark cluster</span><br /><br />好了，剛剛都是自爽模式，<br />接著我們要啟動一個spark cluster，<br />這個cluster可以讓很多個worker(slave)加入，<br />讓他們去執行工作。<br /><br />啟動cluster的指令如下：<br /><pre class="brush: bash">./sbin/start-master.sh<br /></pre><br />啟動完以後，你可以用netstat -tnlp去看一下，<br />你會發現有3個java bind住的connection，<br />預設分別為7077、8080、6066<br />7077就是這個cluster的port，將來worker要加入就得指定這個port，<br />8080是這個spark的web management UI。<br />所以你就可以打開browser，然後去看看web UI．<br />這時候你的worker數量應該是0。<br />如果想要加入一個worker，得透過下面的指令，<br /><pre class="brush: bash">./sbin/start-slave.sh spark://ubuntu:7077 # change ubuntu to your hostname<br /></pre><br />此時再去web UI看，應該就看到有一個worker存在。<br />上面是透過二個指令去分別啟動master and slave，<br />其實你也可以透過下面一個指令就去啟動master, slave，<br /><pre class="brush: bash">./sbin/start-all.sh<br /></pre><br /><span style="color: #e06666; font-size: 18px;">6. Connecting an Application to the Cluster</span><br /><br />有了一個spark cluster以後，<br />我們就可以把application掛上去，<br />我們可以透過前面使用的spark-shell，把這個shell run在cluster上。<br />只要加入--master這參數即可。<br /><pre class="brush: bash">./bin/spark-shell --master spark://ubuntu:7077 # change ubuntu to your hostname<br /></pre><br />進去以後，你一樣可以執行上面的example玩玩看。<br />同時你也可以去web UI上看看，會在"Running Applications"裡面看到這個shell。<br /><br /><span style="color: #e06666; font-size: 18px;">7. Writing an Application</span><br /><br />上一步也算是自爽模式，<br />我想應該不可能透過shell mode去做你想做的事情，<br />應該還是要寫個application，<br />所以這一步驟就是要寫一個很簡單的classs，<br />然後build它，再把它掛到cluster上執行。<br /><br />開始之前，先來設定一下spark的環境變數，<br /><pre class="brush: bash">echo "export SK_HOME=/root/spark-1.4.0" >> .bashrc<br />. .bashrc<br /></pre><br />然後改這隻script，（$SK_HOME/build/sbt-launch-lib.bash）<br />因為我在build的時候，有發生路徑的問題。<br /><pre class="brush: bash">vim $SK_HOME/build/sbt-launch-lib.bash<br /></pre><br />打開這檔案以後，找到這幾行，<br /><pre class="brush: python">SBT_VERSION=`awk -F "=" '/sbt\.version/ {print $2}' ./project/build.properties`<br />...<br />JAR=build/sbt-launch-${SBT_VERSION}.jar<br /></pre>換成下面這幾行，其實也只是變成絕對路徑。<br /><pre class="brush: python">SBT_VERSION=`awk -F "=" '/sbt\.version/ {print $2}' $SK_HOME/project/build.properties`<br />...<br />JAR=$SK_HOME/build/sbt-launch-${SBT_VERSION}.jar<br /></pre><br />完成以後，先來create幾個資料夾，<br /><pre class="brush: bash">mkdir -p ./spark-app/src/main/scala/<br /></pre><br />接著就可以寫一個簡單的class，<br />這class上面差不多，也是用來算count，<br />記得該class一定要放置在src/main/scala底下。<br /><pre class="brush: bash">cd ./spark-app<br />vim src/main/scala/SimpleApp.scala<br /></pre><br />class內容如下，<br /><pre class="brush: bash">/* SimpleApp.scala */<br />import org.apache.spark.SparkContext<br />import org.apache.spark.SparkContext._<br />import org.apache.spark.SparkConf<br /><br />object SimpleApp {<br />  def main(args: Array[String]) {<br />    val logFile = "/root/spark-1.4.0/README.md"<br />    val conf = new SparkConf().setAppName("Simple Application")<br />    val sc = new SparkContext(conf)<br />    val logData = sc.textFile(logFile, 2).cache()<br />    val numApache = logData.filter(line => line.contains("apache")).count()<br />    println("Line with apache: %s ".format(numApache))<br />  }<br />}<br /></pre><br />而在開始build之前，要寫一下這個app的dependency，<br />放置在sparka-app底下就好。<br /><pre class="brush: bash">vim simple.sbt<br /></pre><br />內容如下，<br /><pre class="brush: bash">name := "Simple Project"<br /><br />version := "1.0"<br /><br />scalaVersion := "2.11.6"<br /><br />libraryDependencies += "org.apache.spark" %% "spark-core" % "1.4.0"<br /></pre><br />接著就可以開始build，<br /><pre class="brush: bash">$SPARK_HOME/build/sbt package<br /></pre><br /><br />build完以後，<br />會發現spark-app底下多了二個folder（project, target)，<br />而我們要的jar檔會放在target底下，<br />我們就可以把這jar交付給spark執行。<br /><pre class="brush: bash">$SPARK_HOME/bin/spark-submit --class "SimpleApp" --master spark://ubuntu:7077 target/scala-2.11/simple-project_2.11-1.0.jar<br /></pre><br />應該會看到下面的字樣，<br /><pre class="brush: bash">Line with apache: 9 15/06/17 02:55:34 INFO TaskSetManager: Finished task 1.0 in stage 2.0 (TID 5) in 32 ms on 172.16.131.140 (2/2)<br /></pre><br />最後在web UI裡面的"Completed Applications"會看到我們剛剛執行的那個item。<br />基本上這樣就完成了簡單的spark application。<br /><br /><br /><br /><br /></div>
+      </div>
+      <footer>
+        <p><a class="myButton" href="/2015/06/17/how-to-run-simple-apache-spark">read more &raquo;</a></p>
+        <div>
+          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- ken on github -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3783438370424072"
+     data-ad-slot="1516206098"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+        </div>
+      </footer>
+      <hr>
+    
       <h1><a style="color: #F22430" href="/2015/04/13/how-to-create-customized-ubuntu-iso">How to create a customized Ubuntu ISO?</a></h1>
       <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
       <p class="author">
@@ -343,34 +371,6 @@
       </div>
       <footer>
         <p><a class="myButton" href="/2014/11/24/mogilefs-distributed-filesystem">read more &raquo;</a></p>
-        <div>
-          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<!-- ken on github -->
-<ins class="adsbygoogle"
-     style="display:block"
-     data-ad-client="ca-pub-3783438370424072"
-     data-ad-slot="1516206098"
-     data-ad-format="auto"></ins>
-<script>
-(adsbygoogle = window.adsbygoogle || []).push({});
-</script>
-
-        </div>
-      </footer>
-      <hr>
-    
-      <h1><a style="color: #F22430" href="/2014/10/23/create-local-package-repository-on">Create local package repository on Ubuntu</a></h1>
-      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
-      <p class="author">
-      <div class="date">
-        <span>23 October 2014</span>
-      </div>
-      </p>
-      <div class="content" style="line-height: 28px;">
-        <div style="font-size: 15px; line-height: 22px;"><br />先前有講過<a href="http://blog.kenyang.net/2014/09/how-to-build-your-own-debian-package.html">如何建立自己的debian package</a>，<br />這裡要講怎麼建立一個local的repository，<br />讓這repository可以在internet上供人使用．<br />其實這概念跟apt-mirror有點像，只不過deb source是來自於自己罷了．<br /><br /><span style="color: #e06666; font-size: 18px;">1. Create your debian package</span><br /><br />這一步驟就去參考<a href="http://blog.kenyang.net/2014/09/how-to-build-your-own-debian-package.html">這篇文章吧</a>，<br />當然你也可以用ubuntu既有的debian package．（只不過我覺得那不如就用apt-mirror就好）<br /><br /><br /><span style="color: #e06666; font-size: 18px;">2. Install apache</span><br /><br />既然你要成為一個repository server，<br />那麼就要安裝web server，這裡就選apache吧．<br /><pre class="brush: bash">apt-get install apache2<br /></pre><br /><br /><span style="color: #e06666; font-size: 18px;">3. Setup</span><br /><br />先create一個folder在apache default目錄下（ex: /var/www)，<br /><pre class="brush: bash">mkdir -p /var/www/debian<br /></pre><br />把你要給人使用的debian package搬到上面建立的目錄下，<br /><pre class="brush: bash">mv *.deb /var/www/debian<br /></pre><br />接著就替你的debian package建立index，<br /><pre class="brush: bash">cd /var/www<br />dpkg-scanpackages debian /dev/null | gzip -9c > debian/Packages.gz<br /></pre><br />這樣就完成了！<br /><br /><span style="color: #e06666; font-size: 18px;">4. Test</span><br /><br />接著就把你的repo加到list裡面去吧，如果要給別人用，或者在別檯機器上用，<br />記得把127.0.0.1換成public ip．<br /><pre class="brush: bash">echo "deb http://127.0.0.1 debian/" >> /etc/apt/sources.list<br />apt-update<br />apt-install your-deb-package<br /></pre><br /><br /></div><br /><br /><br />
-      </div>
-      <footer>
-        <p><a class="myButton" href="/2014/10/23/create-local-package-repository-on">read more &raquo;</a></p>
         <div>
           <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 <!-- ken on github -->
@@ -431,7 +431,7 @@
 
     <div id="footer">
       <div class="container">
-        <p>&copy; 2018 Ken Yang
+        <p>&copy; 2019 Ken Yang
           with help from <a href="http://jekyllbootstrap.com" target="_blank" title="The Definitive Jekyll Blogging Framework">Jekyll Bootstrap</a>
           and <a href="http://getbootstrap.com" target="_blank">Bootstrap</a>
         </p>
