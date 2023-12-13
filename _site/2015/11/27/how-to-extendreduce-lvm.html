@@ -229,6 +229,8 @@
   
     
   
+    
+  
 
 
 
@@ -366,8 +368,8 @@
 <p>Extend會講二種方法，分別為，</p>
 
 <ul>
-  <li>1-1. Extend from <code class="highlighter-rouge">VG</code></li>
-  <li>1-2. Extend from <code class="highlighter-rouge">new disk</code></li>
+  <li>1-1. Extend from <code class="language-plaintext highlighter-rouge">VG</code></li>
+  <li>1-2. Extend from <code class="language-plaintext highlighter-rouge">new disk</code></li>
 </ul>
 
 <p><br /></p>
@@ -376,12 +378,12 @@
 <p>第一種是延續<a href="http://blog.kenyang.net/2015/11/27/do-not-allocate-all-the-lvm-space-with-preseed/">上一篇</a>，<br />
 從既有的VG中，把Free PE加入到LV中，<br />
 以<a href="http://blog.kenyang.net/2015/11/27/do-not-allocate-all-the-lvm-space-with-preseed/">上一篇</a>來看，你的VG應該還會剩下60GB。<br />
-可以用下面的指令<code class="highlighter-rouge">vgs</code>去看VG中剩下多少free PE，<br />
-最後一欄的<code class="highlighter-rouge">VFree</code>就是指剩下的free PE，<br />
+可以用下面的指令<code class="language-plaintext highlighter-rouge">vgs</code>去看VG中剩下多少free PE，<br />
+最後一欄的<code class="language-plaintext highlighter-rouge">VFree</code>就是指剩下的free PE，<br />
 以我的機器為範例，裡面還有829.99G，<br />
 以及我有5個LV。</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>$ vgs
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ vgs
   VG        #PV #LV #SN Attr   VSize    VFree
   ubuntu-vg   1   5   0 wz--n- 1019.76g 829.99g
   
@@ -392,12 +394,11 @@ $ lvs
   root   ubuntu-vg -wi-ao  66.75g
   swap_1 ubuntu-vg -wi-ao 976.00m
   tmp    ubuntu-vg -wi-ao  19.07g
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <!--more-->
 
-<p>假設我要讓<code class="highlighter-rouge">tmp</code>這個LV加大100G，我們可以透過以下二個指令完成，</p>
+<p>假設我要讓<code class="language-plaintext highlighter-rouge">tmp</code>這個LV加大100G，我們可以透過以下二個指令完成，</p>
 
 <ol>
   <li>lvresize</li>
@@ -407,35 +408,32 @@ $ lvs
 <p><br />
 使用方式如下，</p>
 
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>lvresize -L +100G /dev/mapper/ubuntu--vg-tmp
-</code></pre>
-</div>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>lvresize <span class="nt">-L</span> +100G /dev/mapper/ubuntu--vg-tmp
+</code></pre></div></div>
 
 <p><br />
-完成上述指令以後，可以再透過<code class="highlighter-rouge">lvs</code>來看一下tmp這個LV是否真的有加大100G。</p>
+完成上述指令以後，可以再透過<code class="language-plaintext highlighter-rouge">lvs</code>來看一下tmp這個LV是否真的有加大100G。</p>
 
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>lvs
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>lvs
   LV     VG        Attr   LSize   Origin Snap%  Move Log Copy%  Convert
-  db     ubuntu-vg -wi-ao  83.92g
-  log    ubuntu-vg -wi-ao  19.07g
-  root   ubuntu-vg -wi-ao  66.75g
-  swap_1 ubuntu-vg -wi-ao 976.00m
-  tmp    ubuntu-vg -wi-ao 119.07g
+  db     ubuntu-vg <span class="nt">-wi-ao</span>  83.92g
+  log    ubuntu-vg <span class="nt">-wi-ao</span>  19.07g
+  root   ubuntu-vg <span class="nt">-wi-ao</span>  66.75g
+  swap_1 ubuntu-vg <span class="nt">-wi-ao</span> 976.00m
+  tmp    ubuntu-vg <span class="nt">-wi-ao</span> 119.07g
   
-<span class="gp">$ </span>df -h /tmp/
+<span class="nv">$ </span><span class="nb">df</span> <span class="nt">-h</span> /tmp/
 Filesystem                  Size  Used Avail Use% Mounted on
 /dev/mapper/ubuntu--vg-tmp   19G   44M   18G   1% /tmp
-</code></pre>
-</div>
+</code></pre></div></div>
 <p><br />
-根據上面的output，你會發現<code class="highlighter-rouge">LV</code>真的有加大100G，<br />
-可是<code class="highlighter-rouge">df</code>中的filesystem size並沒有變動，<br />
-因為少用了<code class="highlighter-rouge">resize2fs</code>。<br />
-<code class="highlighter-rouge">resize2fs</code>作用就是把filesystem變大。</p>
+根據上面的output，你會發現<code class="language-plaintext highlighter-rouge">LV</code>真的有加大100G，<br />
+可是<code class="language-plaintext highlighter-rouge">df</code>中的filesystem size並沒有變動，<br />
+因為少用了<code class="language-plaintext highlighter-rouge">resize2fs</code>。<br />
+<code class="language-plaintext highlighter-rouge">resize2fs</code>作用就是把filesystem變大。</p>
 
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>resize2fs /dev/mapper/ubuntu--vg-tmp <span class="o">[</span>119G]
-</code></pre>
-</div>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>resize2fs /dev/mapper/ubuntu--vg-tmp <span class="o">[</span>119G]
+</code></pre></div></div>
 
 <p>最後一個是size的參數，其實可以不用加，<br />
 如果不加，就是用整個LV可以用的空間。</p>
@@ -448,77 +446,72 @@ Filesystem                  Size  Used Avail Use% Mounted on
 準備作業如下：</p>
 
 <ol>
-  <li>新增 <code class="highlighter-rouge">PV</code></li>
-  <li>把<code class="highlighter-rouge">新PV</code> 加入至 <code class="highlighter-rouge">VG</code></li>
+  <li>新增 <code class="language-plaintext highlighter-rouge">PV</code></li>
+  <li>把<code class="language-plaintext highlighter-rouge">新PV</code> 加入至 <code class="language-plaintext highlighter-rouge">VG</code></li>
 </ol>
 
 <p>首先你要有一顆硬碟，<br />
-然後用<code class="highlighter-rouge">lsblk</code>找到該block device的名稱，<br />
+然後用<code class="language-plaintext highlighter-rouge">lsblk</code>找到該block device的名稱，<br />
 我機器上的新硬碟就是sdb。</p>
 
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>lsblk -d
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>lsblk <span class="nt">-d</span>
 NAME MAJ:MIN RM   SIZE RO TYPE MOUNTPOINT
 fd0    2:0    1     4K  0 disk
 sda    8:0    0  1020G  0 disk
 sdb    8:16   0   200G  0 disk
-</code></pre>
-</div>
+</code></pre></div></div>
 <p><br /></p>
 
-<p>在新增一個<code class="highlighter-rouge">PV</code>前，<br />
+<p>在新增一個<code class="language-plaintext highlighter-rouge">PV</code>前，<br />
 必須先format disk成LVM的格式。</p>
 
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>fdsik /dev/sdb
-</code></pre>
-</div>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>fdsik /dev/sdb
+</code></pre></div></div>
 
 <p>然後請按照下面的步驟去create，</p>
 
 <ol>
-  <li>按下<code class="highlighter-rouge">n</code>以建立新的partition</li>
-  <li>按下<code class="highlighter-rouge">p</code>選擇primary partition</li>
-  <li>按下<code class="highlighter-rouge">1</code>選擇partition number</li>
-  <li>按下<code class="highlighter-rouge">enter</code>選擇Default first sector</li>
-  <li>按下<code class="highlighter-rouge">enter</code>選擇Default last sector</li>
-  <li>按下<code class="highlighter-rouge">t</code>改變partition type</li>
-  <li>輸入<code class="highlighter-rouge">8e</code>, 8e為LVM的代碼</li>
-  <li>按下<code class="highlighter-rouge">w</code>儲存寫入</li>
+  <li>按下<code class="language-plaintext highlighter-rouge">n</code>以建立新的partition</li>
+  <li>按下<code class="language-plaintext highlighter-rouge">p</code>選擇primary partition</li>
+  <li>按下<code class="language-plaintext highlighter-rouge">1</code>選擇partition number</li>
+  <li>按下<code class="language-plaintext highlighter-rouge">enter</code>選擇Default first sector</li>
+  <li>按下<code class="language-plaintext highlighter-rouge">enter</code>選擇Default last sector</li>
+  <li>按下<code class="language-plaintext highlighter-rouge">t</code>改變partition type</li>
+  <li>輸入<code class="language-plaintext highlighter-rouge">8e</code>, 8e為LVM的代碼</li>
+  <li>按下<code class="language-plaintext highlighter-rouge">w</code>儲存寫入</li>
 </ol>
 
-<p>完成以後你就有一個新的partition了，名稱應該為<code class="highlighter-rouge">sdb1</code>，</p>
+<p>完成以後你就有一個新的partition了，名稱應該為<code class="language-plaintext highlighter-rouge">sdb1</code>，</p>
 
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>fdisk -l /dev/sdb
-</code></pre>
-</div>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>fdisk <span class="nt">-l</span> /dev/sdb
+</code></pre></div></div>
 <p><br />
-這時候就可以用<code class="highlighter-rouge">pvcreate </code>來新增一個PV，<br />
-然後再用<code class="highlighter-rouge">pvs</code>看看是否有成功。</p>
+這時候就可以用<code class="language-plaintext highlighter-rouge">pvcreate </code>來新增一個PV，<br />
+然後再用<code class="language-plaintext highlighter-rouge">pvs</code>看看是否有成功。</p>
 
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="gp">$  </span>pvcreate /dev/sdb1
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span> pvcreate /dev/sdb1
 
-<span class="gp">$ </span>pvs
+<span class="nv">$ </span>pvs
   PV         VG        Fmt  Attr PSize    PFree
   /dev/sda5  ubuntu-vg lvm2 a-   1019.76g 629.99g
   /dev/sdb1            lvm2 a-    200.00g 200.00g
-</code></pre>
-</div>
+</code></pre></div></div>
 <p><br />
-接著就可以用<code class="highlighter-rouge">vgextend</code>這個指令，<br />
-把剛剛新增的<code class="highlighter-rouge">PV</code>加入至原有的<code class="highlighter-rouge">ubuntu-vg</code>當中，</p>
+接著就可以用<code class="language-plaintext highlighter-rouge">vgextend</code>這個指令，<br />
+把剛剛新增的<code class="language-plaintext highlighter-rouge">PV</code>加入至原有的<code class="language-plaintext highlighter-rouge">ubuntu-vg</code>當中，</p>
 
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>vgextend ubuntu-vg /dev/sdb1
-</code></pre>
-</div>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>vgextend ubuntu-vg /dev/sdb1
+</code></pre></div></div>
 <p><br />
-然後一樣用<code class="highlighter-rouge">vgs</code>去看看<code class="highlighter-rouge">Free PE</code>，應該會多了200g。<br />
-然後就可以用上面的<code class="highlighter-rouge">lvresize</code>以及<code class="highlighter-rouge">resize2fs</code>去Extend某個LV了。</p>
+然後一樣用<code class="language-plaintext highlighter-rouge">vgs</code>去看看<code class="language-plaintext highlighter-rouge">Free PE</code>，應該會多了200g。<br />
+然後就可以用上面的<code class="language-plaintext highlighter-rouge">lvresize</code>以及<code class="language-plaintext highlighter-rouge">resize2fs</code>去Extend某個LV了。</p>
 
 <p><br /><br /><br /></p>
 
 <h3 id="2-shrink">2. Shrink</h3>
 <hr />
 <p>接著要來講Shrink的部分，<br />
-其實Shrink也是透過<code class="highlighter-rouge">lvresize</code>以及<code class="highlighter-rouge">resize2fs</code>來完成。<br />
+其實Shrink也是透過<code class="language-plaintext highlighter-rouge">lvresize</code>以及<code class="language-plaintext highlighter-rouge">resize2fs</code>來完成。<br />
 但Shrink和Extend有以下幾點的差別：</p>
 
 <ol>
@@ -529,41 +522,37 @@ sdb    8:16   0   200G  0 disk
 
 <p>那因為不能online shrinking，所以我們要先umount，</p>
 
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>umount /tmp
-</code></pre>
-</div>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>umount /tmp
+</code></pre></div></div>
 <p><br />
 接著才可以shrink filesystem，<br />
-透過<code class="highlighter-rouge">resize2fs</code>去把<code class="highlighter-rouge">tmp</code>縮到19G。</p>
+透過<code class="language-plaintext highlighter-rouge">resize2fs</code>去把<code class="language-plaintext highlighter-rouge">tmp</code>縮到19G。</p>
 
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>resize2fs /dev/mapper/ubuntu--vg-tmp 19G
-</code></pre>
-</div>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>resize2fs /dev/mapper/ubuntu--vg-tmp 19G
+</code></pre></div></div>
 <p><br /></p>
 
-<p>最後才是去shrink LV，一樣是用<code class="highlighter-rouge">lvresize</code>去做，<br />
+<p>最後才是去shrink LV，一樣是用<code class="language-plaintext highlighter-rouge">lvresize</code>去做，<br />
 過程中會show warning，告訴你資料可能會遺失，是否真的要做shrink？<br />
-如果沒有什麼疑慮，就按下<code class="highlighter-rouge">y</code>吧！</p>
+如果沒有什麼疑慮，就按下<code class="language-plaintext highlighter-rouge">y</code>吧！</p>
 
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>lvresize -L -100G /dev/mapper/ubuntu--vg-tmp
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>lvresize <span class="nt">-L</span> <span class="nt">-100G</span> /dev/mapper/ubuntu--vg-tmp
   WARNING: Reducing active logical volume to 19.07 GiB
   THIS MAY DESTROY YOUR DATA <span class="o">(</span>filesystem etc.<span class="o">)</span>
 Do you really want to reduce tmp? <span class="o">[</span>y/n]: y
   Reducing logical volume tmp to 19.07 GiB
   Logical volume tmp successfully resized
-</code></pre>
-</div>
+</code></pre></div></div>
 <p><br />
-最後在mount起來，以及用<code class="highlighter-rouge">df</code>去看，<br />
-應該會發現<code class="highlighter-rouge">tmp</code>只剩下19G了！</p>
+最後在mount起來，以及用<code class="language-plaintext highlighter-rouge">df</code>去看，<br />
+應該會發現<code class="language-plaintext highlighter-rouge">tmp</code>只剩下19G了！</p>
 
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>mount /tmp
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>mount /tmp
 
-<span class="gp">$ </span>df -h /tmp
+<span class="nv">$ </span><span class="nb">df</span> <span class="nt">-h</span> /tmp
 Filesystem                  Size  Used Avail Use% Mounted on
 /dev/mapper/ubuntu--vg-tmp   19G   44M   18G   1% /tmp
-</code></pre>
-</div>
+</code></pre></div></div>
 
 
     </div>
@@ -660,7 +649,7 @@ Filesystem                  Size  Used Avail Use% Mounted on
 
     <div id="footer">
       <div class="container">
-        <p>&copy; 2019 Ken Yang
+        <p>&copy; 2023 Ken Yang
           with help from <a href="http://jekyllbootstrap.com" target="_blank" title="The Definitive Jekyll Blogging Framework">Jekyll Bootstrap</a>
           and <a href="http://getbootstrap.com" target="_blank">Bootstrap</a>
         </p>

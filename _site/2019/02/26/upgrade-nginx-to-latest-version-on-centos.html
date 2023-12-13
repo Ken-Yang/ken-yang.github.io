@@ -229,6 +229,8 @@
   
     
   
+    
+  
 
 
 
@@ -358,21 +360,19 @@
 <h3 id="1-add-nginx-yum-repository">1. Add NGINX yum repository</h3>
 <hr />
 
-<p style="font-size: 16px;line-height: 1.6;">首先，先建立一個名稱為<code class="highlighter-rouge">/etc/yum.repos.d/nginx.repo</code>的檔案，並且把下列的設置貼上:</p>
+<p style="font-size: 16px;line-height: 1.6;">首先，先建立一個名稱為<code class="language-plaintext highlighter-rouge">/etc/yum.repos.d/nginx.repo</code>的檔案，並且把下列的設置貼上:</p>
 
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="o">[</span>nginx]
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">[</span>nginx]
 <span class="nv">name</span><span class="o">=</span>nginx repo
 <span class="nv">baseurl</span><span class="o">=</span>http://nginx.org/packages/centos/7/<span class="nv">$basearch</span>/
 <span class="nv">gpgcheck</span><span class="o">=</span>0
 <span class="nv">enabled</span><span class="o">=</span>1
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>接著就執行</p>
 
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>yum update
-</code></pre>
-</div>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>yum update
+</code></pre></div></div>
 
 <p><br /></p>
 
@@ -382,20 +382,18 @@
 
 <p>完成上述的設置，就可以安裝最新版本NGINX，安裝前可以檢查下版本。</p>
 
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>yum list nginx
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>yum list nginx
 Loaded plugins: fastestmirror, post-transaction-actions, rpm-warm-cache, versionlock
 Loading mirror speeds from cached hostfile
  <span class="k">*</span> fasttrack: mirrors.aliyun.com
 Available Packages
 nginx.x86_64                                       1:1.14.2-1.el7_4.ngx                                       nginx
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>如果確認版本為當時最新的，那麼就可以直接安裝了。</p>
 
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>yum install nginx
-</code></pre>
-</div>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>yum <span class="nb">install </span>nginx
+</code></pre></div></div>
 
 <p><br /></p>
 
@@ -444,7 +442,7 @@ nginx.x86_64                                       1:1.14.2-1.el7_4.ngx         
     
       <li><a href="/archive.html">Archive</a></li>
     
-      <li class="next disabled"><a>Next &rarr;</a>
+      <li class="next"><a href="/2023/12/13/springbooteureka-server" title="使用SpringBoot創建Eureka Server">Next &raquo;</a></li>
     
     </ul>
     <hr>
@@ -481,7 +479,7 @@ nginx.x86_64                                       1:1.14.2-1.el7_4.ngx         
 
     <div id="footer">
       <div class="container">
-        <p>&copy; 2019 Ken Yang
+        <p>&copy; 2023 Ken Yang
           with help from <a href="http://jekyllbootstrap.com" target="_blank" title="The Definitive Jekyll Blogging Framework">Jekyll Bootstrap</a>
           and <a href="http://getbootstrap.com" target="_blank">Bootstrap</a>
         </p>

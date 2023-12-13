@@ -229,6 +229,8 @@
   
     
   
+    
+  
 
 
 
@@ -363,7 +365,7 @@
 <h3 id="1-add-botfather-as-friend">1. Add BotFather as friend</h3>
 <hr />
 
-<p>首先我們要使用telegram加<code class="highlighter-rouge">BotFather</code>這個user，透過<code class="highlighter-rouge">BotFather</code>去create bot。</p>
+<p>首先我們要使用telegram加<code class="language-plaintext highlighter-rouge">BotFather</code>這個user，透過<code class="language-plaintext highlighter-rouge">BotFather</code>去create bot。</p>
 
 <p><img src="http://localhost:4000/assets/2016-09-06-add-bot-father.png" alt="Ticket" /></p>
 
@@ -373,7 +375,7 @@
 <h3 id="2-create-a-bot">2. Create a bot</h3>
 <hr />
 
-<p>成功加入<code class="highlighter-rouge">BotFather</code>以後，就可以透過指令<code class="highlighter-rouge">/newbot</code>去create bot，<br />
+<p>成功加入<code class="language-plaintext highlighter-rouge">BotFather</code>以後，就可以透過指令<code class="language-plaintext highlighter-rouge">/newbot</code>去create bot，<br />
 整個過程會以對話的方式進行（如下圖），會先問你的bot名稱要叫什麼以及它的username（類似ID，用來被search），<br /></p>
 
 <p><img src="http://localhost:4000/assets/2016-09-06-create-bot.png" alt="Ticket" /></p>
@@ -382,10 +384,9 @@
 
 <p>建立成功以後，BotFather就會跟你說的你的bot token，這token很重要，是之後要用來request API用的。</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>Use this token to access the HTTP API:
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Use this token to access the HTTP API:
 2X2X2XXX0:XXXXXXXXXXXXXXXXXXXXXXX
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p><br /></p>
 
@@ -409,115 +410,112 @@
   <li>Generate SSL certificate</li>
 </ol>
 
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="c"># Install Node.js</span>
-<span class="gp">$ </span>wget https://nodejs.org/dist/v4.4.7/node-v4.4.7-linux-x64.tar.gz
-<span class="gp">$ </span>tar -xvzf node-v4.4.7-linux-x64.tar.gz
-<span class="gp">$ </span><span class="nb">export </span><span class="nv">PATH</span><span class="o">=</span>/home/ubuntu/node-v4.4.7-linux-x64/bin:<span class="nv">$PATH</span>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Install Node.js</span>
+<span class="nv">$ </span>wget https://nodejs.org/dist/v4.4.7/node-v4.4.7-linux-x64.tar.gz
+<span class="nv">$ </span><span class="nb">tar</span> <span class="nt">-xvzf</span> node-v4.4.7-linux-x64.tar.gz
+<span class="nv">$ </span><span class="nb">export </span><span class="nv">PATH</span><span class="o">=</span>/home/ubuntu/node-v4.4.7-linux-x64/bin:<span class="nv">$PATH</span>
 
 <span class="c"># Create bot web project</span>
-<span class="gp">$ </span><span class="nb">cd</span> ~/
-<span class="gp">$ </span>mkdir bot/
-<span class="gp">$ </span><span class="nb">cd </span>bot
-<span class="gp">$ </span>npm init
-<span class="gp">$ </span>npm install --save express
-<span class="gp">$ </span>npm install --save body-parser
-<span class="gp">$ </span>npm install --save request
-<span class="gp">$ </span>npm install --save morgan
-<span class="gp">$ </span>npm install -g pm2
-<span class="gp">$ </span>mkdir ssl
-<span class="gp">$ </span><span class="nb">cd </span>ssl
+<span class="nv">$ </span><span class="nb">cd</span> ~/
+<span class="nv">$ </span><span class="nb">mkdir </span>bot/
+<span class="nv">$ </span><span class="nb">cd </span>bot
+<span class="nv">$ </span>npm init
+<span class="nv">$ </span>npm <span class="nb">install</span> <span class="nt">--save</span> express
+<span class="nv">$ </span>npm <span class="nb">install</span> <span class="nt">--save</span> body-parser
+<span class="nv">$ </span>npm <span class="nb">install</span> <span class="nt">--save</span> request
+<span class="nv">$ </span>npm <span class="nb">install</span> <span class="nt">--save</span> morgan
+<span class="nv">$ </span>npm <span class="nb">install</span> <span class="nt">-g</span> pm2
+<span class="nv">$ </span><span class="nb">mkdir </span>ssl
+<span class="nv">$ </span><span class="nb">cd </span>ssl
 
 <span class="c"># Generate SSL certificate</span>
-<span class="gp">$ </span>openssl req -newkey rsa:2048 -sha256 -nodes -keyout server.key -x509 -days 3650 -out server.pem -subj <span class="s2">"/C=TW/ST=Taipei/L=Taipei/O=None/CN=bot.kenyang.net"</span>
-<span class="gp">$ </span><span class="nb">cd</span> ../
-<span class="gp">$ </span>mkdir -p /var/log/bot/
-</code></pre>
-</div>
+<span class="nv">$ </span>openssl req <span class="nt">-newkey</span> rsa:2048 <span class="nt">-sha256</span> <span class="nt">-nodes</span> <span class="nt">-keyout</span> server.key <span class="nt">-x509</span> <span class="nt">-days</span> 3650 <span class="nt">-out</span> server.pem <span class="nt">-subj</span> <span class="s2">"/C=TW/ST=Taipei/L=Taipei/O=None/CN=bot.kenyang.net"</span>
+<span class="nv">$ </span><span class="nb">cd</span> ../
+<span class="nv">$ </span><span class="nb">mkdir</span> <span class="nt">-p</span> /var/log/bot/
+</code></pre></div></div>
 
 <p><br />
-接著來寫我們的主程式<code class="highlighter-rouge">index.js</code>，記得把下面的<code class="highlighter-rouge">YOUR_TOKEN</code>換成你自己的token，</p>
+接著來寫我們的主程式<code class="language-plaintext highlighter-rouge">index.js</code>，記得把下面的<code class="language-plaintext highlighter-rouge">YOUR_TOKEN</code>換成你自己的token，</p>
 
-<div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="kr">const</span> <span class="nx">https</span>     <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s2">"https"</span><span class="p">);</span>
-<span class="kr">const</span> <span class="nx">express</span>   <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s2">"express"</span><span class="p">);</span>
-<span class="kr">const</span> <span class="nx">bodyParser</span>    <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'body-parser'</span><span class="p">);</span>
-<span class="kr">const</span> <span class="nx">logger</span>        <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'morgan'</span><span class="p">);</span>
-<span class="kr">const</span> <span class="nx">fs</span>            <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'fs'</span><span class="p">);</span>
-<span class="kr">const</span> <span class="nx">request</span>     <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'request'</span><span class="p">);</span>
-<span class="kr">const</span> <span class="nx">logStream</span>     <span class="o">=</span> <span class="nx">fs</span><span class="p">.</span><span class="nx">createWriteStream</span><span class="p">(</span><span class="s1">'/var/log/bot/access.log'</span><span class="p">,</span> <span class="p">{</span><span class="na">flags</span><span class="p">:</span> <span class="s1">'a'</span><span class="p">});</span>
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">const</span> <span class="nx">https</span>     <span class="o">=</span> <span class="nf">require</span><span class="p">(</span><span class="dl">"</span><span class="s2">https</span><span class="dl">"</span><span class="p">);</span>
+<span class="kd">const</span> <span class="nx">express</span>   <span class="o">=</span> <span class="nf">require</span><span class="p">(</span><span class="dl">"</span><span class="s2">express</span><span class="dl">"</span><span class="p">);</span>
+<span class="kd">const</span> <span class="nx">bodyParser</span>    <span class="o">=</span> <span class="nf">require</span><span class="p">(</span><span class="dl">'</span><span class="s1">body-parser</span><span class="dl">'</span><span class="p">);</span>
+<span class="kd">const</span> <span class="nx">logger</span>        <span class="o">=</span> <span class="nf">require</span><span class="p">(</span><span class="dl">'</span><span class="s1">morgan</span><span class="dl">'</span><span class="p">);</span>
+<span class="kd">const</span> <span class="nx">fs</span>            <span class="o">=</span> <span class="nf">require</span><span class="p">(</span><span class="dl">'</span><span class="s1">fs</span><span class="dl">'</span><span class="p">);</span>
+<span class="kd">const</span> <span class="nx">request</span>     <span class="o">=</span> <span class="nf">require</span><span class="p">(</span><span class="dl">'</span><span class="s1">request</span><span class="dl">'</span><span class="p">);</span>
+<span class="kd">const</span> <span class="nx">logStream</span>     <span class="o">=</span> <span class="nx">fs</span><span class="p">.</span><span class="nf">createWriteStream</span><span class="p">(</span><span class="dl">'</span><span class="s1">/var/log/bot/access.log</span><span class="dl">'</span><span class="p">,</span> <span class="p">{</span><span class="na">flags</span><span class="p">:</span> <span class="dl">'</span><span class="s1">a</span><span class="dl">'</span><span class="p">});</span>
 
-<span class="kr">const</span> <span class="nx">SERVER_CONFIG</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="na">key</span><span class="p">:</span>  <span class="nx">fs</span><span class="p">.</span><span class="nx">readFileSync</span><span class="p">(</span><span class="s1">'./ssl/server.key'</span><span class="p">),</span>
-    <span class="na">cert</span><span class="p">:</span> <span class="nx">fs</span><span class="p">.</span><span class="nx">readFileSync</span><span class="p">(</span><span class="s1">'./ssl/server.pem'</span><span class="p">)</span>
+<span class="kd">const</span> <span class="nx">SERVER_CONFIG</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="na">key</span><span class="p">:</span>  <span class="nx">fs</span><span class="p">.</span><span class="nf">readFileSync</span><span class="p">(</span><span class="dl">'</span><span class="s1">./ssl/server.key</span><span class="dl">'</span><span class="p">),</span>
+    <span class="na">cert</span><span class="p">:</span> <span class="nx">fs</span><span class="p">.</span><span class="nf">readFileSync</span><span class="p">(</span><span class="dl">'</span><span class="s1">./ssl/server.pem</span><span class="dl">'</span><span class="p">)</span>
 <span class="p">};</span>
 
-<span class="kd">var</span> <span class="nx">app</span> <span class="o">=</span> <span class="nx">express</span><span class="p">();</span>
+<span class="kd">var</span> <span class="nx">app</span> <span class="o">=</span> <span class="nf">express</span><span class="p">();</span>
 
-<span class="nx">app</span><span class="p">.</span><span class="nx">use</span><span class="p">(</span><span class="nx">logger</span><span class="p">(</span><span class="s1">'combined'</span><span class="p">,</span> <span class="p">{</span><span class="na">stream</span><span class="p">:</span> <span class="nx">logStream</span><span class="p">}));</span>
-<span class="nx">app</span><span class="p">.</span><span class="nx">use</span><span class="p">(</span><span class="nx">logger</span><span class="p">(</span><span class="s1">'dev'</span><span class="p">));</span>
-<span class="nx">app</span><span class="p">.</span><span class="nx">use</span><span class="p">(</span><span class="nx">bodyParser</span><span class="p">.</span><span class="nx">json</span><span class="p">());</span>
+<span class="nx">app</span><span class="p">.</span><span class="nf">use</span><span class="p">(</span><span class="nf">logger</span><span class="p">(</span><span class="dl">'</span><span class="s1">combined</span><span class="dl">'</span><span class="p">,</span> <span class="p">{</span><span class="na">stream</span><span class="p">:</span> <span class="nx">logStream</span><span class="p">}));</span>
+<span class="nx">app</span><span class="p">.</span><span class="nf">use</span><span class="p">(</span><span class="nf">logger</span><span class="p">(</span><span class="dl">'</span><span class="s1">dev</span><span class="dl">'</span><span class="p">));</span>
+<span class="nx">app</span><span class="p">.</span><span class="nf">use</span><span class="p">(</span><span class="nx">bodyParser</span><span class="p">.</span><span class="nf">json</span><span class="p">());</span>
 
-<span class="nx">app</span><span class="p">.</span><span class="nx">post</span><span class="p">(</span><span class="s1">'/receive'</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">req</span><span class="p">,</span><span class="nx">resp</span><span class="p">)</span> <span class="p">{</span>
-    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">req</span><span class="p">.</span><span class="nx">body</span><span class="p">);</span>
+<span class="nx">app</span><span class="p">.</span><span class="nf">post</span><span class="p">(</span><span class="dl">'</span><span class="s1">/receive</span><span class="dl">'</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">req</span><span class="p">,</span><span class="nx">resp</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="nx">req</span><span class="p">.</span><span class="nx">body</span><span class="p">);</span>
     <span class="kd">var</span> <span class="nx">body</span> <span class="o">=</span> <span class="nx">req</span><span class="p">.</span><span class="nx">body</span><span class="p">;</span>
-    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">body</span><span class="p">)</span> <span class="p">{</span>
-        <span class="nx">resp</span><span class="p">.</span><span class="nx">status</span><span class="p">(</span><span class="mi">200</span><span class="p">).</span><span class="nx">json</span><span class="p">({</span><span class="s2">"STATUS"</span><span class="p">:</span><span class="s2">"No body"</span><span class="p">});</span>
+    <span class="k">if </span><span class="p">(</span><span class="o">!</span><span class="nx">body</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">resp</span><span class="p">.</span><span class="nf">status</span><span class="p">(</span><span class="mi">200</span><span class="p">).</span><span class="nf">json</span><span class="p">({</span><span class="dl">"</span><span class="s2">STATUS</span><span class="dl">"</span><span class="p">:</span><span class="dl">"</span><span class="s2">No body</span><span class="dl">"</span><span class="p">});</span>
         <span class="k">return</span><span class="p">;</span>
     <span class="p">}</span>
 
-    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">body</span><span class="p">.</span><span class="nx">message</span><span class="p">)</span> <span class="p">{</span>
-        <span class="nx">resp</span><span class="p">.</span><span class="nx">status</span><span class="p">(</span><span class="mi">200</span><span class="p">).</span><span class="nx">json</span><span class="p">({</span><span class="s2">"STATUS"</span><span class="p">:</span><span class="s2">"No message"</span><span class="p">});</span>
+    <span class="k">if </span><span class="p">(</span><span class="o">!</span><span class="nx">body</span><span class="p">.</span><span class="nx">message</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">resp</span><span class="p">.</span><span class="nf">status</span><span class="p">(</span><span class="mi">200</span><span class="p">).</span><span class="nf">json</span><span class="p">({</span><span class="dl">"</span><span class="s2">STATUS</span><span class="dl">"</span><span class="p">:</span><span class="dl">"</span><span class="s2">No message</span><span class="dl">"</span><span class="p">});</span>
         <span class="k">return</span><span class="p">;</span>
     <span class="p">}</span>
 
     <span class="kd">var</span> <span class="nx">chatId</span> <span class="o">=</span> <span class="nx">body</span><span class="p">.</span><span class="nx">message</span><span class="p">.</span><span class="nx">chat</span><span class="p">.</span><span class="nx">id</span><span class="p">;</span>
     <span class="kd">var</span> <span class="nx">cmd</span>    <span class="o">=</span> <span class="nx">body</span><span class="p">.</span><span class="nx">message</span><span class="p">.</span><span class="nx">text</span><span class="p">;</span>
-    <span class="nx">cmd</span> <span class="o">=</span> <span class="nx">cmd</span><span class="p">.</span><span class="nx">toLowerCase</span><span class="p">();</span>
+    <span class="nx">cmd</span> <span class="o">=</span> <span class="nx">cmd</span><span class="p">.</span><span class="nf">toLowerCase</span><span class="p">();</span>
     
     <span class="c1">// 記得把YOUR_TOKEN換成你自己的</span>
     <span class="kd">var</span> <span class="nx">options</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="na">url</span><span class="p">:</span> <span class="s1">'https://api.telegram.org/botYOUR_TOKEN/sendMessage'</span><span class="p">,</span>
+        <span class="na">url</span><span class="p">:</span> <span class="dl">'</span><span class="s1">https://api.telegram.org/botYOUR_TOKEN/sendMessage</span><span class="dl">'</span><span class="p">,</span>
         <span class="na">form</span> <span class="p">:</span> <span class="p">{</span>
             <span class="na">chat_id</span><span class="p">:</span> <span class="nx">chatId</span>
         <span class="p">}</span>
     <span class="p">};</span>
 
-    <span class="k">if</span> <span class="p">(</span><span class="nx">cmd</span> <span class="o">==</span> <span class="s1">'/wifi'</span><span class="p">)</span> <span class="p">{</span>
-        <span class="nx">options</span><span class="p">.</span><span class="nx">form</span><span class="p">.</span><span class="nx">text</span> <span class="o">=</span>  <span class="s1">'Your Wi-Fi password is : !@#!$%^&amp;*&amp;$#'</span><span class="p">;</span>
-    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">cmd</span> <span class="o">==</span> <span class="s1">'/address'</span> <span class="o">||</span> <span class="nx">cmd</span> <span class="o">==</span> <span class="s1">'/addr'</span> <span class="o">||</span> <span class="nx">cmd</span> <span class="o">==</span> <span class="s1">'/office'</span><span class="p">)</span> <span class="p">{</span>
-        <span class="nx">options</span><span class="p">.</span><span class="nx">form</span><span class="p">.</span><span class="nx">text</span> <span class="o">=</span>  <span class="s1">'台北市信義區松X路XXX號XX樓'</span><span class="p">;</span>
-    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">cmd</span> <span class="o">==</span> <span class="s1">'/統編'</span><span class="p">)</span> <span class="p">{</span>
-        <span class="nx">options</span><span class="p">.</span><span class="nx">form</span><span class="p">.</span><span class="nx">text</span> <span class="o">=</span>  <span class="s1">'xxxxxxxxx'</span><span class="p">;</span>
-    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">cmd</span> <span class="o">==</span> <span class="s1">'/ken'</span><span class="p">)</span> <span class="p">{</span>
-        <span class="nx">options</span><span class="p">.</span><span class="nx">form</span><span class="p">.</span><span class="nx">text</span> <span class="o">=</span>  <span class="s1">'Ken is an engineer.'</span><span class="p">;</span>
+    <span class="k">if </span><span class="p">(</span><span class="nx">cmd</span> <span class="o">==</span> <span class="dl">'</span><span class="s1">/wifi</span><span class="dl">'</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">options</span><span class="p">.</span><span class="nx">form</span><span class="p">.</span><span class="nx">text</span> <span class="o">=</span>  <span class="dl">'</span><span class="s1">Your Wi-Fi password is : !@#!$%^&amp;*&amp;$#</span><span class="dl">'</span><span class="p">;</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="k">if </span><span class="p">(</span><span class="nx">cmd</span> <span class="o">==</span> <span class="dl">'</span><span class="s1">/address</span><span class="dl">'</span> <span class="o">||</span> <span class="nx">cmd</span> <span class="o">==</span> <span class="dl">'</span><span class="s1">/addr</span><span class="dl">'</span> <span class="o">||</span> <span class="nx">cmd</span> <span class="o">==</span> <span class="dl">'</span><span class="s1">/office</span><span class="dl">'</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">options</span><span class="p">.</span><span class="nx">form</span><span class="p">.</span><span class="nx">text</span> <span class="o">=</span>  <span class="dl">'</span><span class="s1">台北市信義區松X路XXX號XX樓</span><span class="dl">'</span><span class="p">;</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="k">if </span><span class="p">(</span><span class="nx">cmd</span> <span class="o">==</span> <span class="dl">'</span><span class="s1">/統編</span><span class="dl">'</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">options</span><span class="p">.</span><span class="nx">form</span><span class="p">.</span><span class="nx">text</span> <span class="o">=</span>  <span class="dl">'</span><span class="s1">xxxxxxxxx</span><span class="dl">'</span><span class="p">;</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="k">if </span><span class="p">(</span><span class="nx">cmd</span> <span class="o">==</span> <span class="dl">'</span><span class="s1">/ken</span><span class="dl">'</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">options</span><span class="p">.</span><span class="nx">form</span><span class="p">.</span><span class="nx">text</span> <span class="o">=</span>  <span class="dl">'</span><span class="s1">Ken is an engineer.</span><span class="dl">'</span><span class="p">;</span>
     <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-        <span class="nx">options</span><span class="p">.</span><span class="nx">form</span><span class="p">.</span><span class="nx">text</span> <span class="o">=</span>  <span class="s1">'I don\'t know what you are talking...'</span><span class="p">;</span>
+        <span class="nx">options</span><span class="p">.</span><span class="nx">form</span><span class="p">.</span><span class="nx">text</span> <span class="o">=</span>  <span class="dl">'</span><span class="s1">I don</span><span class="se">\'</span><span class="s1">t know what you are talking...</span><span class="dl">'</span><span class="p">;</span>
     <span class="p">}</span>
 
-    <span class="nx">request</span><span class="p">.</span><span class="nx">post</span><span class="p">(</span><span class="nx">options</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span><span class="nx">httpResponse</span><span class="p">,</span><span class="nx">body</span><span class="p">){</span>
-        <span class="k">if</span> <span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="p">{</span>
-            <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'err'</span> <span class="o">+</span> <span class="nx">err</span><span class="p">);</span>
-            <span class="nx">resp</span><span class="p">.</span><span class="nx">status</span><span class="p">(</span><span class="mi">200</span><span class="p">).</span><span class="nx">json</span><span class="p">({</span><span class="s2">"STATUS"</span><span class="p">:</span><span class="s2">"FAIL"</span><span class="p">});</span>
+    <span class="nx">request</span><span class="p">.</span><span class="nf">post</span><span class="p">(</span><span class="nx">options</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span><span class="nx">httpResponse</span><span class="p">,</span><span class="nx">body</span><span class="p">){</span>
+        <span class="k">if </span><span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="dl">'</span><span class="s1">err</span><span class="dl">'</span> <span class="o">+</span> <span class="nx">err</span><span class="p">);</span>
+            <span class="nx">resp</span><span class="p">.</span><span class="nf">status</span><span class="p">(</span><span class="mi">200</span><span class="p">).</span><span class="nf">json</span><span class="p">({</span><span class="dl">"</span><span class="s2">STATUS</span><span class="dl">"</span><span class="p">:</span><span class="dl">"</span><span class="s2">FAIL</span><span class="dl">"</span><span class="p">});</span>
             <span class="k">return</span><span class="p">;</span>
         <span class="p">}</span>
-        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">body</span><span class="p">);</span>
-        <span class="nx">resp</span><span class="p">.</span><span class="nx">status</span><span class="p">(</span><span class="mi">200</span><span class="p">).</span><span class="nx">json</span><span class="p">({</span><span class="s2">"STATUS"</span><span class="p">:</span><span class="s2">"OK"</span><span class="p">});</span>
+        <span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="nx">body</span><span class="p">);</span>
+        <span class="nx">resp</span><span class="p">.</span><span class="nf">status</span><span class="p">(</span><span class="mi">200</span><span class="p">).</span><span class="nf">json</span><span class="p">({</span><span class="dl">"</span><span class="s2">STATUS</span><span class="dl">"</span><span class="p">:</span><span class="dl">"</span><span class="s2">OK</span><span class="dl">"</span><span class="p">});</span>
     <span class="p">});</span>
 
 <span class="p">});</span>
 
-<span class="nx">https</span><span class="p">.</span><span class="nx">createServer</span><span class="p">(</span><span class="nx">SERVER_CONFIG</span><span class="p">,</span> <span class="nx">app</span><span class="p">)</span>
-     <span class="p">.</span><span class="nx">listen</span><span class="p">(</span><span class="mi">443</span><span class="p">,</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span> <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">"HTTPS sever started"</span><span class="p">);</span> <span class="p">}</span>
+<span class="nx">https</span><span class="p">.</span><span class="nf">createServer</span><span class="p">(</span><span class="nx">SERVER_CONFIG</span><span class="p">,</span> <span class="nx">app</span><span class="p">)</span>
+     <span class="p">.</span><span class="nf">listen</span><span class="p">(</span><span class="mi">443</span><span class="p">,</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span> <span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="dl">"</span><span class="s2">HTTPS sever started</span><span class="dl">"</span><span class="p">);</span> <span class="p">}</span>
 <span class="p">);</span>
 
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p><br />
 完成以後就用pm2把它run起來，</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>$ pm2 start index.js
-</code></pre>
-</div>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ pm2 start index.js
+</code></pre></div></div>
 
 <p><br /></p>
 
@@ -529,9 +527,8 @@
 我們透過curl去註冊，同時會把剛剛create的certificate上傳上去Telegram，<br />
 記得把下面參數換成你自己的。</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>$ curl -i -X POST -H "Content-Type: multipart/form-data" -F "certificate=@server.pem" -F "url=https://YOUR_DOMAIN/receive" https://api.telegram.org/botYOUR_TOKEN/setWebhook
-</code></pre>
-</div>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ curl -i -X POST -H "Content-Type: multipart/form-data" -F "certificate=@server.pem" -F "url=https://YOUR_DOMAIN/receive" https://api.telegram.org/botYOUR_TOKEN/setWebhook
+</code></pre></div></div>
 
 <p><br /></p>
 
@@ -606,7 +603,7 @@
 
     <div id="footer">
       <div class="container">
-        <p>&copy; 2019 Ken Yang
+        <p>&copy; 2023 Ken Yang
           with help from <a href="http://jekyllbootstrap.com" target="_blank" title="The Definitive Jekyll Blogging Framework">Jekyll Bootstrap</a>
           and <a href="http://getbootstrap.com" target="_blank">Bootstrap</a>
         </p>

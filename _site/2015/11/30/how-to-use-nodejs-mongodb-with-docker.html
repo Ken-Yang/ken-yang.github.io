@@ -229,6 +229,8 @@
   
     
   
+    
+  
 
 
 
@@ -366,23 +368,21 @@
 這個folder是待會要mapping到container裡面的volume，<br />
 然後MongoDB上的data都會存在這個volume上。</p>
 
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>mkdir ~/monogo-data
-</code></pre>
-</div>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">mkdir</span> ~/monogo-data
+</code></pre></div></div>
 
 <p><br /></p>
 <h4 id="create-a-container">Create a container</h4>
 <hr />
 <p>接著就可以把MongoDB的image抓下來以及run。</p>
 
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>docker pull mongo:latest
-<span class="gp">$ </span>docker run -v ~/mongo-data:/data <span class="se">\ </span>
-             --name ken-mongo <span class="se">\</span>
-             -d <span class="se">\</span>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>docker pull mongo:latest
+<span class="nv">$ </span>docker run <span class="nt">-v</span> ~/mongo-data:/data <span class="se">\ </span>
+             <span class="nt">--name</span> ken-mongo <span class="se">\</span>
+             <span class="nt">-d</span> <span class="se">\</span>
              mongo <span class="se">\</span>
-             mongod --smallfiles
-</code></pre>
-</div>
+             mongod <span class="nt">--smallfiles</span>
+</code></pre></div></div>
 
 <!--more-->
 
@@ -393,136 +393,131 @@
 有二種方式，</p>
 
 <ol>
-  <li>透過另外一個container，用<code class="highlighter-rouge">link</code>的方法</li>
-  <li>透過<code class="highlighter-rouge">docker exec</code></li>
+  <li>透過另外一個container，用<code class="language-plaintext highlighter-rouge">link</code>的方法</li>
+  <li>透過<code class="language-plaintext highlighter-rouge">docker exec</code></li>
 </ol>
 
 <p>我們先講第二種方法，<br />
 因為第一種方法，待會會透過NodeJS的container來示範。<br />
-我們透過<code class="highlighter-rouge">exec</code>，然後用參數<code class="highlighter-rouge">-it</code>與ken-mongo進行互動，<br />
+我們透過<code class="language-plaintext highlighter-rouge">exec</code>，然後用參數<code class="language-plaintext highlighter-rouge">-it</code>與ken-mongo進行互動，<br />
 進去以後在再試試看create db以及新增一筆資料至table student之中。</p>
 
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>docker <span class="nb">exec</span> -it ken-mongo bash
-<span class="gp">$ </span>mongo
-<span class="gp">$ </span>use school
-<span class="gp">$ </span>db.student.insert<span class="o">({</span><span class="s2">"name"</span>: <span class="s2">"ken"</span><span class="o">})</span>
-<span class="gp">$ </span>db.student.find<span class="o">()</span>
-</code></pre>
-</div>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>docker <span class="nb">exec</span> <span class="nt">-it</span> ken-mongo bash
+<span class="nv">$ </span>mongo
+<span class="nv">$ </span>use school
+<span class="nv">$ </span>db.student.insert<span class="o">({</span><span class="s2">"name"</span>: <span class="s2">"ken"</span><span class="o">})</span>
+<span class="nv">$ </span>db.student.find<span class="o">()</span>
+</code></pre></div></div>
 
 <p><br /></p>
 <h3 id="2-在docker上部署nodejsexpress">2. 在Docker上部署NodeJS+Express</h3>
 
 <p>首先先建立一個folder，用來放置source code以及json等檔案。</p>
 
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>mkdir <span class="nb">test</span>-app
-<span class="gp">$ </span><span class="nb">cd test</span>-app
-</code></pre>
-</div>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">mkdir </span>test-app
+<span class="nv">$ </span><span class="nb">cd </span>test-app
+</code></pre></div></div>
 
 <p><br /></p>
 <h4 id="packagejson">Package.json</h4>
 <hr />
-<p>接著在<code class="highlighter-rouge">test-app</code>這個folder底下，建立一個<code class="highlighter-rouge">package.json</code>，<br />
-<code class="highlighter-rouge">package.json</code>是用來定義這個app的dependcies以及一些基本資料。</p>
+<p>接著在<code class="language-plaintext highlighter-rouge">test-app</code>這個folder底下，建立一個<code class="language-plaintext highlighter-rouge">package.json</code>，<br />
+<code class="language-plaintext highlighter-rouge">package.json</code>是用來定義這個app的dependcies以及一些基本資料。</p>
 
-<div class="language-json highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w">
-  </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"node-centos"</span><span class="p">,</span><span class="w">
-  </span><span class="nt">"private"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w">
-  </span><span class="nt">"version"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0.0.1"</span><span class="p">,</span><span class="w">
-  </span><span class="nt">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Node.js on CentOS using docker"</span><span class="p">,</span><span class="w">
-  </span><span class="nt">"author"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Ken Yang &lt;ken@kenyang.net&gt;"</span><span class="p">,</span><span class="w">
-  </span><span class="nt">"dependencies"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-    </span><span class="nt">"express"</span><span class="p">:</span><span class="w"> </span><span class="s2">"3.2.4"</span><span class="p">,</span><span class="w">
-    </span><span class="nt">"mongoose"</span><span class="p">:</span><span class="w"> </span><span class="s2">"4.2.8"</span><span class="w">
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"node-centos"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"private"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"version"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0.0.1"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Node.js on CentOS using docker"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"author"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Ken Yang &lt;ken@kenyang.net&gt;"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"dependencies"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"express"</span><span class="p">:</span><span class="w"> </span><span class="s2">"3.2.4"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"mongoose"</span><span class="p">:</span><span class="w"> </span><span class="s2">"4.2.8"</span><span class="w">
   </span><span class="p">}</span><span class="w">
 </span><span class="p">}</span><span class="w">
-</span></code></pre>
-</div>
+</span></code></pre></div></div>
 
-<p>從上面的<code class="highlighter-rouge">package.json</code>中，我們在<code class="highlighter-rouge">dependencies</code>裡有二個packages，<br />
+<p>從上面的<code class="language-plaintext highlighter-rouge">package.json</code>中，我們在<code class="language-plaintext highlighter-rouge">dependencies</code>裡有二個packages，<br />
 分別是</p>
 
 <ol>
-  <li><code class="highlighter-rouge">express</code>  : Web framework</li>
-  <li><code class="highlighter-rouge">mongoose</code> : MongoDB client driver</li>
+  <li><code class="language-plaintext highlighter-rouge">express</code>  : Web framework</li>
+  <li><code class="language-plaintext highlighter-rouge">mongoose</code> : MongoDB client driver</li>
 </ol>
 
 <p><br /></p>
 <h4 id="schemajs">Schema.js</h4>
 <hr />
-<p>接著一樣在<code class="highlighter-rouge">test-app</code>底下，建立一個<code class="highlighter-rouge">Schema.js</code>， <br />
-<code class="highlighter-rouge">Schema.js</code>是用來定義你的MongoDB的schema。</p>
+<p>接著一樣在<code class="language-plaintext highlighter-rouge">test-app</code>底下，建立一個<code class="language-plaintext highlighter-rouge">Schema.js</code>， <br />
+<code class="language-plaintext highlighter-rouge">Schema.js</code>是用來定義你的MongoDB的schema。</p>
 
-<div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="kd">var</span> <span class="nx">mongoose</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span> <span class="s1">'mongoose'</span> <span class="p">);</span>
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">var</span> <span class="nx">mongoose</span> <span class="o">=</span> <span class="nf">require</span><span class="p">(</span> <span class="dl">'</span><span class="s1">mongoose</span><span class="dl">'</span> <span class="p">);</span>
 <span class="kd">var</span> <span class="nx">Schema</span>   <span class="o">=</span> <span class="nx">mongoose</span><span class="p">.</span><span class="nx">Schema</span><span class="p">;</span>
  
-<span class="kd">var</span> <span class="nx">Student</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Schema</span><span class="p">({</span>
+<span class="kd">var</span> <span class="nx">Student</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Schema</span><span class="p">({</span>
     <span class="na">name</span>    <span class="p">:</span> <span class="nb">String</span>
 <span class="p">});</span>
 
-<span class="nx">mongoose</span><span class="p">.</span><span class="nx">model</span><span class="p">(</span><span class="s1">'Student'</span><span class="p">,</span> <span class="nx">Student</span><span class="p">);</span>
+<span class="nx">mongoose</span><span class="p">.</span><span class="nf">model</span><span class="p">(</span><span class="dl">'</span><span class="s1">Student</span><span class="dl">'</span><span class="p">,</span> <span class="nx">Student</span><span class="p">);</span>
 
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p><br /></p>
 <h4 id="indexjs">Index.js</h4>
 <hr />
-<p>接著一樣在<code class="highlighter-rouge">test-app</code>底下，建立一個<code class="highlighter-rouge">index.js</code>，<br />
-<code class="highlighter-rouge">index.js</code>就是待會這個app的進入點。</p>
+<p>接著一樣在<code class="language-plaintext highlighter-rouge">test-app</code>底下，建立一個<code class="language-plaintext highlighter-rouge">index.js</code>，<br />
+<code class="language-plaintext highlighter-rouge">index.js</code>就是待會這個app的進入點。</p>
 
-<div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="kd">var</span> <span class="nx">express</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'express'</span><span class="p">);</span>
-<span class="kd">var</span> <span class="nx">mongoose</span><span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'mongoose'</span><span class="p">);</span>
-<span class="nx">require</span><span class="p">(</span> <span class="s1">'./schema'</span> <span class="p">);</span>
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">var</span> <span class="nx">express</span> <span class="o">=</span> <span class="nf">require</span><span class="p">(</span><span class="dl">'</span><span class="s1">express</span><span class="dl">'</span><span class="p">);</span>
+<span class="kd">var</span> <span class="nx">mongoose</span><span class="o">=</span> <span class="nf">require</span><span class="p">(</span><span class="dl">'</span><span class="s1">mongoose</span><span class="dl">'</span><span class="p">);</span>
+<span class="nf">require</span><span class="p">(</span> <span class="dl">'</span><span class="s1">./schema</span><span class="dl">'</span> <span class="p">);</span>
 
-<span class="kd">var</span> <span class="nx">app</span>     <span class="o">=</span> <span class="nx">express</span><span class="p">();</span>
-<span class="kd">var</span> <span class="nx">Student</span> <span class="o">=</span> <span class="nx">mongoose</span><span class="p">.</span><span class="nx">model</span><span class="p">(</span><span class="s1">'Student'</span><span class="p">);</span>
-<span class="nx">app</span><span class="p">.</span><span class="nx">use</span><span class="p">(</span><span class="nx">express</span><span class="p">.</span><span class="nx">bodyParser</span><span class="p">());</span>
+<span class="kd">var</span> <span class="nx">app</span>     <span class="o">=</span> <span class="nf">express</span><span class="p">();</span>
+<span class="kd">var</span> <span class="nx">Student</span> <span class="o">=</span> <span class="nx">mongoose</span><span class="p">.</span><span class="nf">model</span><span class="p">(</span><span class="dl">'</span><span class="s1">Student</span><span class="dl">'</span><span class="p">);</span>
+<span class="nx">app</span><span class="p">.</span><span class="nf">use</span><span class="p">(</span><span class="nx">express</span><span class="p">.</span><span class="nf">bodyParser</span><span class="p">());</span>
 
-<span class="nx">app</span><span class="p">.</span><span class="nx">configure</span><span class="p">(</span><span class="s1">'dev'</span><span class="p">,</span> <span class="kd">function</span><span class="p">(){</span>
-    <span class="nx">mongoose</span><span class="p">.</span><span class="nx">connect</span><span class="p">(</span> <span class="s1">'mongodb://db:27017'</span> <span class="p">);</span>
+<span class="nx">app</span><span class="p">.</span><span class="nf">configure</span><span class="p">(</span><span class="dl">'</span><span class="s1">dev</span><span class="dl">'</span><span class="p">,</span> <span class="kd">function</span><span class="p">(){</span>
+    <span class="nx">mongoose</span><span class="p">.</span><span class="nf">connect</span><span class="p">(</span> <span class="dl">'</span><span class="s1">mongodb://db:27017</span><span class="dl">'</span> <span class="p">);</span>
 <span class="p">});</span>
-<span class="nx">app</span><span class="p">.</span><span class="nx">configure</span><span class="p">(</span><span class="s1">'production'</span><span class="p">,</span> <span class="kd">function</span><span class="p">(){</span>
-    <span class="nx">mongoose</span><span class="p">.</span><span class="nx">connect</span><span class="p">(</span> <span class="s1">'mongodb://xxx.xxx.xxx.xxx:27017'</span> <span class="p">);</span>
-<span class="p">});</span>
-
-<span class="nx">app</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">'/'</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">req</span><span class="p">,</span> <span class="nx">res</span><span class="p">)</span> <span class="p">{</span>
-  <span class="nx">res</span><span class="p">.</span><span class="nx">send</span><span class="p">(</span><span class="s1">'Hello world\n'</span><span class="p">);</span>
+<span class="nx">app</span><span class="p">.</span><span class="nf">configure</span><span class="p">(</span><span class="dl">'</span><span class="s1">production</span><span class="dl">'</span><span class="p">,</span> <span class="kd">function</span><span class="p">(){</span>
+    <span class="nx">mongoose</span><span class="p">.</span><span class="nf">connect</span><span class="p">(</span> <span class="dl">'</span><span class="s1">mongodb://xxx.xxx.xxx.xxx:27017</span><span class="dl">'</span> <span class="p">);</span>
 <span class="p">});</span>
 
-<span class="nx">app</span><span class="p">.</span><span class="nx">post</span><span class="p">(</span><span class="s1">'/insert'</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">req</span><span class="p">,</span> <span class="nx">resp</span><span class="p">)</span> <span class="p">{</span>
+<span class="nx">app</span><span class="p">.</span><span class="nf">get</span><span class="p">(</span><span class="dl">'</span><span class="s1">/</span><span class="dl">'</span><span class="p">,</span> <span class="nf">function </span><span class="p">(</span><span class="nx">req</span><span class="p">,</span> <span class="nx">res</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nx">res</span><span class="p">.</span><span class="nf">send</span><span class="p">(</span><span class="dl">'</span><span class="s1">Hello world</span><span class="se">\n</span><span class="dl">'</span><span class="p">);</span>
+<span class="p">});</span>
+
+<span class="nx">app</span><span class="p">.</span><span class="nf">post</span><span class="p">(</span><span class="dl">'</span><span class="s1">/insert</span><span class="dl">'</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">req</span><span class="p">,</span> <span class="nx">resp</span><span class="p">)</span> <span class="p">{</span>
     <span class="kd">var</span> <span class="nx">body</span> <span class="o">=</span> <span class="nx">req</span><span class="p">.</span><span class="nx">body</span><span class="p">;</span>
-    <span class="kd">var</span> <span class="nx">s</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Student</span><span class="p">({</span>
+    <span class="kd">var</span> <span class="nx">s</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Student</span><span class="p">({</span>
               <span class="na">name</span> <span class="p">:</span> <span class="nx">body</span><span class="p">.</span><span class="nx">name</span>
     <span class="p">});</span>
 
-    <span class="nx">s</span><span class="p">.</span><span class="nx">save</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span><span class="nx">item</span><span class="p">){</span>
-        <span class="nx">resp</span><span class="p">.</span><span class="nx">redirect</span><span class="p">(</span><span class="s1">'/'</span><span class="p">);</span>
+    <span class="nx">s</span><span class="p">.</span><span class="nf">save</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span><span class="nx">item</span><span class="p">){</span>
+        <span class="nx">resp</span><span class="p">.</span><span class="nf">redirect</span><span class="p">(</span><span class="dl">'</span><span class="s1">/</span><span class="dl">'</span><span class="p">);</span>
     <span class="p">});</span>
 <span class="p">});</span>
 
 <span class="kd">var</span> <span class="nx">PORT</span> <span class="o">=</span> <span class="mi">8080</span><span class="p">;</span>
-<span class="nx">app</span><span class="p">.</span><span class="nx">listen</span><span class="p">(</span><span class="nx">PORT</span><span class="p">);</span>
-<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'Running on http://localhost:'</span> <span class="o">+</span> <span class="nx">PORT</span><span class="p">);</span>
-</code></pre>
-</div>
+<span class="nx">app</span><span class="p">.</span><span class="nf">listen</span><span class="p">(</span><span class="nx">PORT</span><span class="p">);</span>
+<span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="dl">'</span><span class="s1">Running on http://localhost:</span><span class="dl">'</span> <span class="o">+</span> <span class="nx">PORT</span><span class="p">);</span>
+</code></pre></div></div>
 
 <p>上面的範例有個比較重要的地方，需要說明一下，<br />
-首先看到<code class="highlighter-rouge">mongoose.connect( 'mongodb://db:27017' );</code>，<br />
-我們是connect至<code class="highlighter-rouge">db</code>這個host去，<br />
-這個<code class="highlighter-rouge">db</code>是怎麼來的？<br />
-是待會會透過<code class="highlighter-rouge">--link</code>的指令指定的，<br />
-一旦你指定了，就會在container中的<code class="highlighter-rouge">/etc/hosts</code>裡面增加一筆record。</p>
+首先看到<code class="language-plaintext highlighter-rouge">mongoose.connect( 'mongodb://db:27017' );</code>，<br />
+我們是connect至<code class="language-plaintext highlighter-rouge">db</code>這個host去，<br />
+這個<code class="language-plaintext highlighter-rouge">db</code>是怎麼來的？<br />
+是待會會透過<code class="language-plaintext highlighter-rouge">--link</code>的指令指定的，<br />
+一旦你指定了，就會在container中的<code class="language-plaintext highlighter-rouge">/etc/hosts</code>裡面增加一筆record。</p>
 
 <p><br /></p>
 <h4 id="dockerfile">DockerFile</h4>
 <hr />
 
-<p>接著建立<code class="highlighter-rouge">DockerFile</code>，<br />
-<code class="highlighter-rouge">DockerFile</code>就像是<code class="highlighter-rouge">makefile</code>一樣，用來定義如何build這個image。</p>
+<p>接著建立<code class="language-plaintext highlighter-rouge">DockerFile</code>，<br />
+<code class="language-plaintext highlighter-rouge">DockerFile</code>就像是<code class="language-plaintext highlighter-rouge">makefile</code>一樣，用來定義如何build這個image。</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>FROM    centos:centos6
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>FROM    centos:centos6
 
 # Enable Extra Packages for Enterprise Linux (EPEL) for CentOS
 RUN     yum install -y epel-release
@@ -540,52 +535,47 @@ ENV NODE_ENV dev
 
 EXPOSE  8080
 CMD ["node", "/src/index.js"]
-</code></pre>
-</div>
-<p>裡面比較需要注意的是， <code class="highlighter-rouge">ENV NODE_ENV dev</code>，<br />
-這個是用來設置環境變數，因為我們設定了<code class="highlighter-rouge">dev</code>，<br />
-所以在<code class="highlighter-rouge">index.js</code>中，才會去configure dev。</p>
+</code></pre></div></div>
+<p>裡面比較需要注意的是， <code class="language-plaintext highlighter-rouge">ENV NODE_ENV dev</code>，<br />
+這個是用來設置環境變數，因為我們設定了<code class="language-plaintext highlighter-rouge">dev</code>，<br />
+所以在<code class="language-plaintext highlighter-rouge">index.js</code>中，才會去configure dev。</p>
 
 <p><br /></p>
 <h4 id="build-image--run">Build image &amp; Run</h4>
 <hr />
 
-<p>有了<code class="highlighter-rouge">DockerFile</code>以後，就可以來build以及run了。</p>
+<p>有了<code class="language-plaintext highlighter-rouge">DockerFile</code>以後，就可以來build以及run了。</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>$ docker build -t ken-yang/centos-nodejs:v1 .
-</code></pre>
-</div>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ docker build -t ken-yang/centos-nodejs:v1 .
+</code></pre></div></div>
 <p><br />
 Build完以後，就可以用下面的指令去把container run起來。<br />
-注意<code class="highlighter-rouge">--link ken-mongo:db</code>，<br />
-意思就是把現在正在running的<code class="highlighter-rouge">ken-mongo</code>與現在這個新的container連起來。<br />
-以及給它一個alias <code class="highlighter-rouge">db</code>。</p>
+注意<code class="language-plaintext highlighter-rouge">--link ken-mongo:db</code>，<br />
+意思就是把現在正在running的<code class="language-plaintext highlighter-rouge">ken-mongo</code>與現在這個新的container連起來。<br />
+以及給它一個alias <code class="language-plaintext highlighter-rouge">db</code>。</p>
 
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>docker run -d <span class="se">\</span>
-             --name ken-node <span class="se">\</span>
-             -p 80:8080 <span class="se">\</span>
-             --link ken-mongo:db <span class="se">\</span>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>docker run <span class="nt">-d</span> <span class="se">\</span>
+             <span class="nt">--name</span> ken-node <span class="se">\</span>
+             <span class="nt">-p</span> 80:8080 <span class="se">\</span>
+             <span class="nt">--link</span> ken-mongo:db <span class="se">\</span>
              ken-yang/centos-nodejs:v1
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p><br /></p>
 <h4 id="test">Test</h4>
 <hr />
 
-<p>最後用<code class="highlighter-rouge">curl</code>來發request測試，</p>
+<p>最後用<code class="language-plaintext highlighter-rouge">curl</code>來發request測試，</p>
 
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>curl -X POST -d <span class="s1">'name=kenyang'</span> 192.168.99.100/insert
-</code></pre>
-</div>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>curl <span class="nt">-X</span> POST <span class="nt">-d</span> <span class="s1">'name=kenyang'</span> 192.168.99.100/insert
+</code></pre></div></div>
 
 <p>然後可以再去看是否有新增成功，</p>
 
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>docker -exec -it ken-mongo bash
-<span class="gp">$ </span>mongo
-<span class="gp">$ </span>db.students.find<span class="o">()</span>
-</code></pre>
-</div>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>docker <span class="nt">-exec</span> <span class="nt">-it</span> ken-mongo bash
+<span class="nv">$ </span>mongo
+<span class="nv">$ </span>db.students.find<span class="o">()</span>
+</code></pre></div></div>
 
 
     </div>
@@ -674,7 +664,7 @@ Build完以後，就可以用下面的指令去把container run起來。<br />
 
     <div id="footer">
       <div class="container">
-        <p>&copy; 2019 Ken Yang
+        <p>&copy; 2023 Ken Yang
           with help from <a href="http://jekyllbootstrap.com" target="_blank" title="The Definitive Jekyll Blogging Framework">Jekyll Bootstrap</a>
           and <a href="http://getbootstrap.com" target="_blank">Bootstrap</a>
         </p>

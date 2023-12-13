@@ -229,6 +229,8 @@
   
     
   
+    
+  
 
 
 
@@ -368,14 +370,14 @@
 
 <ol style="font-size: 16px;">
   <li>先去<a href="https://console.firebase.google.com/">Firebase後台</a>建立一個project.</li>
-  <li>點擊 <code class="highlighter-rouge">Add Firebase to your web app</code>.</li>
+  <li>點擊 <code class="language-plaintext highlighter-rouge">Add Firebase to your web app</code>.</li>
   <li>畫面會出現類似下方的code snippet，不過由於我會使用webpack，所以下方的只有config對這篇是有意義的.</li>
 </ol>
 
-<div class="language-java highlighter-rouge"><pre class="highlight"><code><span class="o">&lt;</span><span class="n">script</span> <span class="n">src</span><span class="o">=</span><span class="s">"https://www.gstatic.com/firebasejs/4.3.0/firebase.js"</span><span class="o">&gt;&lt;/</span><span class="n">script</span><span class="o">&gt;</span>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&lt;</span><span class="n">script</span> <span class="n">src</span><span class="o">=</span><span class="s">"https://www.gstatic.com/firebasejs/4.3.0/firebase.js"</span><span class="o">&gt;&lt;/</span><span class="n">script</span><span class="o">&gt;</span>
 <span class="o">&lt;</span><span class="n">script</span><span class="o">&gt;</span>
   <span class="c1">// Initialize Firebase</span>
-  <span class="n">var</span> <span class="n">config</span> <span class="o">=</span> <span class="o">{</span>
+  <span class="kt">var</span> <span class="n">config</span> <span class="o">=</span> <span class="o">{</span>
     <span class="nl">apiKey:</span> <span class="s">"&lt;API_KEY&gt;"</span><span class="o">,</span>
     <span class="nl">authDomain:</span> <span class="s">"&lt;PROJECT_ID&gt;.firebaseapp.com"</span><span class="o">,</span>
     <span class="nl">databaseURL:</span> <span class="s">"https://&lt;DATABASE_NAME&gt;.firebaseio.com"</span><span class="o">,</span>
@@ -385,8 +387,7 @@
   <span class="o">};</span>
   <span class="n">firebase</span><span class="o">.</span><span class="na">initializeApp</span><span class="o">(</span><span class="n">config</span><span class="o">);</span>
 <span class="o">&lt;/</span><span class="n">script</span><span class="o">&gt;</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p><br /></p>
 
@@ -396,25 +397,23 @@
 
 <p style="font-size: 16px;">initial我們的project以後，接著就要在我們的project中加入JavaScript SDK，由於我的project中有使用webpack，所以可以使用npm的方式進行install SDK。</p>
 
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>npm install --save firebase
-</code></pre>
-</div>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>npm <span class="nb">install</span> <span class="nt">--save</span> firebase
+</code></pre></div></div>
 
 <p style="font-size: 16px;">安裝完以後，就可以在project中import Firebase SDK，記得將下面的參數替換成自己project中的參數。</p>
 
-<div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="kr">import</span> <span class="nx">firebase</span> <span class="nx">from</span> <span class="s1">'firebase/app'</span><span class="p">;</span>
-<span class="kr">import</span> <span class="s1">'firebase/database'</span><span class="p">;</span>
-<span class="kr">import</span> <span class="s1">'firebase/auth'</span><span class="p">;</span>
-<span class="kr">const</span> <span class="nx">config</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="na">apiKey</span><span class="p">:</span> <span class="s2">"&lt;API_KEY&gt;"</span><span class="p">,</span>
-    <span class="na">authDomain</span><span class="p">:</span> <span class="s2">"&lt;PROJECT_ID&gt;.firebaseapp.com"</span><span class="p">,</span>
-    <span class="na">databaseURL</span><span class="p">:</span> <span class="s2">"https://&lt;DATABASE_NAME&gt;.firebaseio.com"</span><span class="p">,</span>
-    <span class="na">projectId</span><span class="p">:</span> <span class="s2">"xxxxxxxxxx"</span><span class="p">,</span>
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="nx">firebase</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">firebase/app</span><span class="dl">'</span><span class="p">;</span>
+<span class="k">import</span> <span class="dl">'</span><span class="s1">firebase/database</span><span class="dl">'</span><span class="p">;</span>
+<span class="k">import</span> <span class="dl">'</span><span class="s1">firebase/auth</span><span class="dl">'</span><span class="p">;</span>
+<span class="kd">const</span> <span class="nx">config</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="na">apiKey</span><span class="p">:</span> <span class="dl">"</span><span class="s2">&lt;API_KEY&gt;</span><span class="dl">"</span><span class="p">,</span>
+    <span class="na">authDomain</span><span class="p">:</span> <span class="dl">"</span><span class="s2">&lt;PROJECT_ID&gt;.firebaseapp.com</span><span class="dl">"</span><span class="p">,</span>
+    <span class="na">databaseURL</span><span class="p">:</span> <span class="dl">"</span><span class="s2">https://&lt;DATABASE_NAME&gt;.firebaseio.com</span><span class="dl">"</span><span class="p">,</span>
+    <span class="na">projectId</span><span class="p">:</span> <span class="dl">"</span><span class="s2">xxxxxxxxxx</span><span class="dl">"</span><span class="p">,</span>
 <span class="p">};</span>
-<span class="nx">firebase</span><span class="p">.</span><span class="nx">initializeApp</span><span class="p">(</span><span class="nx">config</span><span class="p">);</span>
+<span class="nx">firebase</span><span class="p">.</span><span class="nf">initializeApp</span><span class="p">(</span><span class="nx">config</span><span class="p">);</span>
 
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p><br /></p>
 
@@ -424,18 +423,17 @@
 
 <p style="font-size: 16px;">接著要去後台設定Database的權限，意思是說讀/寫時，是否需要authentication，又或者authentication的方式是什麼。這篇會將讀的權限設為全部都可以讀，不需要authentication;但寫就必須要有權限。</p>
 
-<div class="language-json highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w">
-  </span><span class="nt">"rules"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-    </span><span class="nt">".read"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w">
-    </span><span class="nt">".write"</span><span class="p">:</span><span class="w"> </span><span class="s2">"auth != null"</span><span class="w">
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"rules"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">".read"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w">
+    </span><span class="nl">".write"</span><span class="p">:</span><span class="w"> </span><span class="s2">"auth != null"</span><span class="w">
   </span><span class="p">}</span><span class="w">
 </span><span class="p">}</span><span class="w">
-</span></code></pre>
-</div>
+</span></code></pre></div></div>
 
 <p><br /></p>
 
-<p style="font-size: 16px;">有了rule以後，就要去<code class="highlighter-rouge">Authentication</code>中設定<code class="highlighter-rouge">誰</code>可以去寫database，在<code class="highlighter-rouge">Authentication</code>中可以使用很多種方式進行身份的驗證，像是Google Login的等等之類的，我這裡選擇比較簡單的<code class="highlighter-rouge">Email</code>的方式，如下圖中，我建立了二個Email待會用來做身份驗證所使用的。</p>
+<p style="font-size: 16px;">有了rule以後，就要去<code class="language-plaintext highlighter-rouge">Authentication</code>中設定<code class="language-plaintext highlighter-rouge">誰</code>可以去寫database，在<code class="language-plaintext highlighter-rouge">Authentication</code>中可以使用很多種方式進行身份的驗證，像是Google Login的等等之類的，我這裡選擇比較簡單的<code class="language-plaintext highlighter-rouge">Email</code>的方式，如下圖中，我建立了二個Email待會用來做身份驗證所使用的。</p>
 
 <p><img src="http://localhost:4000/assets/2017-08-28-1.png" alt="Ticket" /></p>
 
@@ -447,14 +445,13 @@
 
 <p style="font-size: 16px;">有了Email以後，接著我們就可以用來登入，如果登入</p>
 
-<div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="kd">let</span> <span class="nx">isLogin</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
-<span class="nx">firebase</span><span class="p">.</span><span class="nx">auth</span><span class="p">().</span><span class="nx">signInWithEmailAndPassword</span><span class="p">(</span><span class="s1">'&lt;EMAIL&gt;'</span><span class="p">,</span> <span class="s1">'&lt;PWD&gt;'</span><span class="p">).</span><span class="k">catch</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">error</span><span class="p">)</span> <span class="p">{</span>
-    <span class="k">if</span> <span class="p">(</span><span class="nx">error</span><span class="p">)</span> <span class="p">{</span>
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">let</span> <span class="nx">isLogin</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+<span class="nx">firebase</span><span class="p">.</span><span class="nf">auth</span><span class="p">().</span><span class="nf">signInWithEmailAndPassword</span><span class="p">(</span><span class="dl">'</span><span class="s1">&lt;EMAIL&gt;</span><span class="dl">'</span><span class="p">,</span> <span class="dl">'</span><span class="s1">&lt;PWD&gt;</span><span class="dl">'</span><span class="p">).</span><span class="k">catch</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">error</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if </span><span class="p">(</span><span class="nx">error</span><span class="p">)</span> <span class="p">{</span>
         <span class="nx">isLogin</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
     <span class="p">}</span>
 <span class="p">});</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p><br /></p>
 
@@ -462,46 +459,43 @@
 <h3 id="5-write-and-read-data">5. Write and Read Data</h3>
 <hr />
 
-<p style="font-size: 16px;">完成了上面的身份驗證，就可以對Firebase Realtime Database進行讀寫資料了，如果沒有進行上面的身份驗證，你在write的時候，console會吐<code class="highlighter-rouge">PERMISSION_DENIED</code>，下面的例子就是在announcement底下寫一個title是<code class="highlighter-rouge">Hello World</code>的公告。我用的是<code class="highlighter-rouge">set</code>這方法，要注意一點，用<code class="highlighter-rouge">set</code>可是會去overwrite掉底下node所有的資料，所以如果你想更新部分資料的話，就要用<code class="highlighter-rouge">update</code>。</p>
+<p style="font-size: 16px;">完成了上面的身份驗證，就可以對Firebase Realtime Database進行讀寫資料了，如果沒有進行上面的身份驗證，你在write的時候，console會吐<code class="language-plaintext highlighter-rouge">PERMISSION_DENIED</code>，下面的例子就是在announcement底下寫一個title是<code class="language-plaintext highlighter-rouge">Hello World</code>的公告。我用的是<code class="language-plaintext highlighter-rouge">set</code>這方法，要注意一點，用<code class="language-plaintext highlighter-rouge">set</code>可是會去overwrite掉底下node所有的資料，所以如果你想更新部分資料的話，就要用<code class="language-plaintext highlighter-rouge">update</code>。</p>
 
-<div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="kr">const</span> <span class="nx">database</span> <span class="o">=</span> <span class="nx">firebase</span><span class="p">.</span><span class="nx">database</span><span class="p">();</span>
-<span class="nx">firebase</span><span class="p">.</span><span class="nx">database</span><span class="p">().</span><span class="nx">ref</span><span class="p">(</span><span class="s1">'announcement/latest'</span><span class="p">).</span><span class="nx">set</span><span class="p">({</span>
-    <span class="s1">'title'</span><span class="p">:</span> <span class="s1">'Hello World'</span>
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">const</span> <span class="nx">database</span> <span class="o">=</span> <span class="nx">firebase</span><span class="p">.</span><span class="nf">database</span><span class="p">();</span>
+<span class="nx">firebase</span><span class="p">.</span><span class="nf">database</span><span class="p">().</span><span class="nf">ref</span><span class="p">(</span><span class="dl">'</span><span class="s1">announcement/latest</span><span class="dl">'</span><span class="p">).</span><span class="nf">set</span><span class="p">({</span>
+    <span class="dl">'</span><span class="s1">title</span><span class="dl">'</span><span class="p">:</span> <span class="dl">'</span><span class="s1">Hello World</span><span class="dl">'</span>
 <span class="p">});</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p><br /></p>
 
 <p style="font-size: 16px;">成功以後，你就可以去後台看，會看到下面的JSON結構。</p>
 
-<div class="language-json highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w">
-  </span><span class="nt">"announcement"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-    </span><span class="nt">"latest"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-      </span><span class="nt">"title"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"Hello World"</span><span class="w">
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"announcement"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"latest"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"title"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"Hello World"</span><span class="w">
     </span><span class="p">}</span><span class="w">
   </span><span class="p">}</span><span class="w">
 </span><span class="p">}</span><span class="w">
-</span></code></pre>
-</div>
+</span></code></pre></div></div>
 
 <p><br /></p>
 
 <p style="font-size: 16px;">要去Read Firebase Realtime Database上的資料有兩種方式，</p>
 
 <ol style="font-size: 16px;">
-  <li><code class="highlighter-rouge">on</code>：用on的話，一旦只要data變更了，client都會馬上收到通知</li>
-  <li><code class="highlighter-rouge">once</code>：once則相反，只會拿到一次，之後有變更都不會收到通知</li>
+  <li><code class="language-plaintext highlighter-rouge">on</code>：用on的話，一旦只要data變更了，client都會馬上收到通知</li>
+  <li><code class="language-plaintext highlighter-rouge">once</code>：once則相反，只會拿到一次，之後有變更都不會收到通知</li>
 </ol>
 
-<div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="kr">const</span> <span class="nx">announcement</span> <span class="o">=</span> <span class="nx">database</span><span class="p">.</span><span class="nx">ref</span><span class="p">(</span><span class="s1">'announcement/latest'</span><span class="p">);</span>
-<span class="nx">announcement</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">'value'</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">snapshot</span><span class="p">)</span> <span class="p">{</span>
-    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">snapshot</span><span class="p">.</span><span class="nx">val</span><span class="p">().</span><span class="nx">title</span><span class="p">);</span>
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">const</span> <span class="nx">announcement</span> <span class="o">=</span> <span class="nx">database</span><span class="p">.</span><span class="nf">ref</span><span class="p">(</span><span class="dl">'</span><span class="s1">announcement/latest</span><span class="dl">'</span><span class="p">);</span>
+<span class="nx">announcement</span><span class="p">.</span><span class="nf">on</span><span class="p">(</span><span class="dl">'</span><span class="s1">value</span><span class="dl">'</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">snapshot</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="nx">snapshot</span><span class="p">.</span><span class="nf">val</span><span class="p">().</span><span class="nx">title</span><span class="p">);</span>
 <span class="p">});</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p style="font-size: 16px;">你就會在console看到<code class="highlighter-rouge">Hello World</code>，如果直接在Realtime Database後台更改value，console又會即時印出更改過後的value。</p>
+<p style="font-size: 16px;">你就會在console看到<code class="language-plaintext highlighter-rouge">Hello World</code>，如果直接在Realtime Database後台更改value，console又會即時印出更改過後的value。</p>
 
 <p><br />
 <br />
@@ -594,7 +588,7 @@
 
     <div id="footer">
       <div class="container">
-        <p>&copy; 2019 Ken Yang
+        <p>&copy; 2023 Ken Yang
           with help from <a href="http://jekyllbootstrap.com" target="_blank" title="The Definitive Jekyll Blogging Framework">Jekyll Bootstrap</a>
           and <a href="http://getbootstrap.com" target="_blank">Bootstrap</a>
         </p>

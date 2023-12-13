@@ -229,6 +229,8 @@
   
     
   
+    
+  
 
 
 
@@ -375,13 +377,12 @@
 <p>接著打開build.gradle，把appcompat加入dependency，<br />
 不過如果你的Android Studio是新版的，就會自動幫你加入了。</p>
 
-<div class="language-xml highlighter-rouge"><pre class="highlight"><code>dependencies {
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code>dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:23.1.1'
 }
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <!--more-->
 
@@ -392,13 +393,12 @@
 <hr />
 
 <p>因為Default style會去繼承ActionBar Theme，所以我們要把它移除掉，<br />
-打開<code class="highlighter-rouge">style.xml</code>，然後把parent改成<code class="highlighter-rouge">Theme.AppCompat.Light.NoActionBar</code>。</p>
+打開<code class="language-plaintext highlighter-rouge">style.xml</code>，然後把parent改成<code class="language-plaintext highlighter-rouge">Theme.AppCompat.Light.NoActionBar</code>。</p>
 
-<div class="language-xml highlighter-rouge"><pre class="highlight"><code><span class="c">&lt;!-- Base application theme. --&gt;</span>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">&lt;!-- Base application theme. --&gt;</span>
 <span class="nt">&lt;style</span> <span class="na">name=</span><span class="s">"AppTheme"</span> <span class="na">parent=</span><span class="s">"Theme.AppCompat.Light.NoActionBar"</span><span class="nt">&gt;</span>
 <span class="nt">&lt;/style&gt;</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p><br /></p>
 
@@ -415,26 +415,24 @@
 
 <p><br /></p>
 
-<p>首先要先在<code class="highlighter-rouge">color.xml</code>中，新增上述的二個顏色。</p>
+<p>首先要先在<code class="language-plaintext highlighter-rouge">color.xml</code>中，新增上述的二個顏色。</p>
 
-<div class="language-xml highlighter-rouge"><pre class="highlight"><code><span class="cp">&lt;?xml version="1.0" encoding="utf-8"?&gt;</span>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?xml version="1.0" encoding="utf-8"?&gt;</span>
 <span class="nt">&lt;resources&gt;</span>
     <span class="nt">&lt;color</span> <span class="na">name=</span><span class="s">"colorPrimary"</span><span class="nt">&gt;</span>#FF5722<span class="nt">&lt;/color&gt;</span>
     <span class="nt">&lt;color</span> <span class="na">name=</span><span class="s">"colorPrimaryDark"</span><span class="nt">&gt;</span>#E64A19<span class="nt">&lt;/color&gt;</span>
 <span class="nt">&lt;/resources&gt;</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p>接著在<code class="highlighter-rouge">style.xml</code>中指定上述的二個顏色。</p>
+<p>接著在<code class="language-plaintext highlighter-rouge">style.xml</code>中指定上述的二個顏色。</p>
 
-<div class="language-xml highlighter-rouge"><pre class="highlight"><code><span class="c">&lt;!-- Base application theme. --&gt;</span>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">&lt;!-- Base application theme. --&gt;</span>
 <span class="nt">&lt;style</span> <span class="na">name=</span><span class="s">"AppTheme"</span> <span class="na">parent=</span><span class="s">"Theme.AppCompat.Light.NoActionBar"</span><span class="nt">&gt;</span>
     <span class="c">&lt;!-- Customize your theme here. --&gt;</span>
     <span class="nt">&lt;item</span> <span class="na">name=</span><span class="s">"colorPrimary"</span><span class="nt">&gt;</span>@color/colorPrimary<span class="nt">&lt;/item&gt;</span>
     <span class="nt">&lt;item</span> <span class="na">name=</span><span class="s">"colorPrimaryDark"</span><span class="nt">&gt;</span>@color/colorPrimaryDark<span class="nt">&lt;/item&gt;</span>
 <span class="nt">&lt;/style&gt;</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p><br /></p>
 
@@ -442,7 +440,7 @@
 <h3 id="5-create-a-toobar">5. Create a toobar</h3>
 <hr />
 
-<p>接著去<code class="highlighter-rouge">res/layout</code>資料夾中，建立一個名稱為<code class="highlighter-rouge">too_bar.xml</code>的layout file，內容如下，有幾個需要說明的屬性為：</p>
+<p>接著去<code class="language-plaintext highlighter-rouge">res/layout</code>資料夾中，建立一個名稱為<code class="language-plaintext highlighter-rouge">too_bar.xml</code>的layout file，內容如下，有幾個需要說明的屬性為：</p>
 
 <ol>
   <li><strong>theme</strong>: 指定了Dark.ActionBar，是為了設定AppBar的一些style，譬如說字體顏色，Dark.ActionBar的字體顏色就是白色</li>
@@ -450,7 +448,7 @@
   <li><strong>background</strong> : Toolbar的背景顏色</li>
 </ol>
 
-<div class="language-xml highlighter-rouge"><pre class="highlight"><code><span class="cp">&lt;?xml version="1.0" encoding="utf-8"?&gt;</span>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?xml version="1.0" encoding="utf-8"?&gt;</span>
 <span class="nt">&lt;android.support.v7.widget.Toolbar</span>
     <span class="na">xmlns:android=</span><span class="s">"http://schemas.android.com/apk/res/android"</span>
     <span class="na">xmlns:app=</span><span class="s">"http://schemas.android.com/apk/res-auto"</span>
@@ -461,8 +459,7 @@
     <span class="na">android:background=</span><span class="s">"@color/colorPrimary"</span><span class="nt">&gt;</span>
 
 <span class="nt">&lt;/android.support.v7.widget.Toolbar&gt;</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p><br /></p>
 
@@ -470,9 +467,9 @@
 <h3 id="6-add-the-toolbar-into-activity">6. Add the toolbar into activity</h3>
 <hr />
 
-<p>然後要在主要的layout中，include上面的<code class="highlighter-rouge">tool_bar.xml</code>。</p>
+<p>然後要在主要的layout中，include上面的<code class="language-plaintext highlighter-rouge">tool_bar.xml</code>。</p>
 
-<div class="language-xml highlighter-rouge"><pre class="highlight"><code><span class="cp">&lt;?xml version="1.0" encoding="utf-8"?&gt;</span>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?xml version="1.0" encoding="utf-8"?&gt;</span>
 <span class="nt">&lt;RelativeLayout</span> <span class="na">xmlns:android=</span><span class="s">"http://schemas.android.com/apk/res/android"</span>
     <span class="na">xmlns:tools=</span><span class="s">"http://schemas.android.com/tools"</span>
     <span class="na">android:layout_width=</span><span class="s">"match_parent"</span>
@@ -490,8 +487,7 @@
         <span class="na">android:text=</span><span class="s">"Hello World!"</span> <span class="nt">/&gt;</span>
 <span class="nt">&lt;/RelativeLayout&gt;</span>
 
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p><br /></p>
 
@@ -501,18 +497,17 @@
 
 <p>完成上面步驟以後，你可以試著run看看，但你會發現就只是簡單的一條bar而已，<br />
 並沒有title或者action item之類的，所以接下要把toolbar設定成ActionBar，<br />
-把<code class="highlighter-rouge">ToolBar</code>丟進去<code class="highlighter-rouge">setSupportActionBar()</code>就可以了。</p>
+把<code class="language-plaintext highlighter-rouge">ToolBar</code>丟進去<code class="language-plaintext highlighter-rouge">setSupportActionBar()</code>就可以了。</p>
 
-<div class="language-java highlighter-rouge"><pre class="highlight"><code><span class="nd">@Override</span>
-<span class="kd">protected</span> <span class="kt">void</span> <span class="nf">onCreate</span><span class="o">(</span><span class="n">Bundle</span> <span class="n">savedInstanceState</span><span class="o">)</span> <span class="o">{</span>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">@Override</span>
+<span class="kd">protected</span> <span class="kt">void</span> <span class="nf">onCreate</span><span class="o">(</span><span class="nc">Bundle</span> <span class="n">savedInstanceState</span><span class="o">)</span> <span class="o">{</span>
     <span class="kd">super</span><span class="o">.</span><span class="na">onCreate</span><span class="o">(</span><span class="n">savedInstanceState</span><span class="o">);</span>
-    <span class="n">setContentView</span><span class="o">(</span><span class="n">R</span><span class="o">.</span><span class="na">layout</span><span class="o">.</span><span class="na">activity_login</span><span class="o">);</span>
+    <span class="n">setContentView</span><span class="o">(</span><span class="no">R</span><span class="o">.</span><span class="na">layout</span><span class="o">.</span><span class="na">activity_login</span><span class="o">);</span>
 
-    <span class="n">toolbar</span> <span class="o">=</span> <span class="o">(</span><span class="n">Toolbar</span><span class="o">)</span> <span class="n">findViewById</span><span class="o">(</span><span class="n">R</span><span class="o">.</span><span class="na">id</span><span class="o">.</span><span class="na">tool_bar</span><span class="o">);</span>
+    <span class="n">toolbar</span> <span class="o">=</span> <span class="o">(</span><span class="nc">Toolbar</span><span class="o">)</span> <span class="n">findViewById</span><span class="o">(</span><span class="no">R</span><span class="o">.</span><span class="na">id</span><span class="o">.</span><span class="na">tool_bar</span><span class="o">);</span>
     <span class="n">setSupportActionBar</span><span class="o">(</span><span class="n">toolbar</span><span class="o">);</span>
 <span class="o">}</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p><br /><br /><br /><br /></p>
 
@@ -603,7 +598,7 @@
 
     <div id="footer">
       <div class="container">
-        <p>&copy; 2019 Ken Yang
+        <p>&copy; 2023 Ken Yang
           with help from <a href="http://jekyllbootstrap.com" target="_blank" title="The Definitive Jekyll Blogging Framework">Jekyll Bootstrap</a>
           and <a href="http://getbootstrap.com" target="_blank">Bootstrap</a>
         </p>

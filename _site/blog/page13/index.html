@@ -229,6 +229,8 @@
   
     
   
+    
+  
 
 
 
@@ -303,6 +305,34 @@
     </div>
     <!-- This loops through the paginated posts -->
     
+      <h1><a style="color: #F22430" href="/2014/09/04/how-to-build-your-own-debian-package">How to build your own debian package?</a></h1>
+      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
+      <p class="author">
+      <div class="date">
+        <span>04 September 2014</span>
+      </div>
+      </p>
+      <div class="content" style="line-height: 28px;">
+        <div style="font-size: 15px; line-height: 22px;">其實不久前有寫一篇講怎麼<a href="http://blog.kenyang.net/2014/03/build-deb-package-from-source.html">build deb package</a>，<br />不過那篇的code source並不是來自於自己的source，<br />那麼假設你今天自己有一個web，你想把這web打包成一個deb供人安裝，那該怎麼做呢？<br />這篇主要就是講怎麼create一個自己的deb package．<br /><br /><br /><br /><span style="color: #e06666; font-size: 18px;">1. Install necessary package</span><br /><br /><pre class="brush: bash">sudo apt-get install dh-make<br /></pre>dh-make是用來準備debian package所需要的files，<br />等等會用來gen template files．<br /><br /><br /><span style="color: #e06666; font-size: 18px;">2. Prepare environment</span><br /><br />這裡先create一個folder，名稱為www，<br />www底下也要create一些web所需的資料夾和檔案，像是images, css ,js...etc<br />www的目錄結構大概就長這樣，<br /><br />www<br />├── css<br />│   └── main.css<br />├── images<br />│   └── a.png<br />└── static<br />└── index.html<br /><br /><br /><br />我們要把folder底下的東西都打包進去debian package，<br />並且讓其他人在安裝這個debian package時，可以安裝到我們所指定的path底下！<br /><br /><br /><span style="color: #e06666; font-size: 18px;">3. Generate template files</span><br /><br />在這步要用前面安裝的dh_make來generate出debian package所需要的template files,<br />在generate之前，先設定一個環境變數，<br />這環境變數是用來記錄這個debian package的作者是誰<br /><pre class="brush: bash">export DEBFULLNAME="Ken Yang"<br /></pre><br /><pre class="brush: bash">dh_make --single --packagename ken-sdk_0.1 --native -e xxxx@gmail.com<br /></pre>--packagename要注意一下，<br />--packagename分為兩個部分，<br />前面的部分ken-sdk是package name，<br />package name只能用-來分隔，不能用底線！<br />而後面的_0.1是version number，<br />--natvie，意思是這個debian不是從一個既有的tarball gen出來的！<br /><br />generate完成以後，你會發現在www folder底下多了一個debian folder，<br />這debian folder裡面是放一些build debian package所需要的template files，<br />而既然是template files，那麼就有一些不需要的file或者需要被修改的file，<br />首先先刪除不需要的file吧！<br /><pre class="brush: bash">sudo rm debian/*.ex debian/*.EX<br /></pre><br />接著就來修改這個template，<br />首先要先改control這file，<br /><pre class="brush: bash">vim debian/control<br /></pre>打開以後，會看到很多information，<br />你比較需要改的大概就只有Depends (dependency)，和Description了！<br />改完儲存以後即可！<br /><br />接下來要改copyright，<br /><pre class="brush: bash">vim debian/copyright<br /></pre>打開以後，大概就只有年份和作者名稱要改而已！<br /><br />剩下其他的file，像是README, docs就看你要不要改了，<br />記得rules千萬別改！rules是build package的起頭！<br /><br /><br /><span style="color: #e06666; font-size: 18px;">4. Build debian package</span><br /><br />在完成template的修改，準備開始build之前，<br />我們還有最後一個步驟，就是要指定哪些files or folder是你要放進去這個debian package的！<br />而就是靠一個檔案去記錄！<br />這個檔案名稱很重要，要跟你前面的package name一模一樣，<br />我們前面的package name是ken-sdk，<br />所以這個file要叫做ken-sdk.install，<br />裡面的格式就像下面一樣，<br /><pre class="brush: bash">images/* /opt/www/image<br />css/* /opt/www/css<br />js/* /opt/www/js<br /></pre>第一格參數：現在www folder底下路徑的檔案<br />第二格參數：將來這deb package被安裝時，這些files要被安裝到哪裡<br />儲存以後，就可以開始build，指令如下：<br /><pre class="brush: bash">dpkg-buildpackage -rfakeroot -b<br /></pre>-rfakeroot：使用root的權限<br />-b：單純只是binary，不要去build source<br /><br /><br /><span style="color: #e06666; font-size: 18px;">5. Verify</span><br /><br />完成以後，<br />debian package會放在folder的上層目錄，<br />應該會有一個ken-sdk_0.1_amd64.deb，<br />有一個快速verify你要的files有沒有被包進去，<br /><pre class="brush: bash">lesspipe ken-sdk_0.1_amd64.deb<br /></pre><br />當然你也可以安裝起來看看，<br /><pre class="brush: bash">sudo dpkg --install ../ken-sdk_0.1_amd64.deb<br /></pre><br />接著就去看剛剛指定的folder（/opt/www），是否有我們原本的檔案！<br /><br /><br /><span style="color: #e06666; font-size: 18px;">6. Advance: Pre-Install or Post-Install</span><br /><br />如果你想要在這package完成安裝或者開始安裝之前，做一些前置作業，<br />那麼就可以靠preinst和postinst這兩個檔案，<br />preinst就是安裝之前，<br />postinst就是安裝完成之後，<br />相反地，如果你想要在這package被remove時，也做一些操作，<br />那麼就要有prerm和postrm這兩個檔案！<br /><br /><br /><span style="color: #e06666; font-size: 18px;">7. Advance: Update pacakge</span><br /><br />如果你這package想要更新，<br />變成0.2版本，你可以直接編輯change log，但有點麻煩！<br />可以透過指令快速達成！<br /><pre class="brush: bash">dch -v 0.2 "Update package."<br /></pre><br />之後一樣直接dpkg-buildpackage -rfakeroot -b就可以了！<br /><br /><br /></div><br /><br /><br />
+      </div>
+      <footer>
+        <p><a class="myButton" href="/2014/09/04/how-to-build-your-own-debian-package">read more &raquo;</a></p>
+        <div>
+          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- ken on github -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3783438370424072"
+     data-ad-slot="1516206098"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+        </div>
+      </footer>
+      <hr>
+    
       <h1><a style="color: #F22430" href="/2014/08/27/how-to-create-x509-certificates-for">How to create X.509 certificates for Amazon IAM user?</a></h1>
       <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
       <p class="author">
@@ -359,41 +389,13 @@
       </footer>
       <hr>
     
-      <h1><a style="color: #F22430" href="/2014/07/06/setting-up-high-availabilityha">Setting up a High-Availability(HA) environment with Keepalived</a></h1>
-      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
-      <p class="author">
-      <div class="date">
-        <span>06 July 2014</span>
-      </div>
-      </p>
-      <div class="content" style="line-height: 28px;">
-        <div style="font-size: 15px; line-height: 22px;">Keepalived是一個routing software，<br />它可以做到load balancing和high-availability，<br />load balancing會倚靠lvs (linux virtual server, ipvsadm)來做到（但這篇只會做HA，下篇再講怎麼做load balancing），<br />而high-availability是靠VRRP protocol來達成，<br />那什麼是<a href="http://en.wikipedia.org/wiki/Virtual_Router_Redundancy_Protocol" target="_blank">VRRP</a>（Virtual Router Redundancy Protocol ）？<br />簡單的說，就是為了當某個router故障，然後可以快速的failover，<br />Keepalivied就是利用這protocol來達到HA．<br /><br />假設我們有兩檯web server，<br />IP分別為<br />&nbsp;&nbsp;1. 10.1.190.142<br />&nbsp;&nbsp;2. 10.1.190.143<br /><br />在兩檯都安裝好keepalived的情況下，<br />被設定為"MASTER"的那檯機器，會去binding 一個我們所指定的virtual ip！<br />這裡先假設virtual ip為10.1.190.150<br /><br /><span style="color: #e06666; font-size: 18px;">1. Install the packages </span><br /><br />首先先ssh到第一檯和第二檯上，安裝等等會用到的幾個packages，<br />&nbsp;&nbsp;1. keepalived<br />&nbsp;&nbsp;2. nginx: 你也可以選擇你想要用的web server<br />&nbsp;&nbsp;3. postfix: optional, 安裝postfix的目的在於，server壞掉時，會寄信通知你<br /><pre class="brush: bash">apt-get install keepalived nginx postfix<br /></pre><br /><br /><span style="color: #e06666; font-size: 18px;">2. Set up environment </span><br /><br />安裝好以後，先確認你的nginx是有起來的，<br />開browser去打一下web server就可以簡單確認！<br /><br />接著先到第一檯機器上去進行keepalived的config設定 <br /><pre class="brush: bash">vim /etc/keepalived/keepalived.conf<br /></pre><br />內容如下：<br /><pre class="brush: bash">global_defs {<br />  notification_email {<br />    kenyang@xxx.com<br />  }<br />  notification_email_from xxxx@example.com<br />  smtp_server 127.0.0.1<br />  smtp_connect_timeout 30<br />  router_id host1      # 用來識別是哪檯機器，如果postfix有安裝，在寄信的時候，title就會跟你說是哪檯機器有問題<br />}<br /><br />vrrp_instance VI_1 {   # VI_1 可以改成自己想要的string<br /><br />  state MASTER         # MASTER意思是這檯為主要的機器<br /><br />  interface eth0       # 把virtual ip binding在eht0上<br /><br />  virtual_router_id 1  # 0~255之間，用來識別是哪一個instance<br />  priority 100         <br /><br />  virtual_ipaddress {<br />    10.1.190.150/24<br />  }<br /><br />  smtp_alert           # 當有問題時要發信通知<br />}<br /></pre><br /><br />接著就到第二檯上去進行設定，<br />其實內容大致上和第一檯一模一樣，<br />只有router_id, state, priority需要變動<br />內容如下，<br /><pre class="brush: bash">global_defs {<br />  ... same with host1 ...<br />  router_id host2  <br />}<br /><br />vrrp_instance VI_1 {   # VI_1 可以改成自己想要的string<br />  ... same with host 1 ....<br />  state BACKUP<br />  priority 50         <br />}<br /></pre><br />完成設定以後，分別在兩檯機器上打開keepalived，<br /><pre class="brush: bash">service keepalived start<br /></pre><br /><br /><span style="color: #e06666; font-size: 18px;">3. Verify </span><br /><br />最後就來驗證ha是work的，<br />先到第一檯上去，因為第一檯設定為MASTER，<br />因此理論上第一檯除了自己的IP (10.1.190.142)以外，<br />還要拿到這個virtual ip (10.1.190.150)，<br />打下面的指令可以驗證，<br /><pre class="brush: bash">root@host1:~$ ip a | grep eth0 | grep inet<br />    inet 10.1.190.142/24 brd 10.1.190.255 scope global eth0<br />    inet 10.1.190.150/24 scope global secondary eth0<br /></pre><br />接著打開web browser去連virtual ip (10.1.190.150)，<br />都會導到第一檯的nginx去！<br />這時候把第一檯關機！<br /><pre class="brush: bash">root@host1:~$ shutdown now<br /></pre><br />此時第二檯應該要拿到virtual ip，<br />一樣打下面的指令做驗證<br /><pre class="brush: bash">root@host2:~$ ip a | grep eth0 | grep inet<br />    inet 10.1.190.143/24 brd 10.1.190.255 scope global eth0<br />    inet 10.1.190.150/24 scope global secondary eth0<br /></pre><br />然後再打開web browser去連virtual ip (10.1.190.150)，<br />此時看到的內容會是第二檯nginx上的內容！<br /><br /><br />除此之外，如果postfix有設定成功，<br />應該是會收到mail跟你說host2進入了MASTER模式，<br />標題是：[host2] VRRP Instance VI_1 - Entering MASTER state<br />內容是：=> VRRP Instance is now owning VRRP VIPs <=   下一篇再教怎麼用keepalived做load balance.           </div><br />
-      </div>
-      <footer>
-        <p><a class="myButton" href="/2014/07/06/setting-up-high-availabilityha">read more &raquo;</a></p>
-        <div>
-          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<!-- ken on github -->
-<ins class="adsbygoogle"
-     style="display:block"
-     data-ad-client="ca-pub-3783438370424072"
-     data-ad-slot="1516206098"
-     data-ad-format="auto"></ins>
-<script>
-(adsbygoogle = window.adsbygoogle || []).push({});
-</script>
-
-        </div>
-      </footer>
-      <hr>
-    
 
     <!-- Pagination links -->
     <div class="pagination">
       
         <a href="/blog/page12" class="previous">Previous</a>
       
-      <span class="page_number ">Page: 13 of 61</span>
+      <span class="page_number ">Page: 13 of 62</span>
       
         <a href="/blog/page14" class="next">Next</a>
       
@@ -431,7 +433,7 @@
 
     <div id="footer">
       <div class="container">
-        <p>&copy; 2019 Ken Yang
+        <p>&copy; 2023 Ken Yang
           with help from <a href="http://jekyllbootstrap.com" target="_blank" title="The Definitive Jekyll Blogging Framework">Jekyll Bootstrap</a>
           and <a href="http://getbootstrap.com" target="_blank">Bootstrap</a>
         </p>

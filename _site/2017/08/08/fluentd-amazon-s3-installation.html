@@ -229,6 +229,8 @@
   
     
   
+    
+  
 
 
 
@@ -380,14 +382,13 @@
 <p>首先在一台linux server（我選用ubuntu 16.04）裡面進行安裝log server，
 這台server是要收來自各地API的log。安裝很簡單，只要一行指令就可以：<br /></p>
 
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code>curl -L https://toolbelt.treasuredata.com/sh/install-ubuntu-xenial-td-agent2.sh | sh
-</code></pre>
-</div>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>curl <span class="nt">-L</span> https://toolbelt.treasuredata.com/sh/install-ubuntu-xenial-td-agent2.sh | sh
+</code></pre></div></div>
 
 <p><br />
-安裝完以後要更改config，cofig路徑為<code class="highlighter-rouge">/etc/td-agent/td-agent.conf</code>，default config裡面有很多設定，預設fluentd會起三個port，分別給不同的用途使用，不過我們不需要用到這麼複雜，所以可以把config改成下面的配置</p>
+安裝完以後要更改config，cofig路徑為<code class="language-plaintext highlighter-rouge">/etc/td-agent/td-agent.conf</code>，default config裡面有很多設定，預設fluentd會起三個port，分別給不同的用途使用，不過我們不需要用到這麼複雜，所以可以把config改成下面的配置</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
 # source是指資料從哪裡來的
 &lt;source&gt;
   @type forward # log source會來自於foward的
@@ -403,16 +404,14 @@
  compress gzip # 使用gzip壓縮被切割的log
  utc
 &lt;/match&gt;
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p><br /></p>
 
 <p>完成配置以後，就重啟fluentd。</p>
 
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>/etc/init.d/td-agent restart
-</code></pre>
-</div>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>/etc/init.d/td-agent restart
+</code></pre></div></div>
 
 <p><br /></p>
 
@@ -423,14 +422,13 @@
 <p>這步驟標題雖然是setup fluentd client，但其實fluentd沒有server與client之分，
 所以安裝方式和第二步驟其實是一樣的，決定他是client還是server的關鍵在於config，
 安裝指令，</p>
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code>curl -L https://toolbelt.treasuredata.com/sh/install-ubuntu-xenial-td-agent2.sh | sh
-</code></pre>
-</div>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>curl <span class="nt">-L</span> https://toolbelt.treasuredata.com/sh/install-ubuntu-xenial-td-agent2.sh | sh
+</code></pre></div></div>
 
 <p><br />
-安裝完以後，一樣要更改config，cofig路徑為<code class="highlighter-rouge">/etc/td-agent/td-agent.conf</code>，把config改成下面的配置</p>
+安裝完以後，一樣要更改config，cofig路徑為<code class="language-plaintext highlighter-rouge">/etc/td-agent/td-agent.conf</code>，把config改成下面的配置</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code># source是指資料從哪裡來的
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># source是指資料從哪裡來的
 &lt;source&gt;
   @type tail # 資料會用tail的方式
   path /var/log/api-server-1/out.log # tail這個檔案
@@ -458,16 +456,14 @@
     path /var/log/td-agent/forward-failed
   &lt;/secondary&gt;
 &lt;/match&gt;
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p><br /></p>
 
-<p>完成配置以後，就重啟fluentd，然後就可以去Log Server上的 <code class="highlighter-rouge">/var/log/td-agent/</code>底下看有沒有一個檔名為 <code class="highlighter-rouge">api-server-1.xxxxxxxx</code>的檔案。</p>
+<p>完成配置以後，就重啟fluentd，然後就可以去Log Server上的 <code class="language-plaintext highlighter-rouge">/var/log/td-agent/</code>底下看有沒有一個檔名為 <code class="language-plaintext highlighter-rouge">api-server-1.xxxxxxxx</code>的檔案。</p>
 
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>/etc/init.d/td-agent restart
-</code></pre>
-</div>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>/etc/init.d/td-agent restart
+</code></pre></div></div>
 
 <p><br /></p>
 
@@ -479,15 +475,14 @@
 
 <p>完成上面的前三步驟，基本上就沒問題了，這一部是進階的。fluentd有很多output plugin，像是S3, splunk, mongodb，甚至有很多人整合了Elasticsearch + Kibana，但我需求沒這麼複雜，所以先用S3就好。首先記得先去你的<a href="https://console.aws.amazon.com/s3/home?region=ap-northeast-1#">S3</a>上面create a bucket。
 <br />
-接著要先安裝<code class="highlighter-rouge">fluent-plugin-s3</code>，然後可以使用fluentd提供的gem進行安裝，指令如下：</p>
+接著要先安裝<code class="language-plaintext highlighter-rouge">fluent-plugin-s3</code>，然後可以使用fluentd提供的gem進行安裝，指令如下：</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>sudo /usr/sbin/td-agent-gem install fluent-plugin-s3
-</code></pre>
-</div>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo /usr/sbin/td-agent-gem install fluent-plugin-s3
+</code></pre></div></div>
 
 <p>安裝完成之後，一樣去API-SERVER上改掉你的配置，改完以後應該每60秒會上傳一個part上去，記得在正式環境不要用60秒，配置如下：</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
 # source是指資料從哪裡來的
 &lt;source&gt;
   @type tail # 資料會用tail的方式
@@ -514,8 +509,7 @@
   buffer_chunk_limit 256m
   flush_interval 60s  # 每60秒flush一次
 &lt;/match&gt;
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p><br />
 <br />
@@ -606,7 +600,7 @@
 
     <div id="footer">
       <div class="container">
-        <p>&copy; 2019 Ken Yang
+        <p>&copy; 2023 Ken Yang
           with help from <a href="http://jekyllbootstrap.com" target="_blank" title="The Definitive Jekyll Blogging Framework">Jekyll Bootstrap</a>
           and <a href="http://getbootstrap.com" target="_blank">Bootstrap</a>
         </p>

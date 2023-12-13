@@ -229,6 +229,8 @@
   
     
   
+    
+  
 
 
 
@@ -303,6 +305,40 @@
     </div>
     <!-- This loops through the paginated posts -->
     
+      <h1><a style="color: #F22430" href="/2018/03/13/using-aws-lambda-with-amazon-s3">Using AWS Lambda with Amazon S3 (Node.js)</a></h1>
+      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
+      <p class="author">
+      <div class="date">
+        <span>13 March 2018</span>
+      </div>
+      </p>
+      <div class="content" style="line-height: 28px;">
+        
+<p style="font-size: 16px;line-height: 2;">AWS Lambda提供serverless的運算服務，serverless意思是開發者不需要管server的任何資源，也就是說你不需要創建一個EC2 instance，然後還要煩惱auto scaling, HA等設定，AWS Lambda替開發者解決這些問題，它會自動scale。<br />
+開發者只需要專心在code就好，你的code會透過<code class="language-plaintext highlighter-rouge">Event</code>來驅動，
+這個<code class="language-plaintext highlighter-rouge">Event</code>可以來自於AWS上的服務，例如S3, API Gateway等服務，舉例來說你可以設定，當上傳檔案至S3時，S3會發送一個<code class="language-plaintext highlighter-rouge">Event</code>給你的code來回應這個<code class="language-plaintext highlighter-rouge">Event</code>。這篇文章就會以AWS上<a href="https://docs.aws.amazon.com/lambda/latest/dg/with-s3.html">建立縮圖的example</a>來說明。 <br />
+而AWS Lambda的費用是取決於你的code執行時間，也就是說當沒有任何Event去trigger你的code時，是不需要收費的，在某些應用情況來說，是比EC2來得優惠。但AWS Lambda還是有它的缺點，因為你不需要也無法管server的任何設定/資源，在某些應用情況來說，替開發者帶來了些限制，所以當想要更有彈性，或者喜歡hands-on架構的開發者，或許就可以考慮EC2。</p>
+
+
+      </div>
+      <footer>
+        <p><a class="myButton" href="/2018/03/13/using-aws-lambda-with-amazon-s3">read more &raquo;</a></p>
+        <div>
+          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- ken on github -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3783438370424072"
+     data-ad-slot="1516206098"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+        </div>
+      </footer>
+      <hr>
+    
       <h1><a style="color: #F22430" href="/2017/08/25/firebase-realtime-database-web">Firebase Realtime Database (Web)</a></h1>
       <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
       <p class="author">
@@ -355,12 +391,11 @@
 <h3 id="1-check-nginx-version">1. Check Nginx version</h3>
 <hr />
 
-<p>首先先看看你安裝的Nginx是否有支援<code class="highlighter-rouge">geoip</code>這功能，如果有<code class="highlighter-rouge">grep</code>東西出來就代表有支援。</p>
+<p>首先先看看你安裝的Nginx是否有支援<code class="language-plaintext highlighter-rouge">geoip</code>這功能，如果有<code class="language-plaintext highlighter-rouge">grep</code>東西出來就代表有支援。</p>
 
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>nginx -V 2&gt;&amp;1 | tr <span class="s1">' '</span> <span class="s1">'\n'</span> | grep geoip
---with-http_geoip_module
-</code></pre>
-</div>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>nginx <span class="nt">-V</span> 2&gt;&amp;1 | <span class="nb">tr</span> <span class="s1">' '</span> <span class="s1">'\n'</span> | <span class="nb">grep </span>geoip
+<span class="nt">--with-http_geoip_module</span>
+</code></pre></div></div>
 
 <p><br /></p>
 
@@ -384,61 +419,13 @@
       </footer>
       <hr>
     
-      <h1><a style="color: #F22430" href="/2017/08/08/fluentd-amazon-s3-installation">fluentd + Amazon S3 installation</a></h1>
-      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
-      <p class="author">
-      <div class="date">
-        <span>08 August 2017</span>
-      </div>
-      </p>
-      <div class="content" style="line-height: 28px;">
-        
-<hr />
-<h3 id="1-whats-fluentd">1. What’s fluentd?</h3>
-<hr />
-
-<p><a href="https://www.fluentd.org/">fluentd</a>是一個用來搜集data的open source，以及可以對搜集來的data進行簡單的分析，
-甚至可以把搜集來的data再foward出去mongodb, Elasticsearch, S3, GCP…etc.
-<br /></p>
-
-<p>因為我們的API有好多台，在管理log時非常不方便，必須ssh進去每一台看，或者scp出來，這方法實在太落後，
-因此最近才把fluentd整進來，我們應用的情景如下：</p>
-
-<ul>
-  <li>安裝一台Log Server (儲存所有API上的log)</li>
-  <li>每一台API Server都裝有fluentd，並且把本地的log foward to Log Server</li>
-  <li>把本地的Log上傳至S3備份</li>
-</ul>
-
-<p><br /></p>
-
-
-      </div>
-      <footer>
-        <p><a class="myButton" href="/2017/08/08/fluentd-amazon-s3-installation">read more &raquo;</a></p>
-        <div>
-          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<!-- ken on github -->
-<ins class="adsbygoogle"
-     style="display:block"
-     data-ad-client="ca-pub-3783438370424072"
-     data-ad-slot="1516206098"
-     data-ad-format="auto"></ins>
-<script>
-(adsbygoogle = window.adsbygoogle || []).push({});
-</script>
-
-        </div>
-      </footer>
-      <hr>
-    
 
     <!-- Pagination links -->
     <div class="pagination">
       
         <a href="/" class="previous">Previous</a>
       
-      <span class="page_number ">Page: 2 of 61</span>
+      <span class="page_number ">Page: 2 of 62</span>
       
         <a href="/blog/page3" class="next">Next</a>
       
@@ -476,7 +463,7 @@
 
     <div id="footer">
       <div class="container">
-        <p>&copy; 2019 Ken Yang
+        <p>&copy; 2023 Ken Yang
           with help from <a href="http://jekyllbootstrap.com" target="_blank" title="The Definitive Jekyll Blogging Framework">Jekyll Bootstrap</a>
           and <a href="http://getbootstrap.com" target="_blank">Bootstrap</a>
         </p>

@@ -229,6 +229,8 @@
   
     
   
+    
+  
 
 
 
@@ -360,12 +362,11 @@
 <h3 id="1-check-nginx-version">1. Check Nginx version</h3>
 <hr />
 
-<p>首先先看看你安裝的Nginx是否有支援<code class="highlighter-rouge">geoip</code>這功能，如果有<code class="highlighter-rouge">grep</code>東西出來就代表有支援。</p>
+<p>首先先看看你安裝的Nginx是否有支援<code class="language-plaintext highlighter-rouge">geoip</code>這功能，如果有<code class="language-plaintext highlighter-rouge">grep</code>東西出來就代表有支援。</p>
 
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>nginx -V 2&gt;&amp;1 | tr <span class="s1">' '</span> <span class="s1">'\n'</span> | grep geoip
---with-http_geoip_module
-</code></pre>
-</div>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>nginx <span class="nt">-V</span> 2&gt;&amp;1 | <span class="nb">tr</span> <span class="s1">' '</span> <span class="s1">'\n'</span> | <span class="nb">grep </span>geoip
+<span class="nt">--with-http_geoip_module</span>
+</code></pre></div></div>
 
 <p><br /></p>
 
@@ -375,11 +376,10 @@
 <h3 id="2-download-geoip">2. Download GeoIP</h3>
 <hr />
 
-<p>如果Nginx有支援<code class="highlighter-rouge">geoip</code>，那就去下載GeoIP的gz檔下來，然後再解壓縮至<code class="highlighter-rouge">/etc/nginx</code>底下。</p>
+<p>如果Nginx有支援<code class="language-plaintext highlighter-rouge">geoip</code>，那就去下載GeoIP的gz檔下來，然後再解壓縮至<code class="language-plaintext highlighter-rouge">/etc/nginx</code>底下。</p>
 
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code>wget http://geolite.maxmind.com/download/geoip/database/GeoLiteCountry/GeoIP.dat.gz | gzip -d - &gt; /etc/nginx/GeoIP2.dat
-</code></pre>
-</div>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>wget http://geolite.maxmind.com/download/geoip/database/GeoLiteCountry/GeoIP.dat.gz | <span class="nb">gzip</span> <span class="nt">-d</span> - <span class="o">&gt;</span> /etc/nginx/GeoIP2.dat
+</code></pre></div></div>
 
 <p><br /></p>
 
@@ -387,13 +387,13 @@
 <h3 id="3-configure-nginxconf--default-configuration-file">3. Configure nginx.conf &amp; default configuration file</h3>
 <hr />
 
-<p>這步驟要來設定<code class="highlighter-rouge">nginx.conf</code>和<code class="highlighter-rouge">default</code>這二個檔案，首先先設定nginx.conf，在http的block中加入下面的設定，
-一個是geoip的地址，另一個是白名單的IP，以下面的example來說，<code class="highlighter-rouge">8.8.8.8</code>是白名單，所以就把value設成1。
-然後如果你nginx前面是有掛proxy或者CDN的，記得不要使用<code class="highlighter-rouge">remote_addr</code>，要拿<code class="highlighter-rouge">XFF</code>或者拿CDN提供的Client IP（每個CDN提供的header不同）。</p>
+<p>這步驟要來設定<code class="language-plaintext highlighter-rouge">nginx.conf</code>和<code class="language-plaintext highlighter-rouge">default</code>這二個檔案，首先先設定nginx.conf，在http的block中加入下面的設定，
+一個是geoip的地址，另一個是白名單的IP，以下面的example來說，<code class="language-plaintext highlighter-rouge">8.8.8.8</code>是白名單，所以就把value設成1。
+然後如果你nginx前面是有掛proxy或者CDN的，記得不要使用<code class="language-plaintext highlighter-rouge">remote_addr</code>，要拿<code class="language-plaintext highlighter-rouge">XFF</code>或者拿CDN提供的Client IP（每個CDN提供的header不同）。</p>
 
-<h4 id="1-etcnginxnginxconf"><code class="highlighter-rouge">1. /etc/nginx/nginx.conf</code></h4>
+<h4 id="1-etcnginxnginxconf"><code class="language-plaintext highlighter-rouge">1. /etc/nginx/nginx.conf</code></h4>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>http {
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>http {
     geoip_country /etc/nginx/GeoIP.dat;
     geo $remote_addr $ip_whitelist {
         default 0;
@@ -401,15 +401,14 @@
     }
     ....
 }
-</code></pre>
-</div>
+</code></pre></div></div>
 <p><br /></p>
 
-<p>接著就來設定default這個檔案，在這檔案中的location block加入下面的判斷，因為nginx的config沒辦法吃if-else和nested if，他只能吃單一if，所以變成寫法很醜，下面的判斷先去看我們自己的IP是不是在白名單裡面，如果是就直接break；如果不是的話就會繼續往下看來源的國家是不是在<code class="highlighter-rouge">HK, TW, PH, US</code>這幾個地區，如果是這幾個地區就直接回404給用戶。</p>
+<p>接著就來設定default這個檔案，在這檔案中的location block加入下面的判斷，因為nginx的config沒辦法吃if-else和nested if，他只能吃單一if，所以變成寫法很醜，下面的判斷先去看我們自己的IP是不是在白名單裡面，如果是就直接break；如果不是的話就會繼續往下看來源的國家是不是在<code class="language-plaintext highlighter-rouge">HK, TW, PH, US</code>這幾個地區，如果是這幾個地區就直接回404給用戶。</p>
 
-<h4 id="2-etcnginxsites-availabledefault"><code class="highlighter-rouge">2. /etc/nginx/sites-available/default</code></h4>
+<h4 id="2-etcnginxsites-availabledefault"><code class="language-plaintext highlighter-rouge">2. /etc/nginx/sites-available/default</code></h4>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>location / {
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>location / {
     if ($ip_whitelist = 1) {
         break;
     }
@@ -419,8 +418,7 @@
     }
     ...
 }
-</code></pre>
-</div>
+</code></pre></div></div>
 <p><br /></p>
 
 <p>最後就restart nginx，就可以進行verify。</p>
@@ -431,9 +429,9 @@
 <h3 id="4-advanced-topic-cdn">4. Advanced topic: CDN</h3>
 <hr />
 
-<p>剛好因為我們前面有掛CloudFlare CDN，其實我們不用整合<code class="highlighter-rouge">geoip</code>就可以達到上述的效果，因為CloudFlare會帶上<code class="highlighter-rouge">HTTP_CF_IPCOUNTRY</code>這個header給我們的source(nginx)；因此如果前面有CDN的話，就不需要上面的第二步驟（下載GeoIP）以及第三步驟的    <code class="highlighter-rouge">geoip_country /etc/nginx/GeoIP.dat</code>，只需要把<code class="highlighter-rouge">default</code>配置改成下面的方式就可以了。</p>
+<p>剛好因為我們前面有掛CloudFlare CDN，其實我們不用整合<code class="language-plaintext highlighter-rouge">geoip</code>就可以達到上述的效果，因為CloudFlare會帶上<code class="language-plaintext highlighter-rouge">HTTP_CF_IPCOUNTRY</code>這個header給我們的source(nginx)；因此如果前面有CDN的話，就不需要上面的第二步驟（下載GeoIP）以及第三步驟的    <code class="language-plaintext highlighter-rouge">geoip_country /etc/nginx/GeoIP.dat</code>，只需要把<code class="language-plaintext highlighter-rouge">default</code>配置改成下面的方式就可以了。</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
 location / {
     if ($ip_whitelist = 1) {
         break;
@@ -444,8 +442,7 @@ location / {
     }
     ...
 }
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p><br />
 <br />
@@ -514,7 +511,7 @@ location / {
 
     <div id="footer">
       <div class="container">
-        <p>&copy; 2019 Ken Yang
+        <p>&copy; 2023 Ken Yang
           with help from <a href="http://jekyllbootstrap.com" target="_blank" title="The Definitive Jekyll Blogging Framework">Jekyll Bootstrap</a>
           and <a href="http://getbootstrap.com" target="_blank">Bootstrap</a>
         </p>

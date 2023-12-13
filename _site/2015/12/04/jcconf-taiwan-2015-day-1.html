@@ -229,6 +229,8 @@
   
     
   
+    
+  
 
 
 
@@ -484,8 +486,8 @@ author answer: hard to implement JIT.</p>
 <h3 id="4-workshop動手玩java專案建置工具以gradle與docker為例">4. workshop動手玩Java專案建置工具：以Gradle與Docker為例</h3>
 <hr />
 
-<p>這個session在介紹他們team是怎麼用<code class="highlighter-rouge">docker</code>建立test env，<br />
-然後再透過<code class="highlighter-rouge">Geb</code>去進行automation，<br />
+<p>這個session在介紹他們team是怎麼用<code class="language-plaintext highlighter-rouge">docker</code>建立test env，<br />
+然後再透過<code class="language-plaintext highlighter-rouge">Geb</code>去進行automation，<br />
 主要提供了以下二個docker images讓我們練習測試，</p>
 
 <ol>
@@ -493,9 +495,9 @@ author answer: hard to implement JIT.</p>
   <li>main：groovy</li>
 </ol>
 
-<p>由於我對於<code class="highlighter-rouge">docker</code>算是瞭解，因此這個session沒有全部聽完就先去趕場了。<br />
-簡單的說，整個流程就是先透過docker叫起<code class="highlighter-rouge">client</code>，<br />
-之後再叫起<code class="highlighter-rouge">main</code>來對<code class="highlighter-rouge">client</code>進行測試。</p>
+<p>由於我對於<code class="language-plaintext highlighter-rouge">docker</code>算是瞭解，因此這個session沒有全部聽完就先去趕場了。<br />
+簡單的說，整個流程就是先透過docker叫起<code class="language-plaintext highlighter-rouge">client</code>，<br />
+之後再叫起<code class="language-plaintext highlighter-rouge">main</code>來對<code class="language-plaintext highlighter-rouge">client</code>進行測試。</p>
 
 <h3 id="resource">Resource</h3>
 
@@ -534,7 +536,7 @@ author answer: hard to implement JIT.</p>
 <h3 id="6-使用java的futurepromise-api來撰寫非同步程式">6. 使用Java的Future/Promise API來撰寫非同步程式</h3>
 <hr />
 
-<p>前陣子也剛好在研究<code class="highlighter-rouge">CompletableFuture</code>，<br />
+<p>前陣子也剛好在研究<code class="language-plaintext highlighter-rouge">CompletableFuture</code>，<br />
 所以這是今天最有共鳴的一場session，</p>
 
 <h3 id="speaker">Speaker</h3>
@@ -571,7 +573,7 @@ author answer: hard to implement JIT.</p>
   <li>get會丟exception，可以用join</li>
   <li>supplyAsync可以指定executorService，如果沒給，就會用forkjoin裡的tool。</li>
   <li>盡量要給！</li>
-  <li><code class="highlighter-rouge">CF&lt;CF&lt;string&gt;&gt; c</code> 不好，要get 2次 ex: <code class="highlighter-rouge">c.get().get()</code></li>
+  <li><code class="language-plaintext highlighter-rouge">CF&lt;CF&lt;string&gt;&gt; c</code> 不好，要get 2次 ex: <code class="language-plaintext highlighter-rouge">c.get().get()</code></li>
   <li>請用.thenCompose, 回傳也是completeablefutre的時候，就不用get 2次，像是scala的flatmap，</li>
   <li>優點
     <ul>
@@ -613,7 +615,7 @@ author answer: hard to implement JIT.</p>
   <li>speaker很專業</li>
   <li>詢問了master與master的架構時，當replication發生error時，通常得取捨一台，必定有資料會遺失，該怎麼辦？
     <ul>
-      <li>回答：透過讓<code class="highlighter-rouge">master</code>等待的機制，然後取回binlog回來至<code class="highlighter-rouge">slave</code>，partially updated</li>
+      <li>回答：透過讓<code class="language-plaintext highlighter-rouge">master</code>等待的機制，然後取回binlog回來至<code class="language-plaintext highlighter-rouge">slave</code>，partially updated</li>
     </ul>
   </li>
   <li>還介紹了MySQL Enterprise Monitor
@@ -634,7 +636,7 @@ author answer: hard to implement JIT.</p>
 <h4 id="攤位kxxxx-banking">攤位Kxxxx banking</h4>
 <ul>
   <li>在做財務管理系統</li>
-  <li>在徵人，要<code class="highlighter-rouge">java</code>，前端用<code class="highlighter-rouge">extJS</code></li>
+  <li>在徵人，要<code class="language-plaintext highlighter-rouge">java</code>，前端用<code class="language-plaintext highlighter-rouge">extJS</code></li>
 </ul>
 
 <h4 id="攤位ruckus">攤位ruckus</h4>
@@ -744,7 +746,7 @@ author answer: hard to implement JIT.</p>
 
     <div id="footer">
       <div class="container">
-        <p>&copy; 2019 Ken Yang
+        <p>&copy; 2023 Ken Yang
           with help from <a href="http://jekyllbootstrap.com" target="_blank" title="The Definitive Jekyll Blogging Framework">Jekyll Bootstrap</a>
           and <a href="http://getbootstrap.com" target="_blank">Bootstrap</a>
         </p>

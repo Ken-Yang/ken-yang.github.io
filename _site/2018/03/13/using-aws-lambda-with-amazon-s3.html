@@ -229,6 +229,8 @@
   
     
   
+    
+  
 
 
 
@@ -353,8 +355,8 @@
     <div class="content" style="line-height: 28px;">
       
 <p style="font-size: 16px;line-height: 2;">AWS Lambda提供serverless的運算服務，serverless意思是開發者不需要管server的任何資源，也就是說你不需要創建一個EC2 instance，然後還要煩惱auto scaling, HA等設定，AWS Lambda替開發者解決這些問題，它會自動scale。<br />
-開發者只需要專心在code就好，你的code會透過<code class="highlighter-rouge">Event</code>來驅動，
-這個<code class="highlighter-rouge">Event</code>可以來自於AWS上的服務，例如S3, API Gateway等服務，舉例來說你可以設定，當上傳檔案至S3時，S3會發送一個<code class="highlighter-rouge">Event</code>給你的code來回應這個<code class="highlighter-rouge">Event</code>。這篇文章就會以AWS上<a href="https://docs.aws.amazon.com/lambda/latest/dg/with-s3.html">建立縮圖的example</a>來說明。 <br />
+開發者只需要專心在code就好，你的code會透過<code class="language-plaintext highlighter-rouge">Event</code>來驅動，
+這個<code class="language-plaintext highlighter-rouge">Event</code>可以來自於AWS上的服務，例如S3, API Gateway等服務，舉例來說你可以設定，當上傳檔案至S3時，S3會發送一個<code class="language-plaintext highlighter-rouge">Event</code>給你的code來回應這個<code class="language-plaintext highlighter-rouge">Event</code>。這篇文章就會以AWS上<a href="https://docs.aws.amazon.com/lambda/latest/dg/with-s3.html">建立縮圖的example</a>來說明。 <br />
 而AWS Lambda的費用是取決於你的code執行時間，也就是說當沒有任何Event去trigger你的code時，是不需要收費的，在某些應用情況來說，是比EC2來得優惠。但AWS Lambda還是有它的缺點，因為你不需要也無法管server的任何設定/資源，在某些應用情況來說，替開發者帶來了些限制，所以當想要更有彈性，或者喜歡hands-on架構的開發者，或許就可以考慮EC2。</p>
 
 <!--more-->
@@ -378,7 +380,7 @@
   <li>kenyang-imageresized</li>
 </ul>
 
-<p style="font-size: 16px;line-height: 1.6;">創建完成以後，在<code class="highlighter-rouge">kenyang-image</code>裡上傳一張圖片。</p>
+<p style="font-size: 16px;line-height: 1.6;">創建完成以後，在<code class="language-plaintext highlighter-rouge">kenyang-image</code>裡上傳一張圖片。</p>
 
 <p><br /></p>
 
@@ -386,7 +388,7 @@
 <h3 id="3-創建deployment-package">3. 創建Deployment Package</h3>
 <hr />
 
-<p style="font-size: 16px;line-height: 1.6;">在這一步驟要創建一個<code class="highlighter-rouge">Deployment package</code>，它是一個zip檔案，而這zip檔案裡面包含了Lambda code + dependencies。</p>
+<p style="font-size: 16px;line-height: 1.6;">在這一步驟要創建一個<code class="language-plaintext highlighter-rouge">Deployment package</code>，它是一個zip檔案，而這zip檔案裡面包含了Lambda code + dependencies。</p>
 
 <p style="font-size: 16px;line-height: 1.6;">首先先安裝2個packages:</p>
 
@@ -395,12 +397,11 @@
   <li>gm: GraphicsMagick用來轉圖</li>
 </ul>
 
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span><span class="nb">cd test</span>-lambda-s3
-<span class="gp">$ </span>npm install async gm
-</code></pre>
-</div>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">cd </span>test-lambda-s3
+<span class="nv">$ </span>npm <span class="nb">install </span>async gm
+</code></pre></div></div>
 
-<p style="font-size: 16px;line-height: 1.6;">安裝完以後，創建一個<code class="highlighter-rouge">CreateThumbnail.js</code>，並把下面的code貼入。這份code是利用async去依序完成三個工作:</p>
+<p style="font-size: 16px;line-height: 1.6;">安裝完以後，創建一個<code class="language-plaintext highlighter-rouge">CreateThumbnail.js</code>，並把下面的code貼入。這份code是利用async去依序完成三個工作:</p>
 
 <ol style="font-size: 16px;line-height: 1.6;">
   <li>從S3下載檔案至buffer</li>
@@ -408,62 +409,62 @@
   <li>上傳檔案至S3</li>
 </ol>
 
-<div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="c1">// dependencies</span>
-<span class="kd">var</span> <span class="nx">async</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'async'</span><span class="p">);</span>
-<span class="kd">var</span> <span class="nx">AWS</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'aws-sdk'</span><span class="p">);</span>
-<span class="kd">var</span> <span class="nx">gm</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'gm'</span><span class="p">)</span>
-            <span class="p">.</span><span class="nx">subClass</span><span class="p">({</span> <span class="na">imageMagick</span><span class="p">:</span> <span class="kc">true</span> <span class="p">});</span> <span class="c1">// Enable ImageMagick integration.</span>
-<span class="kd">var</span> <span class="nx">util</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'util'</span><span class="p">);</span>
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// dependencies</span>
+<span class="kd">var</span> <span class="k">async</span> <span class="o">=</span> <span class="nf">require</span><span class="p">(</span><span class="dl">'</span><span class="s1">async</span><span class="dl">'</span><span class="p">);</span>
+<span class="kd">var</span> <span class="nx">AWS</span> <span class="o">=</span> <span class="nf">require</span><span class="p">(</span><span class="dl">'</span><span class="s1">aws-sdk</span><span class="dl">'</span><span class="p">);</span>
+<span class="kd">var</span> <span class="nx">gm</span> <span class="o">=</span> <span class="nf">require</span><span class="p">(</span><span class="dl">'</span><span class="s1">gm</span><span class="dl">'</span><span class="p">)</span>
+            <span class="p">.</span><span class="nf">subClass</span><span class="p">({</span> <span class="na">imageMagick</span><span class="p">:</span> <span class="kc">true</span> <span class="p">});</span> <span class="c1">// Enable ImageMagick integration.</span>
+<span class="kd">var</span> <span class="nx">util</span> <span class="o">=</span> <span class="nf">require</span><span class="p">(</span><span class="dl">'</span><span class="s1">util</span><span class="dl">'</span><span class="p">);</span>
 
 <span class="c1">// constants</span>
 <span class="kd">var</span> <span class="nx">MAX_WIDTH</span>  <span class="o">=</span> <span class="mi">100</span><span class="p">;</span>
 <span class="kd">var</span> <span class="nx">MAX_HEIGHT</span> <span class="o">=</span> <span class="mi">100</span><span class="p">;</span>
 
 <span class="c1">// get reference to S3 client </span>
-<span class="kd">var</span> <span class="nx">s3</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">AWS</span><span class="p">.</span><span class="nx">S3</span><span class="p">();</span>
+<span class="kd">var</span> <span class="nx">s3</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">AWS</span><span class="p">.</span><span class="nc">S3</span><span class="p">();</span>
  
 <span class="nx">exports</span><span class="p">.</span><span class="nx">handler</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">event</span><span class="p">,</span> <span class="nx">context</span><span class="p">,</span> <span class="nx">callback</span><span class="p">)</span> <span class="p">{</span>
     <span class="c1">// Read options from the event.</span>
-    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">"Reading options from event:\n"</span><span class="p">,</span> <span class="nx">util</span><span class="p">.</span><span class="nx">inspect</span><span class="p">(</span><span class="nx">event</span><span class="p">,</span> <span class="p">{</span><span class="na">depth</span><span class="p">:</span> <span class="mi">5</span><span class="p">}));</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="dl">"</span><span class="s2">Reading options from event:</span><span class="se">\n</span><span class="dl">"</span><span class="p">,</span> <span class="nx">util</span><span class="p">.</span><span class="nf">inspect</span><span class="p">(</span><span class="nx">event</span><span class="p">,</span> <span class="p">{</span><span class="na">depth</span><span class="p">:</span> <span class="mi">5</span><span class="p">}));</span>
     <span class="kd">var</span> <span class="nx">srcBucket</span> <span class="o">=</span> <span class="nx">event</span><span class="p">.</span><span class="nx">Records</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">s3</span><span class="p">.</span><span class="nx">bucket</span><span class="p">.</span><span class="nx">name</span><span class="p">;</span>
     <span class="c1">// Object key may have spaces or unicode non-ASCII characters.</span>
     <span class="kd">var</span> <span class="nx">srcKey</span>    <span class="o">=</span>
-    <span class="nb">decodeURIComponent</span><span class="p">(</span><span class="nx">event</span><span class="p">.</span><span class="nx">Records</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">s3</span><span class="p">.</span><span class="nx">object</span><span class="p">.</span><span class="nx">key</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="sr">/</span><span class="se">\+</span><span class="sr">/g</span><span class="p">,</span> <span class="s2">" "</span><span class="p">));</span>  
-    <span class="kd">var</span> <span class="nx">dstBucket</span> <span class="o">=</span> <span class="nx">srcBucket</span> <span class="o">+</span> <span class="s2">"resized"</span><span class="p">;</span>
-    <span class="kd">var</span> <span class="nx">dstKey</span>    <span class="o">=</span> <span class="s2">"resized-"</span> <span class="o">+</span> <span class="nx">srcKey</span><span class="p">;</span>
+    <span class="nf">decodeURIComponent</span><span class="p">(</span><span class="nx">event</span><span class="p">.</span><span class="nx">Records</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">s3</span><span class="p">.</span><span class="nx">object</span><span class="p">.</span><span class="nx">key</span><span class="p">.</span><span class="nf">replace</span><span class="p">(</span><span class="sr">/</span><span class="se">\+</span><span class="sr">/g</span><span class="p">,</span> <span class="dl">"</span><span class="s2"> </span><span class="dl">"</span><span class="p">));</span>  
+    <span class="kd">var</span> <span class="nx">dstBucket</span> <span class="o">=</span> <span class="nx">srcBucket</span> <span class="o">+</span> <span class="dl">"</span><span class="s2">resized</span><span class="dl">"</span><span class="p">;</span>
+    <span class="kd">var</span> <span class="nx">dstKey</span>    <span class="o">=</span> <span class="dl">"</span><span class="s2">resized-</span><span class="dl">"</span> <span class="o">+</span> <span class="nx">srcKey</span><span class="p">;</span>
 
     <span class="c1">// Sanity check: validate that source and destination are different buckets.</span>
-    <span class="k">if</span> <span class="p">(</span><span class="nx">srcBucket</span> <span class="o">==</span> <span class="nx">dstBucket</span><span class="p">)</span> <span class="p">{</span>
-        <span class="nx">callback</span><span class="p">(</span><span class="s2">"Source and destination buckets are the same."</span><span class="p">);</span>
+    <span class="k">if </span><span class="p">(</span><span class="nx">srcBucket</span> <span class="o">==</span> <span class="nx">dstBucket</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nf">callback</span><span class="p">(</span><span class="dl">"</span><span class="s2">Source and destination buckets are the same.</span><span class="dl">"</span><span class="p">);</span>
         <span class="k">return</span><span class="p">;</span>
     <span class="p">}</span>
 
     <span class="c1">// Infer the image type.</span>
-    <span class="kd">var</span> <span class="nx">typeMatch</span> <span class="o">=</span> <span class="nx">srcKey</span><span class="p">.</span><span class="nx">match</span><span class="p">(</span><span class="sr">/</span><span class="se">\.([^</span><span class="sr">.</span><span class="se">]</span><span class="sr">*</span><span class="se">)</span><span class="sr">$/</span><span class="p">);</span>
-    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">typeMatch</span><span class="p">)</span> <span class="p">{</span>
-        <span class="nx">callback</span><span class="p">(</span><span class="s2">"Could not determine the image type."</span><span class="p">);</span>
+    <span class="kd">var</span> <span class="nx">typeMatch</span> <span class="o">=</span> <span class="nx">srcKey</span><span class="p">.</span><span class="nf">match</span><span class="p">(</span><span class="sr">/</span><span class="se">\.([^</span><span class="sr">.</span><span class="se">]</span><span class="sr">*</span><span class="se">)</span><span class="sr">$/</span><span class="p">);</span>
+    <span class="k">if </span><span class="p">(</span><span class="o">!</span><span class="nx">typeMatch</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nf">callback</span><span class="p">(</span><span class="dl">"</span><span class="s2">Could not determine the image type.</span><span class="dl">"</span><span class="p">);</span>
         <span class="k">return</span><span class="p">;</span>
     <span class="p">}</span>
     <span class="kd">var</span> <span class="nx">imageType</span> <span class="o">=</span> <span class="nx">typeMatch</span><span class="p">[</span><span class="mi">1</span><span class="p">];</span>
-    <span class="k">if</span> <span class="p">(</span><span class="nx">imageType</span> <span class="o">!=</span> <span class="s2">"jpg"</span> <span class="o">&amp;&amp;</span> <span class="nx">imageType</span> <span class="o">!=</span> <span class="s2">"png"</span><span class="p">)</span> <span class="p">{</span>
-        <span class="nx">callback</span><span class="p">(</span><span class="s1">'Unsupported image type: ${imageType}'</span><span class="p">);</span>
+    <span class="k">if </span><span class="p">(</span><span class="nx">imageType</span> <span class="o">!=</span> <span class="dl">"</span><span class="s2">jpg</span><span class="dl">"</span> <span class="o">&amp;&amp;</span> <span class="nx">imageType</span> <span class="o">!=</span> <span class="dl">"</span><span class="s2">png</span><span class="dl">"</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nf">callback</span><span class="p">(</span><span class="dl">'</span><span class="s1">Unsupported image type: ${imageType}</span><span class="dl">'</span><span class="p">);</span>
         <span class="k">return</span><span class="p">;</span>
     <span class="p">}</span>
 
     <span class="c1">// Download the image from S3, transform, and upload to a different S3 bucket.</span>
-    <span class="nx">async</span><span class="p">.</span><span class="nx">waterfall</span><span class="p">([</span>
-        <span class="kd">function</span> <span class="nx">download</span><span class="p">(</span><span class="nx">next</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">async</span><span class="p">.</span><span class="nf">waterfall</span><span class="p">([</span>
+        <span class="kd">function</span> <span class="nf">download</span><span class="p">(</span><span class="nx">next</span><span class="p">)</span> <span class="p">{</span>
             <span class="c1">// Download the image from S3 into a buffer.</span>
-            <span class="nx">s3</span><span class="p">.</span><span class="nx">getObject</span><span class="p">({</span>
+            <span class="nx">s3</span><span class="p">.</span><span class="nf">getObject</span><span class="p">({</span>
                     <span class="na">Bucket</span><span class="p">:</span> <span class="nx">srcBucket</span><span class="p">,</span>
                     <span class="na">Key</span><span class="p">:</span> <span class="nx">srcKey</span>
                 <span class="p">},</span>
                 <span class="nx">next</span><span class="p">);</span>
         <span class="p">},</span>
-        <span class="kd">function</span> <span class="nx">transform</span><span class="p">(</span><span class="nx">response</span><span class="p">,</span> <span class="nx">next</span><span class="p">)</span> <span class="p">{</span>
-            <span class="nx">gm</span><span class="p">(</span><span class="nx">response</span><span class="p">.</span><span class="nx">Body</span><span class="p">).</span><span class="nx">size</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">size</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kd">function</span> <span class="nf">transform</span><span class="p">(</span><span class="nx">response</span><span class="p">,</span> <span class="nx">next</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nf">gm</span><span class="p">(</span><span class="nx">response</span><span class="p">.</span><span class="nx">Body</span><span class="p">).</span><span class="nf">size</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">size</span><span class="p">)</span> <span class="p">{</span>
                 <span class="c1">// Infer the scaling factor to avoid stretching the image unnaturally.</span>
-                <span class="kd">var</span> <span class="nx">scalingFactor</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">min</span><span class="p">(</span>
+                <span class="kd">var</span> <span class="nx">scalingFactor</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nf">min</span><span class="p">(</span>
                     <span class="nx">MAX_WIDTH</span> <span class="o">/</span> <span class="nx">size</span><span class="p">.</span><span class="nx">width</span><span class="p">,</span>
                     <span class="nx">MAX_HEIGHT</span> <span class="o">/</span> <span class="nx">size</span><span class="p">.</span><span class="nx">height</span>
                 <span class="p">);</span>
@@ -471,19 +472,19 @@
                 <span class="kd">var</span> <span class="nx">height</span> <span class="o">=</span> <span class="nx">scalingFactor</span> <span class="o">*</span> <span class="nx">size</span><span class="p">.</span><span class="nx">height</span><span class="p">;</span>
 
                 <span class="c1">// Transform the image buffer in memory.</span>
-                <span class="k">this</span><span class="p">.</span><span class="nx">resize</span><span class="p">(</span><span class="nx">width</span><span class="p">,</span> <span class="nx">height</span><span class="p">)</span>
-                    <span class="p">.</span><span class="nx">toBuffer</span><span class="p">(</span><span class="nx">imageType</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">buffer</span><span class="p">)</span> <span class="p">{</span>
-                        <span class="k">if</span> <span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="p">{</span>
-                            <span class="nx">next</span><span class="p">(</span><span class="nx">err</span><span class="p">);</span>
+                <span class="k">this</span><span class="p">.</span><span class="nf">resize</span><span class="p">(</span><span class="nx">width</span><span class="p">,</span> <span class="nx">height</span><span class="p">)</span>
+                    <span class="p">.</span><span class="nf">toBuffer</span><span class="p">(</span><span class="nx">imageType</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">buffer</span><span class="p">)</span> <span class="p">{</span>
+                        <span class="k">if </span><span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="p">{</span>
+                            <span class="nf">next</span><span class="p">(</span><span class="nx">err</span><span class="p">);</span>
                         <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-                            <span class="nx">next</span><span class="p">(</span><span class="kc">null</span><span class="p">,</span> <span class="nx">response</span><span class="p">.</span><span class="nx">ContentType</span><span class="p">,</span> <span class="nx">buffer</span><span class="p">);</span>
+                            <span class="nf">next</span><span class="p">(</span><span class="kc">null</span><span class="p">,</span> <span class="nx">response</span><span class="p">.</span><span class="nx">ContentType</span><span class="p">,</span> <span class="nx">buffer</span><span class="p">);</span>
                         <span class="p">}</span>
                     <span class="p">});</span>
             <span class="p">});</span>
         <span class="p">},</span>
-        <span class="kd">function</span> <span class="nx">upload</span><span class="p">(</span><span class="nx">contentType</span><span class="p">,</span> <span class="nx">data</span><span class="p">,</span> <span class="nx">next</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kd">function</span> <span class="nf">upload</span><span class="p">(</span><span class="nx">contentType</span><span class="p">,</span> <span class="nx">data</span><span class="p">,</span> <span class="nx">next</span><span class="p">)</span> <span class="p">{</span>
             <span class="c1">// Stream the transformed image to a different S3 bucket.</span>
-            <span class="nx">s3</span><span class="p">.</span><span class="nx">putObject</span><span class="p">({</span>
+            <span class="nx">s3</span><span class="p">.</span><span class="nf">putObject</span><span class="p">({</span>
                     <span class="na">Bucket</span><span class="p">:</span> <span class="nx">dstBucket</span><span class="p">,</span>
                     <span class="na">Key</span><span class="p">:</span> <span class="nx">dstKey</span><span class="p">,</span>
                     <span class="na">Body</span><span class="p">:</span> <span class="nx">data</span><span class="p">,</span>
@@ -491,32 +492,30 @@
                 <span class="p">},</span>
                 <span class="nx">next</span><span class="p">);</span>
             <span class="p">}</span>
-        <span class="p">],</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="p">{</span>
-            <span class="k">if</span> <span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="p">{</span>
-                <span class="nx">console</span><span class="p">.</span><span class="nx">error</span><span class="p">(</span>
-                    <span class="s1">'Unable to resize '</span> <span class="o">+</span> <span class="nx">srcBucket</span> <span class="o">+</span> <span class="s1">'/'</span> <span class="o">+</span> <span class="nx">srcKey</span> <span class="o">+</span>
-                    <span class="s1">' and upload to '</span> <span class="o">+</span> <span class="nx">dstBucket</span> <span class="o">+</span> <span class="s1">'/'</span> <span class="o">+</span> <span class="nx">dstKey</span> <span class="o">+</span>
-                    <span class="s1">' due to an error: '</span> <span class="o">+</span> <span class="nx">err</span>
+        <span class="p">],</span> <span class="nf">function </span><span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">if </span><span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="p">{</span>
+                <span class="nx">console</span><span class="p">.</span><span class="nf">error</span><span class="p">(</span>
+                    <span class="dl">'</span><span class="s1">Unable to resize </span><span class="dl">'</span> <span class="o">+</span> <span class="nx">srcBucket</span> <span class="o">+</span> <span class="dl">'</span><span class="s1">/</span><span class="dl">'</span> <span class="o">+</span> <span class="nx">srcKey</span> <span class="o">+</span>
+                    <span class="dl">'</span><span class="s1"> and upload to </span><span class="dl">'</span> <span class="o">+</span> <span class="nx">dstBucket</span> <span class="o">+</span> <span class="dl">'</span><span class="s1">/</span><span class="dl">'</span> <span class="o">+</span> <span class="nx">dstKey</span> <span class="o">+</span>
+                    <span class="dl">'</span><span class="s1"> due to an error: </span><span class="dl">'</span> <span class="o">+</span> <span class="nx">err</span>
                 <span class="p">);</span>
             <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-                <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span>
-                    <span class="s1">'Successfully resized '</span> <span class="o">+</span> <span class="nx">srcBucket</span> <span class="o">+</span> <span class="s1">'/'</span> <span class="o">+</span> <span class="nx">srcKey</span> <span class="o">+</span>
-                    <span class="s1">' and uploaded to '</span> <span class="o">+</span> <span class="nx">dstBucket</span> <span class="o">+</span> <span class="s1">'/'</span> <span class="o">+</span> <span class="nx">dstKey</span>
+                <span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span>
+                    <span class="dl">'</span><span class="s1">Successfully resized </span><span class="dl">'</span> <span class="o">+</span> <span class="nx">srcBucket</span> <span class="o">+</span> <span class="dl">'</span><span class="s1">/</span><span class="dl">'</span> <span class="o">+</span> <span class="nx">srcKey</span> <span class="o">+</span>
+                    <span class="dl">'</span><span class="s1"> and uploaded to </span><span class="dl">'</span> <span class="o">+</span> <span class="nx">dstBucket</span> <span class="o">+</span> <span class="dl">'</span><span class="s1">/</span><span class="dl">'</span> <span class="o">+</span> <span class="nx">dstKey</span>
                 <span class="p">);</span>
             <span class="p">}</span>
 
-            <span class="nx">callback</span><span class="p">(</span><span class="kc">null</span><span class="p">,</span> <span class="s2">"message"</span><span class="p">);</span>
+            <span class="nf">callback</span><span class="p">(</span><span class="kc">null</span><span class="p">,</span> <span class="dl">"</span><span class="s2">message</span><span class="dl">"</span><span class="p">);</span>
         <span class="p">}</span>
     <span class="p">);</span>
 <span class="p">};</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p style="font-size: 16px;line-height: 1.6;">接著就把所有檔案zip起來，</p>
 
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="gp">$  </span>zip -r9 ~/create-thumbnail.zip <span class="k">*</span>
-</code></pre>
-</div>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span> zip <span class="nt">-r9</span> ~/create-thumbnail.zip <span class="k">*</span>
+</code></pre></div></div>
 
 <p><br /></p>
 
@@ -559,17 +558,16 @@
   <li>zip-file: 你的zip檔案路徑</li>
 </ol>
 
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>aws lambda create-function <span class="se">\</span>
---region ap-northeast-1 <span class="se">\</span>
---function-name CreateThumbnail <span class="se">\</span>
---zip-file fileb://file-path/CreateThumbnail.zip <span class="se">\</span>
---role role-arn <span class="se">\</span>
---handler CreateThumbnail.handler <span class="se">\</span>
---runtime nodejs6.10 <span class="se">\</span>
---timeout 30 <span class="se">\</span>
---memory-size 1024
-</code></pre>
-</div>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>aws lambda create-function <span class="se">\</span>
+<span class="nt">--region</span> ap-northeast-1 <span class="se">\</span>
+<span class="nt">--function-name</span> CreateThumbnail <span class="se">\</span>
+<span class="nt">--zip-file</span> fileb://file-path/CreateThumbnail.zip <span class="se">\</span>
+<span class="nt">--role</span> role-arn <span class="se">\</span>
+<span class="nt">--handler</span> CreateThumbnail.handler <span class="se">\</span>
+<span class="nt">--runtime</span> nodejs6.10 <span class="se">\</span>
+<span class="nt">--timeout</span> 30 <span class="se">\</span>
+<span class="nt">--memory-size</span> 1024
+</code></pre></div></div>
 
 <p style="font-size: 16px;line-height: 2;">成功的話會回傳一串JSON回來，請把FunctionArn記下來，待會會用到</p>
 
@@ -579,7 +577,7 @@
 <h3 id="6-手動調用lambda-function">6. 手動調用Lambda Function</h3>
 <hr />
 
-<p style="font-size: 16px;line-height: 2;">上傳上去以後，就可以來進行<code class="highlighter-rouge">手動</code>測試，先創建一個<code class="highlighter-rouge">input.txt</code>，並把下面的內容貼進去，需修改</p>
+<p style="font-size: 16px;line-height: 2;">上傳上去以後，就可以來進行<code class="language-plaintext highlighter-rouge">手動</code>測試，先創建一個<code class="language-plaintext highlighter-rouge">input.txt</code>，並把下面的內容貼進去，需修改</p>
 
 <ul style="font-size: 16px;line-height: 2;">
   <li>awsRegion: 這篇使用ap-northeast-1</li>
@@ -588,46 +586,45 @@
   <li>key: 上傳上去的測試檔名</li>
 </ul>
 
-<div class="language-json highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w">  
-   </span><span class="nt">"Records"</span><span class="p">:[</span><span class="w">  
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">  
+   </span><span class="nl">"Records"</span><span class="p">:[</span><span class="w">  
       </span><span class="p">{</span><span class="w">  
-         </span><span class="nt">"eventVersion"</span><span class="p">:</span><span class="s2">"2.0"</span><span class="p">,</span><span class="w">
-         </span><span class="nt">"eventSource"</span><span class="p">:</span><span class="s2">"aws:s3"</span><span class="p">,</span><span class="w">
-         </span><span class="nt">"awsRegion"</span><span class="p">:</span><span class="s2">"ap-northeast-1"</span><span class="p">,</span><span class="w">
-         </span><span class="nt">"eventTime"</span><span class="p">:</span><span class="s2">"1970-01-01T00:00:00.000Z"</span><span class="p">,</span><span class="w">
-         </span><span class="nt">"eventName"</span><span class="p">:</span><span class="s2">"ObjectCreated:Put"</span><span class="p">,</span><span class="w">
-         </span><span class="nt">"userIdentity"</span><span class="p">:{</span><span class="w">  
-            </span><span class="nt">"principalId"</span><span class="p">:</span><span class="s2">"AIDAJDPLRKLG7UEXAMPLE"</span><span class="w">
+         </span><span class="nl">"eventVersion"</span><span class="p">:</span><span class="s2">"2.0"</span><span class="p">,</span><span class="w">
+         </span><span class="nl">"eventSource"</span><span class="p">:</span><span class="s2">"aws:s3"</span><span class="p">,</span><span class="w">
+         </span><span class="nl">"awsRegion"</span><span class="p">:</span><span class="s2">"ap-northeast-1"</span><span class="p">,</span><span class="w">
+         </span><span class="nl">"eventTime"</span><span class="p">:</span><span class="s2">"1970-01-01T00:00:00.000Z"</span><span class="p">,</span><span class="w">
+         </span><span class="nl">"eventName"</span><span class="p">:</span><span class="s2">"ObjectCreated:Put"</span><span class="p">,</span><span class="w">
+         </span><span class="nl">"userIdentity"</span><span class="p">:{</span><span class="w">  
+            </span><span class="nl">"principalId"</span><span class="p">:</span><span class="s2">"AIDAJDPLRKLG7UEXAMPLE"</span><span class="w">
          </span><span class="p">},</span><span class="w">
-         </span><span class="nt">"requestParameters"</span><span class="p">:{</span><span class="w">  
-            </span><span class="nt">"sourceIPAddress"</span><span class="p">:</span><span class="s2">"127.0.0.1"</span><span class="w">
+         </span><span class="nl">"requestParameters"</span><span class="p">:{</span><span class="w">  
+            </span><span class="nl">"sourceIPAddress"</span><span class="p">:</span><span class="s2">"127.0.0.1"</span><span class="w">
          </span><span class="p">},</span><span class="w">
-         </span><span class="nt">"responseElements"</span><span class="p">:{</span><span class="w">  
-            </span><span class="nt">"x-amz-request-id"</span><span class="p">:</span><span class="s2">"C3D13FE58DE4C810"</span><span class="p">,</span><span class="w">
-            </span><span class="nt">"x-amz-id-2"</span><span class="p">:</span><span class="s2">"FMyUVURIY8/IgAtTv8xRjskZQpcIZ9KG4V5Wp6S7S/JRWeUWerMUE5JgHvANOjpD"</span><span class="w">
+         </span><span class="nl">"responseElements"</span><span class="p">:{</span><span class="w">  
+            </span><span class="nl">"x-amz-request-id"</span><span class="p">:</span><span class="s2">"C3D13FE58DE4C810"</span><span class="p">,</span><span class="w">
+            </span><span class="nl">"x-amz-id-2"</span><span class="p">:</span><span class="s2">"FMyUVURIY8/IgAtTv8xRjskZQpcIZ9KG4V5Wp6S7S/JRWeUWerMUE5JgHvANOjpD"</span><span class="w">
          </span><span class="p">},</span><span class="w">
-         </span><span class="nt">"s3"</span><span class="p">:{</span><span class="w">  
-            </span><span class="nt">"s3SchemaVersion"</span><span class="p">:</span><span class="s2">"1.0"</span><span class="p">,</span><span class="w">
-            </span><span class="nt">"configurationId"</span><span class="p">:</span><span class="s2">"testConfigRule"</span><span class="p">,</span><span class="w">
-            </span><span class="nt">"bucket"</span><span class="p">:{</span><span class="w">  
-               </span><span class="nt">"name"</span><span class="p">:</span><span class="s2">"kenyang-image"</span><span class="p">,</span><span class="w">
-               </span><span class="nt">"ownerIdentity"</span><span class="p">:{</span><span class="w">  
-                  </span><span class="nt">"principalId"</span><span class="p">:</span><span class="s2">"A3NL1KOZZKExample"</span><span class="w">
+         </span><span class="nl">"s3"</span><span class="p">:{</span><span class="w">  
+            </span><span class="nl">"s3SchemaVersion"</span><span class="p">:</span><span class="s2">"1.0"</span><span class="p">,</span><span class="w">
+            </span><span class="nl">"configurationId"</span><span class="p">:</span><span class="s2">"testConfigRule"</span><span class="p">,</span><span class="w">
+            </span><span class="nl">"bucket"</span><span class="p">:{</span><span class="w">  
+               </span><span class="nl">"name"</span><span class="p">:</span><span class="s2">"kenyang-image"</span><span class="p">,</span><span class="w">
+               </span><span class="nl">"ownerIdentity"</span><span class="p">:{</span><span class="w">  
+                  </span><span class="nl">"principalId"</span><span class="p">:</span><span class="s2">"A3NL1KOZZKExample"</span><span class="w">
                </span><span class="p">},</span><span class="w">
-               </span><span class="nt">"arn"</span><span class="p">:</span><span class="s2">"arn:aws:s3:::kenyang-image"</span><span class="w">
+               </span><span class="nl">"arn"</span><span class="p">:</span><span class="s2">"arn:aws:s3:::kenyang-image"</span><span class="w">
             </span><span class="p">},</span><span class="w">
-            </span><span class="nt">"object"</span><span class="p">:{</span><span class="w">  
-               </span><span class="nt">"key"</span><span class="p">:</span><span class="s2">"test.jpg"</span><span class="p">,</span><span class="w">
-               </span><span class="nt">"size"</span><span class="p">:</span><span class="mi">1024</span><span class="p">,</span><span class="w">
-               </span><span class="nt">"eTag"</span><span class="p">:</span><span class="s2">"d41d8cd98f00b204e9800998ecf8427e"</span><span class="p">,</span><span class="w">
-               </span><span class="nt">"versionId"</span><span class="p">:</span><span class="s2">"096fKKXTRTtl3on89fVO.nfljtsv6qko"</span><span class="w">
+            </span><span class="nl">"object"</span><span class="p">:{</span><span class="w">  
+               </span><span class="nl">"key"</span><span class="p">:</span><span class="s2">"test.jpg"</span><span class="p">,</span><span class="w">
+               </span><span class="nl">"size"</span><span class="p">:</span><span class="mi">1024</span><span class="p">,</span><span class="w">
+               </span><span class="nl">"eTag"</span><span class="p">:</span><span class="s2">"d41d8cd98f00b204e9800998ecf8427e"</span><span class="p">,</span><span class="w">
+               </span><span class="nl">"versionId"</span><span class="p">:</span><span class="s2">"096fKKXTRTtl3on89fVO.nfljtsv6qko"</span><span class="w">
             </span><span class="p">}</span><span class="w">
          </span><span class="p">}</span><span class="w">
       </span><span class="p">}</span><span class="w">
    </span><span class="p">]</span><span class="w">
 </span><span class="p">}</span><span class="w">
-</span></code></pre>
-</div>
+</span></code></pre></div></div>
 
 <p style="font-size: 16px;line-height: 2;">接著就可以執行下面的指令進行測試，一樣要修改</p>
 
@@ -636,16 +633,15 @@
   <li>payload: input.txt路徑</li>
 </ul>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>$ aws lambda invoke \
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ aws lambda invoke \
 --invocation-type Event \
 --function-name CreateThumbnail \
 --region ap-northeast-1 \
 --payload file:///file-path/input.txt \
 outputfile.txt
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p style="font-size: 16px;line-height: 2;">然後就可以去bucket <code class="highlighter-rouge">kenyang-imageresized</code>看看有沒有產生縮圖。</p>
+<p style="font-size: 16px;line-height: 2;">然後就可以去bucket <code class="language-plaintext highlighter-rouge">kenyang-imageresized</code>看看有沒有產生縮圖。</p>
 
 <p><br /></p>
 
@@ -670,15 +666,14 @@ outputfile.txt
   <li>source-arn: 把kenyang-image改為你的bucket名稱</li>
 </ul>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>$ aws lambda add-permission \
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ aws lambda add-permission \
 --function-name CreateThumbnail \
 --region ap-northeast-1 \
 --statement-id 1234 \
 --action "lambda:InvokeFunction" \
 --principal s3.amazonaws.com \
 --source-arn arn:aws:s3:::kenyang-image
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p><br /></p>
 
@@ -789,7 +784,7 @@ outputfile.txt
 
     <div id="footer">
       <div class="container">
-        <p>&copy; 2019 Ken Yang
+        <p>&copy; 2023 Ken Yang
           with help from <a href="http://jekyllbootstrap.com" target="_blank" title="The Definitive Jekyll Blogging Framework">Jekyll Bootstrap</a>
           and <a href="http://getbootstrap.com" target="_blank">Bootstrap</a>
         </p>

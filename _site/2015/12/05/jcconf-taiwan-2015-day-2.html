@@ -229,6 +229,8 @@
   
     
   
+    
+  
 
 
 
@@ -438,7 +440,7 @@
 <p><strong>What is Scala.js</strong></p>
 
 <ul>
-  <li>compile <code class="highlighter-rouge">Scala</code> to <code class="highlighter-rouge">javascript</code></li>
+  <li>compile <code class="language-plaintext highlighter-rouge">Scala</code> to <code class="language-plaintext highlighter-rouge">javascript</code></li>
 </ul>
 
 <p><strong>Example code</strong></p>
@@ -477,8 +479,8 @@
     <ul>
       <li>缺點 
     * command 太多
-    * 需要裝<code class="highlighter-rouge">sbt</code>
-    * 需要裝<code class="highlighter-rouge">ec2</code>
+    * 需要裝<code class="language-plaintext highlighter-rouge">sbt</code>
+    * 需要裝<code class="language-plaintext highlighter-rouge">ec2</code>
     * slow startup time (~20mins)
     * 一小時算一次錢，三分之一錢花在deploy上</li>
       <li>要用spark-ec2的flow
@@ -497,8 +499,8 @@
     <ul>
       <li>缺點
     * command 太多
-    * 需要裝<code class="highlighter-rouge">sbt</code>
-    * 需要裝<code class="highlighter-rouge">emr</code>
+    * 需要裝<code class="language-plaintext highlighter-rouge">sbt</code>
+    * 需要裝<code class="language-plaintext highlighter-rouge">emr</code>
     * spark version is old</li>
       <li>要用Amazon emr的flow
         <ul>
@@ -516,7 +518,7 @@
     <ul>
       <li>優點
         <ul>
-          <li>只需要安裝<code class="highlighter-rouge">sbt</code></li>
+          <li>只需要安裝<code class="language-plaintext highlighter-rouge">sbt</code></li>
           <li>fast and parallel startup (~4mins)</li>
           <li>Dynamic scale out</li>
           <li>Flexible design</li>
@@ -573,10 +575,9 @@
 
 <p><strong>immutable object</strong></p>
 
-<div class="language-java highlighter-rouge"><pre class="highlight"><code><span class="n">String</span> <span class="n">s</span> <span class="o">=</span> <span class="s">"ABC"</span><span class="o">;</span>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">String</span> <span class="n">s</span> <span class="o">=</span> <span class="s">"ABC"</span><span class="o">;</span>
 <span class="n">s</span><span class="o">.</span><span class="na">toLowerCase</span><span class="o">();</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p><strong>java hotswap</strong></p>
 
@@ -609,26 +610,26 @@ prevent modifications of running images.</p>
       <li>hard to keep or restore “desired state” in place</li>
     </ul>
   </li>
-  <li>Enforce <code class="highlighter-rouge">dev/prod</code> parity
+  <li>Enforce <code class="language-plaintext highlighter-rouge">dev/prod</code> parity
     <ul>
-      <li>configure &amp; test <code class="highlighter-rouge">infra</code> <strong>before</strong> deployed to production environment</li>
+      <li>configure &amp; test <code class="language-plaintext highlighter-rouge">infra</code> <strong>before</strong> deployed to production environment</li>
     </ul>
   </li>
   <li>Reason about apps at a higher level
     <ul>
-      <li>… than just <code class="highlighter-rouge">deployable pacakages</code> containing the code (jar/war/zip/msi)</li>
+      <li>… than just <code class="language-plaintext highlighter-rouge">deployable pacakages</code> containing the code (jar/war/zip/msi)</li>
     </ul>
   </li>
 </ul>
 
-<p><strong>Why <code class="highlighter-rouge">NOT</code> immutable infrastructure?</strong></p>
+<p><strong>Why <code class="language-plaintext highlighter-rouge">NOT</code> immutable infrastructure?</strong></p>
 
 <ul>
   <li>Cost may be too high</li>
   <li>DevOps maturity level</li>
 </ul>
 
-<p><strong>講者把image視為一種<code class="highlighter-rouge">母體</code></strong><br />
+<p><strong>講者把image視為一種<code class="language-plaintext highlighter-rouge">母體</code></strong><br />
 主要分為以下三種，</p>
 
 <ul>
@@ -639,7 +640,7 @@ prevent modifications of running images.</p>
       <li>對現有container技術有一個比較激進的改良</li>
       <li>傳統的vm，架構在hypervisor上，也打包一個os在裡面</li>
       <li>docker不打包，但會共用底下os的東西，有安全性考量</li>
-      <li>所以有了<code class="highlighter-rouge">container per VM</code>，但還是太肥了。</li>
+      <li>所以有了<code class="language-plaintext highlighter-rouge">container per VM</code>，但還是太肥了。</li>
       <li>把作業系統也看成lib，不會把所有os通通包進來，只抽取它要的。</li>
       <li>[boxfuse] (https://boxfuse.com/)</li>
     </ul>
@@ -658,7 +659,7 @@ prevent modifications of running images.</p>
 聽過Jserv演講過幾次，<br />
 也曾經在去旁聽過，他在台大講的Android Open Source，<br />
 給我的印象就是高手、講話很快、講話很有梗的。<br />
-其實我原本要去聽別場的<code class="highlighter-rouge">MySQL Connector/J</code>，但一方面覺得實在太累了，<br />
+其實我原本要去聽別場的<code class="language-plaintext highlighter-rouge">MySQL Connector/J</code>，但一方面覺得實在太累了，<br />
 懶得換room，又想輕鬆一點，聽一下Jserv講講笑話，<br />
 Jserv一樣講得很專業，但真的是不同領域，幾乎都聽不懂。</p>
 
@@ -709,7 +710,7 @@ Jserv一樣講得很專業，但真的是不同領域，幾乎都聽不懂。</p
       <li>lambda</li>
     </ul>
   </li>
-  <li>java裡的method都是<code class="highlighter-rouge">ivnokevirtual</code></li>
+  <li>java裡的method都是<code class="language-plaintext highlighter-rouge">ivnokevirtual</code></li>
 </ul>
 
 <p><strong>匿名class本質上會生出另一個class，inner class，和lambda不一樣</strong></p>
@@ -821,7 +822,7 @@ Jserv一樣講得很專業，但真的是不同領域，幾乎都聽不懂。</p
 
     <div id="footer">
       <div class="container">
-        <p>&copy; 2019 Ken Yang
+        <p>&copy; 2023 Ken Yang
           with help from <a href="http://jekyllbootstrap.com" target="_blank" title="The Definitive Jekyll Blogging Framework">Jekyll Bootstrap</a>
           and <a href="http://getbootstrap.com" target="_blank">Bootstrap</a>
         </p>

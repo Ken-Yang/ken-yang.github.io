@@ -67,7 +67,9 @@ http://blog.kenyang.net/blog/page58/
 http://blog.kenyang.net/blog/page59/
 http://blog.kenyang.net/blog/page60/
 http://blog.kenyang.net/blog/page61/
+http://blog.kenyang.net/blog/page62/
 
+http://blog.kenyang.net/2023/12/13/springbooteureka-server
 http://blog.kenyang.net/2019/02/26/upgrade-nginx-to-latest-version-on-centos
 http://blog.kenyang.net/2018/04/19/setup-https-on-nginx
 http://blog.kenyang.net/2018/03/13/using-aws-lambda-with-amazon-s3

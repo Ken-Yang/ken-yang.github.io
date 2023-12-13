@@ -229,6 +229,8 @@
   
     
   
+    
+  
 
 
 
@@ -425,59 +427,55 @@
 然後用python控制GPIO也很簡單，所以就用這二種組合。<br />
 首先先寫Python來透過GPIO來開門，由於現在的Raspbian預設就有Rpi.GPIO，所以你可以直接使用。</p>
 
-<div class="language-python highlighter-rouge"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">RPi.GPIO</span> <span class="kn">as</span> <span class="nn">GPIO</span>
-<span class="kn">import</span> <span class="nn">time</span>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="n">RPi.GPIO</span> <span class="k">as</span> <span class="n">GPIO</span>
+<span class="kn">import</span> <span class="n">time</span>
 
-<span class="n">GPIO</span><span class="o">.</span><span class="n">setmode</span><span class="p">(</span><span class="n">GPIO</span><span class="o">.</span><span class="n">BOARD</span><span class="p">)</span>
-<span class="n">GPIO</span><span class="o">.</span><span class="n">setup</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="n">GPIO</span><span class="o">.</span><span class="n">OUT</span><span class="p">)</span>
+<span class="n">GPIO</span><span class="p">.</span><span class="nf">setmode</span><span class="p">(</span><span class="n">GPIO</span><span class="p">.</span><span class="n">BOARD</span><span class="p">)</span>
+<span class="n">GPIO</span><span class="p">.</span><span class="nf">setup</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="n">GPIO</span><span class="p">.</span><span class="n">OUT</span><span class="p">)</span>
 
-<span class="n">GPIO</span><span class="o">.</span><span class="n">output</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="n">GPIO</span><span class="o">.</span><span class="n">LOW</span><span class="p">)</span>
-<span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>
-<span class="n">GPIO</span><span class="o">.</span><span class="n">output</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="n">GPIO</span><span class="o">.</span><span class="n">HIGH</span><span class="p">)</span>
+<span class="n">GPIO</span><span class="p">.</span><span class="nf">output</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="n">GPIO</span><span class="p">.</span><span class="n">LOW</span><span class="p">)</span>
+<span class="n">time</span><span class="p">.</span><span class="nf">sleep</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>
+<span class="n">GPIO</span><span class="p">.</span><span class="nf">output</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="n">GPIO</span><span class="p">.</span><span class="n">HIGH</span><span class="p">)</span>
 
-<span class="n">GPIO</span><span class="o">.</span><span class="n">cleanup</span><span class="p">()</span>
-</code></pre>
-</div>
+<span class="n">GPIO</span><span class="p">.</span><span class="nf">cleanup</span><span class="p">()</span>
+</code></pre></div></div>
 
 <p><br /></p>
 
 <p>接著就來用NodeJS來建立Web Server，詳細的步驟就<a href="http://blog.kenyang.net/2016/09/06/how-to-create-a-telegram-bot">參考上一篇</a>，<br />
 如果建立完Web Server以後，我們得加裝另一個module，因為我們要call python script，</p>
 
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code>npm install --save python-shell
-</code></pre>
-</div>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>npm <span class="nb">install</span> <span class="nt">--save</span> python-shell
+</code></pre></div></div>
 
 <p><br />
 接著就可以在index.js裡面加入下面的code，</p>
 
-<div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="kr">const</span> <span class="nx">https</span>     <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s2">"https"</span><span class="p">);</span>
-<span class="kr">const</span> <span class="nx">express</span>   <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s2">"express"</span><span class="p">);</span>
-<span class="kr">const</span> <span class="nx">bodyParser</span>    <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'body-parser'</span><span class="p">);</span>
-<span class="kr">const</span> <span class="nx">logger</span>        <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'morgan'</span><span class="p">);</span>
-<span class="kr">const</span> <span class="nx">fs</span>            <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'fs'</span><span class="p">);</span>
-<span class="kr">const</span> <span class="nx">request</span>     <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'request'</span><span class="p">);</span>
-<span class="kr">const</span> <span class="nx">logStream</span>     <span class="o">=</span> <span class="nx">fs</span><span class="p">.</span><span class="nx">createWriteStream</span><span class="p">(</span><span class="s1">'/var/log/bot/access.log'</span><span class="p">,</span> <span class="p">{</span><span class="na">flags</span><span class="p">:</span> <span class="s1">'a'</span><span class="p">});</span>
-<span class="kd">var</span> <span class="nx">PythonShell</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'python-shell'</span><span class="p">);</span>
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">const</span> <span class="nx">https</span>     <span class="o">=</span> <span class="nf">require</span><span class="p">(</span><span class="dl">"</span><span class="s2">https</span><span class="dl">"</span><span class="p">);</span>
+<span class="kd">const</span> <span class="nx">express</span>   <span class="o">=</span> <span class="nf">require</span><span class="p">(</span><span class="dl">"</span><span class="s2">express</span><span class="dl">"</span><span class="p">);</span>
+<span class="kd">const</span> <span class="nx">bodyParser</span>    <span class="o">=</span> <span class="nf">require</span><span class="p">(</span><span class="dl">'</span><span class="s1">body-parser</span><span class="dl">'</span><span class="p">);</span>
+<span class="kd">const</span> <span class="nx">logger</span>        <span class="o">=</span> <span class="nf">require</span><span class="p">(</span><span class="dl">'</span><span class="s1">morgan</span><span class="dl">'</span><span class="p">);</span>
+<span class="kd">const</span> <span class="nx">fs</span>            <span class="o">=</span> <span class="nf">require</span><span class="p">(</span><span class="dl">'</span><span class="s1">fs</span><span class="dl">'</span><span class="p">);</span>
+<span class="kd">const</span> <span class="nx">request</span>     <span class="o">=</span> <span class="nf">require</span><span class="p">(</span><span class="dl">'</span><span class="s1">request</span><span class="dl">'</span><span class="p">);</span>
+<span class="kd">const</span> <span class="nx">logStream</span>     <span class="o">=</span> <span class="nx">fs</span><span class="p">.</span><span class="nf">createWriteStream</span><span class="p">(</span><span class="dl">'</span><span class="s1">/var/log/bot/access.log</span><span class="dl">'</span><span class="p">,</span> <span class="p">{</span><span class="na">flags</span><span class="p">:</span> <span class="dl">'</span><span class="s1">a</span><span class="dl">'</span><span class="p">});</span>
+<span class="kd">var</span> <span class="nx">PythonShell</span> <span class="o">=</span> <span class="nf">require</span><span class="p">(</span><span class="dl">'</span><span class="s1">python-shell</span><span class="dl">'</span><span class="p">);</span>
 
 <span class="p">....</span> <span class="nx">ignore</span> <span class="p">....</span>
 
-<span class="k">if</span> <span class="p">(</span><span class="nx">cmd</span> <span class="o">==</span> <span class="s1">'/open'</span><span class="p">)</span> <span class="p">{</span>
-    <span class="nx">PythonShell</span><span class="p">.</span><span class="nx">run</span><span class="p">(</span><span class="s1">'open.py'</span><span class="p">,</span> <span class="p">{},</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">results</span><span class="p">)</span> <span class="p">{</span>
-        <span class="k">if</span> <span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="p">{</span>
-	        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">err</span><span class="p">);</span>
+<span class="k">if </span><span class="p">(</span><span class="nx">cmd</span> <span class="o">==</span> <span class="dl">'</span><span class="s1">/open</span><span class="dl">'</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">PythonShell</span><span class="p">.</span><span class="nf">run</span><span class="p">(</span><span class="dl">'</span><span class="s1">open.py</span><span class="dl">'</span><span class="p">,</span> <span class="p">{},</span> <span class="nf">function </span><span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">results</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">if </span><span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="p">{</span>
+	        <span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="nx">err</span><span class="p">);</span>
 	     <span class="p">}</span>
 	 <span class="p">});</span>
 <span class="p">}</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p><br />
 然後記得restart。</p>
 
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code>pm2 restart index
-</code></pre>
-</div>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pm2 restart index
+</code></pre></div></div>
 
 <p><br /></p>
 
@@ -485,7 +483,7 @@
 <h3 id="5-test">5. Test</h3>
 <hr />
 
-<p>完成上面的步驟以後，你就可以跟你的機器人講<code class="highlighter-rouge">/open</code>，他就會幫你開門了！</p>
+<p>完成上面的步驟以後，你就可以跟你的機器人講<code class="language-plaintext highlighter-rouge">/open</code>，他就會幫你開門了！</p>
 
 <p><img src="http://localhost:4000/assets/2016-09-14-5.jpg" alt="Ticket" /></p>
 
@@ -574,7 +572,7 @@
 
     <div id="footer">
       <div class="container">
-        <p>&copy; 2019 Ken Yang
+        <p>&copy; 2023 Ken Yang
           with help from <a href="http://jekyllbootstrap.com" target="_blank" title="The Definitive Jekyll Blogging Framework">Jekyll Bootstrap</a>
           and <a href="http://getbootstrap.com" target="_blank">Bootstrap</a>
         </p>

@@ -229,6 +229,8 @@
   
     
   
+    
+  
 
 
 
@@ -386,9 +388,8 @@
 
 <p style="font-size: 16px;line-height: 1.6;">因為Nginx在1.9.5以上的版本才有支援HTTP/2，因此請確認Nginx版本。</p>
 
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>nginx -v
-</code></pre>
-</div>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>nginx <span class="nt">-v</span>
+</code></pre></div></div>
 
 <p><br /></p>
 
@@ -396,12 +397,11 @@
 <h3 id="3-啟用http2">3. 啟用HTTP/2</h3>
 <hr />
 
-<p style="font-size: 16px;line-height: 1.6;">編輯檔案<code class="highlighter-rouge">/etc/nginx/site-enabled/default</code>，然後找到listen那行，在後面加上<code class="highlighter-rouge">http2</code>就可以。</p>
+<p style="font-size: 16px;line-height: 1.6;">編輯檔案<code class="language-plaintext highlighter-rouge">/etc/nginx/site-enabled/default</code>，然後找到listen那行，在後面加上<code class="language-plaintext highlighter-rouge">http2</code>就可以。</p>
 
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code>listen 443 ssl http2 default_server;
-listen <span class="o">[</span>::]:443 ssl http2 default_server;
-</code></pre>
-</div>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>listen 443 ssl http2 default_server<span class="p">;</span>
+listen <span class="o">[</span>::]:443 ssl http2 default_server<span class="p">;</span>
+</code></pre></div></div>
 
 <p><br /></p>
 
@@ -411,19 +411,19 @@ listen <span class="o">[</span>::]:443 ssl http2 default_server;
 
 <p style="font-size: 16px;line-height: 1.6;">接著我們用下面的指令產生一把private key以及CSR，記得key千萬別搞丟，然後再把CSR貼入至購買憑證的網站後台上，接著就可以下載intermediate cert和cert了。</p>
 
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code>» <span class="nv">$ </span>openssl req -nodes -newkey rsa:2048 -sha256 -keyout your_domain.key -out your_domain.csr
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>» <span class="nv">$ </span>openssl req <span class="nt">-nodes</span> <span class="nt">-newkey</span> rsa:2048 <span class="nt">-sha256</span> <span class="nt">-keyout</span> your_domain.key <span class="nt">-out</span> your_domain.csr
 Generating a 2048 bit RSA private key
 ..............................................................................................................+++
 ..+++
 writing new private key to <span class="s1">'your_domain.key'</span>
------
+<span class="nt">-----</span>
 You are about to be asked to enter information that will be incorporated
 into your certificate request.
 What you are about to enter is what is called a Distinguished Name or a DN.
 There are quite a few fields but you can leave some blank
 For some fields there will be a default value,
 If you enter <span class="s1">'.'</span>, the field will be left blank.
------
+<span class="nt">-----</span>
 Country Name <span class="o">(</span>2 letter code<span class="o">)</span> <span class="o">[]</span>:TW
 State or Province Name <span class="o">(</span>full name<span class="o">)</span> <span class="o">[]</span>:Taiwan
 Locality Name <span class="o">(</span>eg, city<span class="o">)</span> <span class="o">[]</span>:Taipei
@@ -435,8 +435,7 @@ Email Address <span class="o">[]</span>:xxx@hi.com
 Please enter the following <span class="s1">'extra'</span> attributes
 to be sent with your certificate request
 A challenge password <span class="o">[]</span>:
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p><br /></p>
 
@@ -446,11 +445,10 @@ A challenge password <span class="o">[]</span>:
 
 <p style="font-size: 16px;line-height: 1.6;">憑證下載以後，把這二張cert以及key上傳至server上，由於我們是使用Nginx，如同前面說的，Nginx不能設置intermediate cert，因此需要把intermediate cert和cert合併在一起，但如果你是Apache的話，就不需要合併，Apache有一個額外的設定。</p>
 
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>cat cxxxxxxxxx.crt gd_bundle-g2-g1.crt &gt; chained.crt
-</code></pre>
-</div>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">cat </span>cxxxxxxxxx.crt gd_bundle-g2-g1.crt <span class="o">&gt;</span> chained.crt
+</code></pre></div></div>
 
-<p>Note: 我有修改gd_bundle-g2-g1.crt，因為多了一個節點，所以我把最下面的節點刪除，這樣做檢測時，才不會有<code class="highlighter-rouge">Chain issues Contains anchor</code></p>
+<p>Note: 我有修改gd_bundle-g2-g1.crt，因為多了一個節點，所以我把最下面的節點刪除，這樣做檢測時，才不會有<code class="language-plaintext highlighter-rouge">Chain issues Contains anchor</code></p>
 
 <p><br /></p>
 
@@ -458,12 +456,11 @@ A challenge password <span class="o">[]</span>:
 <h3 id="6-設定ssl">6. 設定SSL</h3>
 <hr />
 
-<p style="font-size: 16px;line-height: 1.6;">接著編輯檔案<code class="highlighter-rouge">/etc/nginx/site-enabled/default</code>，然後修改你的憑證位置。</p>
+<p style="font-size: 16px;line-height: 1.6;">接著編輯檔案<code class="language-plaintext highlighter-rouge">/etc/nginx/site-enabled/default</code>，然後修改你的憑證位置。</p>
 
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code>ssl_certificate /var/ssl/chained.crt;
-ssl_certificate_key /var/ssl/your_key.key;
-</code></pre>
-</div>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ssl_certificate /var/ssl/chained.crt<span class="p">;</span>
+ssl_certificate_key /var/ssl/your_key.key<span class="p">;</span>
+</code></pre></div></div>
 
 <p><br /></p>
 
@@ -471,13 +468,12 @@ ssl_certificate_key /var/ssl/your_key.key;
 <h3 id="7-避免使用老舊且不安全的cipher">7. 避免使用老舊且不安全的Cipher</h3>
 <hr />
 
-<p style="font-size: 16px;line-height: 1.6;">編輯檔案<code class="highlighter-rouge">/etc/nginx/site-enabled/default</code>，然後貼入(修改成)下方內容</p>
+<p style="font-size: 16px;line-height: 1.6;">編輯檔案<code class="language-plaintext highlighter-rouge">/etc/nginx/site-enabled/default</code>，然後貼入(修改成)下方內容</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>ssl_prefer_server_ciphers on;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ssl_prefer_server_ciphers on;
 ssl_ciphers "EECDH+AESGCM:EDH+AESGCM:AES256+EECDH:AES256+EDH";
 ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p><br /></p>
 
@@ -486,17 +482,15 @@ ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
 <hr />
 
 <p style="font-size: 16px;line-height: 1.6;">在建立連線之前，第一步是server和client之間先交換key，但在這交換的過程中是沒有任何加密的，所以任何人都可以看得到，
-因此我們需要用<code class="highlighter-rouge">DHE</code> key去保護。</p>
+因此我們需要用<code class="language-plaintext highlighter-rouge">DHE</code> key去保護。</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>$ openssl dhparam -out dhparam.pem 4096
-</code></pre>
-</div>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ openssl dhparam -out dhparam.pem 4096
+</code></pre></div></div>
 
-<p>在檔案<code class="highlighter-rouge">/etc/nginx/site-enabled/default</code>，加入下面這行。</p>
+<p>在檔案<code class="language-plaintext highlighter-rouge">/etc/nginx/site-enabled/default</code>，加入下面這行。</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>ssl_dhparam /var/ssl/dhparam.pem;
-</code></pre>
-</div>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ssl_dhparam /var/ssl/dhparam.pem;
+</code></pre></div></div>
 
 <p><br /></p>
 
@@ -506,12 +500,11 @@ ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
 
 <p style="font-size: 16px;line-height: 1.6;">跟HTTP相比，HTTPS通常會花比較久在建立連線，為了降低page load的速度，所以要啟用cache機制，也就是說每個請求上時，不會重新建立一個session，而是會沿用。</p>
 
-<p>在檔案<code class="highlighter-rouge">/etc/nginx/site-enabled/default</code>，加入下面這二行。</p>
+<p>在檔案<code class="language-plaintext highlighter-rouge">/etc/nginx/site-enabled/default</code>，加入下面這二行。</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>sl_session_cache shared:SSL:10m;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sl_session_cache shared:SSL:10m;
 ssl_session_timeout 1h;
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p><br /></p>
 
@@ -521,11 +514,10 @@ ssl_session_timeout 1h;
 
 <p style="font-size: 16px;line-height: 1.6;">在這我們加入一個HSTS的header，目的是為了讓瀏覽器發現有此header時，他就不會用HTTP嘗試去connect server，</p>
 
-<p>在檔案<code class="highlighter-rouge">/etc/nginx/site-enabled/default</code>，加入下面這行。</p>
+<p>在檔案<code class="language-plaintext highlighter-rouge">/etc/nginx/site-enabled/default</code>，加入下面這行。</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>add_header Strict-Transport-Security "max-age=63072000; includeSubdomains; ";
-</code></pre>
-</div>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>add_header Strict-Transport-Security "max-age=63072000; includeSubdomains; ";
+</code></pre></div></div>
 
 <p><br /></p>
 
@@ -533,9 +525,8 @@ ssl_session_timeout 1h;
 <h3 id="11-重啟及測試">11. 重啟及測試</h3>
 <hr />
 
-<div style="font-size: 16px;line-height: 1.6;" class="highlighter-rouge"><pre class="highlight"><code>$ service nginx restart
-</code></pre>
-</div>
+<div style="font-size: 16px;line-height: 1.6;" class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ service nginx restart
+</code></pre></div></div>
 
 <p style="font-size: 16px;line-height: 1.6;">然後就可以再去這個網站<a href="https://www.ssllabs.com/ssltest/analyze.html">https://www.ssllabs.com/ssltest/analyze.html</a>做檢測，分數應該就會是A+了。</p>
 
@@ -626,7 +617,7 @@ ssl_session_timeout 1h;
 
     <div id="footer">
       <div class="container">
-        <p>&copy; 2019 Ken Yang
+        <p>&copy; 2023 Ken Yang
           with help from <a href="http://jekyllbootstrap.com" target="_blank" title="The Definitive Jekyll Blogging Framework">Jekyll Bootstrap</a>
           and <a href="http://getbootstrap.com" target="_blank">Bootstrap</a>
         </p>

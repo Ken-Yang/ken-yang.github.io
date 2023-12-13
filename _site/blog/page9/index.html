@@ -229,6 +229,8 @@
   
     
   
+    
+  
 
 
 
@@ -302,6 +304,97 @@
 
     </div>
     <!-- This loops through the paginated posts -->
+    
+      <h1><a style="color: #F22430" href="/2015/11/27/do-not-allocate-all-the-lvm-space-with-preseed">Do not allocate all the LVM space with preseed</a></h1>
+      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
+      <p class="author">
+      <div class="date">
+        <span>27 November 2015</span>
+      </div>
+      </p>
+      <div class="content" style="line-height: 28px;">
+        
+<p>使用Preseed file分割LVM時，<br />
+並無法做到只使用某部分的VG就好，<br />
+舉例來說，假設你有一個100G的硬碟，  <br />
+然後preseed file如下，</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>d-i partman-auto/expert_recipe string  <span class="se">\</span>
+      boot-root ::                                                  <span class="se">\</span>
+              20480 10 20480 ext4                                   <span class="se">\</span>
+                      <span class="nv">$lvmok</span><span class="o">{}</span> lv_name<span class="o">{</span> root <span class="o">}</span> <span class="nv">$defaultignore</span><span class="o">{</span> <span class="o">}</span>    <span class="se">\</span>
+                      method<span class="o">{</span> format <span class="o">}</span> format<span class="o">{</span> <span class="o">}</span>                    <span class="se">\</span>
+                      use_filesystem<span class="o">{</span> <span class="o">}</span> filesystem<span class="o">{</span> ext4 <span class="o">}</span>          <span class="se">\</span>
+                      mountpoint<span class="o">{</span> / <span class="o">}</span>                               <span class="se">\</span>
+              <span class="nb">.</span>                                                     <span class="se">\</span>
+              20480 10 20480 ext4                                   <span class="se">\</span>
+                      <span class="nv">$lvmok</span><span class="o">{</span> <span class="o">}</span> lv_name<span class="o">{</span> log <span class="o">}</span> <span class="nv">$defaultignore</span><span class="o">{</span> <span class="o">}</span>    <span class="se">\</span>
+                      method<span class="o">{</span> format <span class="o">}</span> format<span class="o">{</span> <span class="o">}</span>                    <span class="se">\</span>
+                      use_filesystem<span class="o">{</span> <span class="o">}</span> filesystem<span class="o">{</span> ext4 <span class="o">}</span>          <span class="se">\</span>
+                      mountpoint<span class="o">{</span> /var/log <span class="o">}</span>                        <span class="se">\</span>
+</code></pre></div></div>
+
+<p>我們分別給每個lv的大小為：</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">root</code> : 20G</li>
+  <li><code class="language-plaintext highlighter-rouge">log</code>  : 20G</li>
+</ul>
+
+<p>你可能會以為，剩下的60G不會被加到LV裡面，<br />
+但其實剩下的60G會通通被放到log裡面去。</p>
+
+<p>不過有比較tricky的解法，可以參考下面的Preseed file，<br />
+我們多增加了一個LV，叫做<code class="language-plaintext highlighter-rouge">to_be_free</code>，<br />
+然後把所有的free space都指派給<code class="language-plaintext highlighter-rouge">to_be_free</code>，<br />
+最後在<code class="language-plaintext highlighter-rouge">late_command</code>裡，用<code class="language-plaintext highlighter-rouge">lvremove</code>把<code class="language-plaintext highlighter-rouge">to_be_free</code>砍掉，<br />
+這樣就可以做到把某部分space歸還了。</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>d-i partman-auto/expert_recipe string  <span class="se">\</span>
+      boot-root ::                                                  <span class="se">\</span>
+              20480 10 20480 ext4                                   <span class="se">\</span>
+                      <span class="nv">$lvmok</span><span class="o">{}</span> lv_name<span class="o">{</span> root <span class="o">}</span> <span class="nv">$defaultignore</span><span class="o">{</span> <span class="o">}</span>    <span class="se">\</span>
+                      method<span class="o">{</span> format <span class="o">}</span> format<span class="o">{</span> <span class="o">}</span>                    <span class="se">\</span>
+                      use_filesystem<span class="o">{</span> <span class="o">}</span> filesystem<span class="o">{</span> ext4 <span class="o">}</span>          <span class="se">\</span>
+                      mountpoint<span class="o">{</span> / <span class="o">}</span>                               <span class="se">\</span>
+              <span class="nb">.</span>                                                     <span class="se">\</span>
+              20480 10 20480 ext4                                   <span class="se">\</span>
+                      <span class="nv">$lvmok</span><span class="o">{</span> <span class="o">}</span> lv_name<span class="o">{</span> log <span class="o">}</span> <span class="nv">$defaultignore</span><span class="o">{</span> <span class="o">}</span>    <span class="se">\</span>
+                      method<span class="o">{</span> format <span class="o">}</span> format<span class="o">{</span> <span class="o">}</span>                    <span class="se">\</span>
+                      use_filesystem<span class="o">{</span> <span class="o">}</span> filesystem<span class="o">{</span> ext4 <span class="o">}</span>          <span class="se">\</span>
+                      mountpoint<span class="o">{</span> /var/log <span class="o">}</span>                        <span class="se">\</span>
+              <span class="nb">.</span>                                                     <span class="se">\</span>
+              1 10 <span class="nt">-1</span> ext4                                          <span class="se">\</span>
+                      <span class="nv">$lvmok</span><span class="o">{</span> <span class="o">}</span> lv_name<span class="o">{</span> to_be_free <span class="o">}</span> <span class="nv">$defaultignore</span><span class="o">{</span> <span class="o">}</span>    <span class="se">\</span>
+                      method<span class="o">{</span> format <span class="o">}</span> format<span class="o">{</span> <span class="o">}</span>                    <span class="se">\</span>
+                      use_filesystem<span class="o">{</span> <span class="o">}</span> filesystem<span class="o">{</span> ext4 <span class="o">}</span>          <span class="se">\</span>
+                      mountpoint<span class="o">{</span> /to_be_free <span class="o">}</span>                     <span class="se">\</span>
+                      
+d-i preseed/late_command string <span class="se">\</span>
+umount /target/to_be_free/ <span class="p">;</span> <span class="se">\</span>
+lvremove <span class="nt">-f</span> /dev/<span class="k">*</span>/<span class="k">*</span>to_be_free <span class="o">&gt;</span> /dev/null 2&gt;&amp;1 <span class="p">;</span> <span class="se">\</span>
+<span class="nb">sed</span> <span class="nt">-i</span> <span class="s1">'/to_be_free/d'</span> /target/etc/fstab <span class="p">;</span> <span class="se">\</span>
+</code></pre></div></div>
+
+
+      </div>
+      <footer>
+        <p><a class="myButton" href="/2015/11/27/do-not-allocate-all-the-lvm-space-with-preseed">read more &raquo;</a></p>
+        <div>
+          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- ken on github -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3783438370424072"
+     data-ad-slot="1516206098"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+        </div>
+      </footer>
+      <hr>
     
       <h1><a style="color: #F22430" href="/2015/11/26/move-blogger-to-github">如何把Google Blogger搬到Github pages</a></h1>
       <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
@@ -379,41 +472,13 @@
       </footer>
       <hr>
     
-      <h1><a style="color: #F22430" href="/2015/06/25/apache-kafka-distributed-messaging">Apache Kafka: Distributed messaging system.</a></h1>
-      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
-      <p class="author">
-      <div class="date">
-        <span>25 June 2015</span>
-      </div>
-      </p>
-      <div class="content" style="line-height: 28px;">
-        <div style="font-size: 15px; line-height: 22px;"><br />Apache Kafka是一個分散式的訊息處理framework，<br />透過publish來發佈message，以及subscribe來訂閱取得message。<br />從架構上來看，Kafka可以分為下面幾種角色，<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1. producer:   發佈(publish)message to topic<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2. consumer:   訂閱(subscribe)topic以取得message<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;3. broker:     簡單的說就是server，由一台以上的broker組成一個cluster<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4. topic:      message的分類<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;5. zookeeper:  嚴格來說，zookeeper不算是Kafka的一部分，但Kafka卻得倚靠zookeeper來做到sync。<br /><br /><div class="separator" style="clear: both; text-align: center;"><a href="http://4.bp.blogspot.com/-PvOMN32b-LA/VYfNp-L3GVI/AAAAAAAAFlg/upzpVGdl1sk/s1600/producer_consumer.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="http://4.bp.blogspot.com/-PvOMN32b-LA/VYfNp-L3GVI/AAAAAAAAFlg/upzpVGdl1sk/s1600/producer_consumer.png" /></a></div><br />了解Kafka的每一個角色以後，<br />接下來要講怎麼安裝跟使用。<br /><br /><span style="color: #e06666; font-size: 18px;">1. Install Kafka</span><br /><br />首先，先安裝Kafka，這裡選的版本是0.8.2。<br />Kafka的安裝很簡單，只有一個tarball，解開就好。<br /><pre class="brush: bash">wget http://apache.stu.edu.tw/kafka/0.8.2.0/kafka_2.10-0.8.2.0.tgz<br />tar xvzf kafka_2.10-0.8.2.0.tgz<br />cd kafka_2.10-0.8.2.0/<br /></pre><br /><span style="color: #e06666; font-size: 18px;">2. Start zookeeper</span><br /><br />安裝完以後，在開始之前，<br />要先啟動zookeeper，原因是前面有說過，<br />Kafka倚靠zookeeper做message的sync。<br /><pre class="brush: bash">bin/zookeeper-server-start.sh config/zookeeper.properties &<br /></pre><br />啟動以後，可以透過下面指令去觀察一下，<br />應該會看到2隻java在LISTEN，<br />有一隻的port預設一定是2181，預設值放在config/zookeeper.properties裡面。<br />這個port是給等等的其他broker連上來用的。<br /><pre class="brush: bash">netstat -tnlp<br /></pre><br /><span style="color: #e06666; font-size: 18px;">3. Start Kafka server(broker)</span><br /><br />接著啟動三個kafka server，讓這三台server變成一個cluster，<br />為什麼要跑三台？因為Kafka還有replication的功能，所以順便玩一下。<br />然後我只有一台機器，所以我會讓這三台通通run在同一台上面。<br />在啟動之前，要先“複製“and“編輯”一個config檔案，<br /><br />首先，先複製config，因為有三台，但是預設的config只有一個，所以要多複製二個出來。<br /><pre class="brush: bash">cp config/server.properties config/server-2.properties<br />cp config/server.properties config/server-3.properties<br /></pre><br />然後去編輯config/server-2.properties以及server-3.properties這二個檔案，<br /><pre class="brush: bash"># The id of the broker. This must be set to a unique integer for each broker.<br />broker.id=1<br /><br /># The port the socket server listens on<br />port=9092<br /><br /># A comma seperated list of directories under which to store log files<br />log.dirs=/tmp/kafka-logs<br /></pre>只要改broker.id, port, log.dirs這三個key，<br />這三個都要是unique的value，所以就都往上+1吧，<br />例如server-2.properties的例子就是，<br />broker.id=1<br />port=9093<br />log.dirs=/tmp/kafka-logs-2<br /><br />編輯完以後就分別啟動這三台broker吧。<br /><pre class="brush: bash">bin/kafka-server-start.sh config/server.properties &<br />bin/kafka-server-start.sh config/server-2.properties &<br />bin/kafka-server-start.sh config/server-3.properties &<br /></pre><br /><span style="color: #e06666; font-size: 18px;">4. Create a topic</span><br /><br />有了server以後，接著要create一個topic，<br />你可以試著把replication的value改成4，你應該會失敗了，<br />且error msg應該是【4 larger than available brokers: 3】，因為我們剛剛只有start三台broker，所以無法複製四份。<br /><pre class="brush: bash">bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 3 --partitions 1 --topic test<br /></pre><br />接著你可以去查詢這個topic的資訊，<br /><pre class="brush: bash">bin/kafka-topics.sh --describe --zookeeper localhost:2181 --topic test<br /></pre><br />應該會看到下面的資訊，<br /><pre class="brush: bash">Topic:test PartitionCount:1 ReplicationFactor:3 Configs:<br /> Topic: test Partition: 0 Leader: 2 Replicas: 2,0,1 Isr: 2,0,1<br /></pre>ReplicationFactor是3份，<br />Replicate在0, 1, 2這三台broker上面，<br />topic的leader是broker 2，leader負責partition的read and write。<br />Isr的意思是有哪些broker正在sync，簡單的說可以知道哪些broker是活著的。<br /><br /><span style="color: #e06666; font-size: 18px;">5. Publish: send message to topic</span><br /><br />接著就要開始寫訊息到topic裡面，<br />透過kafka提供的shell可以進行測試，執行以後，就可以直接輸入你要輸入的訊息，<br />輸入完以後，按下ctrl+C就可以離開。<br /><pre class="brush: bash">$ bin/kafka-console-producer.sh --broker-list localhost:9092 --topic test<br />...<br />test message 1<br />test message 2<br />^C <br /></pre><br /><br /><span style="color: #e06666; font-size: 18px;">6. Subscribe: get message from topic</span><br /><br />接著就要讀取訊息，<br />kafka一樣有提供shell script讓我們使用，<br />應該就可以看到上一步驟所輸入的訊息了。<br /><pre class="brush: bash">bin/kafka-console-consumer.sh --zookeeper localhost:2181 --topic test --from-beginning<br /></pre><br /><br /><span style="color: #e06666; font-size: 18px;">7. Advance</span><br /><br />這一步只是要觀察一下replication有無成功，<br />我們可以去stop該topic的leader，<br />以我的例子來說，test leader是broker 2，<br />所以我就去把broker 2關掉，<br /><pre class="brush: bash">$ jobs<br />[1]   Running            bin/zookeeper-server-start.sh config/zookeeper.properties &<br />[2]   Running            bin/kafka-server-start.sh config/server.properties &<br />[3]-  Running            bin/kafka-server-start.sh config/server-1.properties &<br />[4]+  Running            bin/kafka-server-start.sh config/server-2.properties &<br />$ fg 4<br />$ ^C<br /></pre><br />接著我們可以先去看該topic的leader會有什麼變化，應該會發現leader變別台broker了，<br />而且Isr會只剩下0,1。<br /><pre class="brush: bash">bin/kafka-topics.sh --describe --zookeeper localhost:2181 --topic test<br /></pre><br />此時我們一樣在去consume message，message應該還是會保存的完整無缺。<br /><pre class="brush: bash">bin/kafka-console-consumer.sh --zookeeper localhost:2181 --from-beginning --topic test<br /></pre><br /><br />下一篇應該寫kafka+spark streaming吧！？<br /><br /><br /><br /><br /><br /><br /></div>
-      </div>
-      <footer>
-        <p><a class="myButton" href="/2015/06/25/apache-kafka-distributed-messaging">read more &raquo;</a></p>
-        <div>
-          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<!-- ken on github -->
-<ins class="adsbygoogle"
-     style="display:block"
-     data-ad-client="ca-pub-3783438370424072"
-     data-ad-slot="1516206098"
-     data-ad-format="auto"></ins>
-<script>
-(adsbygoogle = window.adsbygoogle || []).push({});
-</script>
-
-        </div>
-      </footer>
-      <hr>
-    
 
     <!-- Pagination links -->
     <div class="pagination">
       
         <a href="/blog/page8" class="previous">Previous</a>
       
-      <span class="page_number ">Page: 9 of 61</span>
+      <span class="page_number ">Page: 9 of 62</span>
       
         <a href="/blog/page10" class="next">Next</a>
       
@@ -451,7 +516,7 @@
 
     <div id="footer">
       <div class="container">
-        <p>&copy; 2019 Ken Yang
+        <p>&copy; 2023 Ken Yang
           with help from <a href="http://jekyllbootstrap.com" target="_blank" title="The Definitive Jekyll Blogging Framework">Jekyll Bootstrap</a>
           and <a href="http://getbootstrap.com" target="_blank">Bootstrap</a>
         </p>

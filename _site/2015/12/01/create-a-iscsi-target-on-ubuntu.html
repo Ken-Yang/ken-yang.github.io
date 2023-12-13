@@ -229,6 +229,8 @@
   
     
   
+    
+  
 
 
 
@@ -360,21 +362,19 @@
 <hr />
 <p>首先要先安裝tgt這個package。</p>
 
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>apt-get install tgt
-</code></pre>
-</div>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>apt-get <span class="nb">install </span>tgt
+</code></pre></div></div>
 
 <p><br /></p>
 <h4 id="create-virtual-disks">Create virtual disks</h4>
 <hr />
 
-<p>這裡會用<code class="highlighter-rouge">dd</code>來建立幾個假的block device，<br />
+<p>這裡會用<code class="language-plaintext highlighter-rouge">dd</code>來建立幾個假的block device，<br />
 待會就把devices加入到iSCSI中。</p>
 
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>dd <span class="k">if</span><span class="o">=</span>/dev/zero <span class="nv">of</span><span class="o">=</span>/var/tmp/iscsi-disk1 <span class="nv">bs</span><span class="o">=</span>1M <span class="nv">count</span><span class="o">=</span>100
-<span class="gp">$ </span>dd <span class="k">if</span><span class="o">=</span>/dev/zero <span class="nv">of</span><span class="o">=</span>/var/tmp/iscsi-disk2 <span class="nv">bs</span><span class="o">=</span>1M <span class="nv">count</span><span class="o">=</span>100
-</code></pre>
-</div>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">dd </span><span class="k">if</span><span class="o">=</span>/dev/zero <span class="nv">of</span><span class="o">=</span>/var/tmp/iscsi-disk1 <span class="nv">bs</span><span class="o">=</span>1M <span class="nv">count</span><span class="o">=</span>100
+<span class="nv">$ </span><span class="nb">dd </span><span class="k">if</span><span class="o">=</span>/dev/zero <span class="nv">of</span><span class="o">=</span>/var/tmp/iscsi-disk2 <span class="nv">bs</span><span class="o">=</span>1M <span class="nv">count</span><span class="o">=</span>100
+</code></pre></div></div>
 
 <p><br /></p>
 <h4 id="create-targets">Create targets</h4>
@@ -387,10 +387,9 @@
   <li>iqn.2015-07.net.kenyang:ken.iscsi.2</li>
 </ul>
 
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>tgtadm --lld iscsi --op new --mode target --tid 1 -T iqn.2015-07.net.kenyang:ken.iscsi.1
-<span class="gp">$ </span>tgtadm --lld iscsi --op new --mode target --tid 2 -T iqn.2015-07.net.kenyang:ken.iscsi.2
-</code></pre>
-</div>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>tgtadm <span class="nt">--lld</span> iscsi <span class="nt">--op</span> new <span class="nt">--mode</span> target <span class="nt">--tid</span> 1 <span class="nt">-T</span> iqn.2015-07.net.kenyang:ken.iscsi.1
+<span class="nv">$ </span>tgtadm <span class="nt">--lld</span> iscsi <span class="nt">--op</span> new <span class="nt">--mode</span> target <span class="nt">--tid</span> 2 <span class="nt">-T</span> iqn.2015-07.net.kenyang:ken.iscsi.2
+</code></pre></div></div>
 
 <!--more-->
 
@@ -400,10 +399,9 @@
 
 <p>然後替上面的2個target各加入一個LUN。</p>
 
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>tgtadm --lld iscsi --mode logicalunit --op new --tid 1 --lun 1 -b /var/tmp/iscsi-disk1
-<span class="gp">$ </span>tgtadm --lld iscsi --mode logicalunit --op new --tid 2 --lun 1 -b /var/tmp/iscsi-disk2
-</code></pre>
-</div>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>tgtadm <span class="nt">--lld</span> iscsi <span class="nt">--mode</span> logicalunit <span class="nt">--op</span> new <span class="nt">--tid</span> 1 <span class="nt">--lun</span> 1 <span class="nt">-b</span> /var/tmp/iscsi-disk1
+<span class="nv">$ </span>tgtadm <span class="nt">--lld</span> iscsi <span class="nt">--mode</span> logicalunit <span class="nt">--op</span> new <span class="nt">--tid</span> 2 <span class="nt">--lun</span> 1 <span class="nt">-b</span> /var/tmp/iscsi-disk2
+</code></pre></div></div>
 
 <p><br /></p>
 <h4 id="enable-the-target-to-accept-any-initiators">Enable the target to accept any initiators</h4>
@@ -413,10 +411,9 @@
 可以讓任何人連，不需要密碼，<br />
 就可以用下面的指令。</p>
 
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>tgtadm --lld iscsi --op <span class="nb">bind</span> --mode target --tid 1 -I ALL
-<span class="gp">$ </span>tgtadm --lld iscsi --op <span class="nb">bind</span> --mode target --tid 2 -I ALL
-</code></pre>
-</div>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>tgtadm <span class="nt">--lld</span> iscsi <span class="nt">--op</span> <span class="nb">bind</span> <span class="nt">--mode</span> target <span class="nt">--tid</span> 1 <span class="nt">-I</span> ALL
+<span class="nv">$ </span>tgtadm <span class="nt">--lld</span> iscsi <span class="nt">--op</span> <span class="nb">bind</span> <span class="nt">--mode</span> target <span class="nt">--tid</span> 2 <span class="nt">-I</span> ALL
+</code></pre></div></div>
 
 <p><br /></p>
 <h4 id="create-user">Create user</h4>
@@ -425,18 +422,16 @@
 <p>如果你想要讓你的target，有credential才能連，<br />
 那就要create user，以及把user bind在某個target上。</p>
 
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>tgtadm --mode account --op new --user safesync --password safesync
-<span class="gp">$ </span>tgtadm --mode account --op <span class="nb">bind</span> --tid 1 --user safesync
-</code></pre>
-</div>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>tgtadm <span class="nt">--mode</span> account <span class="nt">--op</span> new <span class="nt">--user</span> safesync <span class="nt">--password</span> safesync
+<span class="nv">$ </span>tgtadm <span class="nt">--mode</span> account <span class="nt">--op</span> <span class="nb">bind</span> <span class="nt">--tid</span> 1 <span class="nt">--user</span> safesync
+</code></pre></div></div>
 
 <p><br /></p>
 <h4 id="show-configuration">Show configuration</h4>
 <hr />
 
-<div class="highlighter-rouge"><pre class="highlight"><code>$ tgtadm --lld iscsi --mode target --op show
-</code></pre>
-</div>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ tgtadm --lld iscsi --mode target --op show
+</code></pre></div></div>
 
 
     </div>
@@ -519,7 +514,7 @@
 
     <div id="footer">
       <div class="container">
-        <p>&copy; 2019 Ken Yang
+        <p>&copy; 2023 Ken Yang
           with help from <a href="http://jekyllbootstrap.com" target="_blank" title="The Definitive Jekyll Blogging Framework">Jekyll Bootstrap</a>
           and <a href="http://getbootstrap.com" target="_blank">Bootstrap</a>
         </p>

@@ -229,6 +229,8 @@
   
     
   
+    
+  
 
 
 
@@ -376,8 +378,8 @@
 <h2 id="1-建立github-repo">1. 建立github repo</h2>
 
 <p>首先要先去<a href="https://github.com/new">github</a>的網站建立一個新的repo，<br />
-repo名稱為<code class="highlighter-rouge">your_name.github.io</code>，<br />
-所以我的就是<code class="highlighter-rouge">ken-yang.github.io</code>。</p>
+repo名稱為<code class="language-plaintext highlighter-rouge">your_name.github.io</code>，<br />
+所以我的就是<code class="language-plaintext highlighter-rouge">ken-yang.github.io</code>。</p>
 
 <p><br /></p>
 
@@ -386,16 +388,15 @@ repo名稱為<code class="highlighter-rouge">your_name.github.io</code>，<br />
 <p><a href="http://jekyllbootstrap.com/usage/jekyll-quick-start.html">jekyll-bootstrap</a>是一個線上工具，<br />
 可以讓你快速地建立一個template，<br />
 然後這個template是以boostrap為基底。<br />
-使用方式如下（記得把<code class="highlighter-rouge">USERNAME</code>換成你的<code class="highlighter-rouge">your_name</code>)：</p>
+使用方式如下（記得把<code class="language-plaintext highlighter-rouge">USERNAME</code>換成你的<code class="language-plaintext highlighter-rouge">your_name</code>)：</p>
 
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>git clone https://github.com/plusjade/jekyll-bootstrap.git USERNAME.github.io
-<span class="gp">$ </span><span class="nb">cd </span>USERNAME.github.io
-<span class="gp">$ </span>git remote <span class="nb">set</span>-url origin git@github.com:USERNAME/USERNAME.github.ui.git
-<span class="gp">$ </span>git push origin master
-</code></pre>
-</div>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>git clone https://github.com/plusjade/jekyll-bootstrap.git USERNAME.github.io
+<span class="nv">$ </span><span class="nb">cd </span>USERNAME.github.io
+<span class="nv">$ </span>git remote set-url origin git@github.com:USERNAME/USERNAME.github.ui.git
+<span class="nv">$ </span>git push origin master
+</code></pre></div></div>
 
-<p>接著你就可以去<code class="highlighter-rouge">USERNAME.github.io</code>看看，應該會有default的index。</p>
+<p>接著你就可以去<code class="language-plaintext highlighter-rouge">USERNAME.github.io</code>看看，應該會有default的index。</p>
 
 <p><br /></p>
 
@@ -407,34 +408,31 @@ repo名稱為<code class="highlighter-rouge">your_name.github.io</code>，<br />
 如果你是用MAC，請先安裝xcode，<br />
 如果是用linux，請先安裝make。</p>
 
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>gem install -n jekyll-import
-</code></pre>
-</div>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>gem <span class="nb">install</span> <span class="nt">-n</span> jekyll-import
+</code></pre></div></div>
 <p>安裝成功以後，去google blogger的後台把文章通通export出來。<br />
 然後再terminal執行下面的指令，<br />
-記得把<code class="highlighter-rouge">/path/to/blog-MM-DD-YYYY.xml</code>換成對應的位置。</p>
+記得把<code class="language-plaintext highlighter-rouge">/path/to/blog-MM-DD-YYYY.xml</code>換成對應的位置。</p>
 
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>ruby -rubygems -e <span class="s1">'require "jekyll-import";
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>ruby <span class="nt">-rubygems</span> <span class="nt">-e</span> <span class="s1">'require "jekyll-import";
     JekyllImport::Importers::Blogger.run({
       "source"                =&gt; "/path/to/blog-MM-DD-YYYY.xml",
       "no-blogger-info"       =&gt; false, # not to leave blogger-URL info (id and old URL) in the front matter
       "replace-internal-link" =&gt; false, # replace internal links using the post_url liquid tag.
     })'</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>接著會產生二個資料夾，分別為</p>
 
 <ul>
-  <li><code class="highlighter-rouge">_posts</code> 放文章的地方</li>
-  <li><code class="highlighter-rouge">_draft</code> 放草稿的地方</li>
+  <li><code class="language-plaintext highlighter-rouge">_posts</code> 放文章的地方</li>
+  <li><code class="language-plaintext highlighter-rouge">_draft</code> 放草稿的地方</li>
 </ul>
 
 <p>接著就把_posts底下的資料搬移至剛剛的git project底下，</p>
 
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code>cp _posts/<span class="k">*</span> USERNAME.github.ui.git/_posts/
-</code></pre>
-</div>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">cp </span>_posts/<span class="k">*</span> USERNAME.github.ui.git/_posts/
+</code></pre></div></div>
 
 <p><br /></p>
 <h2 id="4-安裝jekyll">4. 安裝jekyll</h2>
@@ -449,26 +447,23 @@ jekyll主要功用為:</p>
 
 <p>安裝方式一樣是透過gem，</p>
 
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>gem install -n /usr/local/bin jekyll
-</code></pre>
-</div>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>gem <span class="nb">install</span> <span class="nt">-n</span> /usr/local/bin jekyll
+</code></pre></div></div>
 <p>安裝成功就可以用jekyll去preview你的posts，</p>
 
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span><span class="nb">cd </span>USERNAME.github.io
-<span class="gp">$ </span>jekyll serve
-</code></pre>
-</div>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">cd </span>USERNAME.github.io
+<span class="nv">$ </span>jekyll serve
+</code></pre></div></div>
 <p>然後會在你的local起一個web server，<br />
-網址是<code class="highlighter-rouge">http://localhost:4000</code>，<br />
-在執行<code class="highlighter-rouge">serve</code>的當下就會幫我們render post了，<br />
+網址是<code class="language-plaintext highlighter-rouge">http://localhost:4000</code>，<br />
+在執行<code class="language-plaintext highlighter-rouge">serve</code>的當下就會幫我們render post了，<br />
 接著就可以把所有的changed push回去github上。</p>
 
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>git add . 
-<span class="gp">$ </span>git cm -m <span class="s1">'add posts'</span>
-<span class="gp">$ </span>git push origin master
-</code></pre>
-</div>
-<p>然後一樣去<code class="highlighter-rouge">USERNAME.github.io</code>看看，會有原本在blogger上的posts了！</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>git add <span class="nb">.</span> 
+<span class="nv">$ </span>git cm <span class="nt">-m</span> <span class="s1">'add posts'</span>
+<span class="nv">$ </span>git push origin master
+</code></pre></div></div>
+<p>然後一樣去<code class="language-plaintext highlighter-rouge">USERNAME.github.io</code>看看，會有原本在blogger上的posts了！</p>
 
 <p><br /></p>
 <h2 id="5-安裝jekyll-paginate">5. 安裝jekyll-paginate</h2>
@@ -476,25 +471,23 @@ jekyll主要功用為:</p>
 <p>jekyll-paginate功用就是分頁，如果你不想要你的首頁就把所有的post通通列出來，<br />
 那麼就可以安裝這個plugin，</p>
 
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>gem install -n /usr/local/bin jekyll-paginate
-</code></pre>
-</div>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>gem <span class="nb">install</span> <span class="nt">-n</span> /usr/local/bin jekyll-paginate
+</code></pre></div></div>
 
-<p>接著打開<code class="highlighter-rouge">_config.yml</code>，然後加入下面三行，</p>
+<p>接著打開<code class="language-plaintext highlighter-rouge">_config.yml</code>，然後加入下面三行，</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>gems: [jekyll-paginate]
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>gems: [jekyll-paginate]
 paginate: 3
 paginate_path: "/blog/page:num"
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>然後有一個比較tricky的地方，<br />
 如果你的首頁是index.md，pagenate是無法幫你gen出來，<br />
-必須是index.html，但很簡單，你只要把<code class="highlighter-rouge">mv index.md  index.html</code>即可，<br />
-mv完成以後，接著打開<code class="highlighter-rouge">index.html</code>，<br />
+必須是index.html，但很簡單，你只要把<code class="language-plaintext highlighter-rouge">mv index.md  index.html</code>即可，<br />
+mv完成以後，接著打開<code class="language-plaintext highlighter-rouge">index.html</code>，<br />
 然後把下面的code貼入。</p>
 
-<div class="language-html highlighter-rouge"><pre class="highlight"><code>{% for post in paginator.posts %}
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code>{% for post in paginator.posts %}
   <span class="nt">&lt;h1&gt;&lt;a</span> <span class="na">style=</span><span class="s">"color: #F22430"</span> <span class="na">href=</span><span class="s">"{{ post.url }}"</span><span class="nt">&gt;</span>{{ post.title }}<span class="nt">&lt;/a&gt;&lt;/h1&gt;</span>
   <span class="nt">&lt;div</span> <span class="na">style=</span><span class="s">"width: 100%; border-bottom: 1px solid #E7E7E7;"</span><span class="nt">&gt;&lt;/div&gt;</span>
   <span class="nt">&lt;p</span> <span class="na">class=</span><span class="s">"author"</span><span class="nt">&gt;</span>
@@ -522,15 +515,13 @@ mv完成以後，接著打開<code class="highlighter-rouge">index.html</code>�
     <span class="nt">&lt;span</span> <span class="na">class=</span><span class="s">"next "</span><span class="nt">&gt;</span>Next<span class="nt">&lt;/span&gt;</span>
   {% endif %}
 <span class="nt">&lt;/div&gt;</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>接著就在重新render一次。</p>
 
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>jekyll serve
-</code></pre>
-</div>
-<p>完成以後，在<code class="highlighter-rouge">_site/blog/</code>底下，就會有很多<code class="highlighter-rouge">pageX</code>的資料夾，<br />
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>jekyll serve
+</code></pre></div></div>
+<p>完成以後，在<code class="language-plaintext highlighter-rouge">_site/blog/</code>底下，就會有很多<code class="language-plaintext highlighter-rouge">pageX</code>的資料夾，<br />
 接著就可以通通在push回去github上。</p>
 
 <p><br /></p>
@@ -541,12 +532,11 @@ mv完成以後，接著打開<code class="highlighter-rouge">index.html</code>�
 申請完以後，會給你一串javascript，<br />
 把它複製起來，然後建立一個新的html檔案。</p>
 
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code>vim _includes/adsense.html
-</code></pre>
-</div>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>vim _includes/adsense.html
+</code></pre></div></div>
 <p>然後把剛剛adsense給的那串javascript貼進去，如下，</p>
 
-<div class="language-html highlighter-rouge"><pre class="highlight"><code><span class="nt">&lt;script </span><span class="na">async</span> <span class="na">src=</span><span class="s">"//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;script </span><span class="na">async</span> <span class="na">src=</span><span class="s">"//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
 <span class="c">&lt;!-- id10t_top --&gt;</span>
 <span class="nt">&lt;ins</span> <span class="na">class=</span><span class="s">"adsbygoogle"</span>
 <span class="na">style=</span><span class="s">"display:block"</span>
@@ -554,24 +544,21 @@ mv完成以後，接著打開<code class="highlighter-rouge">index.html</code>�
 <span class="na">data-ad-slot=</span><span class="s">"1161208442"</span>
 <span class="na">data-ad-format=</span><span class="s">"auto"</span><span class="nt">&gt;&lt;/ins&gt;</span>
 <span class="nt">&lt;script&gt;</span>
-    <span class="p">(</span><span class="nx">adsbygoogle</span> <span class="o">=</span> <span class="nb">window</span><span class="p">.</span><span class="nx">adsbygoogle</span> <span class="o">||</span> <span class="p">[]).</span><span class="nx">push</span><span class="p">({});</span>
+    <span class="p">(</span><span class="nx">adsbygoogle</span> <span class="o">=</span> <span class="nb">window</span><span class="p">.</span><span class="nx">adsbygoogle</span> <span class="o">||</span> <span class="p">[]).</span><span class="nf">push</span><span class="p">({});</span>
 <span class="nt">&lt;/script&gt;</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p>接著我們就可以在想要放廣告的page裡面，include <code class="highlighter-rouge">adsense.html</code>這個file，<br />
-假設我們想要在首頁放廣告，那麼就是打開 <code class="highlighter-rouge">index.html</code> ，<br />
+<p>接著我們就可以在想要放廣告的page裡面，include <code class="language-plaintext highlighter-rouge">adsense.html</code>這個file，<br />
+假設我們想要在首頁放廣告，那麼就是打開 <code class="language-plaintext highlighter-rouge">index.html</code> ，<br />
 然後在適當的地方貼入下面的code，</p>
 
-<div class="language-html highlighter-rouge"><pre class="highlight"><code>{% include adsense.html %}
-</code></pre>
-</div>
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code>{% include adsense.html %}
+</code></pre></div></div>
 
 <p>接著一樣重新render一次就完成了。</p>
 
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>jekyll serve
-</code></pre>
-</div>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>jekyll serve
+</code></pre></div></div>
 
 <p><br /></p>
 <h2 id="7-整合comment-system">7. 整合Comment system</h2>
@@ -580,16 +567,15 @@ mv完成以後，接著打開<code class="highlighter-rouge">index.html</code>�
 這裡我選擇了<a href="https://disqus.com/home/explore/">disgus</a>，因為預設也是使用它。<br />
 那首先要先去<a href="https://disqus.com/home/explore/">disgus</a>上註冊，<br />
 註冊非常簡單，也不需要認證。<br />
-註冊完成以後就會取得一個<code class="highlighter-rouge">short name</code>，<br />
-有了<code class="highlighter-rouge">short name</code>以後，就打開<code class="highlighter-rouge">_config.yml</code>，<br />
-然後找到<code class="highlighter-rouge">comments</code>這個key，然後把你的<code class="highlighter-rouge">short name</code>填入即可。</p>
+註冊完成以後就會取得一個<code class="language-plaintext highlighter-rouge">short name</code>，<br />
+有了<code class="language-plaintext highlighter-rouge">short name</code>以後，就打開<code class="language-plaintext highlighter-rouge">_config.yml</code>，<br />
+然後找到<code class="language-plaintext highlighter-rouge">comments</code>這個key，然後把你的<code class="language-plaintext highlighter-rouge">short name</code>填入即可。</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>comments :
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>comments :
   provider : disqus
   disqus :
     short_name : your_short_name
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>完成以後，一樣重新render就完成了。</p>
 
@@ -600,30 +586,28 @@ mv完成以後，接著打開<code class="highlighter-rouge">index.html</code>�
 一樣填入analytics id即可。<br />
 但我發現jekyll的analytics 好像比較舊。<br />
 所以我就不用它內建的，我就用與adsense的方式一樣，<br />
-先create一個<code class="highlighter-rouge">analytics.html</code>，接著把下面的code貼入，</p>
+先create一個<code class="language-plaintext highlighter-rouge">analytics.html</code>，接著把下面的code貼入，</p>
 
-<div class="language-html highlighter-rouge"><pre class="highlight"><code><span class="nt">&lt;script&gt;</span>
-  <span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">i</span><span class="p">,</span><span class="nx">s</span><span class="p">,</span><span class="nx">o</span><span class="p">,</span><span class="nx">g</span><span class="p">,</span><span class="nx">r</span><span class="p">,</span><span class="nx">a</span><span class="p">,</span><span class="nx">m</span><span class="p">){</span><span class="nx">i</span><span class="p">[</span><span class="s1">'GoogleAnalyticsObject'</span><span class="p">]</span><span class="o">=</span><span class="nx">r</span><span class="p">;</span><span class="nx">i</span><span class="p">[</span><span class="nx">r</span><span class="p">]</span><span class="o">=</span><span class="nx">i</span><span class="p">[</span><span class="nx">r</span><span class="p">]</span><span class="o">||</span><span class="kd">function</span><span class="p">(){</span>
-  <span class="p">(</span><span class="nx">i</span><span class="p">[</span><span class="nx">r</span><span class="p">].</span><span class="nx">q</span><span class="o">=</span><span class="nx">i</span><span class="p">[</span><span class="nx">r</span><span class="p">].</span><span class="nx">q</span><span class="o">||</span><span class="p">[]).</span><span class="nx">push</span><span class="p">(</span><span class="nx">arguments</span><span class="p">)},</span><span class="nx">i</span><span class="p">[</span><span class="nx">r</span><span class="p">].</span><span class="nx">l</span><span class="o">=</span><span class="mi">1</span><span class="o">*</span><span class="k">new</span> <span class="nb">Date</span><span class="p">();</span><span class="nx">a</span><span class="o">=</span><span class="nx">s</span><span class="p">.</span><span class="nx">createElement</span><span class="p">(</span><span class="nx">o</span><span class="p">),</span>
-  <span class="nx">m</span><span class="o">=</span><span class="nx">s</span><span class="p">.</span><span class="nx">getElementsByTagName</span><span class="p">(</span><span class="nx">o</span><span class="p">)[</span><span class="mi">0</span><span class="p">];</span><span class="nx">a</span><span class="p">.</span><span class="nx">async</span><span class="o">=</span><span class="mi">1</span><span class="p">;</span><span class="nx">a</span><span class="p">.</span><span class="nx">src</span><span class="o">=</span><span class="nx">g</span><span class="p">;</span><span class="nx">m</span><span class="p">.</span><span class="nx">parentNode</span><span class="p">.</span><span class="nx">insertBefore</span><span class="p">(</span><span class="nx">a</span><span class="p">,</span><span class="nx">m</span><span class="p">)</span>
-  <span class="p">})(</span><span class="nb">window</span><span class="p">,</span><span class="nb">document</span><span class="p">,</span><span class="s1">'script'</span><span class="p">,</span><span class="s1">'//www.google-analytics.com/analytics.js'</span><span class="p">,</span><span class="s1">'ga'</span><span class="p">);</span>
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;script&gt;</span>
+  <span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">i</span><span class="p">,</span><span class="nx">s</span><span class="p">,</span><span class="nx">o</span><span class="p">,</span><span class="nx">g</span><span class="p">,</span><span class="nx">r</span><span class="p">,</span><span class="nx">a</span><span class="p">,</span><span class="nx">m</span><span class="p">){</span><span class="nx">i</span><span class="p">[</span><span class="dl">'</span><span class="s1">GoogleAnalyticsObject</span><span class="dl">'</span><span class="p">]</span><span class="o">=</span><span class="nx">r</span><span class="p">;</span><span class="nx">i</span><span class="p">[</span><span class="nx">r</span><span class="p">]</span><span class="o">=</span><span class="nx">i</span><span class="p">[</span><span class="nx">r</span><span class="p">]</span><span class="o">||</span><span class="kd">function</span><span class="p">(){</span>
+  <span class="p">(</span><span class="nx">i</span><span class="p">[</span><span class="nx">r</span><span class="p">].</span><span class="nx">q</span><span class="o">=</span><span class="nx">i</span><span class="p">[</span><span class="nx">r</span><span class="p">].</span><span class="nx">q</span><span class="o">||</span><span class="p">[]).</span><span class="nf">push</span><span class="p">(</span><span class="nx">arguments</span><span class="p">)},</span><span class="nx">i</span><span class="p">[</span><span class="nx">r</span><span class="p">].</span><span class="nx">l</span><span class="o">=</span><span class="mi">1</span><span class="o">*</span><span class="k">new</span> <span class="nc">Date</span><span class="p">();</span><span class="nx">a</span><span class="o">=</span><span class="nx">s</span><span class="p">.</span><span class="nf">createElement</span><span class="p">(</span><span class="nx">o</span><span class="p">),</span>
+  <span class="nx">m</span><span class="o">=</span><span class="nx">s</span><span class="p">.</span><span class="nf">getElementsByTagName</span><span class="p">(</span><span class="nx">o</span><span class="p">)[</span><span class="mi">0</span><span class="p">];</span><span class="nx">a</span><span class="p">.</span><span class="k">async</span><span class="o">=</span><span class="mi">1</span><span class="p">;</span><span class="nx">a</span><span class="p">.</span><span class="nx">src</span><span class="o">=</span><span class="nx">g</span><span class="p">;</span><span class="nx">m</span><span class="p">.</span><span class="nx">parentNode</span><span class="p">.</span><span class="nf">insertBefore</span><span class="p">(</span><span class="nx">a</span><span class="p">,</span><span class="nx">m</span><span class="p">)</span>
+  <span class="p">})(</span><span class="nb">window</span><span class="p">,</span><span class="nb">document</span><span class="p">,</span><span class="dl">'</span><span class="s1">script</span><span class="dl">'</span><span class="p">,</span><span class="dl">'</span><span class="s1">//www.google-analytics.com/analytics.js</span><span class="dl">'</span><span class="p">,</span><span class="dl">'</span><span class="s1">ga</span><span class="dl">'</span><span class="p">);</span>
 
-  <span class="nx">ga</span><span class="p">(</span><span class="s1">'create'</span><span class="p">,</span> <span class="s1">'UA-xxxxxx-1'</span><span class="p">,</span> <span class="s1">'auto'</span><span class="p">);</span>
-  <span class="nx">ga</span><span class="p">(</span><span class="s1">'send'</span><span class="p">,</span> <span class="s1">'pageview'</span><span class="p">);</span>
+  <span class="nf">ga</span><span class="p">(</span><span class="dl">'</span><span class="s1">create</span><span class="dl">'</span><span class="p">,</span> <span class="dl">'</span><span class="s1">UA-xxxxxx-1</span><span class="dl">'</span><span class="p">,</span> <span class="dl">'</span><span class="s1">auto</span><span class="dl">'</span><span class="p">);</span>
+  <span class="nf">ga</span><span class="p">(</span><span class="dl">'</span><span class="s1">send</span><span class="dl">'</span><span class="p">,</span> <span class="dl">'</span><span class="s1">pageview</span><span class="dl">'</span><span class="p">);</span>
 
 <span class="nt">&lt;/script&gt;</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>然後在我想要track的地方，貼入下面的code，</p>
 
-<div class="language-html highlighter-rouge"><pre class="highlight"><code>{% include analytics.html %}
-</code></pre>
-</div>
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code>{% include analytics.html %}
+</code></pre></div></div>
 
 <p>然後在重新render就完成了！<br />
 最後只要把你的cname指向username.github.io，<br />
-以及在目錄底下建立一個名稱為<code class="highlighter-rouge">CNAME</code>的file，填入你的domain就好了。</p>
+以及在目錄底下建立一個名稱為<code class="language-plaintext highlighter-rouge">CNAME</code>的file，填入你的domain就好了。</p>
 
 
     </div>
@@ -708,7 +692,7 @@ mv完成以後，接著打開<code class="highlighter-rouge">index.html</code>�
 
     <div id="footer">
       <div class="container">
-        <p>&copy; 2019 Ken Yang
+        <p>&copy; 2023 Ken Yang
           with help from <a href="http://jekyllbootstrap.com" target="_blank" title="The Definitive Jekyll Blogging Framework">Jekyll Bootstrap</a>
           and <a href="http://getbootstrap.com" target="_blank">Bootstrap</a>
         </p>

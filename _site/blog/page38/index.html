@@ -229,6 +229,8 @@
   
     
   
+    
+  
 
 
 
@@ -303,6 +305,34 @@
     </div>
     <!-- This loops through the paginated posts -->
     
+      <h1><a style="color: #F22430" href="/2011/10/24/class-c">切割子網域（subnet）</a></h1>
+      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
+      <p class="author">
+      <div class="date">
+        <span>24 October 2011</span>
+      </div>
+      </p>
+      <div class="content" style="line-height: 28px;">
+        在<a href="http://blog.kenyang.net/2011/01/ip.html">前一篇</a>中，提到了<a href="http://blog.kenyang.net/2011/01/ip.html">IP分級以及網域</a>的概念。<br /><br />在這篇中，將說明切割子網域的概念！<br /><br />IP分級是為了管理方便，但今天假設我們有一個Class A的IP，<br /><br />我們不可能將一個Class A的IP僅僅設定一個區網！很浪費！<br /><br />且該區網底下也很容易發生壅塞的情形！效能會不好<br /><br />那麼這時候就得運用切割子網域的概念！<br /><br /><br />假設我們有個Class C的IP（192.168.0.0～192.168.0.255），<br /><br />且我們要將該Class C的IP切割成4個子網域！<br /><br />那麼該怎麼做？<br /><br />我們知道Class C的IP的<b>net_id</b>有24個！<br /><br />先假設我們要將一個Class C的IP細切割成4個子網域！<br /><br />那麼我們可以跟<b>host_id</b>借<span class="Apple-style-span" style="color: red;">2</span>個bits！（2的<span class="Apple-style-span" style="color: red;">2</span>次方，所以是借<span class="Apple-style-span" style="color: red;">2</span>個）<br /><br />也就是說<b>net_id</b>變成26個！<br /><br />如：11000000.101010000.00000000.<span class="Apple-style-span" style="color: red;">0</span><span class="Apple-style-span" style="color: red;">0&nbsp;</span>000000（192.168.0.0）<br /><br />這樣就會有<span class="Apple-style-span" style="color: red;">00, 01, 10, 11 </span>這樣就會有4種組合，<br /><br />這樣就可以切成4個子網域了！！<br /><br />而每個子網域，就會剩下2的6次方個ip（64）。<br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
+      </div>
+      <footer>
+        <p><a class="myButton" href="/2011/10/24/class-c">read more &raquo;</a></p>
+        <div>
+          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- ken on github -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3783438370424072"
+     data-ad-slot="1516206098"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+        </div>
+      </footer>
+      <hr>
+    
       <h1><a style="color: #F22430" href="/2011/07/22/displaying-recaptcha-without-plugins">Integrate CAPTCHA to your site (without plugin)-【2】</a></h1>
       <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
       <p class="author">
@@ -359,41 +389,13 @@
       </footer>
       <hr>
     
-      <h1><a style="color: #F22430" href="/2011/07/03/using-eclipse-for-windows-to-connect-to">Using Eclipse for Windows to connect to Hadoop</a></h1>
-      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
-      <p class="author">
-      <div class="date">
-        <span>03 July 2011</span>
-      </div>
-      </p>
-      <div class="content" style="line-height: 28px;">
-        先前已經在<a href="http://blog.kenyang.net/2011/06/how-to-install-hadoop-on-ubuntu-single.html">前一篇</a>，教導大家如何<a href="http://blog.kenyang.net/2011/06/how-to-install-hadoop-on-ubuntu-single.html">安裝hadoop</a>在ubuntu上面了，<br />這篇主要是在說明如何在windows的環境下，<br />使用eclipse去<b>連結</b>到ubuntu上的hadoop，<br />將會在下一篇教導大家如何撰寫一個Map/Reduce程式。<br /><br /><br />在我連結成功之前，在Google上找了不知道多少資料。<br />但沒有任何一篇是完完全全符合這個案例的!<br />大部分找到的案例都是，在Windows環境下安裝cygwin，<br />利用cygwin來模擬出unix環境，然後再unix中架設hadoop，<br /><br />問題是這樣的案例...根本沒有太大意義，因為是模擬，就只是單純玩玩而已，<br />所以才打這篇教學，如何在windows真的連結到一台實體的linux server上。<br /><br />我的本機基本環境如下：<br />Eclipse 3.6<br />Windows 7 64bits<br /><br />實體linux server環境如下：<br />ubuntu 10.10<br />hadoop 0.20.2<br /><br /><br /><span class="Apple-style-span" style="font-size: large;"><b>【步驟一】首先我們得去下載三個檔案，</b></span><br /><br /><ol><li>&nbsp;<a href="https://issues.apache.org/jira/secure/attachment/12460491/hadoop-eclipse-plugin-0.20.3-SNAPSHOT.jar">hadoop-eclipse-plugin-0.20.3-SNAPSHOT.jar</a>&nbsp;先下載這個jar檔，並放在eclipse資料夾底下的/plugin資料夾裡面，有人可能會發現，為什麼我們實體server上的hadoop版本是0.20.2，可是我們用的eclipse plugin版本卻是0.20.3，而不是用0.20.2，這是因為0.20.2有問題。（稍後會說明甚麼問題）</li><li><a href="http://www.cygwin.com/">cygwin</a>　第二個下載這個並且安裝起來，安裝過程很簡單，恕不贅述，但或許有人會納悶..為什麼要安裝這個? 這個不是模擬unix嗎? 我們不是要連結到實體的linux server上嗎? 如果懂MapReduce原理的人，可能就會稍微理解，大家可以去看由2位Google Fellow所提出的<a href="http://labs.google.com/papers/mapreduce-osdi04.pdf">paper</a>。簡單的說Reduce最後會將結果輸出到本機硬碟上，而這裡的本機是linux，所以會用到一些相關指令是windows沒有的，例如:chown，所以我們得利用<a href="http://www.cygwin.com/">cygwin</a>安裝好後裡面/bin資料夾的一些linux指令。</li><li><a href="http://labs.renren.com/apache-mirror/hadoop/core/hadoop-0.20.2/hadoop-0.20.2.tar.gz">hadoop 0.20.2</a>&nbsp;第三個下載hadoop，原因是再eclipse for windows中開發hadoop專案，會用到一些hadoop的jar檔案，並且解壓縮出來，在這篇，還不需要用到，在下一篇進行程式開發，將會用到!</li></ol><br /><br /><span class="Apple-style-span" style="font-size: large;"><b>【步驟二】設定環境變數</b></span><br />下載以及安裝完成以後，<br />請記得設定環境變數，<br />設定方式如下（不好意思，我的OS是英文版，請大家自行對照自己電腦）<br />在我的電腦上點選右鍵→點選內容，<br />會看到下圖(圖一)，請點選Change Setting，<br /><br /><table cellpadding="0" cellspacing="0" class="tr-caption-container" style="float: left; text-align: left;"><tbody><tr><td style="text-align: center;"><a href="http://3.bp.blogspot.com/-9ShbMycRvbE/ThBk69JEuSI/AAAAAAAAAVY/82hNym9ipiY/s1600/1.PNG" imageanchor="1" style="clear: left; margin-bottom: 1em; margin-left: auto; margin-right: auto;"><img border="0" height="183" src="http://3.bp.blogspot.com/-9ShbMycRvbE/ThBk69JEuSI/AAAAAAAAAVY/82hNym9ipiY/s400/1.PNG" width="400" /></a></td></tr><tr><td class="tr-caption" style="text-align: center;">圖一</td></tr></tbody></table><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />點選完後，會看到下圖（圖二），再點選Advanced，<br />點選以後再點選Environment Variables<br /><br /><table cellpadding="0" cellspacing="0" class="tr-caption-container" style="float: left; text-align: left;"><tbody><tr><td style="text-align: center;"><a href="http://4.bp.blogspot.com/-ZhTkYNhlITU/ThBk7DL-xGI/AAAAAAAAAVc/dMdvsjZMCgI/s1600/2.PNG" imageanchor="1" style="clear: left; margin-bottom: 1em; margin-left: auto; margin-right: auto;"><img border="0" height="400" src="http://4.bp.blogspot.com/-ZhTkYNhlITU/ThBk7DL-xGI/AAAAAAAAAVc/dMdvsjZMCgI/s400/2.PNG" width="362" /></a></td></tr><tr><td class="tr-caption" style="text-align: center;">圖二</td></tr></tbody></table><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />點選完成後，會看到下圖（圖三），請先找到Path這個系統變數，<br />並按下Edit按鈕。<br /><table cellpadding="0" cellspacing="0" class="tr-caption-container" style="float: left; margin-right: 1em; text-align: left;"><tbody><tr><td style="text-align: center;"><a href="http://2.bp.blogspot.com/-tQPDVBmS-qg/ThBk7snYgUI/AAAAAAAAAVg/bdMYffeg5T0/s1600/3.PNG" imageanchor="1" style="clear: left; margin-bottom: 1em; margin-left: auto; margin-right: auto;"><img border="0" height="400" src="http://2.bp.blogspot.com/-tQPDVBmS-qg/ThBk7snYgUI/AAAAAAAAAVg/bdMYffeg5T0/s400/3.PNG" width="370" /></a></td></tr><tr><td class="tr-caption" style="text-align: center;">圖三</td></tr></tbody></table><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />點選完以後，會看到下圖（圖四），<br />請在最後面增加";c:\cygwin\bin"，<br />不需要雙引號喔！增加完成以後按下OK，請先重開機!<br /><table cellpadding="0" cellspacing="0" class="tr-caption-container" style="float: left; text-align: left;"><tbody><tr><td style="text-align: center;"><a href="http://3.bp.blogspot.com/-U8Z1mxxbLq8/ThBk8ANAPbI/AAAAAAAAAVk/EvHGJFxRF1Q/s1600/4.PNG" imageanchor="1" style="clear: left; margin-bottom: 1em; margin-left: auto; margin-right: auto;"><img border="0" height="168" src="http://3.bp.blogspot.com/-U8Z1mxxbLq8/ThBk8ANAPbI/AAAAAAAAAVk/EvHGJFxRF1Q/s400/4.PNG" width="400" /></a></td></tr><tr><td class="tr-caption" style="text-align: center;">圖四</td></tr></tbody></table><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><b><span class="Apple-style-span" style="font-size: large;">【步驟三】設定Eclipse</span></b><br />設定完成以後，並且有把.jar檔放入eclipse/plugin以後，<br />請開啟Eclipse，<br />並點選Eclipse視窗中的右上角，如下圖(圖五)上方的框框，再點選other，<br /><table cellpadding="0" cellspacing="0" class="tr-caption-container" style="float: left; margin-right: 1em; text-align: left;"><tbody><tr><td style="text-align: center;"><a href="http://1.bp.blogspot.com/-tS4hDiqTA9s/ThBp_D58STI/AAAAAAAAAVo/EECA6iRvAs4/s1600/5.png" imageanchor="1" style="clear: left; margin-bottom: 1em; margin-left: auto; margin-right: auto;"><img border="0" src="http://1.bp.blogspot.com/-tS4hDiqTA9s/ThBp_D58STI/AAAAAAAAAVo/EECA6iRvAs4/s1600/5.png" /></a></td></tr><tr><td class="tr-caption" style="text-align: center;">圖五</td></tr></tbody></table><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />點選完以後，會看到下圖(圖六)<br />請選擇Map/Reduce，<br /><table cellpadding="0" cellspacing="0" class="tr-caption-container" style="float: left; margin-right: 1em; text-align: left;"><tbody><tr><td style="text-align: center;"><a href="http://1.bp.blogspot.com/-xVD-BpIrFyI/ThBp_rMi-AI/AAAAAAAAAVs/B1_HOzMg_mY/s1600/6.PNG" imageanchor="1" style="clear: left; margin-bottom: 1em; margin-left: auto; margin-right: auto;"><img border="0" height="320" src="http://1.bp.blogspot.com/-xVD-BpIrFyI/ThBp_rMi-AI/AAAAAAAAAVs/B1_HOzMg_mY/s320/6.PNG" width="262" /></a></td></tr><tr><td class="tr-caption" style="text-align: center;">圖六</td></tr></tbody></table><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><b><span class="Apple-style-span" style="font-size: large;">【步驟四】新增Map/Reduce Location</span></b><br /><br />點選完成會看到下圖(圖七)，<br />應該會有個Map/Reduce Locations的視窗，如左邊紅色框框，<br />此時請點選右邊紅色框框來新增一個Location<br /><table align="center" cellpadding="0" cellspacing="0" class="tr-caption-container" style="margin-left: auto; margin-right: auto; text-align: center;"><tbody><tr><td style="text-align: center;"><a href="http://4.bp.blogspot.com/-wXrmpAnShWA/ThBp_9CCzVI/AAAAAAAAAVw/azZU2RCNgws/s1600/7.PNG" imageanchor="1" style="margin-left: auto; margin-right: auto;"><img border="0" src="http://4.bp.blogspot.com/-wXrmpAnShWA/ThBp_9CCzVI/AAAAAAAAAVw/azZU2RCNgws/s1600/7.PNG" /></a></td></tr><tr><td class="tr-caption" style="text-align: center;">圖七</td></tr></tbody></table><br /><br /><br />點選完成會看到下圖(圖八)，<br />就根據你們自己的位置輸入相關資訊吧!<br />那個user name並無大礙，填寫完成以後按下Finish。<br /><table align="center" cellpadding="0" cellspacing="0" class="tr-caption-container" style="float: left; margin-right: 1em; text-align: left;"><tbody><tr><td style="text-align: center;"><a href="http://3.bp.blogspot.com/-ShVMxBNCeSw/ThBqAdQxdLI/AAAAAAAAAV0/Na7XiyPlaQA/s1600/8.PNG" imageanchor="1" style="margin-left: auto; margin-right: auto;"><img border="0" height="480" src="http://3.bp.blogspot.com/-ShVMxBNCeSw/ThBqAdQxdLI/AAAAAAAAAV0/Na7XiyPlaQA/s640/8.PNG" width="640" /></a></td></tr><tr><td class="tr-caption" style="text-align: center;">圖八</td></tr></tbody></table><br /><br /><br /><br />點選完成以後，會看到下圖(圖九)<br />會發現多了一個選項了，但是還沒完成喔，<br />我們在這個選項上點選右鍵，並點選Edit，<br /><br /><table align="center" cellpadding="0" cellspacing="0" class="tr-caption-container" style="float: left; margin-right: 1em; text-align: left;"><tbody><tr><td style="text-align: center;"><a href="http://2.bp.blogspot.com/-jRZOl52CGhA/ThBrZ_3eFZI/AAAAAAAAAWA/zqMcGX2iFQU/s1600/9.PNG" imageanchor="1" style="margin-left: auto; margin-right: auto;"><img border="0" height="80" src="http://2.bp.blogspot.com/-jRZOl52CGhA/ThBrZ_3eFZI/AAAAAAAAAWA/zqMcGX2iFQU/s640/9.PNG" width="640" /></a></td></tr><tr><td class="tr-caption" style="text-align: center;">圖九</td></tr></tbody></table><br /><br /><br /><br /><br /><br /><br /><br /><b><span class="Apple-style-span" style="font-size: large;">【步驟五】設定Map/Reduce Location的參數</span></b><br />再點選上圖，圖八中的Advanced Parameters，來修改一些參數，<br />有些人可能會問，為什麼不一開始就修改，因為有些參數，必須先建立好第一步，<br />然後再進行修改它才會出現。<br /><br />此時我們先找兩個參數，<br /><br />第一個是dfs.permissions.supergroup，請修改成你能對server上的hadoop進行存取的群組，我的server上群組是hadoop，所以我會在這欄修改成【hadoop】。<br />第二個是hadoop.job.ugi，跟上面一樣，但請修改成【hadoop,Tardis】。<br /><br /><br /><br />完成上面的步驟以後，<br />看到eclipse左邊的視窗，並點開DFS Locations，<br />會見到下圖(圖十)，會發現你已經連線成功了，如果你是根據我這篇的<a href="http://blog.kenyang.net/2011/06/how-to-install-hadoop-on-ubuntu-single.html">安裝教學</a>，你看到的資料夾名稱應該會是app，而不是appKen。<br />且不會看到user/hadoop/input這個資料夾，這個資料夾的功用是放置，程式將要讀取的資料。<br />將在下一篇，教導大家如何建立一個Map/Reduce專案。<br /><br /><table cellpadding="0" cellspacing="0" class="tr-caption-container" style="float: left; margin-right: 1em; text-align: left;"><tbody><tr><td style="text-align: center;"><a href="http://3.bp.blogspot.com/-4yR7A3a2A9k/ThBqA1XDszI/AAAAAAAAAV8/JTLbVjeR23Q/s1600/10.PNG" imageanchor="1" style="clear: left; margin-bottom: 1em; margin-left: auto; margin-right: auto;"><img border="0" src="http://3.bp.blogspot.com/-4yR7A3a2A9k/ThBqA1XDszI/AAAAAAAAAV8/JTLbVjeR23Q/s1600/10.PNG" /></a></td></tr><tr><td class="tr-caption" style="text-align: center;">圖十</td></tr></tbody></table><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />相關文章：<br /><br /><ul><li><a href="http://blog.kenyang.net/2011/06/how-to-install-hadoop-on-ubuntu-single.html">如何安裝Hadoop</a></li></ul><br /><br /><br /><br />
-      </div>
-      <footer>
-        <p><a class="myButton" href="/2011/07/03/using-eclipse-for-windows-to-connect-to">read more &raquo;</a></p>
-        <div>
-          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<!-- ken on github -->
-<ins class="adsbygoogle"
-     style="display:block"
-     data-ad-client="ca-pub-3783438370424072"
-     data-ad-slot="1516206098"
-     data-ad-format="auto"></ins>
-<script>
-(adsbygoogle = window.adsbygoogle || []).push({});
-</script>
-
-        </div>
-      </footer>
-      <hr>
-    
 
     <!-- Pagination links -->
     <div class="pagination">
       
         <a href="/blog/page37" class="previous">Previous</a>
       
-      <span class="page_number ">Page: 38 of 61</span>
+      <span class="page_number ">Page: 38 of 62</span>
       
         <a href="/blog/page39" class="next">Next</a>
       
@@ -431,7 +433,7 @@
 
     <div id="footer">
       <div class="container">
-        <p>&copy; 2019 Ken Yang
+        <p>&copy; 2023 Ken Yang
           with help from <a href="http://jekyllbootstrap.com" target="_blank" title="The Definitive Jekyll Blogging Framework">Jekyll Bootstrap</a>
           and <a href="http://getbootstrap.com" target="_blank">Bootstrap</a>
         </p>

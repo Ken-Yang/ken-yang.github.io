@@ -229,6 +229,8 @@
   
     
   
+    
+  
 
 
 
@@ -303,6 +305,34 @@
     </div>
     <!-- This loops through the paginated posts -->
     
+      <h1><a style="color: #F22430" href="/2010/09/04/android-insert-value-to-dbselect-value">android DB on SD Card 新增、查詢（DB 2/2）</a></h1>
+      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
+      <p class="author">
+      <div class="date">
+        <span>04 September 2010</span>
+      </div>
+      </p>
+      <div class="content" style="line-height: 28px;">
+        android insert value to DB、select value from DB<br /><br />這篇文章會介紹<br /><br />如何新增資料到sqllite database，並在database作查詢等動作<br /><br /><a href="http://ken-note.blogspot.com/2010/09/android-create-db-on-sdcard.html">上一篇已經介紹如何在sd card新增資料庫</a><br /><br />這裡就只略過如何新增資料庫，直接說明新增and查詢的動作<br /><br /><pre class="brush: java">public class db_sample {<br /> public static final String STR_TABLE_NAME    = "table_name"; //table名稱<br /> public static final String STR_FIELD_ID     = "field_id";  //欄位名稱 <br /> public static final String STR_FIELD_NAME    = "field_name"; //欄位名稱<br /> private static Context context;         <br /> <br /> public db_sample(Context context) {<br />  this.context = context; //new這個class時，一定要傳入context，因為openOrCreateDatabase是由context底下的method<br /> }<br /> <br /> //建立table的method<br /> public static final void fnCreateDB(){<br />  //MODE_WORLD_WRITEABLE，只能有寫的權限<br />  SQLiteDatabase dbwrite <br />      = context.openOrCreateDatabase("/sdcard/hi_test.db", context.MODE_WORLD_WRITEABLE, null);<br />  <br />  //建立table<br />  String sql = <br />    String.format("CREATE TABLE %s (%s INTEGER primary key autoincrement, %s text )"<br />        , STR_TABLE_NAME  <br />        , STR_FIELD_ID    <br />        , STR_FIELD_NAME   <br />    ); <br />  dbwrite.execSQL(sql);<br /> }<br /> <br /> //新增資料的method<br /> public static final long fnInsert(String strText){<br />  SQLiteDatabase dbwrite <br />      = context.openOrCreateDatabase("/sdcard/hi_test.db", context.MODE_WORLD_WRITEABLE, null);<br />  ContentValues cv = new ContentValues();<br />  cv.put(STR_FIELD_NAME, strText);<br />  return dbwrite.insert(STR_TABLE_NAME, null, cv);//如果return -1代表有錯誤，否則會return該筆資料在第幾列<br /> }<br /> <br /> //撈資料的method<br /> public  static final int fnRead(String strText){<br />  //MODE_WORLD_WRITEABLE，只能有讀取的權限<br />  SQLiteDatabase dbread <br />      = context.openOrCreateDatabase("/sdcard/hi_test.db",context. MODE_WORLD_READABLE, null);<br />  <br />  <br />  Cursor cursor <br />    = dbread.rawQuery( <br />      "select "+STR_FIELD_ID+" from "+STR_TABLE_NAME+" where "+STR_FIELD_NAME+"=?", <br />      new String[] {strText}<br />    );<br />  <br />  if (cursor.moveToFirst()) { <br />   return cursor.getInt(0);<br />  }<br />  return -1;<br /> }<br /> <br />}<br /><br /></pre><br /><br /><br />呼叫方法就如下： <br /><br /><pre class="brush: java">public class test extends Activity{<br /> @Override<br /> protected void onCreate(Bundle savedInstanceState) {<br /> super.onCreate(savedInstanceState);<br /> db_sample db = new db_sample(this);<br /> db.fnCreateDB();<br /> db.fnInsert("HI");<br /> int iID = db.fnRead("HI");<br /> }<br /><br />}<br /></pre>
+      </div>
+      <footer>
+        <p><a class="myButton" href="/2010/09/04/android-insert-value-to-dbselect-value">read more &raquo;</a></p>
+        <div>
+          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- ken on github -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3783438370424072"
+     data-ad-slot="1516206098"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+        </div>
+      </footer>
+      <hr>
+    
       <h1><a style="color: #F22430" href="/2010/09/04/android-create-db-on-sdcard">android create DB on sdcard（DB 1/2）</a></h1>
       <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
       <p class="author">
@@ -359,41 +389,13 @@
       </footer>
       <hr>
     
-      <h1><a style="color: #F22430" href="/2010/09/01/android-parse-xml">android parse xml</a></h1>
-      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
-      <p class="author">
-      <div class="date">
-        <span>01 September 2010</span>
-      </div>
-      </p>
-      <div class="content" style="line-height: 28px;">
-        android parse xml<br /><br />在anroid parse xml其實有蠻多方法的<br /><br />例如SAX(Simple API for XML)、DOM...<br /><br />大家都知道用SAX來parse會較省記憶體。<br /><br />但用SAX的麻煩就是必須自己去寫content handler...<br /><br />但如果您的XML檔並不大，且去讀取的次數沒有很頻繁，<br /><br />那麼還是建議您用DOM吧!較簡單!<br /><br />實作方法如下:<br /><br /><pre class="brush: java"> private static DocumentBuilder documentBuilder  = null;  <br /> private static Document document        = null;<br /> private static NodeList elements        = null;<br /> private static int iElementLength= 0;<br /><br /> @Override<br /> public void onStart(Intent intent, int startId) {<br />  super.onStart(intent, startId);<br />  try{<br />   <br />   URL urlUpdate = new URL("http://www.xxx.xxx/xxx.xml");<br />   documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();  <br />   document = documentBuilder.parse(urlUpdate.openStream());      <br />   document.getDocumentElement().normalize();  <br />   <br />   /*<br />   *其實簡單到我也不知該怎麼寫註解了，<br />   *先get到你要的tag吧，記得回傳型態是NodeList，<br />   *不要看我命名為elements，就以為他是Element<br />   */<br />   elements  = document.getElementsByTagName("update_images");<br />   iElementLength=elements.getLength();<br />   if (iElementLength ==0 )<br />    return;<br />    <br />   for (int i = 0; i &lt; iElementLength ; i++) {<br />    Element element = (Element) elements.item(i);<br />    Log.d("main",element.getAttribute("pic_name"));<br />   }<br />  }catch (Exception e) {<br />   Log.d("main",String.valueOf(e.toString()));<br />  }<br />   <br /> }<br /></pre><br /><br />大概就是這樣!<br /><br />
-      </div>
-      <footer>
-        <p><a class="myButton" href="/2010/09/01/android-parse-xml">read more &raquo;</a></p>
-        <div>
-          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<!-- ken on github -->
-<ins class="adsbygoogle"
-     style="display:block"
-     data-ad-client="ca-pub-3783438370424072"
-     data-ad-slot="1516206098"
-     data-ad-format="auto"></ins>
-<script>
-(adsbygoogle = window.adsbygoogle || []).push({});
-</script>
-
-        </div>
-      </footer>
-      <hr>
-    
 
     <!-- Pagination links -->
     <div class="pagination">
       
         <a href="/blog/page52" class="previous">Previous</a>
       
-      <span class="page_number ">Page: 53 of 61</span>
+      <span class="page_number ">Page: 53 of 62</span>
       
         <a href="/blog/page54" class="next">Next</a>
       
@@ -431,7 +433,7 @@
 
     <div id="footer">
       <div class="container">
-        <p>&copy; 2019 Ken Yang
+        <p>&copy; 2023 Ken Yang
           with help from <a href="http://jekyllbootstrap.com" target="_blank" title="The Definitive Jekyll Blogging Framework">Jekyll Bootstrap</a>
           and <a href="http://getbootstrap.com" target="_blank">Bootstrap</a>
         </p>
