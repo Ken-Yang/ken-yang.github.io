@@ -305,6 +305,34 @@
     </div>
     <!-- This loops through the paginated posts -->
     
+      <h1><a style="color: #F22430" href="/2010/04/24/google-app-engine-java">Google App Engine Java 亂碼</a></h1>
+      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
+      <p class="author">
+      <div class="date">
+        <span>24 April 2010</span>
+      </div>
+      </p>
+      <div class="content" style="line-height: 28px;">
+        <div><div>Google App Engine Java 亂碼的問題<br /><div><br /></div><div>如果在GAE有中文上傳上去以後</div><div><br /></div><div>竟然發現是亂碼</div><div><br /></div><div>盡管在eclipse的properties設為utf-8!</div><div><br /></div><div>但還是一樣!</div><div><br /></div><div>解決方法只要加入下段CODE即可!</div><div><br /></div><div><div></div></div><div><div></div><div></div><div><br /> <pre class="brush: java"><br />&lt;%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%&gt;<br /></pre> &nbsp;&nbsp;<br /></div><div><br /></div><div>其實我原本就有加入這行!</div><div><br /></div><div>但我習慣用include!<br /><br /></div><div>這段CODE我都加在一定會出現在最上面的include!</div><div><br /></div><div>但沒想到下面的竟然會無法認可!</div><div><br /></div><div><br /></div><div>所以只要在下面要呈現中文的PAGE一樣加入下列CODE即可</div><div><br /></div><div><div></div></div><div><br /></div><div><br /></div><div><br /></div><div><br /></div><div><br /></div><div><br /></div><div><br /></div><div><br /></div><div><br /></div><div><br /></div><div><br /></div><div><br /></div></div><div><br /></div><div><br /></div><div><br /></div><div><br /></div></div></div>
+      </div>
+      <footer>
+        <p><a class="myButton" href="/2010/04/24/google-app-engine-java">read more &raquo;</a></p>
+        <div>
+          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- ken on github -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3783438370424072"
+     data-ad-slot="1516206098"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+        </div>
+      </footer>
+      <hr>
+    
       <h1><a style="color: #F22430" href="/2010/04/11/eclipseno-default-proposals">eclipse裡no default proposals</a></h1>
       <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
       <p class="author">

@@ -305,6 +305,34 @@
     </div>
     <!-- This loops through the paginated posts -->
     
+      <h1><a style="color: #F22430" href="/2010/08/31/android-service-keep-alive-or-another">android service keep alive or another way??</a></h1>
+      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
+      <p class="author">
+      <div class="date">
+        <span>31 August 2010</span>
+      </div>
+      </p>
+      <div class="content" style="line-height: 28px;">
+        android service crashed (restart)<br /><br />如果你有支APP有個SERVICE是可能每隔一段時間去做一次的!<br /><br />那麼我建議你改用AlarmManager。<br /><br />最近發現自己寫的某支APP裡面的service會被android os restart!<br /><br />大概知道是因為是background service的關係，<br /><br />想要讓一個service keep alive。<br /><br />當然有解決方法，在2.0以前的device，<br /><br />可以使用setForeground(true);<br /><br />但是2.0以上，這個method，失效了。<br /><br />改成startForeground(id, notification)。<br /><br />但我改用了AlarmManager<br /><br />原因當然有很多，像是其實啟動一個service，就是啟動一個process。<br /><br />想必就消耗掉一點memory...<br /><br />當然還有其他原因，大家可以去Google一下。<br /><br />實作方法如下:<br /><br /><pre class="brush: java">public void onUpdate(Context context, AppWidgetManager appWidgetManager,int[] appWidgetIds) {<br />   Intent intent = new Intent(context, receiverChange.class);  //放入你每隔一段時間要執行的class<br />   PendingIntent pendingIntent   = PendingIntent.getBroadcast(context, 0, intent, 0);<br />   AlarmManager alarmManager  = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);<br />   //接著就是set一個repeat，這裡是設定每隔一分鐘去執行<br />   alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,  System.currentTimeMillis() , (60*1000), pendingIntent);<br /> }<br /></pre><br /><br />然後您每隔一段時間要做的事情就寫在一個BroadcastReceiver裡面<br /><br /><pre class="brush: java">public class receiverChangePicture extends BroadcastReceiver {<br /> @Override<br /> public void onReceive(Context context, Intent intent) {<br />  Log.d("main","hi I receive message every minutes..");<br /> }<br /><br />}<br /></pre><br /><br /><br />這樣就完成了，但是注意此實作方法只限定於有週期性要執行的code才適用!!!!<br /><br />如果今天你是要偵測sd card的狀態，那麼建議你還是用service!(就如同我上篇文章所說的)<br /><br />以alarmManager來實作，只是節省一點成本罷了!<br /><br /><br /><br /><br /><br /><br /><br />
+      </div>
+      <footer>
+        <p><a class="myButton" href="/2010/08/31/android-service-keep-alive-or-another">read more &raquo;</a></p>
+        <div>
+          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- ken on github -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3783438370424072"
+     data-ad-slot="1516206098"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+        </div>
+      </footer>
+      <hr>
+    
       <h1><a style="color: #F22430" href="/2010/08/19/android-sdcard">android 偵測 sdcard</a></h1>
       <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
       <p class="author">
@@ -345,34 +373,6 @@
       </div>
       <footer>
         <p><a class="myButton" href="/2010/08/07/android-progressbar-in-appwidget">read more &raquo;</a></p>
-        <div>
-          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<!-- ken on github -->
-<ins class="adsbygoogle"
-     style="display:block"
-     data-ad-client="ca-pub-3783438370424072"
-     data-ad-slot="1516206098"
-     data-ad-format="auto"></ins>
-<script>
-(adsbygoogle = window.adsbygoogle || []).push({});
-</script>
-
-        </div>
-      </footer>
-      <hr>
-    
-      <h1><a style="color: #F22430" href="/2010/08/07/android-filemkdir">android file.mkdir()</a></h1>
-      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
-      <p class="author">
-      <div class="date">
-        <span>07 August 2010</span>
-      </div>
-      </p>
-      <div class="content" style="line-height: 28px;">
-        <br />今天在實作在 sdcard裡面建立一個檔案!<br /><br />其實這沒什麼難度!<br /><br /><pre class="brush: java">File file = new File("/sdcard/tmp/tmp.db");<br />file.createNewFile();<br /></pre><br /><br />這樣乍看之下是沒甚麼問題<br /><br />但如果沒有tmp此目錄的話!<br /><br />則會出現exception<br /><br />當然! 要建立一個目錄也很簡單!!只要用mkdir即可!<br /><br /><pre class="brush: java">file.mkdir();<br /></pre><br /><br />但是!<br /><br />必須加入一個權限才可以建立目錄!<br /><br /><pre class="brush: java">&lt;uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"&gt;&lt;/uses-permission&gt;<br /><br /></pre><br /><br />但是建立檔案就不用了!
-      </div>
-      <footer>
-        <p><a class="myButton" href="/2010/08/07/android-filemkdir">read more &raquo;</a></p>
         <div>
           <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 <!-- ken on github -->

@@ -6,7 +6,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-    <title>使用SpringBoot創建Eureka Server</title>
+    <title>Use OpenFeign to communicate between two services </title>
     <meta name="description" content="">
     <meta name="author" content="Ken Yang">
 
@@ -320,7 +320,7 @@
 
 
 <div class="page-header">
-  <h1>使用SpringBoot創建Eureka Server </h1>
+  <h1>Use OpenFeign to communicate between two services  </h1>
 </div>
 
 <div class="row post-full">
@@ -354,185 +354,149 @@
     </div>
     <div class="content" style="line-height: 28px;">
       
-<p style="font-size: 16px;line-height: 2;">這篇是說明如何使用SpringBoot 3.2.0和Eureka 4.1.0創建一個Eureka Server</p>
+<p style="font-size: 16px; line-height: 1.6;">這篇是延續前面二篇，把服務連接好以後，如何讓服務之間彼此進行調用？</p>
 
-<hr />
-<h3 id="1-打開intelli-j-idea">1. 打開Intelli J IDEA</h3>
-<hr />
-
-<ul style="font-size: 16px;line-height: 1.6;">
-  <li>點擊 <code class="language-plaintext highlighter-rouge">File</code></li>
-  <li>點擊 <code class="language-plaintext highlighter-rouge">New</code></li>
-  <li>點擊 <code class="language-plaintext highlighter-rouge">Project</code></li>
-</ul>
+<ol style="font-size: 16px; line-height: 1.6;">
+  <li>先<a href="https://blog.kenyang.net/2023/12/13/springbooteureka-server">參考上一篇</a>，建立1個Eureka Server</li>
+  <li>先<a href="https://blog.kenyang.net/2023/12/13/springbooteureka-client">參考上一篇</a>，建立2個Eureka clients，本文範例會創建
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">調用者</code> : 1個API service，這API就會對外提供給外部串接，端口設置為8888</li>
+      <li><code class="language-plaintext highlighter-rouge">被調用者</code>: 1個Login service，這Login service就是提供給eureka中各個服務進行調用，端口設置為7777</li>
+    </ul>
+  </li>
+</ol>
 
 <p><br /></p>
 
 <!--more-->
 
+<hr style="font-size: 16px;line-height: 1.6;" />
+<h3 id="1-在2個clients專案中創建interface">1. 在2個clients專案中創建Interface</h3>
 <hr />
-<h3 id="2-編輯pomxml此步驟只是把spring相關的dependecy抓下來">2. 編輯pom.xml，此步驟只是把spring相關的dependecy抓下來</h3>
-<hr />
+
+<p style="font-size: 16px;line-height: 1.6;">這個Interface是用來給服務之間進行使用的，<br /></p>
 
 <ul style="font-size: 16px;line-height: 1.6;">
-  <li>去網站 https://start.spring.io/ 生成springboot的xml文件</li>
-  <li><code class="language-plaintext highlighter-rouge">注意！我用的是spring 3.2.0，所以要求Java至少要17以上，所以記得選對JAVA SDK</code>
-    <ul>
-      <li>下載對應SDK，去 <code class="language-plaintext highlighter-rouge">Project Setting -&gt; Project</code>
-        <ul>
-          <li>選擇<code class="language-plaintext highlighter-rouge">SDK</code> 這裡的下拉選單中選 <code class="language-plaintext highlighter-rouge">Download JDK</code> ，選擇 <code class="language-plaintext highlighter-rouge">Oracje JDK 21</code></li>
-          <li>點選<code class="language-plaintext highlighter-rouge">Language Level</code>，選擇 <code class="language-plaintext highlighter-rouge">21</code></li>
-        </ul>
-      </li>
-      <li>設定 Java compiler，在 MAC中按 <code class="language-plaintext highlighter-rouge">cmd+,</code>
-        <ul>
-          <li>點選<code class="language-plaintext highlighter-rouge">Build, Execution, Deployment</code> -&gt; <code class="language-plaintext highlighter-rouge">Compiler</code> -&gt; <code class="language-plaintext highlighter-rouge">Java Compiler</code></li>
-          <li>在對應module中更改 <code class="language-plaintext highlighter-rouge">Target bytecode version</code></li>
-        </ul>
-      </li>
-    </ul>
-  </li>
+  <li><code class="language-plaintext highlighter-rouge">調用者</code> 利用此Interface去調用<br /></li>
+  <li><code class="language-plaintext highlighter-rouge">被調用者</code> 利用此Interface宣告自己可以被調用的哪些方法，以及必須去 <code class="language-plaintext highlighter-rouge">implements</code> 此Interface，在裡面實作</li>
 </ul>
 
-<p style="font-size: 16px;line-height: 1.6;">pom.xml範例</p>
+<p style="font-size: 16px;line-height: 1.6;">因此！在二個eureka client中都需要有此Interface！最好的方式是在一個project中創建interface後，其他需要使用的再去引用他，但這裡為了簡單方便，就粗暴的在二個專案中都放入此interface</p>
 
-<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span>
-<span class="nt">&lt;project</span> <span class="na">xmlns=</span><span class="s">"http://maven.apache.org/POM/4.0.0"</span> <span class="na">xmlns:xsi=</span><span class="s">"http://www.w3.org/2001/XMLSchema-instance"</span>
-         <span class="na">xsi:schemaLocation=</span><span class="s">"http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd"</span><span class="nt">&gt;</span>
-    <span class="nt">&lt;modelVersion&gt;</span>4.0.0<span class="nt">&lt;/modelVersion&gt;</span>
-    <span class="nt">&lt;parent&gt;</span>
-        <span class="nt">&lt;groupId&gt;</span>org.springframework.boot<span class="nt">&lt;/groupId&gt;</span>
-        <span class="nt">&lt;artifactId&gt;</span>spring-boot-starter-parent<span class="nt">&lt;/artifactId&gt;</span>
-        <span class="nt">&lt;version&gt;</span>3.2.0<span class="nt">&lt;/version&gt;</span>
-        <span class="nt">&lt;relativePath/&gt;</span> <span class="c">&lt;!-- lookup parent from repository --&gt;</span>
-    <span class="nt">&lt;/parent&gt;</span>
-    <span class="nt">&lt;groupId&gt;</span>net.kenyang.server<span class="nt">&lt;/groupId&gt;</span>
-    <span class="nt">&lt;artifactId&gt;</span>employee-lottery-api<span class="nt">&lt;/artifactId&gt;</span>
-    <span class="nt">&lt;version&gt;</span>0.0.1-SNAPSHOT<span class="nt">&lt;/version&gt;</span>
-    <span class="nt">&lt;name&gt;</span>employee-lottery-api<span class="nt">&lt;/name&gt;</span>
-    <span class="nt">&lt;description&gt;</span>員工抽獎API<span class="nt">&lt;/description&gt;</span>
-    <span class="nt">&lt;dependencies&gt;</span>
-        <span class="nt">&lt;dependency&gt;</span>
-            <span class="nt">&lt;groupId&gt;</span>org.springframework.boot<span class="nt">&lt;/groupId&gt;</span>
-            <span class="nt">&lt;artifactId&gt;</span>spring-boot-starter<span class="nt">&lt;/artifactId&gt;</span>
-<span class="c">&lt;!--            &lt;artifactId&gt;spring-boot-starter-web&lt;/artifactId&gt; --&gt;</span> <span class="c">&lt;!-- 這個是單純給restful，但因為會有eureka，所以不用 --&gt;</span>
-        <span class="nt">&lt;/dependency&gt;</span>
-    <span class="nt">&lt;/dependencies&gt;</span>
+<p style="font-size: 16px;line-height: 1.6;">Interface如下，其實就是起一個RestFul API地址，其地址是 http://x.x.x.x/servicelogin/login</p>
 
-    <span class="nt">&lt;build&gt;</span>
-        <span class="nt">&lt;plugins&gt;</span>
-            <span class="nt">&lt;plugin&gt;</span>
-                <span class="nt">&lt;groupId&gt;</span>org.springframework.boot<span class="nt">&lt;/groupId&gt;</span>
-                <span class="nt">&lt;artifactId&gt;</span>spring-boot-maven-plugin<span class="nt">&lt;/artifactId&gt;</span>
-            <span class="nt">&lt;/plugin&gt;</span>
-        <span class="nt">&lt;/plugins&gt;</span>
-    <span class="nt">&lt;/build&gt;</span>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="nn">net.kenyang</span><span class="o">;</span>
 
-<span class="nt">&lt;/project&gt;</span>
-</code></pre></div></div>
+<span class="kn">import</span> <span class="nn">org.springframework.cloud.openfeign.FeignClient</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.web.bind.annotation.GetMapping</span><span class="o">;</span>
 
-<p><br /></p>
+<span class="cm">/*
+ * FeignClient是代表此為一個可以被探索的client
+ * value是此服務名稱，其他服務調用需填入此value
+ * path就是此服務的api地址
+ */</span>
+<span class="nd">@FeignClient</span><span class="o">(</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="s">"service-login"</span><span class="o">,</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="s">"/servicelogin"</span><span class="o">)</span>
+<span class="kd">public</span> <span class="kd">interface</span> <span class="nc">ILogin</span> <span class="o">{</span>
 
-<hr />
-<h2 id="3-編輯pomxml此步驟把eureka相關的dependecy補上">3. 編輯pom.xml，此步驟把Eureka相關的dependecy補上</h2>
-<hr />
-
-<ul style="font-size: 16px;line-height: 1.6;">
-  <li>切記！版本很重要！會有相依性！</li>
-</ul>
-
-<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code>        <span class="c">&lt;!-- https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-starter-netflix-eureka-server --&gt;</span>
-        <span class="nt">&lt;dependency&gt;</span>
-            <span class="nt">&lt;groupId&gt;</span>org.springframework.cloud<span class="nt">&lt;/groupId&gt;</span>
-            <span class="nt">&lt;artifactId&gt;</span>spring-cloud-starter-netflix-eureka-server<span class="nt">&lt;/artifactId&gt;</span>
-            <span class="nt">&lt;version&gt;</span>4.1.0<span class="nt">&lt;/version&gt;</span>
-        <span class="nt">&lt;/dependency&gt;</span>
-</code></pre></div></div>
-
-<p><br /></p>
-
-<hr />
-<h2 id="4-optional-編輯pomxml此步驟把登入模組的dependcy補上">4. (optional) 編輯pom.xml，此步驟把登入模組的dependcy補上</h2>
-<hr />
-
-<p style="font-size: 16px;line-height: 1.6;">為什麼optional呢？因為我發現eureka <code class="language-plaintext highlighter-rouge">client</code> 在某個版本後，沒有去實作 authorization header 當連結到server時，因此如果設置了這段，在client那邊必須要去改寫AbstractJerseyEurekaHttpClient。</p>
-
-<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code>        <span class="nt">&lt;dependency&gt;</span>
-            <span class="nt">&lt;groupId&gt;</span>org.springframework.boot<span class="nt">&lt;/groupId&gt;</span>
-            <span class="nt">&lt;artifactId&gt;</span>spring-boot-starter-security<span class="nt">&lt;/artifactId&gt;</span>
-            <span class="nt">&lt;exclusions&gt;</span>
-                <span class="nt">&lt;exclusion&gt;</span>
-                    <span class="nt">&lt;groupId&gt;</span>org.springframework.boot<span class="nt">&lt;/groupId&gt;</span>
-                    <span class="nt">&lt;artifactId&gt;</span>spring-boot-starter-logging<span class="nt">&lt;/artifactId&gt;</span>
-                <span class="nt">&lt;/exclusion&gt;</span>
-            <span class="nt">&lt;/exclusions&gt;</span>
-        <span class="nt">&lt;/dependency&gt;</span>
-</code></pre></div></div>
-
-<p><br /></p>
-
-<hr />
-<h1 id="5-修改代碼">5. 修改代碼</h1>
-<hr />
-
-<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="nn">net.kenyang.server</span><span class="o">;</span>
-
-<span class="kn">import</span> <span class="nn">org.springframework.boot.SpringApplication</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">org.springframework.boot.autoconfigure.SpringBootApplication</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">org.springframework.cloud.netflix.eureka.server.EnableEurekaServer</span><span class="o">;</span>
-
-<span class="nd">@SpringBootApplication</span>
-<span class="nd">@EnableEurekaServer</span> <span class="c1">// 宣告為一個EurekaServer</span>
-<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Main</span> <span class="o">{</span>
-    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
-        <span class="nc">SpringApplication</span><span class="o">.</span><span class="na">run</span><span class="o">(</span><span class="nc">Main</span><span class="o">.</span><span class="na">class</span><span class="o">,</span> <span class="n">args</span><span class="o">);</span>
-    <span class="o">}</span>
-
-
+    <span class="nd">@GetMapping</span><span class="o">(</span><span class="s">"/login"</span><span class="o">)</span>
+    <span class="kt">boolean</span> <span class="nf">login</span><span class="o">();</span>
 <span class="o">}</span>
-</code></pre></div></div>
-
-<p><br /></p>
-
-<hr />
-<h1 id="6-配置檔">6. 配置檔</h1>
-<hr />
-
-<p style="font-size: 16px;line-height: 1.6;">在resources資料夾下創建 <code class="language-plaintext highlighter-rouge">application.yml</code></p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>server:
-  port: 8886
-spring:
-  security: # 選填，如果有spring-boot-starter-security才需要
-    user:
-      name: admin
-      password: admin
-eureka:
-  instance:
-    hostname: ${spring.cloud.client.ip-address}
-    preferIpAddress: true  # 使用IP rather than HOst
-  client:
-    registerWithEureka: false
-    fetchRegistry: false
-    serviceUrl:
-      defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka/
 
 </code></pre></div></div>
 
 <p><br /></p>
 
 <hr />
-<h1 id="7-run">7. Run</h1>
+<h3 id="2-在login-service專案中實作interface">2. 在Login Service專案中實作Interface</h3>
 <hr />
 
-<p style="font-size: 16px;line-height: 1.6;">點選compile後，再點選run，
-去瀏覽器看 127.0.0.1:8886，就會看到管理介面</p>
+<p style="font-size: 16px;line-height: 1.6;">在 <code class="language-plaintext highlighter-rouge">被調用者</code> 中去實作上述的Interface</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="nn">net.kenyang</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">org.springframework.web.bind.annotation.RequestMapping</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.web.bind.annotation.RestController</span><span class="o">;</span>
+
+<span class="nd">@RestController</span> <span class="c1">// 宣告此為一個RestFul API</span>
+<span class="nd">@RequestMapping</span><span class="o">(</span><span class="n">path</span> <span class="o">=</span> <span class="s">"/servicelogin"</span><span class="o">)</span> <span class="c1">// path需和Interface中的一致</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">ImplLogin</span> <span class="kd">implements</span> <span class="nc">ILogin</span><span class="o">{</span>
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">login</span><span class="o">()</span> <span class="o">{</span>
+        <span class="c1">// 這裡可以實作實際的業務流程</span>
+        <span class="k">return</span> <span class="kc">true</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+
+</code></pre></div></div>
 
 <p><br /></p>
 
-<p><br /></p>
+<hr />
+<h3 id="3-在api-service專案中調用login-service服務">3. 在API Service專案中調用Login service服務</h3>
+<hr />
+
+<h4 id="3-1-宣告api-service可以探索及調用其他服務">3-1. 宣告API Service可以探索及調用其他服務</h4>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">@SpringBootApplication</span>
+<span class="nd">@EnableFeignClients</span><span class="o">(</span><span class="n">basePackages</span> <span class="o">={</span><span class="s">"net.kenyang.interfaces"</span><span class="o">})</span> <span class="c1">// 宣告可以調用及探索服務，且interface在那個packages底下</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Main</span> <span class="o">{</span>
+<span class="o">...</span>
+</code></pre></div></div>
+
+<h4 id="3-2-創建一個api入口此api就會調用loginservice">3-2. 創建一個API入口，此API就會調用LoginService</h4>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="nn">net.kenyang.controller</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">org.springframework.beans.factory.annotation.Autowired</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.web.bind.annotation.GetMapping</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.web.bind.annotation.RequestMapping</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.web.bind.annotation.RestController</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">net.kenyang.interfaces.ILogin</span><span class="o">;</span>
+
+<span class="nd">@RestController</span>
+<span class="nd">@RequestMapping</span><span class="o">(</span><span class="n">path</span> <span class="o">=</span> <span class="s">"/login"</span><span class="o">)</span> <span class="c1">// 宣告此API地址的path，也就是 http://x.x.x.x/login</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Login</span> <span class="o">{</span>
+
+    <span class="nd">@Autowired</span> <span class="c1">// 會自動注入，讓spring完成bean自動封裝</span>
+    <span class="nc">ILogin</span> <span class="n">login</span><span class="o">;</span>
+
+    <span class="nd">@GetMapping</span><span class="o">(</span><span class="s">"/"</span><span class="o">)</span>
+    <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">index</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">login</span><span class="o">.</span><span class="na">login</span><span class="o">();</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+
+</code></pre></div></div>
 
 <p><br /></p>
+
+<hr />
+<h3 id="4-加入openfeign的dependcy">4. 加入OpenFeign的dependcy</h3>
+<hr />
+
+<p style="font-size: 16px;line-height: 1.6;">在二個專案中都要引入</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+        &lt;!-- 使用openfeign做服務探索 --&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-cloud-starter-openfeign&lt;/artifactId&gt;
+            &lt;version&gt;4.1.0&lt;/version&gt;
+        &lt;/dependency&gt;
+</code></pre></div></div>
+
+<p><br /></p>
+
+<hr />
+<h3 id="5-run">5. Run</h3>
+<hr />
+
+<p style="font-size: 16px;line-height: 1.6;">將上述二個服務都註冊上Eureka Server後， <br />
+訪問API的地址 http://127.0.0.1:8888/login <br />
+就會顯示service吐回來的結果</p>
+
 
     </div>
 
@@ -547,9 +511,7 @@ eureka:
 
   
      
-    	<li><a href="/tags.html#eureka-ref">eureka <span>2</span></a></li>
-     
-    	<li><a href="/tags.html#springboot-ref">springboot <span>1</span></a></li>
+    	<li><a href="/tags.html#openfeign-ref">openfeign <span>1</span></a></li>
     
   
 
@@ -573,11 +535,11 @@ eureka:
     <hr>
     <ul class="pagination">
     
-      <li class="prev"><a href="/2023/12/13/springbooteureka-client" title="使用SpringBoot創建Eureka Client">&laquo; Previous</a></li>
+      <li class="prev"><a href="/2023/12/13/springbooteureka-server" title="使用SpringBoot創建Eureka Server">&laquo; Previous</a></li>
     
       <li><a href="/archive.html">Archive</a></li>
     
-      <li class="next"><a href="/2023/12/13/use-openfeign-to-communicate-between-two-services" title="Use OpenFeign to communicate between two services ">Next &raquo;</a></li>
+      <li class="next disabled"><a>Next &rarr;</a>
     
     </ul>
     <hr>

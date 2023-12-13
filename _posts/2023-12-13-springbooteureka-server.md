@@ -29,6 +29,9 @@ tags: [eureka, springboot]
 ### 2. 編輯pom.xml，此步驟只是把spring相關的dependecy抓下來
 ---
 
+
+{: style="font-size: 16px;line-height: 1.6;"}
+
 - 去網站 https://start.spring.io/ 生成springboot的xml文件
 - `注意！我用的是spring 3.2.0，所以要求Java至少要17以上，所以記得選對JAVA SDK` 
    -  下載對應SDK，去 `Project Setting -> Project` 
@@ -38,6 +41,8 @@ tags: [eureka, springboot]
       -  點選`Build, Execution, Deployment` -> `Compiler` -> `Java Compiler` 
       -  在對應module中更改 `Target bytecode version`
 
+
+{: style="font-size: 16px;line-height: 1.6;"}
 
 pom.xml範例
 
@@ -84,6 +89,9 @@ pom.xml範例
 ## 3. 編輯pom.xml，此步驟把Eureka相關的dependecy補上
 ---
 
+
+{: style="font-size: 16px;line-height: 1.6;"}
+
 - 切記！版本很重要！會有相依性！
 
 ```xml
@@ -101,6 +109,9 @@ pom.xml範例
 ---
 ## 4. (optional) 編輯pom.xml，此步驟把登入模組的dependcy補上
 ---
+
+
+{: style="font-size: 16px;line-height: 1.6;"}
 
 為什麼optional呢？因為我發現eureka `client` 在某個版本後，沒有去實作 authorization header 當連結到server時，因此如果設置了這段，在client那邊必須要去改寫AbstractJerseyEurekaHttpClient。
 
@@ -147,6 +158,9 @@ public class Main {
 # 6. 配置檔
 ---
 
+
+{: style="font-size: 16px;line-height: 1.6;"}
+
 在resources資料夾下創建 `application.yml`
 
 ```
@@ -174,6 +188,9 @@ eureka:
 ---
 # 7. Run
 ---
+
+
+{: style="font-size: 16px;line-height: 1.6;"}
 
 點選compile後，再點選run，
 去瀏覽器看 127.0.0.1:8886，就會看到管理介面

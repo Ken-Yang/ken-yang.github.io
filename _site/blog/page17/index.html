@@ -305,6 +305,34 @@
     </div>
     <!-- This loops through the paginated posts -->
     
+      <h1><a style="color: #F22430" href="/2014/01/19/deploying-nodejs-application-to-heroku">Deploying a Node.js application to Heroku</a></h1>
+      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
+      <p class="author">
+      <div class="date">
+        <span>19 January 2014</span>
+      </div>
+      </p>
+      <div class="content" style="line-height: 28px;">
+        <div style="font-size: 15px;line-height: 22px;">Node.js是近來很夯的一個javascript framework，<br />優點有even-driven, non-blocking IO...etc，<br />這裡就不贅述了，直接進入主題吧！<br /><br /><br />這篇假設大家已經有heroku帳號了，<br />就不教大家怎麼註冊，或者說明每個command了，<br />不會的可以去看<a href="http://blog.kenyang.net/2013/11/herokudeploy-python-applicaion.html">上一篇</a>．<br /><br />這篇主要教如何建立一個基本的node.js application，<br />下一篇會教如何結合mongodb，<br />而這篇會使用到:<br />&nbsp; &nbsp; &nbsp;1. npm (node.js的package manager)<br />&nbsp; &nbsp; &nbsp;2. express.js (web framework，你可以想像成flask, django, springmvc）<br /><ul></ul><br /><br /><br />進入正題吧！<br /><br /><span style="color: #e06666; font-size: 18px;">1. init</span><br /><br />先建立我們需要的環境，<br /><pre class="brush: java">mkdir test-app<br />cd test-app<br />git init <br />heroku create your-app-name<br /></pre><br /><span style="color: #e06666; font-size: 18px;">2. install express.js</span><br /><br />express.js需要透過npm來安裝，<br />那npm怎麼取得呢？現在只要你安裝node.js，<br />基本上就會幫你把npm裝好了，所以不用特別去裝！<br />使用npm安裝package有一個好處，<br />npm就像是virtualenv一樣，<br />它會為每個application建立一個獨立的環境，<br />每一個node.js application使用的package都是獨立的，彼此不會互相干擾！<br /><br />安裝指令：<br /><pre class="brush: java">npm install express.js<br /></pre><br /><span style="color: #e06666; font-size: 18px;">3. development</span><br /><br />先建立index.js這個檔案<br /><br /><pre class="brush: java">vim index.js<br /></pre><br />內容如下：<br /><pre class="brush: js">// include express module<br />var express = require("express");<br /><br />var app = express();<br />app.use(express.logger());<br /><br />app.get('/', function(req, resp) {<br />    resp.send("hello world");<br />});<br /><br />var port = process.env.PORT || 5000;<br />app.listen(port, function() {<br />    console.log("Listening on " + port);<br />});<br /><br /></pre><br /><span style="color: #e06666; font-size: 18px;">4. deployment</span><br /><br />首先要先建立一個檔案名為Procfile，<br />這檔案是讓node.js知道此process type，<br /><pre class="brush: java">vim Procfile<br /></pre><br />內容如下：<br /><pre class="brush: js">web: node index.js<br /></pre><br />接著建立一個package.json<br />這個檔案是記錄著你的application要用到哪些package，<br />但你不需要自己建立這個檔案，你可以透過npm來幫你generate這個file，<br />指令如下，<br /><pre class="brush: java">npm init<br /></pre><br />準備完上述兩個檔案後，就可以上傳至heroku了！<br /><pre class="brush: java">git add . <br />git commit -m 'first commit'<br />git push heroku master<br /></pre><br />完成以後就可以到你的application去看，（http://your-app-name.herokuapp.com/）<br />應該就會看到hello world字樣了．<br />在下一篇會講如何在heroku上整合mongodb．<br /><br /><br /></div><br /><br /><br /><br /><br />
+      </div>
+      <footer>
+        <p><a class="myButton" href="/2014/01/19/deploying-nodejs-application-to-heroku">read more &raquo;</a></p>
+        <div>
+          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- ken on github -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3783438370424072"
+     data-ad-slot="1516206098"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+        </div>
+      </footer>
+      <hr>
+    
       <h1><a style="color: #F22430" href="/2014/01/07/android-how-to-record-screen-on-mac">How to record the screen on Android?</a></h1>
       <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
       <p class="author">
@@ -345,34 +373,6 @@
       </div>
       <footer>
         <p><a class="myButton" href="/2013/11/26/herokudeploy-python-applicaion">read more &raquo;</a></p>
-        <div>
-          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<!-- ken on github -->
-<ins class="adsbygoogle"
-     style="display:block"
-     data-ad-client="ca-pub-3783438370424072"
-     data-ad-slot="1516206098"
-     data-ad-format="auto"></ins>
-<script>
-(adsbygoogle = window.adsbygoogle || []).push({});
-</script>
-
-        </div>
-      </footer>
-      <hr>
-    
-      <h1><a style="color: #F22430" href="/2013/10/23/actionbarcompat-swipe-to-change-tab">ActionBarCompat 【Swipe to change tab】</a></h1>
-      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
-      <p class="author">
-      <div class="date">
-        <span>23 October 2013</span>
-      </div>
-      </p>
-      <div class="content" style="line-height: 28px;">
-        <a href="http://blog.kenyang.net/2013/09/actionbarcompat-add-tab.html">上一篇ActionBarCompat 【Add Tab】</a>講到了，你們可能會覺得很奇怪，<br />為什麼不管點tab1還是tab2，<br />怎麼內容都一樣？<br />因為我們的確沒有透過FragmentTransaction把Fragment加進來！<br />最後的結論是說，要透過ViewPager去把Fragment加進來！<br /><br />所以這篇就是要教大家怎麼使用ViewPager，<br />使用ViewPager好處就是，使用者可以用swipe去換tab，<br /><br /><br /><span style="color: #e06666; font-size: large;">1. 首先請將你的class implement OnPageChangeListener 這個interface</span><br /><br /><pre class="brush: java">public class MainActivity extends ActionBarActivity implements TabListener,OnPageChangeListener {<br />    ....<br />}<br /></pre><br /><br /><span style="color: #e06666; font-size: large;">2. 增加對應的method</span><br /><br />因為在第一步的時候，你就已經implement一個interface進來，<br />所以在第二步驟我們必須增加下面的method<br /><br /><pre class="brush: java">@Override<br />public void onPageScrollStateChanged(int arg0) {}<br /><br />@Override<br />public void onPageScrolled(int arg0, float arg1, int arg2) {}<br /><br />@Override<br />public void onPageSelected(int iPosition) {<br />    getSupportActionBar().setSelectedNavigationItem(iPosition);<br />}<br /><br /></pre><br />我們在上面的onPageSeleced中實作了一段code，<br />它的目的就是當你swipe到該page，就顯示該page應顯示的Fragment！<br /><br /><br /><span style="color: #e06666; font-size: large;">3. 加入2個Fragment</span><br /><br />這步驟是新增兩個Fragment，<br />目的是為了要塞在tab裡面！<br />由於很簡單，就不貼example了！<br />反正就是兩個Fragment（先命名為FragmentTab1, FragmentTab2）<br /><br /><br /><br /><span style="color: #e06666; font-size: large;">4. 加入FragmentPagerAdapter</span><br /><br />FragmentPagerAdapter目的就是待會要餵給viewPager使用的，<br />這樣viewPager才知道捲動到哪頁的時候，要顯示哪個Fragment．<br />我們可以在getItem看到，<br />當iPosition為1的時候，意思就是卷到第一個tab了！<br />所以我們就在這new上面新增的FragmentTab1出來！<br /><br /><pre class="brush: java">public class HomeViewPagerAdapter extends FragmentPagerAdapter{<br /><br />    public HomeViewPagerAdapter(FragmentManager fm) {<br />        super(fm);<br />    }<br /><br />    @Override<br />    public Fragment getItem(int iPosition) {<br />        switch (iPosition) {<br />            case 0:<br />                return new FragmentTab1();<br />            case 1:<br />                return new FragmentTab2();<br />        }<br />        return null;<br />    }<br /><br />    @Override<br />    public int getCount() {<br />        return 2;<br />    }<br />}<br /></pre><br /><br /><br /><br /><br /><span style="color: #e06666; font-size: large;">5. 在layout中加入viewpager</span><br /><br /><pre class="brush: xml">&lt;LinearLayout xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;<br />    android:orientation=&quot;vertical&quot;<br />    android:layout_width=&quot;match_parent&quot;<br />    android:layout_height=&quot;match_parent&quot;&gt;<br /><br />    &lt;android.support.v4.view.ViewPager<br />        android:id=&quot;@+id/pager&quot;<br />        android:layout_width=&quot;match_parent&quot;<br />        android:layout_height=&quot;0dp&quot;<br />        android:layout_weight=&quot;1&quot; /&gt;<br /><br /><br />&lt;/LinearLayout&gt;<br /></pre><br /><br /><br /><span style="color: #e06666; font-size: large;">6. 取得layout中的viewpager</span><br /><br />在這步驟就是取得剛剛上步驟新增的viewpager，<br />然後對它作設定，<br />首先要先設定adapter，這裡就是餵給他我們上面的HomeViewPagerAdapter，<br />接著就是設定listener，這裡我們指定this，指定this的話就會去抓第二步驟implement的method！<br />當然你也可以自己new！<br />至於第三步與第四步是optional的！當然你也可以不要設定！<br />這兩步驟只是為了讓畫面好看一點，在tab1和tab2之間swipe的時候，中間會有一個style在！<br />但理論上，你們第三步與第四步都會錯，因為沒有圖也沒有設定dimension！<br /><pre class="brush: java">private ViewPager viewPager;<br /> <br />@Override<br />protected void onCreate(Bundle savedInstanceState) {<br />    super.onCreate(savedInstanceState);<br />    setContentView(R.layout.activity_main);<br />  <br />    viewPager = (ViewPager) findViewById(R.id.pager);<br />  <br />    if (viewPager!=null){<br />        viewPager.setAdapter(new HomeViewPagerAdapter(getSupportFragmentManager()));<br />        viewPager.setOnPageChangeListener(this);<br />        viewPager.setPageMarginDrawable(R.drawable.grey_border_inset_lr);  // optional<br />        viewPager.setPageMargin(getResources().getDimensionPixelSize(R.dimen.page_margin_width)); // optional  <br />    }<br />}<br /></pre><br /><br /><br /><br /><span style="color: #e06666; font-size: large;">7. hook onTabSelected </span><br /><br />理論上完成上面的步驟，<br />你應該就可以完成用swipe換tab了！<br />可是你可能會發現，當你直接點tab時，<br />tab並不會更換！<br />所以最後一步驟就是要實作這一塊！<br />還記得上一篇嗎？<br />我們有implement onTabSelected這個method！<br />在裡面加入下面的code吧！<br /><br /><pre class="brush: java">@Override<br />public void onTabSelected(Tab tab, FragmentTransaction arg1) {<br />    viewPager.setCurrentItem(tab.getPosition());<br />}<br /></pre><br /><br /><br />大功告成！<br />恩，下一篇會教大家怎麼去style自己的actionbar(if i have time..)<br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
-      </div>
-      <footer>
-        <p><a class="myButton" href="/2013/10/23/actionbarcompat-swipe-to-change-tab">read more &raquo;</a></p>
         <div>
           <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 <!-- ken on github -->

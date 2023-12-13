@@ -305,6 +305,49 @@
     </div>
     <!-- This loops through the paginated posts -->
     
+      <h1><a style="color: #F22430" href="/2023/12/13/use-openfeign-to-communicate-between-two-services">Use OpenFeign to communicate between two services </a></h1>
+      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
+      <p class="author">
+      <div class="date">
+        <span>13 December 2023</span>
+      </div>
+      </p>
+      <div class="content" style="line-height: 28px;">
+        
+<p style="font-size: 16px; line-height: 1.6;">這篇是延續前面二篇，把服務連接好以後，如何讓服務之間彼此進行調用？</p>
+
+<ol style="font-size: 16px; line-height: 1.6;">
+  <li>先<a href="https://blog.kenyang.net/2023/12/13/springbooteureka-server">參考上一篇</a>，建立1個Eureka Server</li>
+  <li>先<a href="https://blog.kenyang.net/2023/12/13/springbooteureka-client">參考上一篇</a>，建立2個Eureka clients，本文範例會創建
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">調用者</code> : 1個API service，這API就會對外提供給外部串接，端口設置為8888</li>
+      <li><code class="language-plaintext highlighter-rouge">被調用者</code>: 1個Login service，這Login service就是提供給eureka中各個服務進行調用，端口設置為7777</li>
+    </ul>
+  </li>
+</ol>
+
+<p><br /></p>
+
+
+      </div>
+      <footer>
+        <p><a class="myButton" href="/2023/12/13/use-openfeign-to-communicate-between-two-services">read more &raquo;</a></p>
+        <div>
+          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- ken on github -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3783438370424072"
+     data-ad-slot="1516206098"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+        </div>
+      </footer>
+      <hr>
+    
       <h1><a style="color: #F22430" href="/2023/12/13/springbooteureka-server">使用SpringBoot創建Eureka Server</a></h1>
       <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
       <p class="author">
@@ -363,7 +406,7 @@
 <h3 id="1-打開intelli-j-idea">1. 打開Intelli J IDEA</h3>
 <hr />
 
-<ul>
+<ul style="font-size: 16px;line-height: 1.6;">
   <li>點擊 <code class="language-plaintext highlighter-rouge">File</code></li>
   <li>點擊 <code class="language-plaintext highlighter-rouge">New</code></li>
   <li>點擊 <code class="language-plaintext highlighter-rouge">Project</code></li>
@@ -375,81 +418,6 @@
       </div>
       <footer>
         <p><a class="myButton" href="/2023/12/13/springbooteureka-client">read more &raquo;</a></p>
-        <div>
-          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<!-- ken on github -->
-<ins class="adsbygoogle"
-     style="display:block"
-     data-ad-client="ca-pub-3783438370424072"
-     data-ad-slot="1516206098"
-     data-ad-format="auto"></ins>
-<script>
-(adsbygoogle = window.adsbygoogle || []).push({});
-</script>
-
-        </div>
-      </footer>
-      <hr>
-    
-      <h1><a style="color: #F22430" href="/2019/02/26/upgrade-nginx-to-latest-version-on-centos">Upgrade NGINX to latest version on CentOS</a></h1>
-      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
-      <p class="author">
-      <div class="date">
-        <span>26 February 2019</span>
-      </div>
-      </p>
-      <div class="content" style="line-height: 28px;">
-        
-<p style="font-size: 16px;line-height: 2;">這篇主要是要說明如何在centos7把NGINX升級至latest stable version。</p>
-
-<hr />
-<h3 id="1-add-nginx-yum-repository">1. Add NGINX yum repository</h3>
-<hr />
-
-<p style="font-size: 16px;line-height: 1.6;">首先，先建立一個名稱為<code class="language-plaintext highlighter-rouge">/etc/yum.repos.d/nginx.repo</code>的檔案，並且把下列的設置貼上:</p>
-
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">[</span>nginx]
-<span class="nv">name</span><span class="o">=</span>nginx repo
-<span class="nv">baseurl</span><span class="o">=</span>http://nginx.org/packages/centos/7/<span class="nv">$basearch</span>/
-<span class="nv">gpgcheck</span><span class="o">=</span>0
-<span class="nv">enabled</span><span class="o">=</span>1
-</code></pre></div></div>
-
-<p>接著就執行</p>
-
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>yum update
-</code></pre></div></div>
-
-<p><br /></p>
-
-<hr />
-<h3 id="2-install-nginx">2. Install NGINX</h3>
-<hr />
-
-<p>完成上述的設置，就可以安裝最新版本NGINX，安裝前可以檢查下版本。</p>
-
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>yum list nginx
-Loaded plugins: fastestmirror, post-transaction-actions, rpm-warm-cache, versionlock
-Loading mirror speeds from cached hostfile
- <span class="k">*</span> fasttrack: mirrors.aliyun.com
-Available Packages
-nginx.x86_64                                       1:1.14.2-1.el7_4.ngx                                       nginx
-</code></pre></div></div>
-
-<p>如果確認版本為當時最新的，那麼就可以直接安裝了。</p>
-
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>yum <span class="nb">install </span>nginx
-</code></pre></div></div>
-
-<p><br /></p>
-
-<p><br />
-<br /></p>
-
-
-      </div>
-      <footer>
-        <p><a class="myButton" href="/2019/02/26/upgrade-nginx-to-latest-version-on-centos">read more &raquo;</a></p>
         <div>
           <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 <!-- ken on github -->

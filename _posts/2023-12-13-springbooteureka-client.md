@@ -16,6 +16,9 @@ tags: [spring, eureka]
 ### 1. 打開Intelli J IDEA
 ---
 
+
+{: style="font-size: 16px;line-height: 1.6;"}
+
 - 點擊 `File` 
 - 點擊 `New`
 - 點擊 `Project`
@@ -29,6 +32,8 @@ tags: [spring, eureka]
 ### 2. 編輯pom.xml，此步驟只是把spring相關的dependecy抓下來
 ---
 
+{: style="font-size: 16px;line-height: 1.6;"}
+
 - 去網站 https://start.spring.io/ 生成springboot的xml文件
 - `注意！我用的是spring 3.2.0，所以要求Java至少要17以上，所以記得選對JAVA SDK` 
    -  下載對應SDK，去 `Project Setting -> Project` 
@@ -40,6 +45,7 @@ tags: [spring, eureka]
 
       
 
+{: style="font-size: 16px;line-height: 1.6;"}
 
 pom.xml範例
 
@@ -171,6 +177,9 @@ management:
 ---
 ## 5.  Run
 ---
+
+
+{: style="font-size: 16px;line-height: 1.6;"}
 
 - 記得先clean 和compile
 - 啟動後去server UI上就會看到此服務註冊上去

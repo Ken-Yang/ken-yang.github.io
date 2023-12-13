@@ -4,13 +4,165 @@
  <title>Ken Yang筆記</title>
  <link href="http://blog.kenyang.net/atom.xml" rel="self"/>
  <link href="http://blog.kenyang.net"/>
- <updated>2023-12-13T17:05:29+08:00</updated>
+ <updated>2023-12-13T18:20:56+08:00</updated>
  <id>http://blog.kenyang.net</id>
  <author>
    <name>Ken Yang</name>
    <email>ken@kenyang.net</email>
  </author>
 
+ 
+ <entry>
+   <title>Use OpenFeign to communicate between two services </title>
+   <link href="http://blog.kenyang.net/2023/12/13/use-openfeign-to-communicate-between-two-services"/>
+   <updated>2023-12-13T00:00:00+08:00</updated>
+   <id>http://blog.kenyang.net/2023/12/13/use-openfeign-to-communicate-between-two-services</id>
+   <content type="html">
+&lt;p style=&quot;font-size: 16px; line-height: 1.6;&quot;&gt;這篇是延續前面二篇，把服務連接好以後，如何讓服務之間彼此進行調用？&lt;/p&gt;
+
+&lt;ol style=&quot;font-size: 16px; line-height: 1.6;&quot;&gt;
+  &lt;li&gt;先&lt;a href=&quot;https://blog.kenyang.net/2023/12/13/springbooteureka-server&quot;&gt;參考上一篇&lt;/a&gt;，建立1個Eureka Server&lt;/li&gt;
+  &lt;li&gt;先&lt;a href=&quot;https://blog.kenyang.net/2023/12/13/springbooteureka-client&quot;&gt;參考上一篇&lt;/a&gt;，建立2個Eureka clients，本文範例會創建
+    &lt;ul&gt;
+      &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;調用者&lt;/code&gt; : 1個API service，這API就會對外提供給外部串接，端口設置為8888&lt;/li&gt;
+      &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;被調用者&lt;/code&gt;: 1個Login service，這Login service就是提供給eureka中各個服務進行調用，端口設置為7777&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
+
+&lt;!--more--&gt;
+
+&lt;hr style=&quot;font-size: 16px;line-height: 1.6;&quot; /&gt;
+&lt;h3 id=&quot;1-在2個clients專案中創建interface&quot;&gt;1. 在2個clients專案中創建Interface&lt;/h3&gt;
+&lt;hr /&gt;
+
+&lt;p style=&quot;font-size: 16px;line-height: 1.6;&quot;&gt;這個Interface是用來給服務之間進行使用的，&lt;br /&gt;&lt;/p&gt;
+
+&lt;ul style=&quot;font-size: 16px;line-height: 1.6;&quot;&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;調用者&lt;/code&gt; 利用此Interface去調用&lt;br /&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;被調用者&lt;/code&gt; 利用此Interface宣告自己可以被調用的哪些方法，以及必須去 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;implements&lt;/code&gt; 此Interface，在裡面實作&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p style=&quot;font-size: 16px;line-height: 1.6;&quot;&gt;因此！在二個eureka client中都需要有此Interface！最好的方式是在一個project中創建interface後，其他需要使用的再去引用他，但這裡為了簡單方便，就粗暴的在二個專案中都放入此interface&lt;/p&gt;
+
+&lt;p style=&quot;font-size: 16px;line-height: 1.6;&quot;&gt;Interface如下，其實就是起一個RestFul API地址，其地址是 http://x.x.x.x/servicelogin/login&lt;/p&gt;
+
+&lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kn&quot;&gt;package&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;net.kenyang&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+
+&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;org.springframework.cloud.openfeign.FeignClient&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;org.springframework.web.bind.annotation.GetMapping&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+
+&lt;span class=&quot;cm&quot;&gt;/*
+ * FeignClient是代表此為一個可以被探索的client
+ * value是此服務名稱，其他服務調用需填入此value
+ * path就是此服務的api地址
+ */&lt;/span&gt;
+&lt;span class=&quot;nd&quot;&gt;@FeignClient&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;value&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;service-login&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;path&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;/servicelogin&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;interface&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;ILogin&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+
+    &lt;span class=&quot;nd&quot;&gt;@GetMapping&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;/login&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;kt&quot;&gt;boolean&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;login&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
+
+&lt;hr /&gt;
+&lt;h3 id=&quot;2-在login-service專案中實作interface&quot;&gt;2. 在Login Service專案中實作Interface&lt;/h3&gt;
+&lt;hr /&gt;
+
+&lt;p style=&quot;font-size: 16px;line-height: 1.6;&quot;&gt;在 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;被調用者&lt;/code&gt; 中去實作上述的Interface&lt;/p&gt;
+
+&lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kn&quot;&gt;package&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;net.kenyang&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+
+&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;org.springframework.web.bind.annotation.RequestMapping&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;org.springframework.web.bind.annotation.RestController&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+
+&lt;span class=&quot;nd&quot;&gt;@RestController&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// 宣告此為一個RestFul API&lt;/span&gt;
+&lt;span class=&quot;nd&quot;&gt;@RequestMapping&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;path&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;/servicelogin&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// path需和Interface中的一致&lt;/span&gt;
+&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;ImplLogin&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;implements&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;ILogin&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;nd&quot;&gt;@Override&lt;/span&gt;
+    &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;boolean&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;login&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;c1&quot;&gt;// 這裡可以實作實際的業務流程&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
+
+&lt;hr /&gt;
+&lt;h3 id=&quot;3-在api-service專案中調用login-service服務&quot;&gt;3. 在API Service專案中調用Login service服務&lt;/h3&gt;
+&lt;hr /&gt;
+
+&lt;h4 id=&quot;3-1-宣告api-service可以探索及調用其他服務&quot;&gt;3-1. 宣告API Service可以探索及調用其他服務&lt;/h4&gt;
+
+&lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nd&quot;&gt;@SpringBootApplication&lt;/span&gt;
+&lt;span class=&quot;nd&quot;&gt;@EnableFeignClients&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;basePackages&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;={&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;net.kenyang.interfaces&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;})&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// 宣告可以調用及探索服務，且interface在那個packages底下&lt;/span&gt;
+&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Main&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;...&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h4 id=&quot;3-2-創建一個api入口此api就會調用loginservice&quot;&gt;3-2. 創建一個API入口，此API就會調用LoginService&lt;/h4&gt;
+
+&lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kn&quot;&gt;package&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;net.kenyang.controller&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+
+&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;org.springframework.beans.factory.annotation.Autowired&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;org.springframework.web.bind.annotation.GetMapping&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;org.springframework.web.bind.annotation.RequestMapping&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;org.springframework.web.bind.annotation.RestController&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;net.kenyang.interfaces.ILogin&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+
+&lt;span class=&quot;nd&quot;&gt;@RestController&lt;/span&gt;
+&lt;span class=&quot;nd&quot;&gt;@RequestMapping&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;path&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;/login&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// 宣告此API地址的path，也就是 http://x.x.x.x/login&lt;/span&gt;
+&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Login&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+
+    &lt;span class=&quot;nd&quot;&gt;@Autowired&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// 會自動注入，讓spring完成bean自動封裝&lt;/span&gt;
+    &lt;span class=&quot;nc&quot;&gt;ILogin&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;login&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+
+    &lt;span class=&quot;nd&quot;&gt;@GetMapping&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;/&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;boolean&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;index&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;login&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;login&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
+
+&lt;hr /&gt;
+&lt;h3 id=&quot;4-加入openfeign的dependcy&quot;&gt;4. 加入OpenFeign的dependcy&lt;/h3&gt;
+&lt;hr /&gt;
+
+&lt;p style=&quot;font-size: 16px;line-height: 1.6;&quot;&gt;在二個專案中都要引入&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;
+        &amp;lt;!-- 使用openfeign做服務探索 --&amp;gt;
+        &amp;lt;dependency&amp;gt;
+            &amp;lt;groupId&amp;gt;org.springframework.cloud&amp;lt;/groupId&amp;gt;
+            &amp;lt;artifactId&amp;gt;spring-cloud-starter-openfeign&amp;lt;/artifactId&amp;gt;
+            &amp;lt;version&amp;gt;4.1.0&amp;lt;/version&amp;gt;
+        &amp;lt;/dependency&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
+
+&lt;hr /&gt;
+&lt;h3 id=&quot;5-run&quot;&gt;5. Run&lt;/h3&gt;
+&lt;hr /&gt;
+
+&lt;p style=&quot;font-size: 16px;line-height: 1.6;&quot;&gt;將上述二個服務都註冊上Eureka Server後， &lt;br /&gt;
+訪問API的地址 http://127.0.0.1:8888/login &lt;br /&gt;
+就會顯示service吐回來的結果&lt;/p&gt;
+
+</content>
+ </entry>
  
  <entry>
    <title>使用SpringBoot創建Eureka Server</title>
@@ -38,7 +190,7 @@
 &lt;h3 id=&quot;2-編輯pomxml此步驟只是把spring相關的dependecy抓下來&quot;&gt;2. 編輯pom.xml，此步驟只是把spring相關的dependecy抓下來&lt;/h3&gt;
 &lt;hr /&gt;
 
-&lt;ul&gt;
+&lt;ul style=&quot;font-size: 16px;line-height: 1.6;&quot;&gt;
   &lt;li&gt;去網站 https://start.spring.io/ 生成springboot的xml文件&lt;/li&gt;
   &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;注意！我用的是spring 3.2.0，所以要求Java至少要17以上，所以記得選對JAVA SDK&lt;/code&gt;
     &lt;ul&gt;
@@ -58,7 +210,7 @@
   &lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;p&gt;pom.xml範例&lt;/p&gt;
+&lt;p style=&quot;font-size: 16px;line-height: 1.6;&quot;&gt;pom.xml範例&lt;/p&gt;
 
 &lt;div class=&quot;language-xml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;cp&quot;&gt;&amp;lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&amp;gt;&lt;/span&gt;
 &lt;span class=&quot;nt&quot;&gt;&amp;lt;project&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;xmlns=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;http://maven.apache.org/POM/4.0.0&quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;xmlns:xsi=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;http://www.w3.org/2001/XMLSchema-instance&quot;&lt;/span&gt;
@@ -101,7 +253,7 @@
 &lt;h2 id=&quot;3-編輯pomxml此步驟把eureka相關的dependecy補上&quot;&gt;3. 編輯pom.xml，此步驟把Eureka相關的dependecy補上&lt;/h2&gt;
 &lt;hr /&gt;
 
-&lt;ul&gt;
+&lt;ul style=&quot;font-size: 16px;line-height: 1.6;&quot;&gt;
   &lt;li&gt;切記！版本很重要！會有相依性！&lt;/li&gt;
 &lt;/ul&gt;
 
@@ -119,7 +271,7 @@
 &lt;h2 id=&quot;4-optional-編輯pomxml此步驟把登入模組的dependcy補上&quot;&gt;4. (optional) 編輯pom.xml，此步驟把登入模組的dependcy補上&lt;/h2&gt;
 &lt;hr /&gt;
 
-&lt;p&gt;為什麼optional呢？因為我發現eureka &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;client&lt;/code&gt; 在某個版本後，沒有去實作 authorization header 當連結到server時，因此如果設置了這段，在client那邊必須要去改寫AbstractJerseyEurekaHttpClient。&lt;/p&gt;
+&lt;p style=&quot;font-size: 16px;line-height: 1.6;&quot;&gt;為什麼optional呢？因為我發現eureka &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;client&lt;/code&gt; 在某個版本後，沒有去實作 authorization header 當連結到server時，因此如果設置了這段，在client那邊必須要去改寫AbstractJerseyEurekaHttpClient。&lt;/p&gt;
 
 &lt;div class=&quot;language-xml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;        &lt;span class=&quot;nt&quot;&gt;&amp;lt;dependency&amp;gt;&lt;/span&gt;
             &lt;span class=&quot;nt&quot;&gt;&amp;lt;groupId&amp;gt;&lt;/span&gt;org.springframework.boot&lt;span class=&quot;nt&quot;&gt;&amp;lt;/groupId&amp;gt;&lt;/span&gt;
@@ -162,7 +314,7 @@
 &lt;h1 id=&quot;6-配置檔&quot;&gt;6. 配置檔&lt;/h1&gt;
 &lt;hr /&gt;
 
-&lt;p&gt;在resources資料夾下創建 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;application.yml&lt;/code&gt;&lt;/p&gt;
+&lt;p style=&quot;font-size: 16px;line-height: 1.6;&quot;&gt;在resources資料夾下創建 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;application.yml&lt;/code&gt;&lt;/p&gt;
 
 &lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;server:
   port: 8886
@@ -189,7 +341,7 @@ eureka:
 &lt;h1 id=&quot;7-run&quot;&gt;7. Run&lt;/h1&gt;
 &lt;hr /&gt;
 
-&lt;p&gt;點選compile後，再點選run，
+&lt;p style=&quot;font-size: 16px;line-height: 1.6;&quot;&gt;點選compile後，再點選run，
 去瀏覽器看 127.0.0.1:8886，就會看到管理介面&lt;/p&gt;
 
 &lt;p&gt;&lt;br /&gt;&lt;/p&gt;
@@ -212,7 +364,7 @@ eureka:
 &lt;h3 id=&quot;1-打開intelli-j-idea&quot;&gt;1. 打開Intelli J IDEA&lt;/h3&gt;
 &lt;hr /&gt;
 
-&lt;ul&gt;
+&lt;ul style=&quot;font-size: 16px;line-height: 1.6;&quot;&gt;
   &lt;li&gt;點擊 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;File&lt;/code&gt;&lt;/li&gt;
   &lt;li&gt;點擊 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;New&lt;/code&gt;&lt;/li&gt;
   &lt;li&gt;點擊 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Project&lt;/code&gt;&lt;/li&gt;
@@ -226,7 +378,7 @@ eureka:
 &lt;h3 id=&quot;2-編輯pomxml此步驟只是把spring相關的dependecy抓下來&quot;&gt;2. 編輯pom.xml，此步驟只是把spring相關的dependecy抓下來&lt;/h3&gt;
 &lt;hr /&gt;
 
-&lt;ul&gt;
+&lt;ul style=&quot;font-size: 16px;line-height: 1.6;&quot;&gt;
   &lt;li&gt;去網站 https://start.spring.io/ 生成springboot的xml文件&lt;/li&gt;
   &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;注意！我用的是spring 3.2.0，所以要求Java至少要17以上，所以記得選對JAVA SDK&lt;/code&gt;
     &lt;ul&gt;
@@ -246,7 +398,7 @@ eureka:
   &lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;p&gt;pom.xml範例&lt;/p&gt;
+&lt;p style=&quot;font-size: 16px;line-height: 1.6;&quot;&gt;pom.xml範例&lt;/p&gt;
 
 &lt;div class=&quot;language-xml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;cp&quot;&gt;&amp;lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&amp;gt;&lt;/span&gt;
 &lt;span class=&quot;nt&quot;&gt;&amp;lt;project&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;xmlns=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;http://maven.apache.org/POM/4.0.0&quot;&lt;/span&gt;
@@ -370,7 +522,7 @@ management:
 &lt;h2 id=&quot;5--run&quot;&gt;5.  Run&lt;/h2&gt;
 &lt;hr /&gt;
 
-&lt;ul&gt;
+&lt;ul style=&quot;font-size: 16px;line-height: 1.6;&quot;&gt;
   &lt;li&gt;記得先clean 和compile&lt;/li&gt;
   &lt;li&gt;啟動後去server UI上就會看到此服務註冊上去&lt;/li&gt;
 &lt;/ul&gt;
@@ -3391,138 +3543,6 @@ hello-node-3422850722-ria1t   1/1       Running       0          13s
 &lt;p&gt;這樣就完成了一個簡單的example，但這example並沒有使用&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;CryptoObject&lt;/code&gt;，所以如果你想要更安全一點，記得請加上&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;CryptoObject&lt;/code&gt;。&lt;/p&gt;
 
 &lt;p&gt;&lt;br /&gt;&lt;/p&gt;
-
-</content>
- </entry>
- 
- <entry>
-   <title>Install zsh and oh-my-zsh on Mac</title>
-   <link href="http://blog.kenyang.net/2015/12/11/install-zsh-oh-my-zsh-on-mac"/>
-   <updated>2015-12-11T00:00:00+08:00</updated>
-   <id>http://blog.kenyang.net/2015/12/11/install-zsh-oh-my-zsh-on-mac</id>
-   <content type="html">
-&lt;p&gt;今天把mac上面的default shell換成&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;zsh&lt;/code&gt;，其實主要是看上了&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;oh-my-zsh&lt;/code&gt;，所以才想換成zsh。&lt;br /&gt;
-過程有點複雜，所以還是紀錄一下怎麼做。&lt;/p&gt;
-
-&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
-
-&lt;hr /&gt;
-&lt;h3 id=&quot;1-install-oh-my-zsh&quot;&gt;1. Install oh-my-zsh&lt;/h3&gt;
-&lt;hr /&gt;
-
-&lt;p&gt;由於mac預設就有zsh了，所以不需要安裝，只需要把default shell改成zsh即可。&lt;/p&gt;
-
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;chsh &lt;span class=&quot;nt&quot;&gt;-s&lt;/span&gt; /bin/zsh
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;p&gt;&lt;br /&gt;
-接著就安裝&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;oh-my-zsh&lt;/code&gt;，&lt;/p&gt;
-
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;curl &lt;span class=&quot;nt&quot;&gt;-L&lt;/span&gt; https://github.com/robbyrussell/oh-my-zsh/raw/master/tools/install.sh | sh
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;!--more--&gt;
-
-&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
-
-&lt;hr /&gt;
-&lt;h3 id=&quot;2-clone-cobalt2&quot;&gt;2. Clone cobalt2&lt;/h3&gt;
-&lt;hr /&gt;
-
-&lt;p&gt;首先先去clone &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;cobalt2&lt;/code&gt;下來，&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;cobalt2&lt;/code&gt;是人家寫的theme，裡面主要有二個theme，&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;&lt;strong&gt;cobalt2.itermcolors&lt;/strong&gt; : 給iTerm用的&lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;cobalt2.zsh-theme&lt;/strong&gt;   : 給zsh用的&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git clone https://github.com/wesbos/Cobalt2-iterm.git  
-&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cd &lt;/span&gt;Cobalt2-iterm
-&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;mv &lt;/span&gt;cobalt2.zsh-theme ~/.oh-my-zsh/themes/
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;&lt;br /&gt;
-然後打開iterm，&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;點選&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Preferences&lt;/code&gt;&lt;/li&gt;
-  &lt;li&gt;點&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Profiles&lt;/code&gt;&lt;/li&gt;
-  &lt;li&gt;點&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;+&lt;/code&gt;按鈕新增一個Profile&lt;/li&gt;
-  &lt;li&gt;點&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Colors&lt;/code&gt;&lt;/li&gt;
-  &lt;li&gt;點&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Load Presets&lt;/code&gt;&lt;/li&gt;
-  &lt;li&gt;選擇&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;import&lt;/code&gt;&lt;/li&gt;
-  &lt;li&gt;找到剛剛clone下來的&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;cobalt2.itermcolors&lt;/code&gt;&lt;/li&gt;
-  &lt;li&gt;點左下角的&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Other Actions&lt;/code&gt;&lt;/li&gt;
-  &lt;li&gt;選擇&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Set as default&lt;/code&gt;&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
-
-&lt;hr /&gt;
-&lt;h3 id=&quot;3-install-font&quot;&gt;3. Install font&lt;/h3&gt;
-&lt;hr /&gt;
-
-&lt;p&gt;由於oh-my-zsh中的theme，用了一些特殊符號，所以必須安裝額外的font，&lt;/p&gt;
-
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git clone https://github.com/powerline/fonts.git
-&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cd &lt;/span&gt;fonts
-&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;./install.sh
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;p&gt;&lt;br /&gt;
-接著一樣在打開iterm，&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;點選&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Preferences&lt;/code&gt;&lt;/li&gt;
-  &lt;li&gt;點&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Profiles&lt;/code&gt;&lt;/li&gt;
-  &lt;li&gt;點&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Text&lt;/code&gt;&lt;/li&gt;
-  &lt;li&gt;點&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Change Font&lt;/code&gt; （&lt;strong&gt;Regular&lt;/strong&gt;和&lt;strong&gt;Non-ASCII&lt;/strong&gt;都要改)&lt;/li&gt;
-  &lt;li&gt;選擇&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;inconsolata for powerline&lt;/code&gt;&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
-
-&lt;hr /&gt;
-&lt;h3 id=&quot;4-變更theme&quot;&gt;4. 變更Theme&lt;/h3&gt;
-&lt;hr /&gt;
-
-&lt;p&gt;接著就可以把theme改成剛剛下載的cobalt2&lt;/p&gt;
-
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;vim ~/.zshrc
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;&lt;br /&gt;
-然後把ZSH_THEME換成cobalt2&lt;/p&gt;
-
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;ZSH_THEME=&quot;cobalt2&quot;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;然後source一下，就完成了。&lt;/p&gt;
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;source&lt;/span&gt; ~/.zshrc
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
-
-&lt;hr /&gt;
-&lt;h3 id=&quot;5-客製化&quot;&gt;5. 客製化&lt;/h3&gt;
-&lt;hr /&gt;
-
-&lt;p&gt;最後一步是客製化，如果你還是不喜歡cobalt2的theme，&lt;br /&gt;
-你還是可以更改，只要去編輯&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;~/.oh-my-zsh/themes/cobalt2.zsh-theme&lt;/code&gt;就好，&lt;br /&gt;
-打開以後，看到最下面，應該會有下面幾個function。&lt;/p&gt;
-
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;## Main prompt&lt;/span&gt;
-build_prompt&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-  &lt;span class=&quot;nv&quot;&gt;RETVAL&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$?&lt;/span&gt;
-  &lt;span class=&quot;c&quot;&gt;#prompt_status&lt;/span&gt;
-  prompt_context
-  prompt_dir
-  prompt_git
-  prompt_end
-&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-
-&lt;span class=&quot;nv&quot;&gt;PROMPT&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'%{%f%b%k%}$(build_prompt) '&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;可以看到我把&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;prompt_status&lt;/code&gt;就註解掉，因為我不想要prompt上有icon出現。&lt;/p&gt;
 
 </content>
  </entry>
