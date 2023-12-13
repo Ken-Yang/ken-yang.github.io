@@ -305,6 +305,34 @@
     </div>
     <!-- This loops through the paginated posts -->
     
+      <h1><a style="color: #F22430" href="/2011/01/14/paper">碩一上報過的Paper</a></h1>
+      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
+      <p class="author">
+      <div class="date">
+        <span>14 January 2011</span>
+      </div>
+      </p>
+      <div class="content" style="line-height: 28px;">
+        把碩一上報過的paper都記錄一下好了。<br /><br /><br /><ul><li>From Niches to Riches: Anatomy of the Long Tail</li><ul><li>Erik Brynjolfsson, Yu "Jeffery" Hu and Michael D. Smith-<b>MIS Sloan Management &nbsp;Reveiw</b></li><li>主要是在講長尾理論在資訊科技業的影響</li></ul><li>MapReduce: Simplified Data Processing&nbsp;on Large Clusters</li><ul><li>Jeffrey Dean and Sanjay Ghemawat-<b>COMMUNICATIONS OF THE ACM January &nbsp;2008/Vol. 51, No. 1</b></li><li>這篇是由Google Fellow提出的，主要是在講運用MapReduce(Master-Slaver架構)去處理大量的資料</li></ul><li>CLOUD COMPUTING&nbsp;FOR MOBILE USERS:&nbsp;CAN OFFLOADING&nbsp;COMPUTATION &nbsp;SAVE ENERGY?</li><ul><li>Karthik Kumar and Yung-Hsiang Lu, Purdue University-<b>IEEE Computer Society</b></li><li>這篇是在探討將computation offloading到cloud上面的效益，以及告知我們什麼時候該把computation offloading</li></ul><li>Adaptive Computation Offloading for Energy Conservation on&nbsp;Battery-Powered Systems</li><ul><li>Changjiu Xian,&nbsp;Yung-Hsiang Lu,&nbsp;Zhiyuan Li-<b>IEEE</b></li><li>這篇也是在探討computation offloading的問題，但是是探討offloading到普通的server上去，且告知我們五種offloading的時機，會帶來的效益，以及能省多少電</li></ul><li>A View&nbsp;of Cloud&nbsp;Computing</li><ul><li>Michael Armbrust, Armando Fox, Rean Griffith, Anthony D. Josephi, Randy Katz, Andy Konwinski, Gunho Lee, David Patterson, Ariel Rabkin, Ion Stoica, Matei Zaharia-<b>&nbsp;Communications of the ACM &nbsp; | &nbsp;April 2010 &nbsp;| &nbsp;VOL. 53 &nbsp;| &nbsp;NO. 4</b></li><li>這篇在介紹Cloud&nbsp;Computing的概念，以及介紹幾種Cloud 平台(GAE, Azure, AWS)，以及介紹十種Cloud Computing 的障礙</li></ul><li>to be continued....</li></ul><div><br /></div><div><br /></div><div><br /></div><div><br /></div><div><br /></div><div><br /></div><div><br /></div>
+      </div>
+      <footer>
+        <p><a class="myButton" href="/2011/01/14/paper">read more &raquo;</a></p>
+        <div>
+          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- ken on github -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3783438370424072"
+     data-ad-slot="1516206098"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+        </div>
+      </footer>
+      <hr>
+    
       <h1><a style="color: #F22430" href="/2011/01/10/ip">IP的分級和網域的概念</a></h1>
       <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
       <p class="author">
@@ -345,34 +373,6 @@
       </div>
       <footer>
         <p><a class="myButton" href="/2010/12/24/android-market">read more &raquo;</a></p>
-        <div>
-          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<!-- ken on github -->
-<ins class="adsbygoogle"
-     style="display:block"
-     data-ad-client="ca-pub-3783438370424072"
-     data-ad-slot="1516206098"
-     data-ad-format="auto"></ins>
-<script>
-(adsbygoogle = window.adsbygoogle || []).push({});
-</script>
-
-        </div>
-      </footer>
-      <hr>
-    
-      <h1><a style="color: #F22430" href="/2010/12/20/android-menu-oncreateoptionsmenuonprepa">Android menu & onCreateOptionsMenu和onPrepareOptionsMenu的差別</a></h1>
-      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
-      <p class="author">
-      <div class="date">
-        <span>20 December 2010</span>
-      </div>
-      </p>
-      <div class="content" style="line-height: 28px;">
-        其實要實作android menu很簡單，<br /><br />這裡會快速的帶過，<br /><br />主要會講一下<b>onCreateOptionsMenu</b>和<b>onPrepareOptionsMenu</b>的差別<br /><br />首先先在/res/資料夾底下，開立一個資料夾/menu<br /><br />然後再/res/menu/資料夾底下，建立一個menu_option.xml的檔案<br /><br />檔案內容如下<br /><br /><pre class="brush: xml">&lt;?xml version="1.0" encoding="utf-8"?&gt;<br />&lt;menu xmlns:android="http://schemas.android.com/apk/res/android"&gt;<br /> &lt;item android:id="@+id/menuOption1" android:title="option1"&gt;&lt;/item&gt;<br /> &lt;item android:id="@+id/menuOption2" android:title="option2"&gt;&lt;/item&gt;<br />&lt;/menu&gt;<br /><br /></pre><br /><br /><br /><br />建立完成以後，<br /><br />就在activity中加入menu的code如下:<br /><br /><pre class="brush: java">public class main extends Activity {<br /> <br />    @Override<br />    public void onCreate(Bundle savedInstanceState) {<br />        super.onCreate(savedInstanceState);<br />        setContentView(R.layout.main);<br />    }<br />    <br />    <br />    //當menu option被點選以後的反應<br />    @Override<br />    public boolean onMenuItemSelected(int featureId, MenuItem item) {<br />     Toast.makeText(this, String.valueOf(item.getItemId()), Toast.LENGTH_LONG).show();<br />     return super.onMenuItemSelected(featureId, item);<br />    }<br />    <br />    <br />    //建立option menu，等等會講解和onPrepareOptionsMenu的差別<br />    @Override<br />    public boolean onCreateOptionsMenu(Menu menu) {<br />     MenuInflater inflater = getMenuInflater();<br />     inflater.inflate(R.menu.menu_option, menu);<br />     return super.onCreateOptionsMenu(menu);<br />    }<br />    <br />    <br />    //一樣是建立option menu，等等會講解和onCreateOptionsMenu的差別<br />    @Override<br />    public boolean onPrepareOptionsMenu(Menu menu) {     <br />     MenuInflater inflater = getMenuInflater();<br />     inflater.inflate(R.menu.menu_option, menu);<br />     return super.onPrepareOptionsMenu(menu);<br />    }<br />    <br />}<br /><br /></pre><br /><br /><br /><br /><br /><br />這樣MENU就會建立完成，<br /><br />但是<b>onCreateOptionsMenu</b>和<b>onPrepareOptionsMenu</b>的差別在哪呢?<br /><br /><b>onCreateOptionsMenu</b><br /><b>　　只會<span class="Apple-style-span" style="font-weight: normal;"><b>呼叫</b></span>一次，他只會在MENU顯示之前，去做一次！！！之後就不會再去呼叫！</b><br /><br /><br /><b>onPrepareOptionsMenu</b><br /><b>　　</b><b>onPrepareOptionsMenu是每次在display menu之前，都會去呼叫，</b><br /><b>　　只要按一次menu按鍵，就會呼叫一次。</b><br /><b>　　所以你會發現每次只要按一次menu按鍵，</b><br /><b>　　menu選單就會多兩個（因為我們預設是兩個）</b><br /><b>　　你可以利用</b><b>onPrepareOptionsMenu來做update menu狀態的動作</b><br /><b><br /></b><br /><b><br /></b><br /><b><br /></b><br /><b><br /></b><br />如果你要把menu現有的option清空，<br /><br />就是下面那行ＣＯＤＥ<br /><br /><pre class="brush: java"><br />menu.clear();<br /></pre><br /><br /><br />
-      </div>
-      <footer>
-        <p><a class="myButton" href="/2010/12/20/android-menu-oncreateoptionsmenuonprepa">read more &raquo;</a></p>
         <div>
           <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 <!-- ken on github -->

@@ -6,7 +6,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-    <title>使用SpringBoot創建Eureka Server</title>
+    <title>使用SpringBoot創建Eureka Client</title>
     <meta name="description" content="">
     <meta name="author" content="Ken Yang">
 
@@ -320,7 +320,7 @@
 
 
 <div class="page-header">
-  <h1>使用SpringBoot創建Eureka Server </h1>
+  <h1>使用SpringBoot創建Eureka Client </h1>
 </div>
 
 <div class="row post-full">
@@ -354,13 +354,13 @@
     </div>
     <div class="content" style="line-height: 28px;">
       
-<p style="font-size: 16px;line-height: 2;">這篇是說明如何使用SpringBoot 3.2.0和Eureka 4.1.0創建一個Eureka Server</p>
+<p style="font-size: 16px;line-height: 1.6;">這篇會教學如何創建一個Eureka Client，並且連到先前創的Eureka Server上</p>
 
 <hr />
 <h3 id="1-打開intelli-j-idea">1. 打開Intelli J IDEA</h3>
 <hr />
 
-<ul style="font-size: 16px;line-height: 1.6;">
+<ul>
   <li>點擊 <code class="language-plaintext highlighter-rouge">File</code></li>
   <li>點擊 <code class="language-plaintext highlighter-rouge">New</code></li>
   <li>點擊 <code class="language-plaintext highlighter-rouge">Project</code></li>
@@ -397,26 +397,56 @@
 <p>pom.xml範例</p>
 
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span>
-<span class="nt">&lt;project</span> <span class="na">xmlns=</span><span class="s">"http://maven.apache.org/POM/4.0.0"</span> <span class="na">xmlns:xsi=</span><span class="s">"http://www.w3.org/2001/XMLSchema-instance"</span>
-         <span class="na">xsi:schemaLocation=</span><span class="s">"http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd"</span><span class="nt">&gt;</span>
+<span class="nt">&lt;project</span> <span class="na">xmlns=</span><span class="s">"http://maven.apache.org/POM/4.0.0"</span>
+         <span class="na">xmlns:xsi=</span><span class="s">"http://www.w3.org/2001/XMLSchema-instance"</span>
+         <span class="na">xsi:schemaLocation=</span><span class="s">"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"</span><span class="nt">&gt;</span>
     <span class="nt">&lt;modelVersion&gt;</span>4.0.0<span class="nt">&lt;/modelVersion&gt;</span>
+
+    <span class="nt">&lt;groupId&gt;</span>tech.starlink<span class="nt">&lt;/groupId&gt;</span>
+    <span class="nt">&lt;artifactId&gt;</span>employee-lotter-service-login<span class="nt">&lt;/artifactId&gt;</span>
+    <span class="nt">&lt;version&gt;</span>1.0-SNAPSHOT<span class="nt">&lt;/version&gt;</span>
+    <span class="nt">&lt;name&gt;</span>employee-lottery-service-login<span class="nt">&lt;/name&gt;</span>
+    <span class="nt">&lt;description&gt;</span>員工抽獎登入服務<span class="nt">&lt;/description&gt;</span>
+
+    <span class="nt">&lt;properties&gt;</span>
+        <span class="nt">&lt;maven.compiler.source&gt;</span>21<span class="nt">&lt;/maven.compiler.source&gt;</span>
+        <span class="nt">&lt;maven.compiler.target&gt;</span>21<span class="nt">&lt;/maven.compiler.target&gt;</span>
+        <span class="nt">&lt;project.build.sourceEncoding&gt;</span>UTF-8<span class="nt">&lt;/project.build.sourceEncoding&gt;</span>
+    <span class="nt">&lt;/properties&gt;</span>
+
     <span class="nt">&lt;parent&gt;</span>
         <span class="nt">&lt;groupId&gt;</span>org.springframework.boot<span class="nt">&lt;/groupId&gt;</span>
         <span class="nt">&lt;artifactId&gt;</span>spring-boot-starter-parent<span class="nt">&lt;/artifactId&gt;</span>
         <span class="nt">&lt;version&gt;</span>3.2.0<span class="nt">&lt;/version&gt;</span>
         <span class="nt">&lt;relativePath/&gt;</span> <span class="c">&lt;!-- lookup parent from repository --&gt;</span>
     <span class="nt">&lt;/parent&gt;</span>
-    <span class="nt">&lt;groupId&gt;</span>net.kenyang.server<span class="nt">&lt;/groupId&gt;</span>
-    <span class="nt">&lt;artifactId&gt;</span>employee-lottery-api<span class="nt">&lt;/artifactId&gt;</span>
-    <span class="nt">&lt;version&gt;</span>0.0.1-SNAPSHOT<span class="nt">&lt;/version&gt;</span>
-    <span class="nt">&lt;name&gt;</span>employee-lottery-api<span class="nt">&lt;/name&gt;</span>
-    <span class="nt">&lt;description&gt;</span>員工抽獎API<span class="nt">&lt;/description&gt;</span>
+
     <span class="nt">&lt;dependencies&gt;</span>
         <span class="nt">&lt;dependency&gt;</span>
             <span class="nt">&lt;groupId&gt;</span>org.springframework.boot<span class="nt">&lt;/groupId&gt;</span>
-            <span class="nt">&lt;artifactId&gt;</span>spring-boot-starter<span class="nt">&lt;/artifactId&gt;</span>
-<span class="c">&lt;!--            &lt;artifactId&gt;spring-boot-starter-web&lt;/artifactId&gt; --&gt;</span> <span class="c">&lt;!-- 這個是單純給restful，但因為會有eureka，所以不用 --&gt;</span>
+<span class="c">&lt;!--            &lt;artifactId&gt;spring-boot-starter&lt;/artifactId&gt;--&gt;</span>
+            <span class="c">&lt;!-- eureka client一定要使用 starter-web，不能單純使用starter --&gt;</span>
+            <span class="nt">&lt;artifactId&gt;</span>spring-boot-starter-web<span class="nt">&lt;/artifactId&gt;</span> 
         <span class="nt">&lt;/dependency&gt;</span>
+
+        <span class="c">&lt;!-- https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-starter-netflix-eureka-client --&gt;</span>
+        <span class="nt">&lt;dependency&gt;</span>
+            <span class="nt">&lt;groupId&gt;</span>org.springframework.cloud<span class="nt">&lt;/groupId&gt;</span>
+            <span class="nt">&lt;artifactId&gt;</span>spring-cloud-starter-netflix-eureka-client<span class="nt">&lt;/artifactId&gt;</span>
+            <span class="nt">&lt;version&gt;</span>4.1.0<span class="nt">&lt;/version&gt;</span>
+        <span class="nt">&lt;/dependency&gt;</span>
+
+        <span class="c">&lt;!-- 以下二個是health check需使用的套件 /actuator/info, /actuator/health --&gt;</span>
+        <span class="nt">&lt;dependency&gt;</span>
+            <span class="nt">&lt;groupId&gt;</span>org.springframework.boot<span class="nt">&lt;/groupId&gt;</span>
+            <span class="nt">&lt;artifactId&gt;</span>spring-boot-actuator<span class="nt">&lt;/artifactId&gt;</span>
+        <span class="nt">&lt;/dependency&gt;</span>
+        <span class="nt">&lt;dependency&gt;</span>
+            <span class="nt">&lt;groupId&gt;</span>org.springframework.boot<span class="nt">&lt;/groupId&gt;</span>
+            <span class="nt">&lt;artifactId&gt;</span>spring-boot-actuator-autoconfigure<span class="nt">&lt;/artifactId&gt;</span>
+        <span class="nt">&lt;/dependency&gt;</span>
+
+
     <span class="nt">&lt;/dependencies&gt;</span>
 
     <span class="nt">&lt;build&gt;</span>
@@ -427,112 +457,72 @@
             <span class="nt">&lt;/plugin&gt;</span>
         <span class="nt">&lt;/plugins&gt;</span>
     <span class="nt">&lt;/build&gt;</span>
-
 <span class="nt">&lt;/project&gt;</span>
 </code></pre></div></div>
 
 <p><br /></p>
 
 <hr />
-<h2 id="3-編輯pomxml此步驟把eureka相關的dependecy補上">3. 編輯pom.xml，此步驟把Eureka相關的dependecy補上</h2>
+<h3 id="3-宣告成為一個eureka-client">3. 宣告成為一個Eureka Client</h3>
 <hr />
 
-<ul>
-  <li>切記！版本很重要！會有相依性！</li>
-</ul>
-
-<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code>        <span class="c">&lt;!-- https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-starter-netflix-eureka-server --&gt;</span>
-        <span class="nt">&lt;dependency&gt;</span>
-            <span class="nt">&lt;groupId&gt;</span>org.springframework.cloud<span class="nt">&lt;/groupId&gt;</span>
-            <span class="nt">&lt;artifactId&gt;</span>spring-cloud-starter-netflix-eureka-server<span class="nt">&lt;/artifactId&gt;</span>
-            <span class="nt">&lt;version&gt;</span>4.1.0<span class="nt">&lt;/version&gt;</span>
-        <span class="nt">&lt;/dependency&gt;</span>
-</code></pre></div></div>
-
-<p><br /></p>
-
-<hr />
-<h2 id="4-optional-編輯pomxml此步驟把登入模組的dependcy補上">4. (optional) 編輯pom.xml，此步驟把登入模組的dependcy補上</h2>
-<hr />
-
-<p>為什麼optional呢？因為我發現eureka <code class="language-plaintext highlighter-rouge">client</code> 在某個版本後，沒有去實作 authorization header 當連結到server時，因此如果設置了這段，在client那邊必須要去改寫AbstractJerseyEurekaHttpClient。</p>
-
-<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code>        <span class="nt">&lt;dependency&gt;</span>
-            <span class="nt">&lt;groupId&gt;</span>org.springframework.boot<span class="nt">&lt;/groupId&gt;</span>
-            <span class="nt">&lt;artifactId&gt;</span>spring-boot-starter-security<span class="nt">&lt;/artifactId&gt;</span>
-            <span class="nt">&lt;exclusions&gt;</span>
-                <span class="nt">&lt;exclusion&gt;</span>
-                    <span class="nt">&lt;groupId&gt;</span>org.springframework.boot<span class="nt">&lt;/groupId&gt;</span>
-                    <span class="nt">&lt;artifactId&gt;</span>spring-boot-starter-logging<span class="nt">&lt;/artifactId&gt;</span>
-                <span class="nt">&lt;/exclusion&gt;</span>
-            <span class="nt">&lt;/exclusions&gt;</span>
-        <span class="nt">&lt;/dependency&gt;</span>
-</code></pre></div></div>
-
-<p><br /></p>
-
-<hr />
-<h1 id="5-修改代碼">5. 修改代碼</h1>
-<hr />
-
-<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="nn">net.kenyang.server</span><span class="o">;</span>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="nn">tech.starlink</span><span class="o">;</span>
 
 <span class="kn">import</span> <span class="nn">org.springframework.boot.SpringApplication</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">org.springframework.boot.autoconfigure.SpringBootApplication</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">org.springframework.cloud.netflix.eureka.server.EnableEurekaServer</span><span class="o">;</span>
 
+<span class="c1">// 在eureka 4.1.0，就不用特別宣告他是一個eureka client</span>
 <span class="nd">@SpringBootApplication</span>
-<span class="nd">@EnableEurekaServer</span> <span class="c1">// 宣告為一個EurekaServer</span>
 <span class="kd">public</span> <span class="kd">class</span> <span class="nc">Main</span> <span class="o">{</span>
+
     <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
         <span class="nc">SpringApplication</span><span class="o">.</span><span class="na">run</span><span class="o">(</span><span class="nc">Main</span><span class="o">.</span><span class="na">class</span><span class="o">,</span> <span class="n">args</span><span class="o">);</span>
     <span class="o">}</span>
-
-
 <span class="o">}</span>
 </code></pre></div></div>
 
 <p><br /></p>
 
 <hr />
-<h1 id="6-配置檔">6. 配置檔</h1>
+<h3 id="4-配置applicationyml">4. 配置application.yml</h3>
 <hr />
 
-<p>在resources資料夾下創建 <code class="language-plaintext highlighter-rouge">application.yml</code></p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>server:
-  port: 8886
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code>server:
+  port: 8887
 spring:
-  security: # 選填，如果有spring-boot-starter-security才需要
-    user:
-      name: admin
-      password: admin
+  application:
+    name: service-login
 eureka:
   instance:
     hostname: ${spring.cloud.client.ip-address}
-    preferIpAddress: true  # 使用IP rather than HOst
+    preferIpAddress: true # 使用IP rather than HOst
+    instance-id: ${spring.cloud.client.ip-address}:${spring.application.name}:${server.port}
   client:
-    registerWithEureka: false
-    fetchRegistry: false
+    registerWithEureka: true
+    fetchRegistry: true
     serviceUrl:
-      defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka/
-
+      defaultZone: http://127.0.0.1:8888/eureka/
+    healthcheck: true
+    lease:
+      duration: 5
+management:
+  endpoints:
+    web:
+      exposure: # 在/actuator路徑下旨暴露info和health
+        include: "info, health"
 </code></pre></div></div>
 
 <p><br /></p>
 
 <hr />
-<h1 id="7-run">7. Run</h1>
+<h2 id="5--run">5.  Run</h2>
 <hr />
 
-<p>點選compile後，再點選run，
-去瀏覽器看 127.0.0.1:8886，就會看到管理介面</p>
+<ul>
+  <li>記得先clean 和compile</li>
+  <li>啟動後去server UI上就會看到此服務註冊上去</li>
+</ul>
 
-<p><br /></p>
-
-<p><br /></p>
-
-<p><br /></p>
 
     </div>
 
@@ -547,9 +537,9 @@ eureka:
 
   
      
-    	<li><a href="/tags.html#eureka-ref">eureka <span>2</span></a></li>
+    	<li><a href="/tags.html#spring-ref">spring <span>1</span></a></li>
      
-    	<li><a href="/tags.html#springboot-ref">springboot <span>1</span></a></li>
+    	<li><a href="/tags.html#eureka-ref">eureka <span>2</span></a></li>
     
   
 
@@ -573,11 +563,11 @@ eureka:
     <hr>
     <ul class="pagination">
     
-      <li class="prev"><a href="/2023/12/13/springbooteureka-client" title="使用SpringBoot創建Eureka Client">&laquo; Previous</a></li>
+      <li class="prev"><a href="/2019/02/26/upgrade-nginx-to-latest-version-on-centos" title="Upgrade NGINX to latest version on CentOS">&laquo; Previous</a></li>
     
       <li><a href="/archive.html">Archive</a></li>
     
-      <li class="next disabled"><a>Next &rarr;</a>
+      <li class="next"><a href="/2023/12/13/springbooteureka-server" title="使用SpringBoot創建Eureka Server">Next &raquo;</a></li>
     
     </ul>
     <hr>

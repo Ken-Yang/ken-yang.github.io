@@ -305,6 +305,44 @@
     </div>
     <!-- This loops through the paginated posts -->
     
+      <h1><a style="color: #F22430" href="/2018/04/19/setup-https-on-nginx">Setup HTTPS and HTTP/2 on Nginx</a></h1>
+      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
+      <p class="author">
+      <div class="date">
+        <span>19 April 2018</span>
+      </div>
+      </p>
+      <div class="content" style="line-height: 28px;">
+        
+<p style="font-size: 16px;line-height: 2;">最近發現某台提供HTTPS的server，在Android手機瀏覽器上訪問，常常被提示說不安全的憑證，<br />於是就去<a href="https://www.ssllabs.com/ssltest/analyze.html">這個檢測網站 https://www.ssllabs.com/ssltest/analyze.html</a>做檢測，發現結果是分數是B，且有chain issue。
+之後去server上檢查Nginx confg，發現我忘記放intermediate cert了，於是就把intermediate cert和cert合併再一起就解決。因此這篇筆記會紀錄：</p>
+
+<ul>
+  <li>為了避免忘記所以決定紀錄一下設定HTTPS的步驟，</li>
+  <li>如何讓HTTPS評分為A+。</li>
+  <li>設置HTTP2</li>
+</ul>
+
+
+      </div>
+      <footer>
+        <p><a class="myButton" href="/2018/04/19/setup-https-on-nginx">read more &raquo;</a></p>
+        <div>
+          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- ken on github -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3783438370424072"
+     data-ad-slot="1516206098"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+        </div>
+      </footer>
+      <hr>
+    
       <h1><a style="color: #F22430" href="/2018/03/13/using-aws-lambda-with-amazon-s3">Using AWS Lambda with Amazon S3 (Node.js)</a></h1>
       <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
       <p class="author">
@@ -358,51 +396,6 @@
       </div>
       <footer>
         <p><a class="myButton" href="/2017/08/25/firebase-realtime-database-web">read more &raquo;</a></p>
-        <div>
-          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<!-- ken on github -->
-<ins class="adsbygoogle"
-     style="display:block"
-     data-ad-client="ca-pub-3783438370424072"
-     data-ad-slot="1516206098"
-     data-ad-format="auto"></ins>
-<script>
-(adsbygoogle = window.adsbygoogle || []).push({});
-</script>
-
-        </div>
-      </footer>
-      <hr>
-    
-      <h1><a style="color: #F22430" href="/2017/08/21/nginx-block-traffic-by-country-and-bypass-traffic-for-whitelist">Nginx: Block traffic by country and bypass traffic for whitelist</a></h1>
-      <div style="width: 100%; border-bottom: 1px solid #E7E7E7;"></div>
-      <p class="author">
-      <div class="date">
-        <span>21 August 2017</span>
-      </div>
-      </p>
-      <div class="content" style="line-height: 28px;">
-        
-<p>由於我們的服務都是由n台API Server + 各個client (Android, iOS, HTML5)所組成，然後我們的服務在某些國家是不開放的，所以勢必得做到block by country，然後又要有白名單機制；做法有很多種，但都大同小異，譬如說用iptables, nginx，然後搭配一些IP to country module（<a href="https://www.ip2location.com/">ip2location</a>, <a href="http://geolite.maxmind.com/download/geoip/database/GeoLiteCountry/GeoIP.dat.gz">GeoIP</a>）去阻擋，這篇就會使用Nginx + <a href="http://geolite.maxmind.com/download/geoip/database/GeoLiteCountry/GeoIP.dat.gz">GeoIP</a>來阻擋。</p>
-
-<p><br /></p>
-
-<hr />
-<h3 id="1-check-nginx-version">1. Check Nginx version</h3>
-<hr />
-
-<p>首先先看看你安裝的Nginx是否有支援<code class="language-plaintext highlighter-rouge">geoip</code>這功能，如果有<code class="language-plaintext highlighter-rouge">grep</code>東西出來就代表有支援。</p>
-
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>nginx <span class="nt">-V</span> 2&gt;&amp;1 | <span class="nb">tr</span> <span class="s1">' '</span> <span class="s1">'\n'</span> | <span class="nb">grep </span>geoip
-<span class="nt">--with-http_geoip_module</span>
-</code></pre></div></div>
-
-<p><br /></p>
-
-
-      </div>
-      <footer>
-        <p><a class="myButton" href="/2017/08/21/nginx-block-traffic-by-country-and-bypass-traffic-for-whitelist">read more &raquo;</a></p>
         <div>
           <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 <!-- ken on github -->

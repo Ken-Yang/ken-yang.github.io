@@ -4,7 +4,7 @@
  <title>Ken Yang筆記</title>
  <link href="http://blog.kenyang.net/atom.xml" rel="self"/>
  <link href="http://blog.kenyang.net"/>
- <updated>2023-12-13T16:58:11+08:00</updated>
+ <updated>2023-12-13T17:05:29+08:00</updated>
  <id>http://blog.kenyang.net</id>
  <author>
    <name>Ken Yang</name>
@@ -197,6 +197,184 @@ eureka:
 &lt;p&gt;&lt;br /&gt;&lt;/p&gt;
 
 &lt;p&gt;&lt;br /&gt;&lt;/p&gt;
+</content>
+ </entry>
+ 
+ <entry>
+   <title>使用SpringBoot創建Eureka Client</title>
+   <link href="http://blog.kenyang.net/2023/12/13/springbooteureka-client"/>
+   <updated>2023-12-13T00:00:00+08:00</updated>
+   <id>http://blog.kenyang.net/2023/12/13/springbooteureka-client</id>
+   <content type="html">
+&lt;p style=&quot;font-size: 16px;line-height: 1.6;&quot;&gt;這篇會教學如何創建一個Eureka Client，並且連到先前創的Eureka Server上&lt;/p&gt;
+
+&lt;hr /&gt;
+&lt;h3 id=&quot;1-打開intelli-j-idea&quot;&gt;1. 打開Intelli J IDEA&lt;/h3&gt;
+&lt;hr /&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;點擊 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;File&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;點擊 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;New&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;點擊 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Project&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
+
+&lt;!--more--&gt;
+
+&lt;hr /&gt;
+&lt;h3 id=&quot;2-編輯pomxml此步驟只是把spring相關的dependecy抓下來&quot;&gt;2. 編輯pom.xml，此步驟只是把spring相關的dependecy抓下來&lt;/h3&gt;
+&lt;hr /&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;去網站 https://start.spring.io/ 生成springboot的xml文件&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;注意！我用的是spring 3.2.0，所以要求Java至少要17以上，所以記得選對JAVA SDK&lt;/code&gt;
+    &lt;ul&gt;
+      &lt;li&gt;下載對應SDK，去 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Project Setting -&amp;gt; Project&lt;/code&gt;
+        &lt;ul&gt;
+          &lt;li&gt;選擇&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;SDK&lt;/code&gt; 這裡的下拉選單中選 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Download JDK&lt;/code&gt; ，選擇 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Oracje JDK 21&lt;/code&gt;&lt;/li&gt;
+          &lt;li&gt;點選&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Language Level&lt;/code&gt;，選擇 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;21&lt;/code&gt;&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+      &lt;li&gt;設定 Java compiler，在 MAC中按 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;cmd+,&lt;/code&gt;
+        &lt;ul&gt;
+          &lt;li&gt;點選&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Build, Execution, Deployment&lt;/code&gt; -&amp;gt; &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Compiler&lt;/code&gt; -&amp;gt; &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Java Compiler&lt;/code&gt;&lt;/li&gt;
+          &lt;li&gt;在對應module中更改 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Target bytecode version&lt;/code&gt;&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;pom.xml範例&lt;/p&gt;
+
+&lt;div class=&quot;language-xml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;cp&quot;&gt;&amp;lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;project&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;xmlns=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;http://maven.apache.org/POM/4.0.0&quot;&lt;/span&gt;
+         &lt;span class=&quot;na&quot;&gt;xmlns:xsi=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;http://www.w3.org/2001/XMLSchema-instance&quot;&lt;/span&gt;
+         &lt;span class=&quot;na&quot;&gt;xsi:schemaLocation=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;&amp;lt;modelVersion&amp;gt;&lt;/span&gt;4.0.0&lt;span class=&quot;nt&quot;&gt;&amp;lt;/modelVersion&amp;gt;&lt;/span&gt;
+
+    &lt;span class=&quot;nt&quot;&gt;&amp;lt;groupId&amp;gt;&lt;/span&gt;tech.starlink&lt;span class=&quot;nt&quot;&gt;&amp;lt;/groupId&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;&amp;lt;artifactId&amp;gt;&lt;/span&gt;employee-lotter-service-login&lt;span class=&quot;nt&quot;&gt;&amp;lt;/artifactId&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;&amp;lt;version&amp;gt;&lt;/span&gt;1.0-SNAPSHOT&lt;span class=&quot;nt&quot;&gt;&amp;lt;/version&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;&amp;lt;name&amp;gt;&lt;/span&gt;employee-lottery-service-login&lt;span class=&quot;nt&quot;&gt;&amp;lt;/name&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;&amp;lt;description&amp;gt;&lt;/span&gt;員工抽獎登入服務&lt;span class=&quot;nt&quot;&gt;&amp;lt;/description&amp;gt;&lt;/span&gt;
+
+    &lt;span class=&quot;nt&quot;&gt;&amp;lt;properties&amp;gt;&lt;/span&gt;
+        &lt;span class=&quot;nt&quot;&gt;&amp;lt;maven.compiler.source&amp;gt;&lt;/span&gt;21&lt;span class=&quot;nt&quot;&gt;&amp;lt;/maven.compiler.source&amp;gt;&lt;/span&gt;
+        &lt;span class=&quot;nt&quot;&gt;&amp;lt;maven.compiler.target&amp;gt;&lt;/span&gt;21&lt;span class=&quot;nt&quot;&gt;&amp;lt;/maven.compiler.target&amp;gt;&lt;/span&gt;
+        &lt;span class=&quot;nt&quot;&gt;&amp;lt;project.build.sourceEncoding&amp;gt;&lt;/span&gt;UTF-8&lt;span class=&quot;nt&quot;&gt;&amp;lt;/project.build.sourceEncoding&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;&amp;lt;/properties&amp;gt;&lt;/span&gt;
+
+    &lt;span class=&quot;nt&quot;&gt;&amp;lt;parent&amp;gt;&lt;/span&gt;
+        &lt;span class=&quot;nt&quot;&gt;&amp;lt;groupId&amp;gt;&lt;/span&gt;org.springframework.boot&lt;span class=&quot;nt&quot;&gt;&amp;lt;/groupId&amp;gt;&lt;/span&gt;
+        &lt;span class=&quot;nt&quot;&gt;&amp;lt;artifactId&amp;gt;&lt;/span&gt;spring-boot-starter-parent&lt;span class=&quot;nt&quot;&gt;&amp;lt;/artifactId&amp;gt;&lt;/span&gt;
+        &lt;span class=&quot;nt&quot;&gt;&amp;lt;version&amp;gt;&lt;/span&gt;3.2.0&lt;span class=&quot;nt&quot;&gt;&amp;lt;/version&amp;gt;&lt;/span&gt;
+        &lt;span class=&quot;nt&quot;&gt;&amp;lt;relativePath/&amp;gt;&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;&amp;lt;!-- lookup parent from repository --&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;&amp;lt;/parent&amp;gt;&lt;/span&gt;
+
+    &lt;span class=&quot;nt&quot;&gt;&amp;lt;dependencies&amp;gt;&lt;/span&gt;
+        &lt;span class=&quot;nt&quot;&gt;&amp;lt;dependency&amp;gt;&lt;/span&gt;
+            &lt;span class=&quot;nt&quot;&gt;&amp;lt;groupId&amp;gt;&lt;/span&gt;org.springframework.boot&lt;span class=&quot;nt&quot;&gt;&amp;lt;/groupId&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;&amp;lt;!--            &amp;lt;artifactId&amp;gt;spring-boot-starter&amp;lt;/artifactId&amp;gt;--&amp;gt;&lt;/span&gt;
+            &lt;span class=&quot;c&quot;&gt;&amp;lt;!-- eureka client一定要使用 starter-web，不能單純使用starter --&amp;gt;&lt;/span&gt;
+            &lt;span class=&quot;nt&quot;&gt;&amp;lt;artifactId&amp;gt;&lt;/span&gt;spring-boot-starter-web&lt;span class=&quot;nt&quot;&gt;&amp;lt;/artifactId&amp;gt;&lt;/span&gt; 
+        &lt;span class=&quot;nt&quot;&gt;&amp;lt;/dependency&amp;gt;&lt;/span&gt;
+
+        &lt;span class=&quot;c&quot;&gt;&amp;lt;!-- https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-starter-netflix-eureka-client --&amp;gt;&lt;/span&gt;
+        &lt;span class=&quot;nt&quot;&gt;&amp;lt;dependency&amp;gt;&lt;/span&gt;
+            &lt;span class=&quot;nt&quot;&gt;&amp;lt;groupId&amp;gt;&lt;/span&gt;org.springframework.cloud&lt;span class=&quot;nt&quot;&gt;&amp;lt;/groupId&amp;gt;&lt;/span&gt;
+            &lt;span class=&quot;nt&quot;&gt;&amp;lt;artifactId&amp;gt;&lt;/span&gt;spring-cloud-starter-netflix-eureka-client&lt;span class=&quot;nt&quot;&gt;&amp;lt;/artifactId&amp;gt;&lt;/span&gt;
+            &lt;span class=&quot;nt&quot;&gt;&amp;lt;version&amp;gt;&lt;/span&gt;4.1.0&lt;span class=&quot;nt&quot;&gt;&amp;lt;/version&amp;gt;&lt;/span&gt;
+        &lt;span class=&quot;nt&quot;&gt;&amp;lt;/dependency&amp;gt;&lt;/span&gt;
+
+        &lt;span class=&quot;c&quot;&gt;&amp;lt;!-- 以下二個是health check需使用的套件 /actuator/info, /actuator/health --&amp;gt;&lt;/span&gt;
+        &lt;span class=&quot;nt&quot;&gt;&amp;lt;dependency&amp;gt;&lt;/span&gt;
+            &lt;span class=&quot;nt&quot;&gt;&amp;lt;groupId&amp;gt;&lt;/span&gt;org.springframework.boot&lt;span class=&quot;nt&quot;&gt;&amp;lt;/groupId&amp;gt;&lt;/span&gt;
+            &lt;span class=&quot;nt&quot;&gt;&amp;lt;artifactId&amp;gt;&lt;/span&gt;spring-boot-actuator&lt;span class=&quot;nt&quot;&gt;&amp;lt;/artifactId&amp;gt;&lt;/span&gt;
+        &lt;span class=&quot;nt&quot;&gt;&amp;lt;/dependency&amp;gt;&lt;/span&gt;
+        &lt;span class=&quot;nt&quot;&gt;&amp;lt;dependency&amp;gt;&lt;/span&gt;
+            &lt;span class=&quot;nt&quot;&gt;&amp;lt;groupId&amp;gt;&lt;/span&gt;org.springframework.boot&lt;span class=&quot;nt&quot;&gt;&amp;lt;/groupId&amp;gt;&lt;/span&gt;
+            &lt;span class=&quot;nt&quot;&gt;&amp;lt;artifactId&amp;gt;&lt;/span&gt;spring-boot-actuator-autoconfigure&lt;span class=&quot;nt&quot;&gt;&amp;lt;/artifactId&amp;gt;&lt;/span&gt;
+        &lt;span class=&quot;nt&quot;&gt;&amp;lt;/dependency&amp;gt;&lt;/span&gt;
+
+
+    &lt;span class=&quot;nt&quot;&gt;&amp;lt;/dependencies&amp;gt;&lt;/span&gt;
+
+    &lt;span class=&quot;nt&quot;&gt;&amp;lt;build&amp;gt;&lt;/span&gt;
+        &lt;span class=&quot;nt&quot;&gt;&amp;lt;plugins&amp;gt;&lt;/span&gt;
+            &lt;span class=&quot;nt&quot;&gt;&amp;lt;plugin&amp;gt;&lt;/span&gt;
+                &lt;span class=&quot;nt&quot;&gt;&amp;lt;groupId&amp;gt;&lt;/span&gt;org.springframework.boot&lt;span class=&quot;nt&quot;&gt;&amp;lt;/groupId&amp;gt;&lt;/span&gt;
+                &lt;span class=&quot;nt&quot;&gt;&amp;lt;artifactId&amp;gt;&lt;/span&gt;spring-boot-maven-plugin&lt;span class=&quot;nt&quot;&gt;&amp;lt;/artifactId&amp;gt;&lt;/span&gt;
+            &lt;span class=&quot;nt&quot;&gt;&amp;lt;/plugin&amp;gt;&lt;/span&gt;
+        &lt;span class=&quot;nt&quot;&gt;&amp;lt;/plugins&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;&amp;lt;/build&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;/project&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
+
+&lt;hr /&gt;
+&lt;h3 id=&quot;3-宣告成為一個eureka-client&quot;&gt;3. 宣告成為一個Eureka Client&lt;/h3&gt;
+&lt;hr /&gt;
+
+&lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kn&quot;&gt;package&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;tech.starlink&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+
+&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;org.springframework.boot.SpringApplication&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;org.springframework.boot.autoconfigure.SpringBootApplication&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;// 在eureka 4.1.0，就不用特別宣告他是一個eureka client&lt;/span&gt;
+&lt;span class=&quot;nd&quot;&gt;@SpringBootApplication&lt;/span&gt;
+&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Main&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+
+    &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[]&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;args&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;nc&quot;&gt;SpringApplication&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;run&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;Main&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;class&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;args&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
+
+&lt;hr /&gt;
+&lt;h3 id=&quot;4-配置applicationyml&quot;&gt;4. 配置application.yml&lt;/h3&gt;
+&lt;hr /&gt;
+
+&lt;div class=&quot;language-xml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;server:
+  port: 8887
+spring:
+  application:
+    name: service-login
+eureka:
+  instance:
+    hostname: ${spring.cloud.client.ip-address}
+    preferIpAddress: true # 使用IP rather than HOst
+    instance-id: ${spring.cloud.client.ip-address}:${spring.application.name}:${server.port}
+  client:
+    registerWithEureka: true
+    fetchRegistry: true
+    serviceUrl:
+      defaultZone: http://127.0.0.1:8888/eureka/
+    healthcheck: true
+    lease:
+      duration: 5
+management:
+  endpoints:
+    web:
+      exposure: # 在/actuator路徑下旨暴露info和health
+        include: &quot;info, health&quot;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
+
+&lt;hr /&gt;
+&lt;h2 id=&quot;5--run&quot;&gt;5.  Run&lt;/h2&gt;
+&lt;hr /&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;記得先clean 和compile&lt;/li&gt;
+  &lt;li&gt;啟動後去server UI上就會看到此服務註冊上去&lt;/li&gt;
+&lt;/ul&gt;
+
 </content>
  </entry>
  
@@ -3345,402 +3523,6 @@ build_prompt&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;可以看到我把&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;prompt_status&lt;/code&gt;就註解掉，因為我不想要prompt上有icon出現。&lt;/p&gt;
-
-</content>
- </entry>
- 
- <entry>
-   <title>JCConf Taiwan 2015   Day 2</title>
-   <link href="http://blog.kenyang.net/2015/12/05/jcconf-taiwan-2015-day-2"/>
-   <updated>2015-12-05T00:00:00+08:00</updated>
-   <id>http://blog.kenyang.net/2015/12/05/jcconf-taiwan-2015---day-2</id>
-   <content type="html">
-&lt;p&gt;這篇只是紀錄Java Community Conference 2015的第二天筆記，&lt;br /&gt;
-今天聽了以下幾個session，&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;阿里 JVM 的工作方向&lt;/li&gt;
-  &lt;li&gt;Universal Scala&lt;/li&gt;
-  &lt;li&gt;Deploy your own Spark cluster in 4 minutes using sbt&lt;/li&gt;
-  &lt;li&gt;Immutable Infrastructure：觀念與實作&lt;/li&gt;
-  &lt;li&gt;JDK8 JIT 行為和效能分析&lt;/li&gt;
-  &lt;li&gt;自己的JVM自己救 - 解救 OOM 實務經驗談&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;!--more--&gt;
-
-&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
-
-&lt;hr /&gt;
-&lt;h3 id=&quot;1-阿里-jvm-的工作方向&quot;&gt;1. 阿里 JVM 的工作方向&lt;/h3&gt;
-&lt;hr /&gt;
-
-&lt;p&gt;主要在說他為什麼從facebook回中國阿里雲，&lt;br /&gt;
-在fb調校php，在阿里雲調校jvm，&lt;br /&gt;
-在講在阿里雲裡的JVM心路歷程。&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;Speaker&lt;/strong&gt;&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;趙海平&lt;/li&gt;
-  &lt;li&gt;work @阿里雲&lt;/li&gt;
-  &lt;li&gt;previous work @FB&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;&lt;strong&gt;Coroutine&lt;/strong&gt;&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;like wait,notify in Java&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;&lt;strong&gt;Java young generation, old generation&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
-
-&lt;hr /&gt;
-&lt;h3 id=&quot;2-universal-scala&quot;&gt;2. Universal Scala&lt;/h3&gt;
-&lt;hr /&gt;
-&lt;p&gt;在講怎麼用scala在frontend與backend上。&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;Speaker&lt;/strong&gt;&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;Walter Chang&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;&lt;strong&gt;What is universal?&lt;/strong&gt;&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;isomorphic&lt;/li&gt;
-  &lt;li&gt;run the same code on both client and server&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;&lt;strong&gt;Functional language&lt;/strong&gt;&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;Pure functions [Wiki] (https://en.wikipedia.org/wiki/Pure_function)&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;&lt;strong&gt;immutable 優點&lt;/strong&gt;&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;no need to handle synchronization&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;&lt;strong&gt;val is immutable (like final in Java)&lt;/strong&gt;&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;var i: Int = 123&lt;/li&gt;
-  &lt;li&gt;var i = 123&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;&lt;strong&gt;var is mutable&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;case class&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;What is Scala.js&lt;/strong&gt;&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;compile &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Scala&lt;/code&gt; to &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;javascript&lt;/code&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;&lt;strong&gt;Example code&lt;/strong&gt;&lt;/p&gt;
-&lt;ul&gt;
-  &lt;li&gt;[github] (https://github.com/weihsiu/universal.git)&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
-
-&lt;hr /&gt;
-&lt;h3 id=&quot;3-deploy-your-own-spark-cluster-in-4-minutes-using-sbt&quot;&gt;3. Deploy your own Spark cluster in 4 minutes using sbt.&lt;/h3&gt;
-&lt;hr /&gt;
-
-&lt;p&gt;介紹他們的tool（spark-deployer）&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;Speaker&lt;/strong&gt;&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;Pishen Tsai&lt;/li&gt;
-  &lt;li&gt;Works @KKBox&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;&lt;strong&gt;Tool: spark-deployer&lt;/strong&gt;&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;[Github] (https://github.com/KKBOX/spark-deployer)&lt;/li&gt;
-  &lt;li&gt;SBT plugin&lt;/li&gt;
-  &lt;li&gt;productively used in KKBOX&lt;/li&gt;
-  &lt;li&gt;100% scala&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;&lt;strong&gt;Current Solutions to deploy Spark cluster&lt;/strong&gt;&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;&lt;strong&gt;spark-ec2&lt;/strong&gt;
-    &lt;ul&gt;
-      &lt;li&gt;缺點 
-    * command 太多
-    * 需要裝&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;sbt&lt;/code&gt;
-    * 需要裝&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ec2&lt;/code&gt;
-    * slow startup time (~20mins)
-    * 一小時算一次錢，三分之一錢花在deploy上&lt;/li&gt;
-      &lt;li&gt;要用spark-ec2的flow
-        &lt;ul&gt;
-          &lt;li&gt;&lt;img src=&quot;http://localhost:4000/assets/2015-12-05-spark-ec2-flow.jpg&quot; alt=&quot;flow&quot; /&gt;&lt;/li&gt;
-        &lt;/ul&gt;
-      &lt;/li&gt;
-      &lt;li&gt;spark-ec2的command
-        &lt;ul&gt;
-          &lt;li&gt;&lt;img src=&quot;http://localhost:4000/assets/2015-12-05-spark-ec2-cmd.jpg&quot; alt=&quot;command&quot; /&gt;&lt;/li&gt;
-        &lt;/ul&gt;
-      &lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;amazon emr (elastic map reduce)&lt;/strong&gt;
-    &lt;ul&gt;
-      &lt;li&gt;缺點
-    * command 太多
-    * 需要裝&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;sbt&lt;/code&gt;
-    * 需要裝&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;emr&lt;/code&gt;
-    * spark version is old&lt;/li&gt;
-      &lt;li&gt;要用Amazon emr的flow
-        &lt;ul&gt;
-          &lt;li&gt;&lt;img src=&quot;http://localhost:4000/assets/2015-12-05-aws-emr-flow.jpg&quot; alt=&quot;flow&quot; /&gt;&lt;/li&gt;
-        &lt;/ul&gt;
-      &lt;/li&gt;
-      &lt;li&gt;emr的cmd
-        &lt;ul&gt;
-          &lt;li&gt;&lt;img src=&quot;http://localhost:4000/assets/2015-12-05-aws-emr-cmd.jpg&quot; alt=&quot;cmd&quot; /&gt;&lt;/li&gt;
-        &lt;/ul&gt;
-      &lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;spark-deployer&lt;/strong&gt;
-    &lt;ul&gt;
-      &lt;li&gt;優點
-        &lt;ul&gt;
-          &lt;li&gt;只需要安裝&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;sbt&lt;/code&gt;&lt;/li&gt;
-          &lt;li&gt;fast and parallel startup (~4mins)&lt;/li&gt;
-          &lt;li&gt;Dynamic scale out&lt;/li&gt;
-          &lt;li&gt;Flexible design&lt;/li&gt;
-        &lt;/ul&gt;
-      &lt;/li&gt;
-      &lt;li&gt;用Spark deployer的flow
-        &lt;ul&gt;
-          &lt;li&gt;&lt;img src=&quot;http://localhost:4000/assets/2015-12-05-spark-deployer-flow.jpg&quot; alt=&quot;flow&quot; /&gt;&lt;/li&gt;
-        &lt;/ul&gt;
-      &lt;/li&gt;
-      &lt;li&gt;用Spark deployer的cmd
-        &lt;ul&gt;
-          &lt;li&gt;&lt;img src=&quot;http://localhost:4000/assets/2015-12-05-spark-deployer-cmd.jpg&quot; alt=&quot;cmd&quot; /&gt;&lt;/li&gt;
-        &lt;/ul&gt;
-      &lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;&lt;strong&gt;Prerequisite&lt;/strong&gt;&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;java&lt;/li&gt;
-  &lt;li&gt;sbt&lt;/li&gt;
-  &lt;li&gt;AWS_ACCESS_KEY_ID&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
-
-&lt;hr /&gt;
-&lt;h3 id=&quot;4-immutable-infrastructure觀念與實作&quot;&gt;4. Immutable Infrastructure：觀念與實作&lt;/h3&gt;
-&lt;hr /&gt;
-
-&lt;p&gt;&lt;strong&gt;Speaker&lt;/strong&gt;&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;葉秉哲&lt;/li&gt;
-  &lt;li&gt;Works @gogolook&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;&lt;strong&gt;改題目&lt;/strong&gt; -&amp;gt; immutable infrastructure觀念與實作（建議）&lt;/p&gt;
-
-&lt;p&gt;因為talk是在下午第一場，怕大家看code太想睡覺，所以就不講detail實作&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;演算法的領域也說，immutable 的東西會比 mutable 的東西來得好設計&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;why immutable objects&lt;/strong&gt;&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;simpler	to understand&lt;/li&gt;
-  &lt;li&gt;iherently thread-safe&lt;/li&gt;
-  &lt;li&gt;offer higher security than mutable objects&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;&lt;strong&gt;immutable object&lt;/strong&gt;&lt;/p&gt;
-
-&lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nc&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;s&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;ABC&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;s&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;toLowerCase&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;&lt;strong&gt;java hotswap&lt;/strong&gt;&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;jdk 1.4&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;&lt;strong&gt;Christian Posta said:&lt;/strong&gt;&lt;/p&gt;
-&lt;blockquote&gt;
-  &lt;p&gt;don’t hotdeploy/redeploy/migrate your java service in production at runtime.&lt;br /&gt;
-do have a very trong focus on your delivery pipeline/automation/testing to quickly make change to your app&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;&lt;strong&gt;What’s an immutable infrastructure&lt;/strong&gt;&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;quote from Docker 大神&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;re-create images each time you change a line of code.&lt;br /&gt;
-prevent modifications of running images.&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;&lt;strong&gt;Why immutable infrastructure?&lt;/strong&gt;&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;Simplify change management
-    &lt;ul&gt;
-      &lt;li&gt;hard to keep or restore “desired state” in place&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;Enforce &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;dev/prod&lt;/code&gt; parity
-    &lt;ul&gt;
-      &lt;li&gt;configure &amp;amp; test &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;infra&lt;/code&gt; &lt;strong&gt;before&lt;/strong&gt; deployed to production environment&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;Reason about apps at a higher level
-    &lt;ul&gt;
-      &lt;li&gt;… than just &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;deployable pacakages&lt;/code&gt; containing the code (jar/war/zip/msi)&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;&lt;strong&gt;Why &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;NOT&lt;/code&gt; immutable infrastructure?&lt;/strong&gt;&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;Cost may be too high&lt;/li&gt;
-  &lt;li&gt;DevOps maturity level&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;&lt;strong&gt;講者把image視為一種&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;母體&lt;/code&gt;&lt;/strong&gt;&lt;br /&gt;
-主要分為以下三種，&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;VM image&lt;/li&gt;
-  &lt;li&gt;Container image&lt;/li&gt;
-  &lt;li&gt;Unikernel image
-    &lt;ul&gt;
-      &lt;li&gt;對現有container技術有一個比較激進的改良&lt;/li&gt;
-      &lt;li&gt;傳統的vm，架構在hypervisor上，也打包一個os在裡面&lt;/li&gt;
-      &lt;li&gt;docker不打包，但會共用底下os的東西，有安全性考量&lt;/li&gt;
-      &lt;li&gt;所以有了&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;container per VM&lt;/code&gt;，但還是太肥了。&lt;/li&gt;
-      &lt;li&gt;把作業系統也看成lib，不會把所有os通通包進來，只抽取它要的。&lt;/li&gt;
-      &lt;li&gt;[boxfuse] (https://boxfuse.com/)&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;&lt;strong&gt;母體 =&amp;gt; 增生 =&amp;gt; 替換 =&amp;gt; 自動化&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
-
-&lt;hr /&gt;
-&lt;h3 id=&quot;5-jdk8-jit-行為和效能分析&quot;&gt;5. JDK8 JIT 行為和效能分析&lt;/h3&gt;
-&lt;hr /&gt;
-
-&lt;p&gt;這個session是Jserv在講，&lt;br /&gt;
-聽過Jserv演講過幾次，&lt;br /&gt;
-也曾經在去旁聽過，他在台大講的Android Open Source，&lt;br /&gt;
-給我的印象就是高手、講話很快、講話很有梗的。&lt;br /&gt;
-其實我原本要去聽別場的&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;MySQL Connector/J&lt;/code&gt;，但一方面覺得實在太累了，&lt;br /&gt;
-懶得換room，又想輕鬆一點，聽一下Jserv講講笑話，&lt;br /&gt;
-Jserv一樣講得很專業，但真的是不同領域，幾乎都聽不懂。&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;Speaker&lt;/strong&gt;&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;Jserv&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;&lt;strong&gt;topic&lt;/strong&gt;&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;How JIT works?&lt;/li&gt;
-  &lt;li&gt;How to monitor the JIT?&lt;/li&gt;
-  &lt;li&gt;How to figure out performance problem?&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;&lt;strong&gt;jserv自己準備的共筆&lt;/strong&gt;&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;[url] (https://jcconf.hackpad.com/R0-13PeQD5hpDx#:h=JDK8-JIT-行為和效能分析)&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;&lt;strong&gt;hotspot&lt;/strong&gt;&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;template based interpreter&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;&lt;strong&gt;Jserv Said:&lt;/strong&gt;&lt;/p&gt;
-&lt;blockquote&gt;
-
-  &lt;ol&gt;
-    &lt;li&gt;作業我自己改，門我自己開，助教負責笑&lt;/li&gt;
-    &lt;li&gt;台灣什麼東西都可以靠北&lt;/li&gt;
-    &lt;li&gt;靠北JVM&lt;/li&gt;
-    &lt;li&gt;怕沒人寫hackpad共筆，所以我自己寫&lt;/li&gt;
-    &lt;li&gt;在聯發科工作的時候，大家都是看安兔兔的benchmark買手機&lt;/li&gt;
-  &lt;/ol&gt;
-
-&lt;/blockquote&gt;
-
-&lt;p&gt;&lt;strong&gt;JVM如何支援動態語言&lt;/strong&gt;&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;invokedynamic
-    &lt;ul&gt;
-      &lt;li&gt;lambda&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;java裡的method都是&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ivnokevirtual&lt;/code&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;&lt;strong&gt;匿名class本質上會生出另一個class，inner class，和lambda不一樣&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
-
-&lt;hr /&gt;
-&lt;h3 id=&quot;6-自己的jvm自己救---解救-oom-實務經驗談&quot;&gt;6. 自己的JVM自己救 - 解救 OOM 實務經驗談&lt;/h3&gt;
-&lt;hr /&gt;
-
-&lt;p&gt;這場我聽到放空了，不過前半段內容，大致上我都是先前就知道的。&lt;br /&gt;
-例如：stack, heap差別…etc.&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;Shallow heap&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;Retained heap&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
-
-&lt;hr /&gt;
-&lt;h3 id=&quot;感想&quot;&gt;感想&lt;/h3&gt;
-&lt;hr /&gt;
-
-&lt;p&gt;參加完，不能說在知識上收穫很多，&lt;br /&gt;
-但反而是一種開眼界的感覺，會覺得人外有人，天外有天，&lt;br /&gt;
-覺得自己還得更加努力才行。&lt;/p&gt;
-
-&lt;p&gt;還想推薦一下MySQL的speaker (Ivan Tu)，雖然沒有去聽他的talk，&lt;br /&gt;
-但在休息時間時，去到MySQL攤位，都會聽到他很熱情地講解。&lt;/p&gt;
 
 </content>
  </entry>
